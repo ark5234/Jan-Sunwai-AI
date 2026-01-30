@@ -1,0 +1,10 @@
+fastapi
+uvicorn
+python-multipart
+torch
+transformers
+Pillow
+geopy
+pymongo
+ollama
+requests
