@@ -1,0 +1,32 @@
+import os
+from motor.motor_asyncio import AsyncIOMotorClient
+
+# Default to localhost if environment variable not set
+MONGO_URL = os.getenv("MONGO_URL", "mongodb://localhost:27017")
+DB_NAME = "jan_sunwai_db"
+
+class Database:
+    client: AsyncIOMotorClient | None = None
+
+db = Database()
+
+async def connect_to_mongo():
+    try:
+        db.client = AsyncIOMotorClient(MONGO_URL)
+        # Verify connection
+        await db.client.admin.command('ping')
+        print(f"Connected to MongoDB at {MONGO_URL}")
+    except Exception as e:
+        print(f"Could not connect to MongoDB: {e}")
+        raise e
+
+async def close_mongo_connection():
+    if db.client:
+        db.client.close()
+        print("MongoDB connection closed")
+
+def get_database():
+    """Returns the database instance."""
+    if db.client is None:
+        return None
+    return db.client[DB_NAME]

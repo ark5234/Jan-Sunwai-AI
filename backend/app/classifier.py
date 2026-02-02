@@ -40,7 +40,8 @@ class CivicClassifier:
         
         # Get the highest probability
         confidence, index = torch.max(probs, 1)
-        predicted_label = self.labels[index.item()]
+        # Cast to int to satisfy type checker (though item() on index tensor is already int-like)
+        predicted_label = self.labels[int(index.item())]
         
         return {
             "department": self.label_map[predicted_label],
