@@ -28,5 +28,5 @@ async def close_mongo_connection():
 def get_database():
     """Returns the database instance."""
     if db.client is None:
-        return None
+        raise RuntimeError("Database client not initialized. Ensure MongoDB is running and app started correctly.")
     return db.client[DB_NAME]
