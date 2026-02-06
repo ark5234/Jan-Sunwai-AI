@@ -2,8 +2,10 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
-from app.routes import router
+from fastapi.staticfiles import StaticFiles
+from app.routers import complaints, users
 from app.database import connect_to_mongo, close_mongo_connection
+import os
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -32,11 +34,18 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(router)
+# Mount Uploads for Static Access
+os.makedirs("backend/uploads", exist_ok=True)
+app.mount("/backend/uploads", StaticFiles(directory="backend/uploads"), name="uploads")
+
+# Include Routers
+app.include_router(complaints.router, tags=["Complaints"])
+app.include_router(users.router, prefix="/users", tags=["Users"])
 
 @app.get("/")
 def read_root():
     return {"message": "Jan-Sunwai AI Backend Online"}
+
 
 if __name__ == "__main__":
     import uvicorn

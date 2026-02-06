@@ -1,19 +1,19 @@
-from fastapi import APIRouter, File, UploadFile, Form, HTTPException, Depends, Query, Body
+from fastapi import APIRouter, File, UploadFile, Form, HTTPException, Query, Body
 from app.classifier import CivicClassifier
 from app.geotagging import extract_location
 from app.generator import generate_complaint
 from app.database import get_database
+from app.services.storage import storage_service
 from app.schemas import (
     ComplaintCreate, 
     ComplaintResponse, 
-    ComplaintStatus,
-    ComplaintInDB
+    ComplaintStatus
 )
 from PIL import Image
-import io
 from typing import List, Optional
 from datetime import datetime
 from bson import ObjectId
+import io
 
 router = APIRouter()
 classifier = CivicClassifier()
@@ -35,24 +35,29 @@ async def analyze_complaint(
     if not user:
         raise HTTPException(status_code=401, detail="User not registered. Please sign up first.")
 
-    # Read Image
+    # 1. Save File Securely (New: Feb 06 Requirement)
+    # The file pointer is at the start here.
+    file_path = await storage_service.save_file(file)
+    
+    # After saving, the file pointer might be at the end. 
+    # But storage_service.save_file resets it (await file.seek(0)).
     contents = await file.read()
     image = Image.open(io.BytesIO(contents))
     
-    # 1. Classify
+    # 2. Classify
     classification = classifier.classify(image)
     
-    # 2. Extract Location
+    # 3. Extract Location
     location = extract_location(image)
     
-    # 3. Generate Complaint Text
-    # Pass raw bytes for LLaVA
+    # 4. Generate Complaint Text
     generated_text = generate_complaint(contents, {"name": username}, location)
     
     return {
         "classification": classification,
         "location": location,
-        "generated_complaint": generated_text
+        "generated_complaint": generated_text,
+        "image_url": file_path # Return the path so frontend can pass it to /complaints
     }
 
 # --- CRUD Endpoints ---
@@ -167,4 +172,3 @@ async def update_complaint_status(
         raise HTTPException(status_code=404, detail="Complaint not found")
         
     return fix_id(result)
-
