@@ -4,7 +4,14 @@ import torch
 
 class CivicClassifier:
     def __init__(self):
+        self.device = "cuda" if torch.cuda.is_available() else "cpu"
+        print(f"🚀 Loading CLIP on device: {self.device}")
+        
+        # We explicitly cast self.device to str to satisfy Pylance/Type Checker if needed, 
+        # though .to() accepts standard device strings.
         self.model = CLIPModel.from_pretrained("openai/clip-vit-base-patch32")
+        self.model.to(self.device) # type: ignore
+        
         self.processor = CLIPProcessor.from_pretrained("openai/clip-vit-base-patch32")
         self.labels = [
             # Civil / Road Issues
@@ -88,6 +95,9 @@ class CivicClassifier:
 
             # 2. Model Inference
             inputs = self.processor(text=self.labels, images=image, return_tensors="pt", padding=True) # type: ignore
+            
+            # Move inputs to the same device as the model (GPU/CPU)
+            inputs = {k: v.to(self.device) for k, v in inputs.items()}
             
             with torch.no_grad():
                 outputs = self.model(**inputs)

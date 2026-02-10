@@ -55,7 +55,7 @@
 *   **Feb 12 (Thu):** **Zero-Shot Classifier Implementation** - [COMPLETED]
     *   Develop the `classifier.py` module, encapsulating the CLIP model loading and prediction logic into a reusable Class structure.
     *   Implement image preprocessing pipelines (resizing, normalization) to prepare raw user uploads for the neural network.
-*   **Feb 13 (Fri):** **Classification Accuracy Testing**
+*   **Feb 13 (Fri):** **Classification Accuracy Testing** - [COMPLETED]
     *   Curate a dataset of 50 diverse test images (various lighting, angles) and run batch predictions to benchmark model accuracy.
     *   Analyze misclassification cases and tune the label text prompts to improve distinction between similar categories (e.g., "Road" vs "Footpath").
 *   **Feb 14 (Sat):** *OFF (2nd Saturday)*
