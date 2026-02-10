@@ -7,22 +7,70 @@ class CivicClassifier:
         self.model = CLIPModel.from_pretrained("openai/clip-vit-base-patch32")
         self.processor = CLIPProcessor.from_pretrained("openai/clip-vit-base-patch32")
         self.labels = [
-            "A photo of a broken road or pavement", 
-            "A photo of stagnant water or mosquito breeding", 
-            "A photo of smoke or air pollution", 
-            "A photo of garbage or dead animals", 
-            "A photo of broken street light",
-            "A photo of construction dust",
-            "A photo of water logging"
+            # Civil / Road Issues
+            "A photo of a broken road or pothole",
+            "A photo of damaged pavement or footpath",
+            "A photo of construction material dumped on road",
+            
+            # Drainage / Monsoon Issues
+            "A photo of water logging or flooded street",
+            "A photo of a blocked drain or sewer",
+            "A photo of stagnant water",
+
+            # Garbage / Sanitation
+            "A photo of a garbage dump",
+            "A photo of overflowing trash bin",
+            "A photo of dead animal on street",
+            
+            # Electrical
+            "A photo of a broken street light",
+            "A photo of dangling electrical wires",
+            "A photo of an open transformer",
+
+            # Horticulture / Parks
+            "A photo of a fallen tree",
+            "A photo of unmaintained park or dry plants",
+
+            # Pollution
+            "A photo of air pollution or thick smoke",
+            "A photo of burning garbage",
+
+            # Encroachment (Enforcement)
+            "A photo of illegal shop or encroachment on footpath",
+            "A photo of unauthorized construction"
         ]
         self.label_map = {
-            "A photo of a broken road or pavement": "Civil Dept",
-            "A photo of stagnant water or mosquito breeding": "VBD Dept",
-            "A photo of smoke or air pollution": "Pollution Control",
-            "A photo of garbage or dead animals": "Public Health",
-            "A photo of broken street light": "Electricity Dept",
-            "A photo of construction dust": "Pollution Control",
-            "A photo of water logging": "Drainage Dept"
+            # Civil
+            "A photo of a broken road or pothole": "Civil Engineering Dept",
+            "A photo of damaged pavement or footpath": "Civil Engineering Dept",
+            "A photo of construction material dumped on road": "Civil Engineering Dept",
+            
+            # Drainage
+            "A photo of water logging or flooded street": "Drainage Dept",
+            "A photo of a blocked drain or sewer": "Drainage Dept",
+            "A photo of stagnant water": "Drainage Dept", # Can also be VBD (Health)
+
+            # Sanitation
+            "A photo of a garbage dump": "Sanitation Dept",
+            "A photo of overflowing trash bin": "Sanitation Dept",
+            "A photo of dead animal on street": "Public Health Dept",
+
+            # Electrical
+            "A photo of a broken street light": "Electricity Dept",
+            "A photo of dangling electrical wires": "Electricity Dept",
+            "A photo of an open transformer": "Electricity Dept",
+
+            # Horticulture
+            "A photo of a fallen tree": "Horticulture Dept",
+            "A photo of unmaintained park or dry plants": "Horticulture Dept",
+
+            # Pollution
+            "A photo of air pollution or thick smoke": "Pollution Control Dept",
+            "A photo of burning garbage": "Pollution Control Dept",
+
+            # Enforcement
+            "A photo of illegal shop or encroachment on footpath": "Enforcement Dept",
+            "A photo of unauthorized construction": "Enforcement Dept"
         }
 
     def classify(self, image: Image.Image):
