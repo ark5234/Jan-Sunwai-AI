@@ -74,25 +74,43 @@ class CivicClassifier:
         }
 
     def classify(self, image: Image.Image):
-        # Ensure image is in RGB mode (CLIP expects RGB)
-        if image.mode != "RGB":
-            image = image.convert("RGB")
+        try:
+            # 1. Image Preprocessing
+            # Convert to RGB (standard for CLIP)
+            if image.mode != "RGB":
+                image = image.convert("RGB")
             
-        inputs = self.processor(text=self.labels, images=image, return_tensors="pt", padding=True) # type: ignore
-        
-        with torch.no_grad():
-            outputs = self.model(**inputs)
-        
-        logits_per_image = outputs.logits_per_image
-        probs = logits_per_image.softmax(dim=1)
-        
-        # Get the highest probability
-        confidence, index = torch.max(probs, 1)
-        # Cast to int to satisfy type checker (though item() on index tensor is already int-like)
-        predicted_label = self.labels[int(index.item())]
-        
-        return {
-            "department": self.label_map[predicted_label],
-            "description": predicted_label,
-            "confidence": f"{confidence.item() * 100:.2f}%"
-        }
+            # Resize if the image is excessively large (> 1600px) to optimization inference speed
+            # CLIP usually resizes to 224x224, so sending 4k images is wasteful.
+            max_size = 1600
+            if image.width > max_size or image.height > max_size:
+                image.thumbnail((max_size, max_size))
+
+            # 2. Model Inference
+            inputs = self.processor(text=self.labels, images=image, return_tensors="pt", padding=True) # type: ignore
+            
+            with torch.no_grad():
+                outputs = self.model(**inputs)
+            
+            logits_per_image = outputs.logits_per_image
+            probs = logits_per_image.softmax(dim=1)
+            
+            # 3. Result Parsing
+            confidence, index = torch.max(probs, 1)
+            predicted_label = self.labels[int(index.item())]
+            
+            return {
+                "department": self.label_map[predicted_label],
+                "description": predicted_label,
+                "confidence": f"{confidence.item() * 100:.2f}%"
+            }
+        except Exception as e:
+            # In case of any processing error, return a generic failure rather than crashing
+            print(f"Classification Error: {str(e)}")
+            return {
+                "department": "Unknown",
+                "description": "Could not classify image",
+                "confidence": "0.00%",
+                "error": str(e)
+            }
+
