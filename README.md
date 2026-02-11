@@ -13,6 +13,35 @@ Automated Visual Classification & Geospatial Routing of Civic Grievances using Z
 ✅ **JWT Authentication** - Secure token-based authentication with OAuth2
 ✅ **3-Tier Role System** - Citizen, Department Head, and Admin dashboards with role-based access
 ✅ **User Management** - Registration, login, and session handling
+✅ **Mobile Responsive** - Fully optimized for smartphones, tablets, and desktop
+
+## Mobile Responsiveness
+The application is **fully responsive** and works seamlessly across all devices:
+
+📱 **Mobile (320px - 767px)**
+- Optimized touch targets (minimum 44px)
+- 2-column stat cards for compact display
+- Stacked layouts for easy scrolling
+- Touch-friendly buttons with proper spacing
+- Prevented zoom on input focus (iOS)
+- Smooth scrolling and animations
+
+📱 **Tablet (768px - 1023px)**
+- Adaptive grid layouts
+- Touch and mouse support
+- Optimized spacing and typography
+
+💻 **Desktop (1024px+)**
+- Full multi-column layouts
+- Expanded navigation
+- Larger images and content areas
+
+**Tested on:**
+- iPhone SE (375px)
+- iPhone 12/13 (390px)
+- Android phones (360px - 414px)
+- iPad (768px - 1024px)
+- Desktop browsers (Chrome, Firefox, Safari)
 
 ## Prerequisites
 1. **Python 3.8+**
