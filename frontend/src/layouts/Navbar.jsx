@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Camera, Home, FileText, Menu, X, LogOut, User } from 'lucide-react';
+import { Camera, Home, FileText, Menu, X, LogOut, User, LayoutDashboard } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
 export default function Navbar() {
@@ -26,12 +26,17 @@ export default function Navbar() {
             <Link to="/" className={`px-3 py-2 rounded-md text-sm font-medium ${isActive('/')}`}>
               Home
             </Link>
-            <Link to="/analyze" className={`px-3 py-2 rounded-md text-sm font-medium ${isActive('/analyze')}`}>
-              New Complaint
-            </Link>
-            <Link to="/results" className={`px-3 py-2 rounded-md text-sm font-medium ${isActive('/results')}`}>
-              Track Status
-            </Link>
+            {user && (
+              <>
+                <Link to="/dashboard" className={`px-3 py-2 rounded-md text-sm font-medium ${isActive('/dashboard')}`}>
+                  <LayoutDashboard className="inline-block w-4 h-4 mr-1" />
+                  Dashboard
+                </Link>
+                <Link to="/analyze" className={`px-3 py-2 rounded-md text-sm font-medium ${isActive('/analyze')}`}>
+                  New Complaint
+                </Link>
+              </>
+            )}
 
              <div className="h-6 w-px bg-slate-300 mx-2"></div>
 
@@ -40,6 +45,9 @@ export default function Navbar() {
                   <div className="flex items-center text-slate-700 text-sm font-medium">
                       <User className="w-4 h-4 mr-2" />
                       {user.username}
+                      <span className="ml-2 text-xs px-2 py-1 rounded-full bg-blue-100 text-blue-800">
+                        {user.role === 'dept_head' ? 'Dept Head' : user.role === 'admin' ? 'Admin' : 'Citizen'}
+                      </span>
                   </div>
                   <button onClick={logout} className="text-slate-500 hover:text-red-600 transition" title="Logout">
                       <LogOut className="w-5 h-5" />
@@ -72,7 +80,12 @@ export default function Navbar() {
         <div className="md:hidden">
           <div className="pt-2 pb-3 space-y-1">
             <Link to="/" className="block px-3 py-2 rounded-md text-base font-medium text-slate-700 hover:text-slate-900 hover:bg-slate-50">Home</Link>
-            <Link to="/analyze" className="block px-3 py-2 rounded-md text-base font-medium text-slate-700 hover:text-slate-900 hover:bg-slate-50">New Complaint</Link>
+            {user && (
+              <>
+                <Link to="/dashboard" className="block px-3 py-2 rounded-md text-base font-medium text-slate-700 hover:text-slate-900 hover:bg-slate-50">Dashboard</Link>
+                <Link to="/analyze" className="block px-3 py-2 rounded-md text-base font-medium text-slate-700 hover:text-slate-900 hover:bg-slate-50">New Complaint</Link>
+              </>
+            )}
           </div>
         </div>
       )}

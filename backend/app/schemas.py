@@ -5,11 +5,13 @@ from datetime import datetime
 
 class UserRole(str, Enum):
     CITIZEN = "citizen"
+    DEPT_HEAD = "dept_head"
     ADMIN = "admin"
 
 class UserBase(BaseModel):
     username: str = Field(..., min_length=3, max_length=50)
     email: EmailStr
+    department: Optional[str] = Field(None, description="Department for DEPT_HEAD users")
 
 class UserCreate(UserBase):
     password: str = Field(..., min_length=6, description="Password must be at least 6 characters")
@@ -28,6 +30,7 @@ class UserResponse(UserBase):
     id: Optional[str] = Field(None, alias="_id")
     role: UserRole
     created_at: datetime
+    department: Optional[str] = None
 
     class Config:
         populate_by_name = True

@@ -8,7 +8,8 @@ from app.auth import get_current_user
 from app.schemas import (
     ComplaintCreate, 
     ComplaintResponse, 
-    ComplaintStatus
+    ComplaintStatus,
+    UserRole
 )
 from PIL import Image
 from typing import List, Optional
@@ -94,18 +95,39 @@ async def create_complaint(
 
 @router.get("/complaints", response_model=List[ComplaintResponse])
 async def list_complaints(
-    username: Optional[str] = None,
+    current_user: dict = Depends(get_current_user),
     status: Optional[ComplaintStatus] = None,
-    limit: int = 20
+    department: Optional[str] = None,
+    limit: int = 50
 ):
+    """
+    Role-based complaint listing:
+    - CITIZEN: Only their own complaints
+    - DEPT_HEAD: Complaints from their department
+    - ADMIN: All complaints (with optional filtering)
+    """
     db = get_database()
     query = {}
     
-    # Filter by user if provided
-    if username:
-        user = await db["users"].find_one({"username": username})
-        if user:
-            query["user_id"] = str(user["_id"])
+    user_role = current_user.get("role")
+    user_id = str(current_user["_id"])
+    
+    # Apply role-based filters
+    if user_role == UserRole.CITIZEN:
+        # Citizens only see their own complaints
+        query["user_id"] = user_id
+    elif user_role == UserRole.DEPT_HEAD:
+        # Department heads see complaints from their department
+        user_dept = current_user.get("department")
+        if user_dept:
+            query["department"] = user_dept
+        else:
+            # If dept head has no department assigned, show nothing
+            query["_id"] = {"$exists": False}
+    elif user_role == UserRole.ADMIN:
+        # Admin can filter by department if provided
+        if department:
+            query["department"] = department
     
     # Filter by status if provided
     if status:

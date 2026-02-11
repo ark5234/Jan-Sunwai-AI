@@ -4,7 +4,7 @@ from jose import JWTError, jwt
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from app.database import get_database
-from app.schemas import UserInDB
+from app.schemas import UserInDB, UserRole
 
 # Configuration
 SECRET_KEY = "super-secret-key-change-this-in-production"
@@ -45,3 +45,32 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
     # Fix ID 
     user["_id"] = str(user["_id"])
     return user
+
+# Role-based permission dependencies
+async def get_current_admin(current_user: dict = Depends(get_current_user)):
+    """Require ADMIN role"""
+    if current_user.get("role") != UserRole.ADMIN:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Admin access required"
+        )
+    return current_user
+
+async def get_current_dept_head(current_user: dict = Depends(get_current_user)):
+    """Require DEPT_HEAD role"""
+    if current_user.get("role") != UserRole.DEPT_HEAD:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Department Head access required"
+        )
+    return current_user
+
+async def get_current_admin_or_dept_head(current_user: dict = Depends(get_current_user)):
+    """Require ADMIN or DEPT_HEAD role"""
+    role = current_user.get("role")
+    if role not in [UserRole.ADMIN, UserRole.DEPT_HEAD]:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Admin or Department Head access required"
+        )
+    return current_user

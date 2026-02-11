@@ -57,7 +57,8 @@ async def register_user(user: UserCreate = Body(...)):
         "access_token": access_token,
         "token_type": "bearer",
         "username": created_user["username"],
-        "role": created_user.get("role", "citizen")
+        "role": created_user.get("role", "citizen"),
+        "department": created_user.get("department")
     }
 
 @router.post("/login")
@@ -78,7 +79,8 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends()):
         "access_token": access_token, 
         "token_type": "bearer",
         "username": user["username"], 
-        "role": user.get("role", "citizen")
+        "role": user.get("role", "citizen"),
+        "department": user.get("department")
     }
 
 @router.get("/me", response_model=UserResponse)

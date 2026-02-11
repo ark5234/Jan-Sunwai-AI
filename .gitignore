@@ -21,3 +21,9 @@ dataset/
 data/
 
 backend/logs/
+backend/uploads/
+
+# Test credentials and account creation scripts
+TEST_ACCOUNTS_CREDENTIALS.txt
+backend/create_test_users.py
+create_test_users.py
