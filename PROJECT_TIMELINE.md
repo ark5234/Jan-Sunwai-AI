@@ -83,16 +83,16 @@
 *   **Feb 22 (Sun):** *OFF*
 
 #### Week 5: Feb 23 (Mon) – Feb 28 (Sat)
-*   **Feb 23 (Mon):** **Generative AI Environment Setup**
+*   **Feb 23 (Mon):** **Generative AI Environment Setup** - [COMPLETED]
     *   Install and configure `Ollama` locally; pull the `llava` (Language-and-Vision Assistant) model for multimodal generation.
     *   Verify hardware resource usage (RAM/VRAM) during model inference to ensure the development machine remains responsive.
-*   **Feb 24 (Tue):** **GenAI Prompt Engineering**
+*   **Feb 24 (Tue):** **GenAI Prompt Engineering** - [COMPLETED]
     *   Design and iterate on system prompts to guide LLaVA in writing formal, polite, and actionable government complaint letters.
     *   Test various "personas" in the prompts to ensure the AI adopts the tone of a concerned but professional citizen.
-*   **Feb 25 (Wed):** **Complaint Generator Service**
+*   **Feb 25 (Wed):** **Complaint Generator Service** - [COMPLETED]
     *   Develop `generator.py` to wrap the Ollama API calls, handling inputs (Department, Location, Image context) dynamically.
     *   Implement text post-processing to clean up AI artifacts (extra quotes, hallucinations) before sending the draft to the user.
-*   **Feb 26 (Thu):** **Draft Generation API**
+*   **Feb 26 (Thu):** **Draft Generation API** - [COMPLETED]
     *   Expose the generation logic via a FastAPI endpoint, allowing the frontend to request a fresh draft based on analysis results.
     *   Implement timeout management for the generation endpoint, as LLM inference can be slow, adding async `await` patterns.
 *   **Feb 27 (Fri):** **Quality Assurance for Generated Text**
@@ -101,48 +101,51 @@
 *   **Feb 28 (Sat):** *OFF (4th Saturday)*
 *   **Mar 01 (Sun):** *OFF*
 
-#### Week 6: Mar 02 (Mon) – Mar 07 (Sat)
-*   **Mar 02 (Mon):** **Input Validation & Security**
-    *   Implement strict file type validation (Magic Numbers) to ensure only valid images are processed, rejecting potential malware.
-    *   Enforce file size limits in Nginx/FastAPI layers to prevent Denial of Service (DoS) attacks via massive uploads.
-*   **Mar 03 (Tue):** **Global Error Handling**
-    *   Create a centralized exception handling architecture to catch unhandled errors and return standard JSON error responses.
-    *   Log all exceptions with stack traces to a local file for easier debugging during the development phase.
-*   **Mar 04 (Wed):** **API Documentation & Swagger**
-    *   Enhance the OpenAPI (Swagger) schema with detailed descriptions, response examples, and data type definitions.
-    *   Verify that the "Try it out" feature in Swagger UI works for file uploads, aiding in frontend developer communication.
-*   **Mar 05 (Thu):** **Performance Profiling**
-    *   Profile the application using Python profiling tools to identify bottlenecks in the image analysis pipeline.
-    *   Optimize image loading routines in `Pillow` to reduce memory footprint during concurrent requests.
-*   **Mar 06 (Fri):** **Security Middleware (CORS)**
-    *   Configure Cross-Origin Resource Sharing (CORS) middleware to allow requests strictly from the frontend development port.
-    *   Review API headers to ensure best practices for security (e.g., preventing content-type sniffing).
-*   **Mar 07 (Sat):** **Phase 1 System Integration Test**
-    *   Perform a complete system test of the entire backend stack, verifying seamless data flow from Upload -> Analyze -> Generate.
-    *   Document any known issues or "TODOs" discovered during testing to prioritize them for Phase 2.
+#### Week 6: Mar 02 (Mon) – Mar 07 (Sat) [Current Focus: Frontend]
+*   **Mon:** **Frontend Initialization & Dependencies**
+    *   Verify React/Vite setup and install core UI libraries (`react-router-dom`, `tailwindcss`, `lucide-react`).
+    *   Configure Tailwind CSS for consistent styling across the application.
+*   **Tue:** **Application Routing & Layout**
+    *   Set up the main Router (Home, Analysis, Result, Admin).
+    *   Create the shell layout (Navbar, Footer) using Tailwind components.
+*   **Wed:** **Image Upload Component**
+    *   Build a drag-and-drop file upload zone with visual feedback (hover states, file previews).
+    *   Connect this component to the `useAnalyzeImage` hook (to be created).
+*   **Thu:** **API Integration (Analysis Hook)**
+    *   Develop `hooks/useAnalysis.js` to handle the communication with the Python Backend (`/analyze`).
+    *   Display loading states (spinners) while the AI models (CLIP + LLaVA) are processing.
+*   **Fri:** **Result Display Page**
+    *   Create the "Complaint Preview" page showing: The Image, The Map, The Classification, and the AI-Drafted Letter.
+    *   Add "Copy to Clipboard" and "Edit" functionality for the generated text.
+*   **Sat:** **End-to-End Test (Frontend -> Backend)**
+    *   Manual walkthrough: Upload image -> See AI result -> Verify Letter content. 
+
+*(Original Backend Security tasks moved to Week 7)*
 *   **Mar 08 (Sun):** *OFF*
 
 ---
 
 ### Phase 2: Frontend & User Experience (Weeks 7-11)
 
-#### Week 7: Mar 09 (Mon) – Mar 14 (Sat)
-*   **Mar 09 (Mon):** **Frontend Initialization**
-    *   Initialize the React application using Vite, configuring the `package.json` scripts and installing core dependencies (`axios`, `router`).
-    *   Set up the directory structure (`/src/components`, `/src/pages`, `/src/hooks`) for long-term scalability.
-*   **Mar 10 (Tue):** **Atomic Design System Setup**
-    *   Create a design tokens file (colors, spacing, typography) to ensure visual consistency across the application.
-    *   Begin implementing "Atomic" components (Buttons, Inputs, Cards) in isolation to build a reusable UI library.
-*   **Mar 11 (Wed):** **Styling Architecture (Tailwind)**
-    *   Install and configure Tailwind CSS, setting up the `tailwind.config.js` to match the project's color palette.
-    *   Convert the basic atomic components to use Tailwind utility classes, verifying responsiveness on different breakpoints.
-*   **Mar 12 (Thu):** **Routing & Navigation**
-    *   Implement `react-router-dom` to manage application views (Home, Upload, Admin Dashboard).
-    *   Create the shell layouts (Header, Footer, Sidebar) and ensure they persist correctly across route changes.
-*   **Mar 13 (Fri):** **Composite Component Development**
-    *   Combine atomic components to build more complex UI structures like the "Hero Section" and "Feature Highlights" for the landing page.
-    *   Test component interactivity (hover states, click handlers) to ensure a polished feel.
-*   **Mar 14 (Sat):** *OFF (2nd Saturday)*
+#### Week 7: Mar 09 (Mon) – Mar 14 (Sat) [Deferred: Backend Security & Optimization]
+*   **Mar 09 (Mon):** **Input Validation & Security**
+    *   Implement strict file type validation (Magic Numbers) to ensure only valid images are processed, rejecting potential malware.
+    *   Enforce file size limits in Nginx/FastAPI layers to prevent Denial of Service (DoS) attacks via massive uploads.
+*   **Mar 10 (Tue):** **Global Error Handling**
+    *   Create a centralized exception handling architecture to catch unhandled errors and return standard JSON error responses.
+    *   Log all exceptions with stack traces to a local file for easier debugging during the development phase.
+*   **Mar 11 (Wed):** **API Documentation & Swagger**
+    *   Enhance the OpenAPI (Swagger) schema with detailed descriptions, response examples, and data type definitions.
+    *   Verify that the "Try it out" feature in Swagger UI works for file uploads, aiding in frontend developer communication.
+*   **Mar 12 (Thu):** **Performance Profiling**
+    *   Profile the application using Python profiling tools to identify bottlenecks in the image analysis pipeline.
+    *   Optimize image loading routines in `Pillow` to reduce memory footprint during concurrent requests.
+*   **Mar 13 (Fri):** **Security Middleware (CORS)**
+    *   Configure Cross-Origin Resource Sharing (CORS) middleware to allow requests strictly from the frontend development port.
+    *   Review API headers to ensure best practices for security (e.g., preventing content-type sniffing).
+*   **Mar 14 (Sat):** **Phase 1 System Integration Test**
+    *   Perform a complete system test of the entire backend stack, verifying seamless data flow from Upload -> Analyze -> Generate.
+    *   Document any known issues or "TODOs" discovered during testing to prioritize them for Phase 2.
 *   **Mar 15 (Sun):** *OFF*
 
 #### Week 8: Mar 16 (Mon) – Mar 21 (Sat)
