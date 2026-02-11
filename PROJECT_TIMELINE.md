@@ -49,9 +49,17 @@
 *   **Feb 10 (Tue):** **AI Environment & Dependency Integration** - [COMPLETED]
     *   Install heavy AI libraries (`torch`, `transformers`, `Pillow`) and resolve CUDA/CPU version conflicts to ensure consistent model loading.
     *   Write a standalone script to download and cache the `openai/clip-vit-base-patch32` model to avoid runtime downloads.
-*   **Feb 11 (Wed):** **Taxonomy & Label Engineering** - [COMPLETED]
-    *   Define a comprehensive dictionary of prompt labels (e.g., "garbage dump", "pothole", "broken street light") mapped to civic departments.
-    *   Iterate on label phrasing, testing synonyms to determine which text descriptions yield the highest confidence scores from CLIP.
+*   **Feb 11 (Wed):** **JWT Authentication & Security Implementation** - [COMPLETED]
+    *   Implemented full JWT token-based authentication system using python-jose and OAuth2PasswordBearer flow.
+    *   Created `auth.py` module with token generation, validation, and user dependency injection.
+    *   Updated `/login` endpoint to return secure access tokens with 24-hour expiration.
+    *   Modified `/register` endpoint to auto-generate JWT tokens for seamless onboarding.
+    *   Secured `/analyze` and `/complaints` endpoints with `get_current_user` dependency.
+    *   Updated frontend AuthContext to validate token presence and handle session expiration.
+    *   Implemented bearer token authentication in frontend API calls.
+    *   Shortened AI complaint generation prompts to max 150 words for better UX.
+    *   Added passlib[bcrypt] for secure password hashing.
+    *   Updated test suite with dependency overrides for JWT testing.
 *   **Feb 12 (Thu):** **Zero-Shot Classifier Implementation** - [COMPLETED]
     *   Develop the `classifier.py` module, encapsulating the CLIP model loading and prediction logic into a reusable Class structure.
     *   Implement image preprocessing pipelines (resizing, normalization) to prepare raw user uploads for the neural network.
