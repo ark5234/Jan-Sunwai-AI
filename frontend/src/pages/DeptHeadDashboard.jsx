@@ -9,6 +9,7 @@ const DeptHeadDashboard = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [statusFilter, setStatusFilter] = useState('all');
+  const [updateError, setUpdateError] = useState(null);
 
   useEffect(() => {
     fetchDepartmentComplaints();
@@ -39,6 +40,7 @@ const DeptHeadDashboard = () => {
   };
 
   const updateComplaintStatus = async (complaintId, newStatus) => {
+    setUpdateError(null);
     try {
       await axios.patch(
         `http://localhost:8000/complaints/${complaintId}/status`,
@@ -54,7 +56,8 @@ const DeptHeadDashboard = () => {
       fetchDepartmentComplaints();
     } catch (err) {
       console.error('Error updating status:', err);
-      alert('Failed to update status');
+      setUpdateError('Failed to update status. Please try again.');
+      setTimeout(() => setUpdateError(null), 5000);
     }
   };
 
@@ -159,6 +162,12 @@ const DeptHeadDashboard = () => {
       {error && (
         <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
           <p className="text-red-800">{error}</p>
+        </div>
+      )}
+
+      {updateError && (
+        <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6 animate-fadeIn">
+          <p className="text-red-800">{updateError}</p>
         </div>
       )}
 

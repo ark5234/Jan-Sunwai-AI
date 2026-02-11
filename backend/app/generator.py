@@ -21,27 +21,31 @@ def generate_complaint(image_path, classification_result, user_details, location
     address = location_details.get("address", "New Delhi (Exact location pending)")
     
     prompt = f"""
-    You are a professional assistant for drafting formal government complaints in India.
+    You are writing a civic grievance complaint for Indian municipal authorities.
     
-    TASK: Write a BRIEF formal complaint letter (maximum 150 words) to the Municipal Authority based on the image and category: '{category}'.
+    TASK: Write a SHORT grievance complaint (80-100 words) about the issue shown in the image.
     
-    CONTEXT:
+    DETAILS:
     - Complainant: {user_name}
     - Location: {address}
-    - Issue Category: {category}
+    - Issue Type: {category}
     
-    REQUIREMENTS:
-    - Length: Maximum 3-4 short paragraphs (150 words total)
-    - Tone: Formal, polite, urgent
-    - Structure: 
-      1. Subject Line (one line)
-      2. Salutation: "To The Municipal Officer,"
-      3. Issue Description: 2-3 sentences describing what you see in the image
-      4. Impact: 1-2 sentences on public inconvenience
-      5. Action Request: 1 sentence asking for immediate resolution
-    - Be CONCISE. No elaborate descriptions. Direct and actionable.
+    FORMAT:
+    Subject: [One line describing the issue]
     
-    Write ONLY the letter content. No preamble.
+    To The Municipal Officer,
+    
+    [2-3 sentences describing what you observe in the image and why it's a problem]
+    
+    [1 sentence on how it affects public convenience/safety]
+    
+    [1 sentence requesting immediate action]
+    
+    Respectfully submitted,
+    {user_name}
+    
+    TONE: Direct, concise, factual. Like filing a grievance, not writing a formal letter.
+    NO elaborate descriptions. Maximum 100 words total.
     """
     
     try:

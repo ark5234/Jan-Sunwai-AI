@@ -68,10 +68,10 @@ export default function ImageUpload({ onImageSelect }) {
   };
 
   return (
-    <div className="w-full max-w-xl mx-auto">
+    <div className="w-full">
       <div 
-        className={`relative flex flex-col items-center justify-center w-full h-64 border-2 border-dashed rounded-lg cursor-pointer transition-colors
-          ${dragActive ? "border-primary bg-blue-50" : "border-slate-300 bg-slate-50 hover:bg-slate-100"}
+        className={`relative flex flex-col items-center justify-center w-full h-80 border-2 border-dashed rounded-lg cursor-pointer transition-all
+          ${dragActive ? "border-primary bg-blue-50 scale-[1.02]" : "border-slate-300 bg-slate-50 hover:bg-slate-100 hover:border-slate-400"}
           ${error ? "border-red-400 bg-red-50" : ""}
         `}
         onDragEnter={handleDrag}
@@ -89,7 +89,7 @@ export default function ImageUpload({ onImageSelect }) {
         />
 
         {preview ? (
-          <div className="relative w-full h-full p-2">
+          <div className="relative w-full h-full p-2 group">
             <img 
               src={preview} 
               alt="Upload Preview" 
@@ -97,13 +97,15 @@ export default function ImageUpload({ onImageSelect }) {
             />
             <button 
               onClick={clearImage}
-              className="absolute top-4 right-4 p-1 bg-white rounded-full shadow-md text-slate-500 hover:text-red-500"
+              className="absolute top-2 right-2 p-2 bg-red-500 rounded-full shadow-lg text-white hover:bg-red-600 transition-all z-10"
+              title="Remove image"
             >
               <X className="w-5 h-5" />
             </button>
-            <div className="absolute bottom-4 left-0 right-0 text-center">
-                <span className="inline-block px-3 py-1 text-xs font-medium text-white bg-slate-800 bg-opacity-75 rounded-full">
-                    Change Image
+            <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-40 transition-all rounded flex items-center justify-center">
+                <span className="opacity-0 group-hover:opacity-100 inline-block px-4 py-2 text-sm font-medium text-white bg-primary rounded-lg shadow-lg transition-opacity">
+                    <Upload className="w-4 h-4 inline mr-2" />
+                    Click to Change Image
                 </span>
             </div>
           </div>
