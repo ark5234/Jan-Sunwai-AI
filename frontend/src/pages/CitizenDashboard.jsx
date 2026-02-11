@@ -56,54 +56,54 @@ const CitizenDashboard = () => {
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
       {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900">My Complaints</h1>
-        <p className="mt-2 text-gray-600">Track and manage your submitted complaints</p>
+      <div className="mb-6 sm:mb-8">
+        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">My Complaints</h1>
+        <p className="mt-2 text-sm sm:text-base text-gray-600">Track and manage your submitted complaints</p>
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-        <div className="bg-white rounded-lg shadow p-6">
+      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mb-6 sm:mb-8">
+        <div className="bg-white rounded-lg shadow p-4 sm:p-6">
           <div className="flex items-center">
-            <FileText className="h-8 w-8 text-blue-600" />
-            <div className="ml-4">
-              <p className="text-2xl font-semibold">{complaints.length}</p>
-              <p className="text-gray-600">Total</p>
+            <FileText className="h-6 w-6 sm:h-8 sm:w-8 text-blue-600" />
+            <div className="ml-3 sm:ml-4">
+              <p className="text-xl sm:text-2xl font-semibold">{complaints.length}</p>
+              <p className="text-xs sm:text-sm text-gray-600">Total</p>
             </div>
           </div>
         </div>
-        <div className="bg-white rounded-lg shadow p-6">
+        <div className="bg-white rounded-lg shadow p-4 sm:p-6">
           <div className="flex items-center">
-            <AlertCircle className="h-8 w-8 text-yellow-600" />
-            <div className="ml-4">
-              <p className="text-2xl font-semibold">
+            <AlertCircle className="h-6 w-6 sm:h-8 sm:w-8 text-yellow-600" />
+            <div className="ml-3 sm:ml-4">
+              <p className="text-xl sm:text-2xl font-semibold">
                 {complaints.filter(c => c.status === 'Open').length}
               </p>
-              <p className="text-gray-600">Open</p>
+              <p className="text-xs sm:text-sm text-gray-600">Open</p>
             </div>
           </div>
         </div>
-        <div className="bg-white rounded-lg shadow p-6">
+        <div className="bg-white rounded-lg shadow p-4 sm:p-6">
           <div className="flex items-center">
-            <AlertCircle className="h-8 w-8 text-blue-600" />
-            <div className="ml-4">
-              <p className="text-2xl font-semibold">
+            <AlertCircle className="h-6 w-6 sm:h-8 sm:w-8 text-blue-600" />
+            <div className="ml-3 sm:ml-4">
+              <p className="text-xl sm:text-2xl font-semibold">
                 {complaints.filter(c => c.status === 'In Progress').length}
               </p>
-              <p className="text-gray-600">In Progress</p>
+              <p className="text-xs sm:text-sm text-gray-600">In Progress</p>
             </div>
           </div>
         </div>
-        <div className="bg-white rounded-lg shadow p-6">
+        <div className="bg-white rounded-lg shadow p-4 sm:p-6">
           <div className="flex items-center">
-            <AlertCircle className="h-8 w-8 text-green-600" />
-            <div className="ml-4">
-              <p className="text-2xl font-semibold">
+            <AlertCircle className="h-6 w-6 sm:h-8 sm:w-8 text-green-600" />
+            <div className="ml-3 sm:ml-4">
+              <p className="text-xl sm:text-2xl font-semibold">
                 {complaints.filter(c => c.status === 'Resolved').length}
               </p>
-              <p className="text-gray-600">Resolved</p>
+              <p className="text-xs sm:text-sm text-gray-600">Resolved</p>
             </div>
           </div>
         </div>
@@ -113,7 +113,7 @@ const CitizenDashboard = () => {
       <div className="mb-6">
         <Link
           to="/analyze"
-          className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+          className="inline-flex items-center px-4 py-2.5 sm:py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 w-full sm:w-auto justify-center"
         >
           <FileText className="h-5 w-5 mr-2" />
           File New Complaint
@@ -144,25 +144,29 @@ const CitizenDashboard = () => {
           <ul className="divide-y divide-gray-200">
             {complaints.map((complaint) => (
               <li key={complaint._id} className="hover:bg-gray-50">
-                <div className="px-6 py-4">
-                  <div className="flex items-center justify-between">
-                    <div className="flex-1">
-                      <div className="flex items-center justify-between">
-                        <h3 className="text-lg font-medium text-gray-900">
+                <div className="px-4 sm:px-6 py-4">
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                    <div className="flex-1 min-w-0">
+                      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                        <h3 className="text-base sm:text-lg font-medium text-gray-900 truncate">
                           {complaint.department}
                         </h3>
-                        <span className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(complaint.status)}`}>
+                        <span className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(complaint.status)} whitespace-nowrap inline-block self-start sm:self-center`}>
                           {complaint.status}
                         </span>
                       </div>
-                      <p className="mt-2 text-sm text-gray-600 line-clamp-2">
+                      <p className="mt-2 text-sm text-gray-600 line-clamp-3">
                         {complaint.description}
                       </p>
-                      <div className="mt-2 flex items-center text-sm text-gray-500">
-                        <MapPin className="h-4 w-4 mr-1" />
-                        {complaint.location?.address || 'Location not available'}
-                        <Calendar className="h-4 w-4 ml-4 mr-1" />
-                        {new Date(complaint.created_at).toLocaleDateString()}
+                      <div className="mt-2 flex flex-col sm:flex-row sm:items-center text-sm text-gray-500 gap-2">
+                        <div className="flex items-center">
+                          <MapPin className="h-4 w-4 mr-1 flex-shrink-0" />
+                          <span className="truncate">{complaint.location?.address || 'Location not available'}</span>
+                        </div>
+                        <div className="flex items-center">
+                          <Calendar className="h-4 w-4 sm:ml-4 mr-1 flex-shrink-0" />
+                          <span>{new Date(complaint.created_at).toLocaleDateString()}</span>
+                        </div>
                       </div>
                       {complaint.ai_metadata && (
                         <div className="mt-2 text-xs text-gray-500">
@@ -171,11 +175,11 @@ const CitizenDashboard = () => {
                       )}
                     </div>
                     {complaint.image_url && (
-                      <div className="ml-4">
+                      <div className="sm:ml-4 flex-shrink-0">
                         <img
                           src={`http://localhost:8000/${complaint.image_url}`}
                           alt="Complaint"
-                          className="h-20 w-20 object-cover rounded"
+                          className="h-24 w-24 sm:h-20 sm:w-20 object-cover rounded"
                         />
                       </div>
                     )}

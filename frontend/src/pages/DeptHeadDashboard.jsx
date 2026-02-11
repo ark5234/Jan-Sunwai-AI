@@ -82,56 +82,56 @@ const DeptHeadDashboard = () => {
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
       {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900">Department Dashboard</h1>
-        <p className="mt-2 text-gray-600">
+      <div className="mb-6 sm:mb-8">
+        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Department Dashboard</h1>
+        <p className="mt-2 text-sm sm:text-base text-gray-600">
           Managing complaints for: <span className="font-semibold">{user.department || 'All Departments'}</span>
         </p>
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-        <div className="bg-white rounded-lg shadow p-6">
+      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mb-6 sm:mb-8">
+        <div className="bg-white rounded-lg shadow p-4 sm:p-6">
           <div className="flex items-center">
-            <FileText className="h-8 w-8 text-blue-600" />
-            <div className="ml-4">
-              <p className="text-2xl font-semibold">{complaints.length}</p>
-              <p className="text-gray-600">Total</p>
+            <FileText className="h-6 w-6 sm:h-8 sm:w-8 text-blue-600" />
+            <div className="ml-3 sm:ml-4">
+              <p className="text-xl sm:text-2xl font-semibold">{complaints.length}</p>
+              <p className="text-xs sm:text-sm text-gray-600">Total</p>
             </div>
           </div>
         </div>
-        <div className="bg-white rounded-lg shadow p-6">
+        <div className="bg-white rounded-lg shadow p-4 sm:p-6">
           <div className="flex items-center">
-            <FileText className="h-8 w-8 text-yellow-600" />
-            <div className="ml-4">
-              <p className="text-2xl font-semibold">
+            <FileText className="h-6 w-6 sm:h-8 sm:w-8 text-yellow-600" />
+            <div className="ml-3 sm:ml-4">
+              <p className="text-xl sm:text-2xl font-semibold">
                 {complaints.filter(c => c.status === 'Open').length}
               </p>
-              <p className="text-gray-600">Open</p>
+              <p className="text-xs sm:text-sm text-gray-600">Open</p>
             </div>
           </div>
         </div>
-        <div className="bg-white rounded-lg shadow p-6">
+        <div className="bg-white rounded-lg shadow p-4 sm:p-6">
           <div className="flex items-center">
-            <FileText className="h-8 w-8 text-blue-600" />
-            <div className="ml-4">
-              <p className="text-2xl font-semibold">
+            <FileText className="h-6 w-6 sm:h-8 sm:w-8 text-blue-600" />
+            <div className="ml-3 sm:ml-4">
+              <p className="text-xl sm:text-2xl font-semibold">
                 {complaints.filter(c => c.status === 'In Progress').length}
               </p>
-              <p className="text-gray-600">In Progress</p>
+              <p className="text-xs sm:text-sm text-gray-600">In Progress</p>
             </div>
           </div>
         </div>
-        <div className="bg-white rounded-lg shadow p-6">
+        <div className="bg-white rounded-lg shadow p-4 sm:p-6">
           <div className="flex items-center">
-            <FileText className="h-8 w-8 text-green-600" />
-            <div className="ml-4">
-              <p className="text-2xl font-semibold">
+            <FileText className="h-6 w-6 sm:h-8 sm:w-8 text-green-600" />
+            <div className="ml-3 sm:ml-4">
+              <p className="text-xl sm:text-2xl font-semibold">
                 {complaints.filter(c => c.status === 'Resolved').length}
               </p>
-              <p className="text-gray-600">Resolved</p>
+              <p className="text-xs sm:text-sm text-gray-600">Resolved</p>
             </div>
           </div>
         </div>
@@ -139,12 +139,12 @@ const DeptHeadDashboard = () => {
 
       {/* Filters */}
       <div className="bg-white rounded-lg shadow p-4 mb-6">
-        <div className="flex items-center space-x-4">
-          <Filter className="h-5 w-5 text-gray-400" />
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4">
+          <Filter className="h-5 w-5 text-gray-400 hidden sm:block" />
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500"
+            className="w-full sm:w-auto border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm"
           >
             <option value="all">All Status</option>
             <option value="Open">Open</option>
@@ -173,25 +173,29 @@ const DeptHeadDashboard = () => {
           <ul className="divide-y divide-gray-200">
             {complaints.map((complaint) => (
               <li key={complaint._id} className="hover:bg-gray-50">
-                <div className="px-6 py-4">
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1">
-                      <div className="flex items-center justify-between mb-2">
-                        <h3 className="text-lg font-medium text-gray-900">
+                <div className="px-4 sm:px-6 py-4">
+                  <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+                    <div className="flex-1 min-w-0">
+                      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-2">
+                        <h3 className="text-base sm:text-lg font-medium text-gray-900 truncate">
                           {complaint.department}
                         </h3>
-                        <span className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(complaint.status)}`}>
+                        <span className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(complaint.status)} whitespace-nowrap inline-block self-start sm:self-center`}>
                           {complaint.status}
                         </span>
                       </div>
                       <p className="mt-2 text-sm text-gray-600">
                         {complaint.description}
                       </p>
-                      <div className="mt-2 flex items-center text-sm text-gray-500">
-                        <MapPin className="h-4 w-4 mr-1" />
-                        {complaint.location?.address || 'Location not available'}
-                        <Calendar className="h-4 w-4 ml-4 mr-1" />
-                        {new Date(complaint.created_at).toLocaleDateString()}
+                      <div className="mt-2 flex flex-col sm:flex-row sm:items-center text-sm text-gray-500 gap-2">
+                        <div className="flex items-center">
+                          <MapPin className="h-4 w-4 mr-1 flex-shrink-0" />
+                          <span className="truncate">{complaint.location?.address || 'Location not available'}</span>
+                        </div>
+                        <div className="flex items-center">
+                          <Calendar className="h-4 w-4 sm:ml-4 mr-1 flex-shrink-0" />
+                          <span>{new Date(complaint.created_at).toLocaleDateString()}</span>
+                        </div>
                       </div>
                       {complaint.ai_metadata && (
                         <div className="mt-2 text-xs text-gray-500">
@@ -200,11 +204,11 @@ const DeptHeadDashboard = () => {
                       )}
                       
                       {/* Action Buttons */}
-                      <div className="mt-4 flex space-x-2">
+                      <div className="mt-4 flex flex-wrap gap-2">
                         {complaint.status === 'Open' && (
                           <button
                             onClick={() => updateComplaintStatus(complaint._id, 'In Progress')}
-                            className="px-3 py-1 bg-blue-600 text-white text-sm rounded hover:bg-blue-700"
+                            className="px-3 py-1.5 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 touch-manipulation"
                           >
                             Mark In Progress
                           </button>
@@ -212,7 +216,7 @@ const DeptHeadDashboard = () => {
                         {complaint.status === 'In Progress' && (
                           <button
                             onClick={() => updateComplaintStatus(complaint._id, 'Resolved')}
-                            className="px-3 py-1 bg-green-600 text-white text-sm rounded hover:bg-green-700"
+                            className="px-3 py-1.5 bg-green-600 text-white text-sm rounded hover:bg-green-700 touch-manipulation"
                           >
                             Mark Resolved
                           </button>
@@ -220,7 +224,7 @@ const DeptHeadDashboard = () => {
                         {(complaint.status === 'Open' || complaint.status === 'In Progress') && (
                           <button
                             onClick={() => updateComplaintStatus(complaint._id, 'Rejected')}
-                            className="px-3 py-1 bg-red-600 text-white text-sm rounded hover:bg-red-700"
+                            className="px-3 py-1.5 bg-red-600 text-white text-sm rounded hover:bg-red-700 touch-manipulation"
                           >
                             Reject
                           </button>
@@ -228,11 +232,11 @@ const DeptHeadDashboard = () => {
                       </div>
                     </div>
                     {complaint.image_url && (
-                      <div className="ml-4">
+                      <div className="sm:ml-4 flex-shrink-0">
                         <img
                           src={`http://localhost:8000/${complaint.image_url}`}
                           alt="Complaint"
-                          className="h-32 w-32 object-cover rounded"
+                          className="h-32 w-32 sm:h-32 sm:w-32 object-cover rounded"
                         />
                       </div>
                     )}

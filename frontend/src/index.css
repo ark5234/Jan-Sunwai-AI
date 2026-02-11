@@ -9,10 +9,75 @@
   --font-sans: 'Inter', sans-serif;
 }
 
+/* Base Styles */
+* {
+  -webkit-tap-highlight-color: rgba(59, 130, 246, 0.1);
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
 body {
   margin: 0;
   min-height: 100vh;
   background-color: #f8fafc; /* slate-50 equivalent */
   color: #1e293b; /* slate-800 equivalent */
   font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  touch-action: manipulation;
+}
+
+/* Mobile Optimizations */
+@media (max-width: 640px) {
+  /* Better touch targets for mobile */
+  button,
+  a,
+  input[type="submit"],
+  input[type="button"],
+  [role="button"] {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  /* Prevent text size adjustment on orientation change */
+  html {
+    -webkit-text-size-adjust: none;
+  }
+}
+
+/* Touch-friendly scrolling */
+.overflow-auto,
+.overflow-scroll {
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Improve touch interactions */
+button,
+a {
+  cursor: pointer;
+  -webkit-tap-highlight-color: rgba(59, 130, 246, 0.2);
+  touch-action: manipulation;
+}
+
+/* Prevent zoom on input focus (iOS) */
+@media (max-width: 640px) {
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  input[type="search"],
+  input[type="tel"],
+  input[type="url"],
+  textarea,
+  select {
+    font-size: 16px !important;
+  }
+}
+
+/* Better image rendering on mobile */
+img {
+  max-width: 100%;
+  height: auto;
 }
