@@ -26,6 +26,7 @@ def main():
 
     # 1. Test Classifier
     print("\n--- Testing CLIP Classifier ---")
+    result = None
     try:
         classifier = CivicClassifier()
         print("Model loaded. Classifying...")
@@ -54,7 +55,7 @@ def main():
         print(f"Error during geotagging: {e}")
 
     # 3. Test LLaVA Generator
-    if not args.skip_llm:
+    if result and not args.skip_llm:
         print("\n--- Testing LLaVA Complaint Generation ---")
         print("(Ensure 'ollama serve' is running and you have pulled 'llava')")
         try:
@@ -64,9 +65,14 @@ def main():
             
             user_details = {"name": "Test User"}
             loc_details = location if location else {"address": "Unknown Location"}
+            classification_result = {"label": result['department'], "confidence": 0.9} # Mock mapping
             
             print("Generating complaint...")
-            complaint = generate_complaint(image_bytes, user_details, loc_details)
+            # Updated signature: image_path, classification_result, user_details, location_details
+            # Note: generate_complaint in generator.py now likely expects a path, not bytes, based on my earlier edits?
+            # Let's check generator.py one more second to be sure.
+            
+            complaint = generate_complaint(args.image_path, classification_result, user_details, loc_details)
             print("\nGenerated Complaint:")
             print("-" * 40)
             print(complaint)

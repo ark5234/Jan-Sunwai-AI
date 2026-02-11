@@ -51,7 +51,7 @@ async def analyze_complaint(
     location = extract_location(image)
     
     # 4. Generate Complaint Text
-    generated_text = generate_complaint(contents, {"name": username}, location)
+    generated_text = generate_complaint(file_path, classification, {"name": username}, location)
     
     return {
         "classification": classification,

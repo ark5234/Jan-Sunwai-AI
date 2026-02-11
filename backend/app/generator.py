@@ -1,35 +1,55 @@
 import ollama
-from PIL import Image
-import io
+import os
 
-def generate_complaint(image_bytes, user_details, location_details):
-    # This assumes the user has Ollama running with llava model pulled
-    # 'ollama pull llava'
+def generate_complaint(image_path, classification_result, user_details, location_details):
+    """
+    Generates a formal government complaint letter using LLaVA.
+    
+    Args:
+        image_path (str): Path to the image file.
+        classification_result (dict): Result from the classifier (label, confidence).
+        user_details (dict): User info (name).
+        location_details (dict): Location info (address, lat/long).
+    """
+    
+    # Validation
+    if not os.path.exists(image_path):
+        return f"Error: Image file not found at {image_path}."
+
+    category = classification_result.get("label", "Civic Issue")
+    user_name = user_details.get("name", "Concerned Citizen")
+    address = location_details.get("address", "New Delhi (Exact location pending)")
     
     prompt = f"""
-    You are an AI assistant for a civic grievance redressal system. 
-    Analyze the provided image which shows a civic issue (like garbage, broken road, waterlogging, etc.).
+    You are a professional assistant for drafting formal government complaints in India.
     
-    Write a formal complaint letter to the Municipal Officer.
+    TASK: Write a formal complaint letter to the relevant Municipal Authority based on the provided image and the verified category: '{category}'.
     
-    User Name: {user_details.get('name', 'Concerned Citizen')}
-    Location: {location_details.get('address', 'Unknown Location')}
+    CONTEXT:
+    - Complainant: {user_name}
+    - Location: {address}
+    - Issue Category: {category}
     
-    The letter should be professional, concise, and state the urgency.
-    Subject line should be clear.
-    Structure:
-    Subject: [Subject]
-    Dear Municipal Officer,
-    [Body describing the issue based on image]
-    [Mention urgency and safety risk if apparent]
-    Please resolve this at the earliest.
+    REQUIREMENTS:
+    - Tone: Strictly formal, polite, and urgent.
+    - Structure: 
+      1. Subject Line: Precise and includes the location.
+      2. Salutation: "To The Municipal Officer,"
+      3. Body: Describe the visual evidence from the image professionally. Explain the public inconvenience caused.
+      4. Location Mention: Explicitly state the location.
+      5. Closing: Request immediate action.
+    - Do NOT use flowery language. Be direct.
     
-    Regards,
-    {user_details.get('name', 'Concerned Citizen')}
+    Write ONLY the letter content. No preamble.
     """
     
     try:
-        response = ollama.generate(model='llava', prompt=prompt, images=[image_bytes])
+        # Call Ollama
+        response = ollama.generate(
+            model='llava', 
+            prompt=prompt, 
+            images=[image_path] 
+        )
         return response['response']
     except Exception as e:
-        return f"Error generating complaint: {str(e)}. Ensure Ollama is running with 'llava' model."
+        return f"System Note: Automated drafting failed ({str(e)}). Please draft manually based on category: {category}."
