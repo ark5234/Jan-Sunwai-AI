@@ -80,12 +80,14 @@ async def create_complaint(
     complaint_dict = complaint.model_dump()
     complaint_dict.update({
         "user_id": user_id,
+        "assigned_to": None,
         "status": ComplaintStatus.OPEN,
         "created_at": datetime.utcnow(),
         "updated_at": datetime.utcnow(),
         "status_history": [{
             "status": ComplaintStatus.OPEN,
             "timestamp": datetime.utcnow(),
+            "changed_by_user_id": user_id,
             "note": "Complaint created"
         }]
     })

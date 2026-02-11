@@ -6,48 +6,44 @@ The following diagram illustrates the relationship between the Users (Citizens/A
 
 ```mermaid
 erDiagram
-    USER {
-        ObjectId _id PK "Unique Identifier"
-        string username "Display Name"
-        string email "Unique Email Address"
-        string password_hash "Hashed Password"
-        string role "Enum: citizen, admin"
-        datetime created_at "Timestamp"
+    user ||--o{ complaint : reports
+    user {
+        string _id PK
+        string username
+        string email
+        string password_hash
+        string role "citizen | admin"
+        datetime created_at
     }
-
-    COMPLAINT {
-        ObjectId _id PK "Unique Identifier"
-        ObjectId user_id FK "Reference to USER"
-        string image_url "Path to stored image"
-        string department "Predicted Dept (e.g., Civil, VBD)"
-        float confidence_score "AI Confidence (0.0 - 1.0)"
-        string description "AI Generated/User Edited text"
-        string status "Enum: Open, In Progress, Resolved, Rejected"
-        object location "GeoJSON Point (type, coordinates)"
-        string address "Human readable address"
-        datetime created_at "Timestamp"
-        datetime updated_at "Last status change time"
+    complaint {
+        string _id PK
+        string user_id FK "Reporter"
+        string assigned_to FK "Admin Handler"
+        string status "Open|InProgress|Resolved"
+        string description
+        string department
+        object location
+        array status_history "Lifecycle Log"
+        datetime created_at
     }
-
-    USER ||--o{ COMPLAINT : reports
+    user ||--o{ complaint : manages
 ```
 
-## Schema Definitions
+## Entity Details
 
 ### 1. User Entity
-Represents a registered user of the system.
-*   **_id**: MongoDB ObjectId.
-*   **full_name**: String, min 3 chars.
-*   **email**: String, valid email format. Unique index.
-*   **password**: String, hashed (bcrypt).
-*   **role**: String, default "citizen". Options: ["citizen", "admin"].
-*   **created_at**: DateTime, default `now()`.
+*   **role**: `citizen` (Default) or `admin`.
+    *   *Citizens* can only create and view their own complaints.
+    *   *Admins* can view all complaints, change status, and be assigned to complaints.
 
 ### 2. Complaint Entity
-Represents a civic grievance filed by a user.
-*   **user_id**: Reference to User.
-*   **image_url**: URL/Path to the uploaded evidence.
-*   **ai_metadata**: Embedded Object.
+Tracks individual grievances.
+*   **assigned_to**: `ObjectId` reference to an Admin User. Nullable.
+*   **status_history**: Array of objects tracking changes.
+    *   `status`: New status.
+    *   `changed_by`: User ID of who changed it.
+    *   `note`: "Issue verified", "Work started", etc.
+    *   `timestamp`: When it happened.
     *   **model_used**: "CLIP-ViT-B/32"
     *   **confidence**: Float.
     *   **tags**: List[String].

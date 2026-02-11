@@ -57,6 +57,13 @@ class AIMetadata(BaseModel):
     detected_department: str
     labels: list[str] = []
 
+class StatusHistoryItem(BaseModel):
+    """Tracks the lifecycle of a complaint"""
+    status: ComplaintStatus
+    timestamp: datetime = Field(default_factory=datetime.utcnow)
+    changed_by_user_id: Optional[str] = Field(None, description="ID of the Admin/User who changed the status")
+    note: Optional[str] = None
+
 class ComplaintBase(BaseModel):
     description: str = Field(..., min_length=10, description="The complaint text (AI generated or edited)")
     department: str
@@ -70,10 +77,11 @@ class ComplaintCreate(ComplaintBase):
 class ComplaintInDB(ComplaintCreate):
     id: Optional[str] = Field(None, alias="_id")
     user_id: str
+    assigned_to: Optional[str] = Field(None, description="ID of the Admin handling this complaint")
     status: ComplaintStatus = ComplaintStatus.OPEN
     created_at: datetime = Field(default_factory=datetime.utcnow)
     updated_at: datetime = Field(default_factory=datetime.utcnow)
-    status_history: list[dict] = [] # To track changes
+    status_history: list[StatusHistoryItem] = [] # To track changes
 
     class Config:
         populate_by_name = True
@@ -82,9 +90,11 @@ class ComplaintInDB(ComplaintCreate):
 class ComplaintResponse(ComplaintCreate):
     id: Optional[str] = Field(None, alias="_id")
     user_id: str
+    assigned_to: Optional[str]
     status: ComplaintStatus
     created_at: datetime
     updated_at: datetime
+    status_history: list[StatusHistoryItem]
 
     class Config:
         populate_by_name = True
