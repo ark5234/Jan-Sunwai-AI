@@ -10,9 +10,11 @@ sys.path.append(str(backend_dir))
 
 from httpx import AsyncClient, ASGITransport
 from main import app 
+from app.database import connect_to_mongo, close_mongo_connection
 
 # Mock Data
 TEST_USERNAME = "test_integration_user"
+
 
 def create_dummy_image():
     """Create a dummy JPG file in memory"""
@@ -22,28 +24,36 @@ def create_dummy_image():
     return data
 
 async def run_tests():
-    # Configure Async Client
-    transport = ASGITransport(app=app)
-    async with AsyncClient(transport=transport, base_url="http://test") as client:
-        
-        print("\n[INFO] Testing Root Endpoint...")
-        response = await client.get("/")
-        assert response.status_code == 200
-        assert response.json() == {"message": "Jan-Sunwai AI Backend Online"}
-        print("Root Check Passed.")
+    # Initialize DB for tests
+    await connect_to_mongo()
 
-        print("\n[INFO] Testing /analyze endpoint (Integration Workflow)...")
-        img_data = create_dummy_image()
-        files = {"file": ("test.jpg", img_data, "image/jpeg")}
-        data = {"username": TEST_USERNAME}
-        
-        # Expect 401 or 404 because user doesn't exist, but ensure connection works
-        response = await client.post("/analyze", files=files, data=data)
-        
-        print(f"Response Code: {response.status_code}")
-        print(f"Response Body: {response.json()}")
+    try:
+        # Configure Async Client
+        transport = ASGITransport(app=app)
+        async with AsyncClient(transport=transport, base_url="http://test") as client:
+            
+            print("\n[INFO] Testing Root Endpoint...")
+            response = await client.get("/")
+            assert response.status_code == 200
+            assert response.json() == {"message": "Jan-Sunwai AI Backend Online"}
+            print("Root Check Passed.")
 
-        assert response.status_code in [200, 401, 404]
+            print("\n[INFO] Testing /analyze endpoint (Integration Workflow)...")
+            img_data = create_dummy_image()
+            files = {"file": ("test.jpg", img_data, "image/jpeg")}
+            data = {"username": TEST_USERNAME}
+            
+            # Expect 401 or 404 because user doesn't exist, but ensure connection works
+            # Or 200 if we mocked the user, but for now we just want to ensure NO CRASH.
+            response = await client.post("/analyze", files=files, data=data)
+            
+            print(f"Response Code: {response.status_code}")
+            print(f"Response Body: {response.json()}")
+
+            assert response.status_code in [200, 401, 404]
+    
+    finally:
+        await close_mongo_connection()
 
 if __name__ == "__main__":
     asyncio.run(run_tests())

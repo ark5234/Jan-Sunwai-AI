@@ -1,10 +1,13 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Camera, Home, FileText, Menu, X } from 'lucide-react';
+import { Camera, Home, FileText, Menu, X, LogOut, User } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = React.useState(false);
   const location = useLocation();
+  const { user, logout } = useAuth();
+
 
   const isActive = (path) => location.pathname === path ? "bg-primary text-white" : "text-slate-600 hover:bg-slate-100";
 
@@ -29,6 +32,29 @@ export default function Navbar() {
             <Link to="/results" className={`px-3 py-2 rounded-md text-sm font-medium ${isActive('/results')}`}>
               Track Status
             </Link>
+
+             <div className="h-6 w-px bg-slate-300 mx-2"></div>
+
+             {user ? (
+               <div className="flex items-center space-x-4">
+                  <div className="flex items-center text-slate-700 text-sm font-medium">
+                      <User className="w-4 h-4 mr-2" />
+                      {user.username}
+                  </div>
+                  <button onClick={logout} className="text-slate-500 hover:text-red-600 transition" title="Logout">
+                      <LogOut className="w-5 h-5" />
+                  </button>
+               </div>
+            ) : (
+                <div className="flex items-center space-x-2">
+                    <Link to="/login" className="px-3 py-2 rounded-md text-sm font-medium text-slate-600 hover:bg-slate-100 transition">
+                        Log In
+                    </Link>
+                    <Link to="/register" className="bg-primary text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition shadow-sm">
+                        Sign Up
+                    </Link>
+                </div>
+            )}
           </div>
 
           <div className="-mr-2 flex items-center md:hidden">

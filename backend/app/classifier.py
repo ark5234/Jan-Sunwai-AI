@@ -111,16 +111,16 @@ class CivicClassifier:
             
             return {
                 "department": self.label_map[predicted_label],
-                "description": predicted_label,
-                "confidence": f"{confidence.item() * 100:.2f}%"
+                "label": predicted_label,
+                "confidence": float(confidence.item())
             }
         except Exception as e:
             # In case of any processing error, return a generic failure rather than crashing
             print(f"Classification Error: {str(e)}")
             return {
                 "department": "Unknown",
-                "description": "Could not classify image",
-                "confidence": "0.00%",
+                "label": "Could not classify image",
+                "confidence": 0.0,
                 "error": str(e)
             }
 

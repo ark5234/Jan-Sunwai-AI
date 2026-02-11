@@ -2,16 +2,40 @@ import React, { useState } from 'react';
 import ImageUpload from '../components/ImageUpload';
 import { ArrowRight, Loader2, AlertCircle } from 'lucide-react';
 import useAnalyze from '../hooks/useAnalyze';
+import { useAuth } from '../context/AuthContext';
+import { Link } from 'react-router-dom';
 
 export default function Analyze() {
   const [selectedImage, setSelectedImage] = useState(null);
   const { analyzeImage, loading, error } = useAnalyze();
+  const { user } = useAuth();
 
   const handleAnalysis = async () => {
     if (!selectedImage) return;
-    // Default username for now
-    await analyzeImage(selectedImage, "Vikram Singh");
+    
+    if (!user) {
+        alert("Please login to submit a complaint");
+        // Or handle this better URL direction
+        return;
+    }
+
+    await analyzeImage(selectedImage, user.username);
   };
+
+  if (!user) {
+      return (
+          <div className="max-w-md mx-auto mt-20 text-center">
+              <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-6">
+                <AlertCircle className="w-12 h-12 text-yellow-600 mx-auto mb-4" />
+                <h2 className="text-xl font-bold text-slate-800 mb-2">Login Required</h2>
+                <p className="text-slate-600 mb-6">You must be registered to file a complaint.</p>
+                <Link to="/register" className="bg-primary text-white px-6 py-2 rounded-lg font-medium hover:bg-blue-700">
+                    Register / Login
+                </Link>
+              </div>
+          </div>
+      )
+  }
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -19,6 +43,7 @@ export default function Analyze() {
         <div className="text-center mb-10">
           <h1 className="text-3xl font-bold text-slate-900">Upload Evidence</h1>
           <p className="mt-4 text-lg text-slate-600">
+            Welcome, <span className="font-semibold text-primary">{user.username}</span>.
             Our AI will detect the issue type, location, and severity automatically.
           </p>
         </div>
