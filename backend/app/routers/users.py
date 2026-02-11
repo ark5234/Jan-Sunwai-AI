@@ -1,8 +1,11 @@
-from fastapi import APIRouter, HTTPException, Body
+from fastapi import APIRouter, HTTPException, Body, Depends
+from fastapi.security import OAuth2PasswordRequestForm
 from app.database import get_database
 from app.schemas import UserCreate, UserResponse, UserInDB
+from app.auth import create_access_token, get_current_user
 from passlib.context import CryptContext
 from bson import ObjectId
+from datetime import timedelta
 from datetime import datetime
 
 router = APIRouter()
@@ -14,7 +17,7 @@ def get_password_hash(password):
 def verify_password(plain_password, hashed_password):
     return pwd_context.verify(plain_password, hashed_password)
 
-@router.post("/register", response_model=UserResponse)
+@router.post("/register")
 async def register_user(user: UserCreate = Body(...)):
     db = get_database()
     
@@ -42,14 +45,42 @@ async def register_user(user: UserCreate = Body(...)):
     # Fix ObjectId and ensure response matches schema
     created_user["_id"] = str(created_user["_id"])
     
-    return created_user
+    # 4. Generate access token for auto-login
+    access_token_expires = timedelta(minutes=60 * 24)
+    access_token = create_access_token(
+        data={"sub": created_user["username"], "role": created_user.get("role", "citizen")},
+        expires_delta=access_token_expires
+    )
+    
+    # Return token along with user info (similar to login)
+    return {
+        "access_token": access_token,
+        "token_type": "bearer",
+        "username": created_user["username"],
+        "role": created_user.get("role", "citizen")
+    }
 
 @router.post("/login")
-async def login(username: str = Body(...), password: str = Body(...)):
+async def login(form_data: OAuth2PasswordRequestForm = Depends()):
     db = get_database()
-    user = await db["users"].find_one({"username": username})
+    user = await db["users"].find_one({"username": form_data.username})
     
-    if not user or not verify_password(password, user["password"]):
+    if not user or not verify_password(form_data.password, user["password"]):
         raise HTTPException(status_code=401, detail="Invalid username or password")
         
-    return {"message": "Login successful", "username": user["username"], "role": user["role"]}
+    access_token_expires = timedelta(minutes=60 * 24)
+    access_token = create_access_token(
+        data={"sub": user["username"], "role": user.get("role", "citizen")},
+        expires_delta=access_token_expires
+    )
+    
+    return {
+        "access_token": access_token, 
+        "token_type": "bearer",
+        "username": user["username"], 
+        "role": user.get("role", "citizen")
+    }
+
+@router.get("/me", response_model=UserResponse)
+async def read_users_me(current_user: dict = Depends(get_current_user)):
+    return current_user

@@ -1,9 +1,10 @@
-from fastapi import APIRouter, File, UploadFile, Form, HTTPException, Query, Body
+from fastapi import APIRouter, File, UploadFile, Form, HTTPException, Query, Body, Depends
 from app.classifier import CivicClassifier
 from app.geotagging import extract_location
 from app.generator import generate_complaint
 from app.database import get_database
 from app.services.storage import storage_service
+from app.auth import get_current_user
 from app.schemas import (
     ComplaintCreate, 
     ComplaintResponse, 
@@ -27,13 +28,10 @@ def fix_id(doc):
 @router.post("/analyze")
 async def analyze_complaint(
     file: UploadFile = File(...),
-    username: str = Form(...)
+    current_user: dict = Depends(get_current_user)
 ):
-    # Authorization Check: Ensure user exists
-    db = get_database()
-    user = await db["users"].find_one({"username": username})
-    if not user:
-        raise HTTPException(status_code=401, detail="User not registered. Please sign up first.")
+    # Authorization handled by Depends(get_current_user)
+    username = current_user["username"]
 
     # 1. Save File Securely (New: Feb 06 Requirement)
     # The file pointer is at the start here.
@@ -65,16 +63,11 @@ async def analyze_complaint(
 @router.post("/complaints", response_model=ComplaintResponse)
 async def create_complaint(
     complaint: ComplaintCreate, 
-    username: str = Query(..., description="Username of the submitter")
+    current_user: dict = Depends(get_current_user)
 ):
     db = get_database()
     
-    # 1. Validate User
-    user = await db["users"].find_one({"username": username})
-    if not user:
-        raise HTTPException(status_code=404, detail="User not found")
-    
-    user_id = str(user["_id"])
+    user_id = str(current_user["_id"])
     
     # 2. Prepare Data
     complaint_dict = complaint.model_dump()

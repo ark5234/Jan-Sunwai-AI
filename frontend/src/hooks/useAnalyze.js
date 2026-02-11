@@ -13,14 +13,33 @@ export default function useAnalyze() {
     setLoading(true);
     setError(null);
 
+    // Get Token
+    const storedUser = localStorage.getItem('jan_sunwai_user');
+    let token = null;
+    if (storedUser) {
+        try {
+            const parsed = JSON.parse(storedUser);
+            token = parsed.access_token;
+        } catch (e) {
+            console.error("Failed to parse user token", e);
+        }
+    }
+
+    if (!token) {
+        setError("Session invalid or expired. Please log out and log back in to get a new token.");
+        setLoading(false);
+        return;
+    }
+
     const formData = new FormData();
     formData.append('file', file);
-    formData.append('username', username);
-
+    // Username is extracted from Token in backend now
+    
     try {
       const response = await axios.post(`${API_BASE_URL}/analyze`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
+          'Authorization': `Bearer ${token}`
         },
       });
       
@@ -29,7 +48,13 @@ export default function useAnalyze() {
       
     } catch (err) {
         console.error("Analysis failed:", err);
-        setError(err.response?.data?.detail || "Failed to analyze image. Please try again.");
+        if (err.response?.status === 401) {
+            setError("Session expired. Please log out and log back in.");
+            // Clear invalid session
+            localStorage.removeItem('jan_sunwai_user');
+        } else {
+            setError(err.response?.data?.detail || "Failed to analyze image. Please try again.");
+        }
     } finally {
       setLoading(false);
     }

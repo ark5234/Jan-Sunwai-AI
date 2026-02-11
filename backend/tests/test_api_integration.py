@@ -11,10 +11,20 @@ sys.path.append(str(backend_dir))
 from httpx import AsyncClient, ASGITransport
 from main import app 
 from app.database import connect_to_mongo, close_mongo_connection
+from app.auth import get_current_user  # Import the dependency
 
 # Mock Data
 TEST_USERNAME = "test_integration_user"
 
+# Mock the dependency
+async def override_get_current_user():
+    return {
+        "username": TEST_USERNAME,
+        "_id": "mockbackendid12345",
+        "role": "citizen"
+    }
+
+app.dependency_overrides[get_current_user] = override_get_current_user
 
 def create_dummy_image():
     """Create a dummy JPG file in memory"""
@@ -41,16 +51,16 @@ async def run_tests():
             print("\n[INFO] Testing /analyze endpoint (Integration Workflow)...")
             img_data = create_dummy_image()
             files = {"file": ("test.jpg", img_data, "image/jpeg")}
-            data = {"username": TEST_USERNAME}
+            # Removed explicit username data, now handled by dependency override
+            data = {} 
             
-            # Expect 401 or 404 because user doesn't exist, but ensure connection works
-            # Or 200 if we mocked the user, but for now we just want to ensure NO CRASH.
+            # Expect 200 because we overrode the auth dependency to return a valid user
             response = await client.post("/analyze", files=files, data=data)
             
             print(f"Response Code: {response.status_code}")
             print(f"Response Body: {response.json()}")
 
-            assert response.status_code in [200, 401, 404]
+            assert response.status_code == 200
     
     finally:
         await close_mongo_connection()

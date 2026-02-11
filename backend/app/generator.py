@@ -23,7 +23,7 @@ def generate_complaint(image_path, classification_result, user_details, location
     prompt = f"""
     You are a professional assistant for drafting formal government complaints in India.
     
-    TASK: Write a formal complaint letter to the relevant Municipal Authority based on the provided image and the verified category: '{category}'.
+    TASK: Write a BRIEF formal complaint letter (maximum 150 words) to the Municipal Authority based on the image and category: '{category}'.
     
     CONTEXT:
     - Complainant: {user_name}
@@ -31,14 +31,15 @@ def generate_complaint(image_path, classification_result, user_details, location
     - Issue Category: {category}
     
     REQUIREMENTS:
-    - Tone: Strictly formal, polite, and urgent.
+    - Length: Maximum 3-4 short paragraphs (150 words total)
+    - Tone: Formal, polite, urgent
     - Structure: 
-      1. Subject Line: Precise and includes the location.
+      1. Subject Line (one line)
       2. Salutation: "To The Municipal Officer,"
-      3. Body: Describe the visual evidence from the image professionally. Explain the public inconvenience caused.
-      4. Location Mention: Explicitly state the location.
-      5. Closing: Request immediate action.
-    - Do NOT use flowery language. Be direct.
+      3. Issue Description: 2-3 sentences describing what you see in the image
+      4. Impact: 1-2 sentences on public inconvenience
+      5. Action Request: 1 sentence asking for immediate resolution
+    - Be CONCISE. No elaborate descriptions. Direct and actionable.
     
     Write ONLY the letter content. No preamble.
     """

@@ -27,10 +27,18 @@ export default function Login() {
     setLoading(true);
 
     try {
-      // Backend expects: { username: "...", password: "..." }
-      const response = await axios.post(`${API_BASE_URL}/users/login`, formData);
+      // Backend expects: application/x-www-form-urlencoded
+      const params = new URLSearchParams();
+      params.append('username', formData.username);
+      params.append('password', formData.password);
+
+      const response = await axios.post(`${API_BASE_URL}/users/login`, params, {
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        }
+      });
       
-      // Response data: { message: "...", username: "...", role: "..." }
+      // Response data: { access_token: "...", token_type: "bearer", username: "...", role: "..." }
       // We store this in our AuthContext
       login(response.data);
       

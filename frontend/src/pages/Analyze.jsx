@@ -22,15 +22,15 @@ export default function Analyze() {
     await analyzeImage(selectedImage, user.username);
   };
 
-  if (!user) {
+  if (!user || !user.access_token) {
       return (
           <div className="max-w-md mx-auto mt-20 text-center">
               <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-6">
                 <AlertCircle className="w-12 h-12 text-yellow-600 mx-auto mb-4" />
                 <h2 className="text-xl font-bold text-slate-800 mb-2">Login Required</h2>
-                <p className="text-slate-600 mb-6">You must be registered to file a complaint.</p>
-                <Link to="/register" className="bg-primary text-white px-6 py-2 rounded-lg font-medium hover:bg-blue-700">
-                    Register / Login
+                <p className="text-slate-600 mb-6">You must be logged in with a valid session to file a complaint.</p>
+                <Link to="/login" className="bg-primary text-white px-6 py-2 rounded-lg font-medium hover:bg-blue-700">
+                    Login
                 </Link>
               </div>
           </div>

@@ -10,7 +10,20 @@ export const AuthProvider = ({ children }) => {
     // Check localStorage on load
     const storedUser = localStorage.getItem('jan_sunwai_user');
     if (storedUser) {
-      setUser(JSON.parse(storedUser));
+      try {
+        const parsed = JSON.parse(storedUser);
+        // Validate that the stored user has an access_token (JWT implementation)
+        if (parsed && parsed.access_token) {
+          setUser(parsed);
+        } else {
+          // Old session format, clear it
+          console.warn('Invalid session format detected. Please log in again.');
+          localStorage.removeItem('jan_sunwai_user');
+        }
+      } catch (e) {
+        console.error('Failed to parse stored user', e);
+        localStorage.removeItem('jan_sunwai_user');
+      }
     }
     setLoading(false);
   }, []);
