@@ -90,6 +90,7 @@ export default function Result() {
 
   const confidence = (classification.confidence * 100).toFixed(1);
   const isHighConfidence = classification.confidence > 0.8;
+  const isInvalid = ['Invalid Content', 'Uncertain'].includes(classification.department);
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -139,7 +140,9 @@ export default function Result() {
                 <div className="flex items-start gap-3 pl-11">
                   <div className="flex-1">
                     <p className="text-xs text-slate-500 uppercase tracking-wide font-semibold mb-1">Assigned Department</p>
-                    <span className="inline-block px-3 py-1.5 text-sm font-bold text-white bg-primary rounded-full shadow-sm">
+                    <span className={`inline-block px-3 py-1.5 text-sm font-bold text-white rounded-full shadow-sm ${
+                      isInvalid ? 'bg-red-500' : 'bg-primary'
+                    }`}>
                       {classification.department}
                     </span>
                   </div>
@@ -206,10 +209,13 @@ export default function Result() {
                     </span>
                     <button 
                         onClick={handleSubmit}
-                        disabled={submitting}
-                        className="px-4 py-2 bg-primary text-white text-sm font-medium rounded hover:bg-blue-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                        disabled={submitting || isInvalid}
+                        className={`px-4 py-2 text-white text-sm font-medium rounded transition disabled:opacity-50 disabled:cursor-not-allowed ${
+                          isInvalid ? 'bg-slate-400' : 'bg-primary hover:bg-blue-700'
+                        }`}
+                        title={isInvalid ? "Cannot submit invalid complaint" : "Submit to authorities"}
                     >
-                        {submitting ? 'Submitting...' : 'Submit Complaint'}
+                        {isInvalid ? 'Invalid Complaint' : (submitting ? 'Submitting...' : 'Submit Complaint')}
                     </button>
                 </div>
             </div>

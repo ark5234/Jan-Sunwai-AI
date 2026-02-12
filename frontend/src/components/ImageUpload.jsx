@@ -1,10 +1,20 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { Upload, X, FileImage, AlertCircle } from 'lucide-react';
 
 export default function ImageUpload({ onImageSelect }) {
   const [dragActive, setDragActive] = useState(false);
   const [preview, setPreview] = useState(null);
   const [error, setError] = useState(null);
+  const [imageLoaded, setImageLoaded] = useState(false);
+
+  // Cleanup object URL on unmount
+  useEffect(() => {
+    return () => {
+      if (preview) {
+        URL.revokeObjectURL(preview);
+      }
+    };
+  }, [preview]);
 
   const handleDrag = useCallback((e) => {
     e.preventDefault();
@@ -54,17 +64,28 @@ export default function ImageUpload({ onImageSelect }) {
   };
 
   const handleFile = (file) => {
+    setImageLoaded(false);
     const objectUrl = URL.createObjectURL(file);
     setPreview(objectUrl);
     onImageSelect(file);
   };
 
   const clearImage = (e) => {
-    e.stopPropagation(); // Prevent triggering the dropzone click
+    e.stopPropagation();
+    e.preventDefault();
     setPreview(null);
     onImageSelect(null);
+    setError(null);
+    setImageLoaded(false);
     // Revoke object URL to avoid memory leaks
-    if (preview) URL.revokeObjectURL(preview);
+    if (preview) {
+      URL.revokeObjectURL(preview);
+    }
+    // Reset file input
+    const fileInput = document.getElementById('file-upload');
+    if (fileInput) {
+      fileInput.value = '';
+    }
   };
 
   return (
@@ -89,22 +110,36 @@ export default function ImageUpload({ onImageSelect }) {
         />
 
         {preview ? (
-          <div className="relative w-full h-full p-2 group">
+          <div className="relative w-full h-full flex items-center justify-center p-4 group bg-slate-100">
+            {!imageLoaded && (
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+              </div>
+            )}
             <img 
               src={preview} 
               alt="Upload Preview" 
-              className="w-full h-full object-contain rounded"
+              className="max-w-full max-h-full object-contain rounded"
+              style={{ pointerEvents: 'none' }}
+              onLoad={() => setImageLoaded(true)}
+              onError={(e) => {
+                console.error('Image load error:', e);
+                setError('Failed to load image preview');
+                setPreview(null);
+                setImageLoaded(false);
+              }}
             />
             <button 
               onClick={clearImage}
-              className="absolute top-2 right-2 p-2 bg-red-500 rounded-full shadow-lg text-white hover:bg-red-600 transition-all z-10"
+              type="button"
+              className="absolute top-4 right-4 p-2 bg-red-500 rounded-full shadow-lg text-white hover:bg-red-600 transition-all z-20 hover:scale-110"
               title="Remove image"
             >
               <X className="w-5 h-5" />
             </button>
-            <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-40 transition-all rounded flex items-center justify-center">
-                <span className="opacity-0 group-hover:opacity-100 inline-block px-4 py-2 text-sm font-medium text-white bg-primary rounded-lg shadow-lg transition-opacity">
-                    <Upload className="w-4 h-4 inline mr-2" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity rounded pointer-events-none flex items-end justify-center pb-6">
+                <span className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-primary/90 backdrop-blur-sm rounded-lg shadow-lg">
+                    <Upload className="w-4 h-4" />
                     Click to Change Image
                 </span>
             </div>
