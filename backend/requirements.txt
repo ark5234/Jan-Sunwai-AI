@@ -13,3 +13,6 @@ email-validator
 pytest
 python-jose[cryptography]
 passlib[bcrypt]
+scikit-learn
+joblib
+numpy

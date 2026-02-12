@@ -81,6 +81,7 @@ class ComplaintInDB(ComplaintCreate):
     id: Optional[str] = Field(None, alias="_id")
     user_id: str
     assigned_to: Optional[str] = Field(None, description="ID of the Admin handling this complaint")
+    authority_id: Optional[str] = Field(None, description="ID of the Authority Organization")
     status: ComplaintStatus = ComplaintStatus.OPEN
     created_at: datetime = Field(default_factory=datetime.utcnow)
     updated_at: datetime = Field(default_factory=datetime.utcnow)
@@ -94,6 +95,7 @@ class ComplaintResponse(ComplaintCreate):
     id: Optional[str] = Field(None, alias="_id")
     user_id: str
     assigned_to: Optional[str]
+    authority_id: Optional[str]
     status: ComplaintStatus
     created_at: datetime
     updated_at: datetime

@@ -11,6 +11,7 @@ from app.schemas import (
     ComplaintStatus,
     UserRole
 )
+from app.authorities import get_authority_id_from_dept_string
 from PIL import Image
 from typing import List, Optional
 from datetime import datetime
@@ -50,7 +51,15 @@ async def analyze_complaint(
     location = extract_location(image)
     
     # 4. Generate Complaint Text
-    generated_text = generate_complaint(file_path, classification, {"name": username}, location)
+    # Only generate if the classification is valid
+    if classification.get("is_valid", True):
+        generated_text = generate_complaint(file_path, classification, {"name": username}, location)
+    else:
+        generated_text = (
+            f"AI Analysis Result: {classification['label']}.\n\n"
+            "This image does not appear to show a valid civic grievance relevant to municipal authorities. "
+            "Please upload a photo of a civic issue (e.g., pothole, garbage, broken light) to generate a formal complaint."
+        )
     
     return {
         "classification": classification,
@@ -72,9 +81,14 @@ async def create_complaint(
     
     # 2. Prepare Data
     complaint_dict = complaint.model_dump()
+    
+    # Resolve Authority ID from Department String
+    authority_id = get_authority_id_from_dept_string(complaint.department)
+
     complaint_dict.update({
         "user_id": user_id,
         "assigned_to": None,
+        "authority_id": authority_id,
         "status": ComplaintStatus.OPEN,
         "created_at": datetime.utcnow(),
         "updated_at": datetime.utcnow(),
