@@ -200,8 +200,7 @@ class CivicClassifier:
 
             # --- ZERO SHOT FALLBACK (Legacy) ---
             # 2. Model Inference
-            # Combine legitimate labels with negative labels
- for "Open Set" classification simulation
+            # Combine legitimate labels with negative labels for "Open Set" classification simulation
             all_labels = self.labels + self.negative_labels
             
             inputs = self.processor(text=all_labels, images=image, return_tensors="pt", padding=True) # type: ignore
