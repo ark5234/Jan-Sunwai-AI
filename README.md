@@ -6,7 +6,7 @@ civic-vision-ai is a cutting-edge platform designed to streamline civic grievanc
 
 ---
 
-## 📋 Table of Contents
+## Table of Contents
 
 - [Overview](#overview)
 - [Key Features](#key-features)
@@ -27,14 +27,14 @@ Managing civic grievances often suffers from manual data entry errors, misclassi
 
 ## Key Features
 
--   ** Zero-Shot Image Classification**: Utilizes the OpenAI CLIP model to categorize images into civic departments (Sanitation, Roads, Electricity, etc.) without training on specific datasets.
--   ** Intelligent Geotagging**: Automatically extracts EXIF GPS data and converts coordinates into readable addresses.
--   ** AI-Powered Drafting**: Uses LLaVA (via Ollama) to generate professional, formal complaint letters based on image analysis.
--   ** Role-Based Access Control**: Secure JWT authentication supporting three user roles:
+-   **Zero-Shot Image Classification**: Utilizes the OpenAI CLIP model to categorize images into civic departments (Sanitation, Roads, Electricity, etc.) without training on specific datasets.
+-   **Intelligent Geotagging**: Automatically extracts EXIF GPS data and converts coordinates into readable addresses.
+-   **AI-Powered Drafting**: Uses LLaVA (via Ollama) to generate professional, formal complaint letters based on image analysis.
+-   **Role-Based Access Control**: Secure JWT authentication supporting three user roles:
     -   **Citizen**: Report issues, track status.
     -   **Department Head**: View and manage complaints for their specific department.
     -   **Admin**: System-wide oversight and user management.
--   **📱 Fully Responsive**: Optimized UI/UX for Mobile, Tablet, and Desktop using Tailwind CSS.
+-   **Fully Responsive**: Optimized UI/UX for Mobile, Tablet, and Desktop using Tailwind CSS.
 
 ## Tech Stack
 
