@@ -68,7 +68,7 @@ def main():
             
             print(f"[{i+1}/{sample_size}] {filename}")
             print(f"   📂 Source: {ground_truth_hint}")
-            print(f"   🤖 Pred:   {prediction['department']} ({prediction['description']})")
+            print(f"   🤖 Pred:   {prediction['department']} ({prediction.get('label', prediction.get('description', 'Unknown'))})")
             print(f"   📊 Conf:   {prediction['confidence']}")
             print("-" * 40)
             

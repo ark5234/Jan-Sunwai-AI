@@ -27,3 +27,10 @@ backend/uploads/
 TEST_ACCOUNTS_CREDENTIALS.txt
 backend/create_test_users.py
 create_test_users.py
+
+# Sorted dataset
+sorted_dataset/
+backend/sorted_dataset/
+**/sorted_dataset/
+sorted_dataset
+
