@@ -19,3 +19,4 @@ numpy
 cleanvision
 pandas
 tqdm
+python-dotenv

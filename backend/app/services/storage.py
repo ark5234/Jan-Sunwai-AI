@@ -4,7 +4,8 @@ import uuid
 from fastapi import UploadFile, HTTPException
 from pathlib import Path
 
-UPLOAD_DIR = Path("backend/uploads")
+BASE_DIR = Path(__file__).resolve().parents[2]
+UPLOAD_DIR = BASE_DIR / "uploads"
 # 10 MB Limit
 MAX_FILE_SIZE = 10 * 1024 * 1024
 ALLOWED_EXTENSIONS = {".jpg", ".jpeg", ".png"}
@@ -75,9 +76,14 @@ class StorageService:
         finally:
             await file.seek(0) # Reset cursor if needed elsewhere (though typically consumed here)
             
-        # Return path relative to backend root, or just the filename depending on how we serve it.
-        # Returning relative path for now.
-        return str(file_path).replace("\\", "/")
+        # Return URL-safe relative path for frontend/API
+        return f"uploads/{unique_filename}"
+
+    def resolve_path(self, relative_or_absolute_path: str) -> str:
+        path = Path(relative_or_absolute_path)
+        if path.is_absolute():
+            return str(path)
+        return str((BASE_DIR / path).resolve())
 
     def delete_file(self, file_path: str):
         path = Path(file_path)

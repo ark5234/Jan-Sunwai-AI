@@ -10,6 +10,7 @@ import Login from './pages/Login';
 import CitizenDashboard from './pages/CitizenDashboard';
 import DeptHeadDashboard from './pages/DeptHeadDashboard';
 import AdminDashboard from './pages/AdminDashboard';
+import TriageReview from './pages/TriageReview';
 
 // Protected Route Component
 function ProtectedRoute({ children, allowedRoles }) {
@@ -89,6 +90,14 @@ function App() {
                 element={
                   <ProtectedRoute allowedRoles={['admin']}>
                     <AdminDashboard />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/triage-review" 
+                element={
+                  <ProtectedRoute allowedRoles={['admin']}>
+                    <TriageReview />
                   </ProtectedRoute>
                 } 
               />

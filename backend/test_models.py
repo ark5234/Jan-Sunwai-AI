@@ -33,7 +33,7 @@ def main():
         result = classifier.classify(image)
         print("\nClassification Result:")
         print(f"Department: {result['department']}")
-        print(f"Description: {result['description']}")
+        print(f"Description: {result.get('label', 'N/A')}")
         print(f"Confidence: {result['confidence']}")
     except Exception as e:
         print(f"Error during classification: {e}")

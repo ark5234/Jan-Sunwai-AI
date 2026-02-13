@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
+import { Link } from 'react-router-dom';
 import { FileText, MapPin, Calendar, Filter, Users, Building } from 'lucide-react';
 import axios from 'axios';
 
@@ -97,6 +98,14 @@ const AdminDashboard = () => {
       <div className="mb-6 sm:mb-8">
         <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Admin Dashboard</h1>
         <p className="mt-2 text-sm sm:text-base text-gray-600">System-wide complaint management and oversight</p>
+        <div className="mt-4">
+          <Link
+            to="/triage-review"
+            className="inline-flex items-center px-4 py-2 bg-indigo-600 text-white text-sm rounded-md hover:bg-indigo-700"
+          >
+            Open Triage Human Review
+          </Link>
+        </div>
       </div>
 
       {/* Stats Cards */}
@@ -231,15 +240,15 @@ const AdminDashboard = () => {
                       </p>
                       <div className="mt-2 flex flex-col sm:flex-row sm:items-center text-sm text-gray-500 gap-2">
                         <div className="flex items-center">
-                          <MapPin className="h-4 w-4 mr-1 flex-shrink-0" />
+                          <MapPin className="h-4 w-4 mr-1 shrink-0" />
                           <span className="truncate">{complaint.location?.address || 'Location not available'}</span>
                         </div>
                         <div className="flex items-center">
-                          <Calendar className="h-4 w-4 sm:ml-4 mr-1 flex-shrink-0" />
+                          <Calendar className="h-4 w-4 sm:ml-4 mr-1 shrink-0" />
                           <span>{new Date(complaint.created_at).toLocaleDateString()}</span>
                         </div>
                         <div className="flex items-center">
-                          <Users className="h-4 w-4 sm:ml-4 mr-1 flex-shrink-0" />
+                          <Users className="h-4 w-4 sm:ml-4 mr-1 shrink-0" />
                           <span className="truncate">User ID: {complaint.user_id?.substring(0, 8)}...</span>
                         </div>
                       </div>

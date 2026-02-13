@@ -82,6 +82,8 @@ class ComplaintInDB(ComplaintCreate):
     user_id: str
     assigned_to: Optional[str] = Field(None, description="ID of the Admin handling this complaint")
     authority_id: Optional[str] = Field(None, description="ID of the Authority Organization")
+    routing_confidence: Optional[float] = Field(None, ge=0.0, le=1.0)
+    escalation_parent_authority_id: Optional[str] = None
     status: ComplaintStatus = ComplaintStatus.OPEN
     created_at: datetime = Field(default_factory=datetime.utcnow)
     updated_at: datetime = Field(default_factory=datetime.utcnow)
@@ -101,6 +103,8 @@ class ComplaintResponse(ComplaintBase):
     
     assigned_to: Optional[str] = None
     authority_id: Optional[str] = None
+    routing_confidence: Optional[float] = None
+    escalation_parent_authority_id: Optional[str] = None
     status: ComplaintStatus
     created_at: datetime
     updated_at: Optional[datetime] = None

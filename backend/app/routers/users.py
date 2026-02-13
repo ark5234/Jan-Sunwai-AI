@@ -1,8 +1,9 @@
 from fastapi import APIRouter, HTTPException, Body, Depends
 from fastapi.security import OAuth2PasswordRequestForm
 from app.database import get_database
-from app.schemas import UserCreate, UserResponse, UserInDB
+from app.schemas import UserCreate, UserResponse, UserRole
 from app.auth import create_access_token, get_current_user
+from app.config import settings
 from passlib.context import CryptContext
 from bson import ObjectId
 from datetime import timedelta
@@ -20,6 +21,9 @@ def verify_password(plain_password, hashed_password):
 @router.post("/register")
 async def register_user(user: UserCreate = Body(...)):
     db = get_database()
+
+    if user.role != UserRole.CITIZEN:
+        raise HTTPException(status_code=403, detail="Self-registration is allowed only for citizen role")
     
     # 1. Check if user already exists
     existing_user = await db["users"].find_one({"username": user.username})
@@ -35,6 +39,7 @@ async def register_user(user: UserCreate = Body(...)):
     
     # 3. Create User Document
     user_doc = user.model_dump()
+    user_doc["role"] = UserRole.CITIZEN
     user_doc["password"] = hashed_password
     user_doc["created_at"] = datetime.utcnow() # Add creation timestamp
     
@@ -46,7 +51,7 @@ async def register_user(user: UserCreate = Body(...)):
     created_user["_id"] = str(created_user["_id"])
     
     # 4. Generate access token for auto-login
-    access_token_expires = timedelta(minutes=60 * 24)
+    access_token_expires = timedelta(minutes=settings.access_token_expire_minutes)
     access_token = create_access_token(
         data={"sub": created_user["username"], "role": created_user.get("role", "citizen")},
         expires_delta=access_token_expires
@@ -69,7 +74,7 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends()):
     if not user or not verify_password(form_data.password, user["password"]):
         raise HTTPException(status_code=401, detail="Invalid username or password")
         
-    access_token_expires = timedelta(minutes=60 * 24)
+    access_token_expires = timedelta(minutes=settings.access_token_expire_minutes)
     access_token = create_access_token(
         data={"sub": user["username"], "role": user.get("role", "citizen")},
         expires_delta=access_token_expires

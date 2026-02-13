@@ -3,22 +3,29 @@ from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-from app.routers import complaints, users
+from app.routers import complaints, users, health, triage
 from app.database import connect_to_mongo, close_mongo_connection
+from app.services.llm_queue import llm_queue_service
+from app.config import settings
 import os
 import time
 import logging
 from logging.handlers import RotatingFileHandler
+from pathlib import Path
+
+BASE_DIR = Path(__file__).resolve().parent
+LOGS_DIR = BASE_DIR / "logs"
+UPLOADS_DIR = BASE_DIR / "uploads"
 
 # --- 1. Global Logging Setup ---
 # Create logs directory
-os.makedirs("backend/logs", exist_ok=True)
+os.makedirs(LOGS_DIR, exist_ok=True)
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("JanSunwaiAI")
 
 # File Handler (Rotate after 5MB, keep 3 backups)
-file_handler = RotatingFileHandler("backend/logs/app.log", maxBytes=5*1024*1024, backupCount=3)
+file_handler = RotatingFileHandler(str(LOGS_DIR / "app.log"), maxBytes=5*1024*1024, backupCount=3)
 formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 file_handler.setFormatter(formatter)
 logger.addHandler(file_handler)
@@ -28,9 +35,11 @@ async def lifespan(app: FastAPI):
     # Startup: Connect to DB
     logger.info("Starting up application...")
     await connect_to_mongo()
+    await llm_queue_service.start()
     yield
     # Shutdown: Close DB connection
     logger.info("Shutting down application...")
+    await llm_queue_service.stop()
     await close_mongo_connection()
 
 app = FastAPI(title="Jan-Sunwai AI API", version="1.0.0", lifespan=lifespan)
@@ -58,28 +67,24 @@ async def global_exception_handler(request: Request, exc: Exception):
         content={"message": "Internal Server Error", "details": str(exc)},
     )
 
-# CORS Setup (Allowing frontend to communicate)
-# Allowed origins for development
-origins = [
-    "http://localhost:5173",  # Vite Frontend
-    "http://127.0.0.1:5173",
-]
-
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=settings.allowed_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
 # Mount Uploads for Static Access
-os.makedirs("backend/uploads", exist_ok=True)
-app.mount("/backend/uploads", StaticFiles(directory="backend/uploads"), name="uploads")
+os.makedirs(UPLOADS_DIR, exist_ok=True)
+app.mount("/uploads", StaticFiles(directory=str(UPLOADS_DIR)), name="uploads")
+app.mount("/backend/uploads", StaticFiles(directory=str(UPLOADS_DIR)), name="uploads_legacy")
 
 # Include Routers
 app.include_router(complaints.router, tags=["Complaints"])
 app.include_router(users.router, prefix="/users", tags=["Users"])
+app.include_router(health.router)
+app.include_router(triage.router)
 
 @app.get("/")
 def read_root():

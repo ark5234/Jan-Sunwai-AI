@@ -15,6 +15,7 @@ from app.auth import get_current_user  # Import the dependency
 
 # Mock Data
 TEST_USERNAME = "test_integration_user"
+CI_LIGHT = os.getenv("CI_LIGHT", "0") == "1"
 
 # Mock the dependency
 async def override_get_current_user():
@@ -47,6 +48,16 @@ async def run_tests():
             assert response.status_code == 200
             assert response.json() == {"message": "Jan-Sunwai AI Backend Online"}
             print("Root Check Passed.")
+
+            print("\n[INFO] Testing /health/live endpoint...")
+            health = await client.get("/health/live")
+            assert health.status_code == 200
+            assert health.json().get("status") == "ok"
+            print("Health Check Passed.")
+
+            if CI_LIGHT:
+                print("\n[INFO] CI_LIGHT mode enabled, skipping /analyze heavy model test.")
+                return
 
             print("\n[INFO] Testing /analyze endpoint (Integration Workflow)...")
             img_data = create_dummy_image()

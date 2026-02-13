@@ -1,5 +1,6 @@
 import ollama
 import os
+from app.config import settings
 
 def generate_complaint(image_path, classification_result, user_details, location_details):
     """
@@ -51,7 +52,7 @@ def generate_complaint(image_path, classification_result, user_details, location
     try:
         # Call Ollama
         response = ollama.generate(
-            model='llava', 
+            model=settings.ollama_model,
             prompt=prompt, 
             images=[image_path] 
         )

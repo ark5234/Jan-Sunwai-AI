@@ -214,3 +214,24 @@ def get_authority_id_from_dept_string(dept_string: str) -> Optional[str]:
         return "POLICE_LOCAL"
 
     return None
+
+
+def route_authority(dept_string: str) -> dict:
+    exact = CLASSIFIER_TO_AUTHORITY_MAP.get(dept_string)
+    if exact:
+        authority = get_authority_by_id(exact)
+        return {
+            "authority_id": exact,
+            "confidence": 0.95,
+            "reason": "exact_match",
+            "escalation_parent_authority_id": authority.parent_authority_id if authority else None,
+        }
+
+    resolved = get_authority_id_from_dept_string(dept_string)
+    authority = get_authority_by_id(resolved) if resolved else None
+    return {
+        "authority_id": resolved,
+        "confidence": 0.75 if resolved else 0.2,
+        "reason": "keyword_match" if resolved else "unmapped",
+        "escalation_parent_authority_id": authority.parent_authority_id if authority else None,
+    }
