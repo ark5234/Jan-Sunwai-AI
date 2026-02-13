@@ -2,7 +2,7 @@
 echo Starting Jan-Sunwai AI Frontend...
 echo.
 
-cd ..
+pushd "%~dp0.."
 cd frontend
 npm run dev
 

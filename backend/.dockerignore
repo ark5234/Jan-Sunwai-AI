@@ -1,0 +1,41 @@
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.so
+*.egg
+*.egg-info
+dist
+build
+.venv
+venv
+env
+ENV
+
+# Logs
+backend/logs/*.log
+logs/
+
+# Uploads (will be mounted as volume)
+backend/uploads/*
+uploads/*
+
+# Test files
+tests/
+*.csv
+sorted_dataset/
+
+# Git
+.git
+.gitignore
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db

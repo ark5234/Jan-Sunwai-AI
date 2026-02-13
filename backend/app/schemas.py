@@ -91,15 +91,20 @@ class ComplaintInDB(ComplaintCreate):
         populate_by_name = True
         json_encoders = {datetime: lambda v: v.isoformat()}
 
-class ComplaintResponse(ComplaintCreate):
+class ComplaintResponse(ComplaintBase):
     id: Optional[str] = Field(None, alias="_id")
     user_id: str
-    assigned_to: Optional[str]
-    authority_id: Optional[str]
+    # Make everything from Create optional for legacy support
+    image_url: Optional[str] = None
+    location: Optional[GeoLocation] = None
+    ai_metadata: Optional[AIMetadata] = None
+    
+    assigned_to: Optional[str] = None
+    authority_id: Optional[str] = None
     status: ComplaintStatus
     created_at: datetime
-    updated_at: datetime
-    status_history: list[StatusHistoryItem]
+    updated_at: Optional[datetime] = None
+    status_history: list[StatusHistoryItem] = []
 
     class Config:
         populate_by_name = True

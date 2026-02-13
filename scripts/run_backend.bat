@@ -1,9 +1,8 @@
 @echo off
 echo Starting Jan-Sunwai AI Backend...
-echo Ensure you are running this from the Project Root.
-echo.
+pushd "%~dp0.."
+echo Project root: %CD%
 
-cd ..
 set PYTHONPATH=%CD%\backend;%CD%
 python -m uvicorn backend.main:app --reload
 

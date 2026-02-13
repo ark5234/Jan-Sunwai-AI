@@ -16,3 +16,6 @@ passlib[bcrypt]
 scikit-learn
 joblib
 numpy
+cleanvision
+pandas
+tqdm

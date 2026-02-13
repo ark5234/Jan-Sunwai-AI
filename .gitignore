@@ -22,6 +22,10 @@ data/
 
 backend/logs/
 backend/uploads/
+backend/backend/uploads/
+backend/backend/logs/
+backend/triage_output/
+backend/triage_output/**
 
 # Test credentials and account creation scripts
 TEST_ACCOUNTS_CREDENTIALS.txt
@@ -33,4 +37,13 @@ sorted_dataset/
 backend/sorted_dataset/
 **/sorted_dataset/
 sorted_dataset
+
+# Never commit image assets/datasets
+*.png
+*.jpg
+*.jpeg
+*.webp
+*.bmp
+*.tiff
+*.gif
 

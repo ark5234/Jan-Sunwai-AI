@@ -167,4 +167,50 @@ CLASSIFIER_TO_AUTHORITY_MAP = {
 }
 
 def get_authority_id_from_dept_string(dept_string: str) -> Optional[str]:
-    return CLASSIFIER_TO_AUTHORITY_MAP.get(dept_string)
+    # 1. Try Exact Match
+    auth_id = CLASSIFIER_TO_AUTHORITY_MAP.get(dept_string)
+    if auth_id:
+        return auth_id
+        
+    # 2. Try Keyword Matching (Robust Fallback)
+    ds = dept_string.lower()
+    
+    # Sanitation
+    if "garbage" in ds or "trash" in ds or "toilet" in ds or "sanitation" in ds or "waste" in ds:
+        return "MUNI_SANITATION"
+    
+    # Roads/PWD
+    if "road" in ds or "pothole" in ds or "pavement" in ds or "bridge" in ds or "civil" in ds:
+        return "MUNI_PWD"
+        
+    # Street Lights
+    if "light" in ds or "lamp" in ds or "dark" in ds:
+        return "MUNI_LIGHTING"
+        
+    # Water
+    if "water" in ds or "drain" in ds or "pipe" in ds or "leak" in ds or "flood" in ds:
+        return "MUNI_WATER"
+        
+    # Power
+    if "wire" in ds or "cable" in ds or "transformer" in ds or "electric" in ds or "power" in ds:
+        return "UTIL_DISCOM"
+        
+    # Horticulture
+    if "tree" in ds or "park" in ds or "plant" in ds:
+        return "MUNI_HORTICULTURE"
+        
+    # Transport
+    if "bus" in ds or "transport" in ds or "shelter" in ds:
+        return "UTIL_TRANSPORT"
+        
+    # Pollution
+    if "smoke" in ds or "pollution" in ds or "burning" in ds or "fire" in ds:
+        return "UTIL_PCB"
+        
+    # Police
+    if "police" in ds or "illegal" in ds or "encroachment" in ds or "parking" in ds or "traffic" in ds:
+        if "traffic" in ds or "signal" in ds:
+             return "POLICE_TRAFFIC"
+        return "POLICE_LOCAL"
+
+    return None

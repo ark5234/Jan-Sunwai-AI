@@ -1,8 +1,8 @@
 import os
 from motor.motor_asyncio import AsyncIOMotorClient
 
-# Default to localhost if environment variable not set
-MONGO_URL = os.getenv("MONGO_URL", "mongodb://localhost:27017")
+# Check both MONGODB_URL and MONGO_URL for flexibility
+MONGO_URL = os.getenv("MONGODB_URL") or os.getenv("MONGO_URL") or "mongodb://localhost:27017"
 DB_NAME = "jan_sunwai_db"
 
 class Database:

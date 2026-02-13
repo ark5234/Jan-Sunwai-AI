@@ -17,6 +17,7 @@ civic-vision-ai is a cutting-edge platform designed to streamline civic grievanc
   - [Installation](#installation)
   - [Running the Application](#running-the-application)
 - [Project Structure](#project-structure)
+- [Automated Triage Workflow](#automated-triage-workflow)
 - [Mobile Responsiveness](#mobile-responsiveness)
 
 ---
@@ -145,6 +146,28 @@ Jan-Sunwai-AI/
 ├── scripts/                # Helper batch scripts for Windows
 └── README.md
 ```
+
+## Automated Triage Workflow
+
+To auto-clean, auto-sort, and generate a review queue for dataset labeling:
+
+```bash
+cd backend
+python automated_triage.py --dataset-dir dataset --output-dir triage_output --prune-ratio 0.15 --clip-min-conf 0.45 --clip-min-margin 0.08
+```
+
+This runs the 4-stage pipeline:
+- CleanVision audit for low-quality/duplicate candidates
+- CLIP zero-shot category sorting
+- LLaVA fallback for uncertain CLIP predictions
+- Human-review exports (`review_queue.csv`) for quick validation
+
+Generated outputs:
+- `backend/triage_output/triaged_dataset/` (sorted folders)
+- `backend/triage_output/audit_issues.csv`
+- `backend/triage_output/triage_labels.csv`
+- `backend/triage_output/triage_labels.json`
+- `backend/triage_output/review_queue.csv`
 
 ## Mobile Responsiveness
 
