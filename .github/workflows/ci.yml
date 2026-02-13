@@ -9,6 +9,8 @@ on:
 jobs:
   backend-tests:
     runs-on: ubuntu-latest
+    env:
+      PYTHONPATH: backend
     services:
       mongodb:
         image: mongo:7
@@ -29,8 +31,7 @@ jobs:
 
       - name: Run schema/unit tests
         run: |
-          cd backend
-          pytest tests/test_schemas.py -q
+          python -m pytest backend/tests/test_schemas.py -q
 
       - name: Run API integration smoke
         env:
@@ -38,8 +39,7 @@ jobs:
           MONGODB_URL: mongodb://localhost:27017
           JWT_SECRET_KEY: ci-secret-key
         run: |
-          cd backend
-          python tests/test_api_integration.py
+          python backend/tests/test_api_integration.py
 
       - name: Model script syntax smoke
         run: |
