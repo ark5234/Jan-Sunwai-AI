@@ -21,7 +21,9 @@ class Settings:
     jwt_algorithm: str = os.getenv("JWT_ALGORITHM", "HS256")
     access_token_expire_minutes: int = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", "1440"))
     allowed_origins_raw: str = os.getenv("ALLOWED_ORIGINS", "http://localhost:5173,http://127.0.0.1:5173")
-    ollama_model: str = os.getenv("OLLAMA_MODEL", "llava")
+    ollama_model: str = os.getenv("OLLAMA_MODEL", "llava")  # kept for backward compat
+    vision_model: str = os.getenv("VISION_MODEL", "qwen2.5vl:3b")
+    reasoning_model: str = os.getenv("REASONING_MODEL", "llama3.2:1b")
     llm_inline_timeout_seconds: float = float(os.getenv("LLM_INLINE_TIMEOUT_SECONDS", "8"))
     llm_queue_workers: int = int(os.getenv("LLM_QUEUE_WORKERS", "2"))
     default_page_size: int = int(os.getenv("DEFAULT_PAGE_SIZE", "25"))

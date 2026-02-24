@@ -2,7 +2,10 @@ from datetime import datetime
 from pathlib import Path
 from typing import Optional
 
-import pandas as pd
+try:
+    import pandas as pd
+except Exception:
+    pd = None
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
 
@@ -23,8 +26,17 @@ class ReviewDecision(BaseModel):
     note: Optional[str] = None
 
 
+def _require_pandas():
+    if pd is None:
+        raise HTTPException(
+            status_code=503,
+            detail="Triage service dependency missing: pandas is not installed on backend runtime",
+        )
+
+
 @router.get("/review-queue")
 async def get_review_queue(skip: int = 0, limit: int = 50, _: dict = Depends(get_current_admin)):
+    _require_pandas()
     if not REVIEW_QUEUE_CSV.exists():
         return {"items": [], "total": 0}
 
@@ -36,6 +48,7 @@ async def get_review_queue(skip: int = 0, limit: int = 50, _: dict = Depends(get
 
 @router.post("/review-queue/decision")
 async def submit_review_decision(payload: ReviewDecision, current_user: dict = Depends(get_current_admin)):
+    _require_pandas()
     TRIAGE_ROOT.mkdir(parents=True, exist_ok=True)
 
     row = {

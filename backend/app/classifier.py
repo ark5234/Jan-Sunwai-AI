@@ -1,257 +1,134 @@
-from transformers import CLIPProcessor, CLIPModel
-from PIL import Image
-import torch
 import os
-import joblib
-import numpy as np
+import ollama
+from app.config import settings
+from app.category_utils import CANONICAL_CATEGORIES, canonicalize_label
+
+# Human-readable definitions passed to the reasoning model so it can
+# make a contextual decision rather than just matching a string.
+CATEGORY_DEFINITIONS: dict[str, str] = {
+    "Municipal - PWD (Roads)":         "broken roads, potholes, cracked pavement, damaged footpaths, bridge damage",
+    "Municipal - Sanitation":          "garbage dumps, overflowing trash bins, dirty public toilets, waste piles on streets",
+    "Municipal - Horticulture":        "fallen or uprooted trees, overgrown vegetation, unmaintained parks, dead/dry plants",
+    "Municipal - Street Lighting":     "broken street lights, non-functional lamp posts, dark or unlit public roads",
+    "Municipal - Water & Sewerage":    "waterlogging, flooded streets, blocked drains, sewer overflow, water pipe leaks",
+    "Utility - Power (DISCOM)":        "dangling electrical wires, open or damaged transformers, hazardous power cables",
+    "State Transport":                 "damaged bus shelters, broken state buses, transport terminal damage",
+    "Pollution Control Board":         "air pollution, thick smoke, industrial waste dumping, open burning of garbage",
+    "Police - Local Law Enforcement":  "illegal parking, footpath encroachment, public nuisance, fights or brawls",
+    "Police - Traffic":                "failed traffic signals, road blockages, severe traffic congestion",
+    "Uncategorized":                   "does not clearly match any of the above civic categories",
+}
+
+# Keywords that indicate a non-civic / irrelevant photo
+_NEGATIVE_KEYWORDS = [
+    "selfie", "portrait", "food", "meal", "restaurant", "cartoon", "anime",
+    "gaming", "screenshot", "indoor furniture", "appliance", "pet", "animal",
+    "beautiful landscape", "clear sky",
+]
+
 
 class CivicClassifier:
-    def __init__(self):
-        self.device = "cuda" if torch.cuda.is_available() else "cpu"
-        print(f"🚀 Loading CLIP on device: {self.device}")
-        
-        # We explicitly cast self.device to str to satisfy Pylance/Type Checker if needed, 
-        # though .to() accepts standard device strings.
-        self.model = CLIPModel.from_pretrained("openai/clip-vit-base-patch32")
-        self.model.to(self.device) # type: ignore
-        
-        self.processor = CLIPProcessor.from_pretrained("openai/clip-vit-base-patch32")
-        
-        # Check for Custom Trained Head
-        self.custom_head = None
-        self.custom_labels = None
-        custom_head_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "custom_classifier_head.pkl")
-        
-        if os.path.exists(custom_head_path):
-            try:
-                print(f"🧠 Loading Custom Classifier Head from {custom_head_path}...")
-                data = joblib.load(custom_head_path)
-                self.custom_head = data['model']
-                self.custom_labels = data['label_map']
-                print("✅ Custom Classifier Loaded!")
-            except Exception as e:
-                print(f"⚠️ Failed to load custom classifier: {e}")
-        
-        self.labels = [
-            # 1. Local Municipal Authorities (Urban Centers)
-            # PWD / Civil Engineering
-            "A photo of a broken road or pothole",
-            "A photo of damaged pavement or footpath",
-            "A photo of bridge damage",
-            
-            # Sanitation & Solid Waste Management
-            "A photo of a garbage dump or pile",
-            "A photo of overflowing trash bin",
-            "A photo of a dirty public toilet",
+    """
+    Two-step Vision-to-Reasoning classifier.
 
-            # Horticulture
-            "A photo of a fallen tree",
-            "A photo of unmaintained park or dry plants",
+    Step 1 — Vision (qwen2.5-vl:3b):
+        Narrates what is physically present and problematic in the image.
 
-            # Street Lighting (Electrical)
-            "A photo of a broken street light",
-            "A photo of a non-functional street lamp",
+    Step 2 — Reasoning (llama3.2:1b):
+        Maps the narration to a canonical civic category using folder definitions.
+    """
 
-            # Water Supply & Sewerage
-            "A photo of water logging or flooded street",
-            "A photo of a blocked drain or sewer",
-            "A photo of a water pipe leak",
+    def classify(self, image_path: str) -> dict:
+        if not os.path.exists(image_path):
+            return {
+                "department": "Unknown",
+                "label": "Image file not found",
+                "confidence": 0.0,
+                "is_valid": False,
+            }
 
-            # 2. Specialized Utility & State Service Providers
-            # Power Distribution (DISCOMs)
-            "A photo of dangling electrical wires",
-            "A photo of an open transformer",
-            "A photo of hazardous hanging power cables",
-
-            # State Transport
-            "A photo of a damaged bus shelter or terminal",
-            "A photo of a broken state bus",
-
-            # Pollution Control Boards
-            "A photo of air pollution or thick smoke",
-            "A photo of industrial waste dumping",
-            "A photo of burning garbage",
-
-            # 3. Safety & Law Enforcement
-            # Local Police
-            "A photo of illegal parking",
-            "A photo of encroachment on footpath", # Also shared with Municipal/Enforcement
-            "A photo of a public nuisance or brawl",
-            
-            # Traffic Police
-            "A photo of traffic signal failure",
-            "A photo of traffic congestion or obstruction"
-        ]
-        
-        # Labels for non-civic images to filter out irrelevant photos
-        self.negative_labels = [
-            "A photo of a person or selfie",
-            "A photo of a group of people",
-            "A photo of an anime character or cartoon",
-            "A photo of a gaming screen or screenshot",
-            "A photo of food or restaurant meal",
-            "A photo of indoor furniture or appliance",
-            "A photo of a document or paper",
-            "A photo of a blurry or unclear object",
-            "A photo of an animal or pet",
-            "A photo of a clear blue sky",
-            "A photo of a beautiful landscape or nature"
-        ]
-        
-        self.label_map = {
-            # 1. Local Municipal Authorities
-            # PWD
-            "A photo of a broken road or pothole": "Municipal - PWD (Roads)",
-            "A photo of damaged pavement or footpath": "Municipal - PWD (Roads)",
-            "A photo of bridge damage": "Municipal - PWD (Bridges)",
-            
-            # Sanitation
-            "A photo of a garbage dump or pile": "Municipal - Sanitation",
-            "A photo of overflowing trash bin": "Municipal - Sanitation",
-            "A photo of a dirty public toilet": "Municipal - Sanitation",
-
-            # Horticulture
-            "A photo of a fallen tree": "Municipal - Horticulture",
-            "A photo of unmaintained park or dry plants": "Municipal - Horticulture",
-
-            # Street Lighting
-            "A photo of a broken street light": "Municipal - Street Lighting",
-            "A photo of a non-functional street lamp": "Municipal - Street Lighting",
-
-            # Water & Sewerage
-            "A photo of water logging or flooded street": "Municipal - Water & Sewerage",
-            "A photo of a blocked drain or sewer": "Municipal - Water & Sewerage",
-            "A photo of a water pipe leak": "Municipal - Water & Sewerage",
-
-            # 2. Specialized Utility
-            # DISCOMs
-            "A photo of dangling electrical wires": "Utility - Power (DISCOM)",
-            "A photo of an open transformer": "Utility - Power (DISCOM)",
-            "A photo of hazardous hanging power cables": "Utility - Power (DISCOM)",
-
-            # Transport
-            "A photo of a damaged bus shelter or terminal": "State Transport",
-            "A photo of a broken state bus": "State Transport",
-
-            # Pollution
-            "A photo of air pollution or thick smoke": "Pollution Control Board",
-            "A photo of industrial waste dumping": "Pollution Control Board",
-            "A photo of burning garbage": "Pollution Control Board",
-
-            # 3. Safety & Law Enforcement
-            # Local Police
-            "A photo of illegal parking": "Police - Local Law Enforcement",
-            "A photo of encroachment on footpath": "Police - Local Law Enforcement",
-            "A photo of a public nuisance or brawl": "Police - Local Law Enforcement",
-            
-            # Traffic Police
-            "A photo of traffic signal failure": "Police - Traffic",
-            "A photo of traffic congestion or obstruction": "Police - Traffic"
-        }
-
-    def classify(self, image: Image.Image):
         try:
-            # 1. Image Preprocessing
-            # Convert to RGB (standard for CLIP)
-            if image.mode != "RGB":
-                image = image.convert("RGB")
-            
-            # Resize
-            max_size = 1600
-            if image.width > max_size or image.height > max_size:
-                image.thumbnail((max_size, max_size))
+            # ------------------------------------------------------------------
+            # STEP 1 — Vision: Describe the image
+            # ------------------------------------------------------------------
+            vision_response = ollama.generate(
+                model=settings.vision_model,
+                prompt=(
+                    "You are analyzing a civic complaint photo from India. "
+                    "Describe what you see in 2-3 factual sentences. "
+                    "Focus on: what is visibly damaged or problematic, "
+                    "the setting (road, park, building, drain, etc.), "
+                    "and any visible hazards or health/safety risks. "
+                    "Be specific and objective. Do not greet or explain yourself."
+                ),
+                images=[image_path],
+                options={"num_ctx": 2048},
+            )
+            description: str = vision_response["response"].strip()
 
-            # --- CUSTOM HEAD PATH (If Trained) ---
-            if self.custom_head and self.custom_labels:
-                # Get embeddings only
-                inputs = self.processor(images=image, return_tensors="pt", padding=True)
-                inputs = {k: v.to(self.device) for k, v in inputs.items()}
-                
-                with torch.no_grad():
-                    image_features = self.model.get_image_features(**inputs)
-                
-                # Normalize
-                image_features = image_features / image_features.norm(p=2, dim=-1, keepdim=True)
-                
-                # Predict
-                features_np = image_features.cpu().numpy()
-                probs = self.custom_head.predict_proba(features_np)[0]
-                pred_idx = np.argmax(probs)
-                confidence_val = float(probs[pred_idx])
-                
-                predicted_category_name = self.custom_labels[pred_idx]
-                
-                # Map back to our standard format
-                # The custom model predicts "Municipal_-_PWD_Roads" (Folder Name)
-                # We need to clean it up for the frontend
-                
-                # Simple cleanup: Replace underscores with spaces
-                clean_label = predicted_category_name.replace("_", " ").replace("And", "&")
-                
-                # Determine department from the category name itself (it's embedded)
-                # Ex: "Municipal_-_Sanitation" -> Department: "Sanitation" or "Municipal - Sanitation"
-                
-                return {
-                    "department": clean_label, # Use the specific trained category as the department key
-                    "label": f"Highly confident assessment: {clean_label}",
-                    "confidence": confidence_val,
-                    "is_valid": True # We assume trained model output is valid if confident
-                }
+            # ------------------------------------------------------------------
+            # STEP 2 — Reasoning: Map description to canonical category
+            # ------------------------------------------------------------------
+            categories_block = "\n".join(
+                f"- {cat}: {CATEGORY_DEFINITIONS[cat]}"
+                for cat in CANONICAL_CATEGORIES
+            )
 
-            # --- ZERO SHOT FALLBACK (Legacy) ---
-            # 2. Model Inference
-            # Combine legitimate labels with negative labels for "Open Set" classification simulation
-            all_labels = self.labels + self.negative_labels
-            
-            inputs = self.processor(text=all_labels, images=image, return_tensors="pt", padding=True) # type: ignore
-            
-            # Move inputs to the same device as the model (GPU/CPU)
-            inputs = {k: v.to(self.device) for k, v in inputs.items()}
-            
-            with torch.no_grad():
-                outputs = self.model(**inputs)
-            
-            logits_per_image = outputs.logits_per_image
-            probs = logits_per_image.softmax(dim=1)
-            
-            # 3. Result Parsing
-            confidence, index = torch.max(probs, 1)
-            index_val = int(index.item())
-            confidence_val = float(confidence.item())
-            
-            predicted_label = all_labels[index_val]
-            
-            # Logic to reject irrelevant images
-            if predicted_label in self.negative_labels:
-                return {
-                    "department": "Invalid Content",
-                    "label": "Not a civic issue (Detected: " + predicted_label.replace("A photo of ", "") + ")",
-                    "confidence": confidence_val,
-                    "is_valid": False
-                }
-            
-            # Logic to reject low confidence predictions (Threshold: 50%)
-            if confidence_val < 0.5:
-                 return {
-                    "department": "Uncertain",
-                    "label": "Low confidence prediction (Possibly: " + predicted_label.replace("A photo of ", "") + ")",
-                    "confidence": confidence_val,
-                    "is_valid": False
-                }
+            reasoning_response = ollama.generate(
+                model=settings.reasoning_model,
+                options={"num_ctx": 1024},
+                prompt=(
+                    f"You are a civic complaint classifier for Indian municipal authorities.\n\n"
+                    f"Image description: \"{description}\"\n\n"
+                    f"Choose the SINGLE best matching category. Read ALL options before deciding.\n\n"
+                    f"Categories:\n"
+                    f"{categories_block}\n\n"
+                    f"Decision rules (apply in order):\n"
+                    f"1. If description mentions trees, plants, parks, fallen branches, overgrown vegetation → Municipal - Horticulture\n"
+                    f"2. If description mentions street lights, lamp posts, broken light, dark road (no flooding) → Municipal - Street Lighting\n"
+                    f"3. If description mentions garbage, trash, waste, dump, litter, bins → Municipal - Sanitation\n"
+                    f"4. If description mentions potholes, road cracks, broken road, bridge, footpath damage → Municipal - PWD (Roads)\n"
+                    f"5. If description mentions waterlogging, flooded, drain overflow, sewer, pipe leak, water gushing → Municipal - Water & Sewerage\n"
+                    f"6. If description mentions dangling wires, power cables, transformer → Utility - Power (DISCOM)\n"
+                    f"7. If description mentions smoke, burning, pollution, industrial waste → Pollution Control Board\n"
+                    f"8. If description mentions illegal parking, encroachment, shops on footpath → Police - Local Law Enforcement\n"
+                    f"9. If description mentions traffic signal, congestion, road blockage → Police - Traffic\n"
+                    f"10. If description mentions bus shelter, bus terminal, state bus → State Transport\n"
+                    f"11. If nothing matches clearly → Uncategorized\n\n"
+                    f"IMPORTANT: Do NOT default to Municipal - Water & Sewerage unless water/flooding/drain is explicitly described.\n"
+                    f"Reply with ONLY the exact category name. No explanation.\n\n"
+                    f"Category:"
+                ),
+            )
+            raw_label: str = reasoning_response["response"].strip()
+
+            # Guard: some models echo "Category: X" — strip the prefix if present
+            if ":" in raw_label:
+                raw_label = raw_label.split(":", 1)[-1].strip()
+
+            canonical = canonicalize_label(raw_label)
+
+            # Determine validity
+            desc_lower = description.lower()
+            is_non_civic = any(kw in desc_lower for kw in _NEGATIVE_KEYWORDS)
+            is_valid = (canonical != "Uncategorized") and not is_non_civic
 
             return {
-                "department": self.label_map.get(predicted_label, "General"),
-                "label": predicted_label,
-                "confidence": confidence_val,
-                "is_valid": True
+                "department": canonical,
+                "label": description,
+                "confidence": 0.9 if is_valid else 0.4,
+                "is_valid": is_valid,
+                "vision_description": description,
+                "raw_category": raw_label,
             }
+
         except Exception as e:
-            # In case of any processing error, return a generic failure rather than crashing
-            print(f"Classification Error: {str(e)}")
+            print(f"Classification Error: {e}")
             return {
                 "department": "Unknown",
                 "label": "Could not classify image",
                 "confidence": 0.0,
-                "error": str(e)
+                "is_valid": False,
+                "error": str(e),
             }
 

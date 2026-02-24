@@ -1,22 +1,29 @@
-﻿fastapi
+﻿# ── Runtime (live API) ─────────────────────────────────────────────────────
+fastapi
 uvicorn
 python-multipart
-torch
-transformers
-Pillow
+Pillow          # EXIF geotagging + image validation
 geopy
 pymongo
 ollama
 requests
 motor
 email-validator
-pytest
 python-jose[cryptography]
 passlib[bcrypt]
-scikit-learn
-joblib
-numpy
-cleanvision
-pandas
+bcrypt==4.0.1
+pandas          # triage CSV endpoints
 tqdm
 python-dotenv
+
+# ── Dev / Testing ──────────────────────────────────────────────────────────
+pytest
+
+# ── Offline Scripts only (triage / training) ───────────────────────────────
+# Install separately with:  pip install -r requirements-scripts.txt
+# torch
+# transformers
+# scikit-learn
+# joblib
+# numpy
+# cleanvision

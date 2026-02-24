@@ -43,7 +43,7 @@ jobs:
 
       - name: Model script syntax smoke
         run: |
-          python -m py_compile backend/test_models.py backend/train_custom_classifier.py backend/automated_triage.py
+          python -m py_compile backend/automated_triage.py backend/evaluate_sorted_dataset.py backend/download_models.py
 
   frontend-build:
     runs-on: ubuntu-latest

@@ -55,14 +55,13 @@ async def analyze_complaint(
     file_path = await storage_service.save_file(file)
     absolute_file_path = storage_service.resolve_path(file_path)
     
-    # After saving, the file pointer might be at the end. 
-    # But storage_service.save_file resets it (await file.seek(0)).
+    # Read contents for geotagging (EXIF extraction still needs PIL)
     contents = await file.read()
     image = Image.open(io.BytesIO(contents))
-    
-    # 2. Classify
-    classification = classifier.classify(image)
-    
+
+    # 2. Classify — pass the saved file path to the Ollama pipeline
+    classification = classifier.classify(absolute_file_path)
+
     # 3. Extract Location
     location = extract_location(image)
     

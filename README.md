@@ -18,6 +18,7 @@ civic-vision-ai is a cutting-edge platform designed to streamline civic grievanc
   - [Running the Application](#running-the-application)
 - [Project Structure](#project-structure)
 - [Automated Triage Workflow](#automated-triage-workflow)
+- [Current ML Pipeline](#current-ml-pipeline)
 - [Mobile Responsiveness](#mobile-responsiveness)
 
 ---
@@ -168,6 +169,21 @@ Generated outputs:
 - `backend/triage_output/triage_labels.csv`
 - `backend/triage_output/triage_labels.json`
 - `backend/triage_output/review_queue.csv`
+
+## Current ML Pipeline
+
+The maintained backend ML flow is:
+
+1. `backend/sort_dataset.py` — keyword-based initial folder sorting into `backend/sorted_dataset/`
+2. `backend/train_custom_classifier.py` — CLIP embedding extraction + Logistic Regression head training (`custom_classifier_head.pkl`)
+3. `backend/automated_triage.py` — quality audit + CLIP sorting + LLaVA fallback + review artifacts
+4. `backend/app/classifier.py` — runtime inference (custom head first, CLIP zero-shot fallback)
+5. `backend/app/routers/complaints.py` — API-level annotation (classification + geotagging + complaint draft generation)
+
+### Evaluation scripts
+
+- Preferred: `backend/evaluate_sorted_dataset.py` (folder-vs-prediction evaluation on sorted datasets)
+- Legacy: `backend/evaluate_dataset.py` and `backend/test_accuracy.py` (kept for ad-hoc checks)
 
 ## Mobile Responsiveness
 

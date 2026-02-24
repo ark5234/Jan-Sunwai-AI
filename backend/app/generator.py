@@ -50,11 +50,11 @@ def generate_complaint(image_path, classification_result, user_details, location
     """
     
     try:
-        # Call Ollama
+        # Call Ollama — reuse vision model (qwen2.5-vl) which is already warm in memory
         response = ollama.generate(
-            model=settings.ollama_model,
-            prompt=prompt, 
-            images=[image_path] 
+            model=settings.vision_model,
+            prompt=prompt,
+            images=[image_path]
         )
         return response['response']
     except Exception as e:

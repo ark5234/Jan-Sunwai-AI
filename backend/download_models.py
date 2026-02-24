@@ -1,27 +1,42 @@
-import os
-from transformers import CLIPProcessor, CLIPModel
+import subprocess
+from typing import Iterable
 
-def download_clip_model():
-    """
-    Downloads and caches the OpenAI CLIP model locally.
-    This ensures that the application doesn't need to download the model during runtime/startup.
-    The models are stored in the default Hugging Face cache directory.
-    """
-    model_name = "openai/clip-vit-base-patch32"
-    print(f"Starting download for: {model_name}")
-    print("This may take a few minutes depending on your internet connection...")
 
-    try:
-        # Downloading Model and Processor
-        # verify=True ensures SSL certificates are valid
-        model = CLIPModel.from_pretrained(model_name)
-        processor = CLIPProcessor.from_pretrained(model_name)
-        
-        print(f"✅ Successfully downloaded and cached '{model_name}'")
-        print(f"Cache location: {os.path.expanduser('~/.cache/huggingface/hub')}")
-        
-    except Exception as e:
-        print(f"❌ Error downloading model: {e}")
+def pull_ollama_models(models: Iterable[str]):
+    """
+    Pulls Ollama models by calling `ollama pull <model>` for each one.
+    Replaces the old CLIP download — no HuggingFace, no torch required.
+    """
+    for model in models:
+        print(f"Pulling {model} ...")
+        result = subprocess.run(["ollama", "pull", model], capture_output=False)
+        if result.returncode == 0:
+            print(f"✅ {model} ready")
+        else:
+            print(f"❌ Failed to pull {model}")
+
+
+def download_ollama_models(models: Iterable[str]):
+    for model in models:
+        print(f"Starting Ollama pull for: {model}")
+        try:
+            subprocess.run(["ollama", "pull", model], check=True)
+            print(f"✅ Pulled {model}")
+        except FileNotFoundError:
+            print("❌ 'ollama' CLI not found. Install Ollama and ensure it is in PATH.")
+            return
+        except subprocess.CalledProcessError as e:
+            print(f"❌ Failed to pull {model}: {e}")
+
+
+def download_all_models():
+    download_clip_model()
+    download_ollama_models([
+        "qwen2.5vl:3b",
+        "llama3.2:1b",
+        "llava",
+    ])
+    print("✅ Model setup completed")
 
 if __name__ == "__main__":
-    download_clip_model()
+    download_all_models()

@@ -47,3 +47,8 @@ sorted_dataset
 *.tiff
 *.gif
 
+# Evaluation output (generated files, not source)
+backend/evaluation_report_v2.csv
+backend/evaluation_mismatch_breakdown.csv
+backend/evaluation_per_class_summary.csv
+reports/

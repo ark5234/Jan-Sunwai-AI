@@ -2,15 +2,15 @@ import argparse
 import json
 import os
 import shutil
+import re
 from pathlib import Path
 from typing import Any, Dict, List, Tuple
 
 import ollama
 import pandas as pd
-import torch
 from PIL import Image
 from tqdm import tqdm
-from transformers import CLIPModel, CLIPProcessor
+from app.category_utils import safe_dirname
 
 try:
     from cleanvision import Imagelab
@@ -85,10 +85,6 @@ def resolve_dataset_dir(dataset_dir: Path) -> Path:
             return candidate
 
     return dataset_dir
-
-
-def safe_dirname(label: str) -> str:
-    return label.replace(" ", "_").replace("(", "").replace(")", "").replace("&", "and")
 
 
 def run_cleanvision_audit(dataset_dir: Path, prune_ratio: float, work_dir: Path) -> Tuple[List[Path], List[Path], pd.DataFrame]:
@@ -189,62 +185,138 @@ def run_cleanvision_audit(dataset_dir: Path, prune_ratio: float, work_dir: Path)
     return kept, rejected, issues_df
 
 
-class ClipSorter:
-    def __init__(self, category_prompts: Dict[str, str]):
-        self.device = "cuda" if torch.cuda.is_available() else "cpu"
-        self.categories = list(category_prompts.keys())
-        self.prompts = [category_prompts[c] for c in self.categories]
-        self.model = CLIPModel.from_pretrained("openai/clip-vit-base-patch32")
-        getattr(self.model, "to")(self.device)
-        self.processor = CLIPProcessor.from_pretrained("openai/clip-vit-base-patch32")
-
-    def classify(self, image_path: Path) -> Tuple[str, float, float, List[Tuple[str, float]]]:
-        image = Image.open(image_path).convert("RGB")
-        processor_kwargs: Dict[str, Any] = {
-            "text": self.prompts,
-            "images": image,
-            "return_tensors": "pt",
-            "padding": True,
-        }
-        inputs = self.processor(**processor_kwargs)
-        inputs = {k: v.to(self.device) for k, v in inputs.items()}
-        with torch.no_grad():
-            outputs = self.model(**inputs)
-            probs = outputs.logits_per_image.softmax(dim=1).squeeze(0)
-
-        scored = [(self.categories[i], float(probs[i].item())) for i in range(len(self.categories))]
-        scored.sort(key=lambda x: x[1], reverse=True)
-
-        top_label, top_score = scored[0]
-        second_score = scored[1][1] if len(scored) > 1 else 0.0
-        margin = top_score - second_score
-        return top_label, top_score, margin, scored
+class _RemovedInNewPipeline:
+    pass  # ClipSorter removed — pipeline now uses Ollama vision+reasoning exclusively.
 
 
-def llava_label(image_path: Path, categories: List[str]) -> str:
-    choices = ", ".join(categories)
-    prompt = (
-        "Identify the civic issue category in this image. "
-        f"Choose exactly one from: {choices}. "
-        "Reply with only the exact category text."
-    )
+def _extract_json(text: str) -> Dict[str, Any]:
+    text = text.strip()
+    if not text:
+        return {}
+
     try:
-        response = ollama.generate(model="llava", prompt=prompt, images=[str(image_path)])
-        text = response.get("response", "").strip()
-        for c in categories:
-            if text.lower() == c.lower() or c.lower() in text.lower():
-                return c
-        return "Uncategorized"
+        return json.loads(text)
     except Exception:
-        return "Uncategorized"
+        pass
+
+    match = re.search(r"\{.*\}", text, flags=re.DOTALL)
+    if not match:
+        return {}
+
+    try:
+        return json.loads(match.group(0))
+    except Exception:
+        return {}
+
+
+def vision_describe(image_path: Path, categories: List[str], model: str) -> Dict[str, Any]:
+    schema = {
+        "summary": "short factual description",
+        "main_action": "single phrase",
+        "setting": "single phrase",
+        "hazards": ["hazard1", "hazard2"],
+        "candidate_labels": categories[:3],
+    }
+    prompt = (
+        "You are a civic-issue vision analyst. Analyze the image and return strict JSON only.\n"
+        f"Allowed civic labels: {json.dumps(categories)}\n"
+        f"JSON schema example: {json.dumps(schema)}\n"
+        "Rules: no markdown, no explanation outside JSON, keep summary under 30 words, "
+        "candidate_labels must be chosen only from the allowed labels."
+    )
+
+    response = ollama.generate(model=model, prompt=prompt, images=[str(image_path)])
+    payload = _extract_json(response.get("response", ""))
+
+    if not payload:
+        return {
+            "summary": "Unable to extract structured vision description",
+            "main_action": "unknown",
+            "setting": "unknown",
+            "hazards": [],
+            "candidate_labels": [],
+        }
+
+    payload.setdefault("summary", "")
+    payload.setdefault("main_action", "unknown")
+    payload.setdefault("setting", "unknown")
+    payload.setdefault("hazards", [])
+    payload.setdefault("candidate_labels", [])
+    return payload
+
+
+def reason_label(
+    vision_payload: Dict[str, Any],
+    category_prompts: Dict[str, str],
+    model: str,
+) -> Dict[str, Any]:
+    definitions = [{"label": k, "definition": v} for k, v in category_prompts.items()]
+    prompt = (
+        "You are a strict classification judge. Pick the single best civic category.\n"
+        f"Category definitions: {json.dumps(definitions)}\n"
+        f"Vision analysis: {json.dumps(vision_payload)}\n"
+        "Return strict JSON only with keys: label, confidence, rationale.\n"
+        "confidence must be a number between 0 and 1."
+    )
+
+    response = ollama.generate(model=model, prompt=prompt)
+    payload = _extract_json(response.get("response", ""))
+
+    label = str(payload.get("label", "Uncategorized")) if payload else "Uncategorized"
+    confidence = payload.get("confidence", 0.0) if payload else 0.0
+    rationale = str(payload.get("rationale", "")) if payload else ""
+
+    try:
+        confidence = float(confidence)
+    except Exception:
+        confidence = 0.0
+
+    return {"label": label, "confidence": confidence, "rationale": rationale}
+
+
+def vision_reasoning_label(
+    image_path: Path,
+    category_prompts: Dict[str, str],
+    vision_model: str,
+    reasoner_model: str,
+) -> Dict[str, Any]:
+    categories = list(category_prompts.keys())
+    try:
+        used_vision_model = vision_model
+        try:
+            vision_payload = vision_describe(image_path, categories, used_vision_model)
+        except Exception:
+            used_vision_model = "llava"
+            vision_payload = vision_describe(image_path, categories, used_vision_model)
+        judged = reason_label(vision_payload, category_prompts, reasoner_model)
+        label = judged.get("label", "Uncategorized")
+        if label not in categories:
+            label = "Uncategorized"
+        return {
+            "label": label,
+            "confidence": float(judged.get("confidence", 0.0)),
+            "rationale": judged.get("rationale", ""),
+            "used_vision_model": used_vision_model,
+            "vision_summary": vision_payload.get("summary", ""),
+            "vision_payload": vision_payload,
+        }
+    except Exception:
+        return {
+            "label": "Uncategorized",
+            "confidence": 0.0,
+            "rationale": "vision_reasoning_failed",
+            "used_vision_model": vision_model,
+            "vision_summary": "",
+            "vision_payload": {},
+        }
 
 
 def run_pipeline(
     dataset_dir: Path,
     output_dir: Path,
     prune_ratio: float,
-    clip_min_conf: float,
-    clip_min_margin: float,
+    vision_model: str,
+    reasoner_model: str,
 ):
     output_dir.mkdir(parents=True, exist_ok=True)
     triage_dir = output_dir / "triaged_dataset"
@@ -278,35 +350,23 @@ def run_pipeline(
         print(f"- JSON export: {labels_json}")
         return
 
-    print("\n=== STEP 2: Zero-Shot Sorting (CLIP) ===")
-    sorter = ClipSorter(CATEGORY_PROMPTS)
+    print("\n=== STEP 2: Vision-to-Reasoning Labeling (Ollama) ===")
+    print(f"Vision model:    {vision_model}")
+    print(f"Reasoner model:  {reasoner_model}")
 
     for cat in list(CATEGORY_PROMPTS.keys()) + ["Uncategorized"]:
         (triage_dir / safe_dirname(cat)).mkdir(parents=True, exist_ok=True)
 
     records = []
-    uncertain_records = []
 
-    for image_path in tqdm(kept_images, desc="CLIP triage"):
-        top_label, top_score, margin, ranked = sorter.classify(image_path)
-        needs_fallback = (top_score < clip_min_conf) or (margin < clip_min_margin)
-
-        final_label = top_label
-        method = "clip"
-
-        if needs_fallback:
-            method = "llava"
-            final_label = llava_label(image_path, list(CATEGORY_PROMPTS.keys()))
-            uncertain_records.append(
-                {
-                    "image": str(image_path),
-                    "clip_top_label": top_label,
-                    "clip_top_score": top_score,
-                    "clip_margin": margin,
-                    "llava_label": final_label,
-                }
-            )
-
+    for image_path in tqdm(kept_images, desc="Ollama triage"):
+        vr = vision_reasoning_label(
+            image_path=image_path,
+            category_prompts=CATEGORY_PROMPTS,
+            vision_model=vision_model,
+            reasoner_model=reasoner_model,
+        )
+        final_label = vr.get("label", "Uncategorized")
         if final_label not in CATEGORY_PROMPTS:
             final_label = "Uncategorized"
 
@@ -322,18 +382,15 @@ def run_pipeline(
             {
                 "image": str(image_path),
                 "final_label": final_label,
-                "method": method,
-                "clip_top_label": top_label,
-                "clip_top_score": top_score,
-                "clip_margin": margin,
-                "top3": json.dumps(ranked[:3]),
+                "method": "vision_reasoning",
+                "confidence": vr.get("confidence", 0.0),
+                "rationale": vr.get("rationale", ""),
+                "vision_summary": vr.get("vision_summary", ""),
+                "used_vision_model": vr.get("used_vision_model", vision_model),
             }
         )
 
-    print("\n=== STEP 3: Generative Labeling (LLaVA fallback) ===")
-    print(f"Fallback-triggered images: {len(uncertain_records)}")
-
-    print("\n=== STEP 4: Human-in-the-Loop Validation Artifacts ===")
+    print("\n=== STEP 3: Human-in-the-Loop Validation Artifacts ===")
     audit_csv = output_dir / "audit_issues.csv"
     labels_csv = output_dir / "triage_labels.csv"
     review_csv = output_dir / "review_queue.csv"
@@ -341,7 +398,7 @@ def run_pipeline(
 
     issues_df.to_csv(audit_csv, index=False)
     pd.DataFrame(records).to_csv(labels_csv, index=False)
-    pd.DataFrame(uncertain_records).to_csv(review_csv, index=False)
+    pd.DataFrame([]).to_csv(review_csv, index=False)   # review queue now auto-handled by confidence field
 
     with open(labels_json, "w", encoding="utf-8") as f:
         json.dump(records, f, indent=2)
@@ -364,8 +421,8 @@ def parse_args():
         help="Output directory for triaged data + reports",
     )
     parser.add_argument("--prune-ratio", type=float, default=0.15, help="Fraction of worst images to prune (0.1 to 0.2 recommended)")
-    parser.add_argument("--clip-min-conf", type=float, default=0.45, help="CLIP confidence threshold for direct auto-label")
-    parser.add_argument("--clip-min-margin", type=float, default=0.08, help="Top1-Top2 margin threshold for uncertainty")
+    parser.add_argument("--vision-model", type=str, default="qwen2.5vl:3b", help="Ollama vision model for image narration")
+    parser.add_argument("--reasoner-model", type=str, default="llama3.2:1b", help="Ollama text model for folder reasoning")
     return parser.parse_args()
 
 
@@ -375,6 +432,6 @@ if __name__ == "__main__":
         dataset_dir=args.dataset_dir,
         output_dir=args.output_dir,
         prune_ratio=args.prune_ratio,
-        clip_min_conf=args.clip_min_conf,
-        clip_min_margin=args.clip_min_margin,
+        vision_model=args.vision_model,
+        reasoner_model=args.reasoner_model,
     )

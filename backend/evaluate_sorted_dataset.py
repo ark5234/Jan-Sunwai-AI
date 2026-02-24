@@ -1,13 +1,16 @@
 import os
 import csv
-from PIL import Image
+import random
+import argparse
 from app.classifier import CivicClassifier
+from app.category_utils import folder_to_label, canonicalize_label, labels_match
 from tqdm import tqdm
 from pathlib import Path
 
 # --- CONFIGURATION ---
 SORTED_DATASET_ROOT = Path("sorted_dataset")
 OUTPUT_FILE = "evaluation_report_v2.csv"
+
 
 def get_all_images(root_dir):
     image_files = []
@@ -17,106 +20,154 @@ def get_all_images(root_dir):
                 image_files.append(Path(dirpath) / filename)
     return image_files
 
+
+def get_sampled_images(root_dir: Path, sample_per_folder: int) -> list:
+    """Pick up to sample_per_folder random images from each category folder."""
+    sampled = []
+    for folder in sorted(root_dir.iterdir()):
+        if not folder.is_dir():
+            continue
+        images = [
+            p for p in folder.iterdir()
+            if p.suffix.lower() in {'.jpg', '.jpeg', '.png', '.webp'}
+        ]
+        if not images:
+            print(f"  ⚠  {folder.name}: 0 images — skipping")
+            continue
+        picked = random.sample(images, min(sample_per_folder, len(images)))
+        print(f"  {folder.name}: {len(images)} total → sampling {len(picked)}")
+        sampled.extend(picked)
+    return sampled
+
+
 def main():
-    print("--- 🚀 Starting Evaluation on SORTED Dataset ---")
-    
+    parser = argparse.ArgumentParser(description="Evaluate sorted dataset with new Ollama pipeline")
+    parser.add_argument(
+        "--sample", type=int, default=20,
+        help="Images to sample per folder (default: 20). Use 0 to run ALL images."
+    )
+    parser.add_argument(
+        "--seed", type=int, default=42,
+        help="Random seed for reproducible sampling (default: 42)"
+    )
+    args = parser.parse_args()
+
+    random.seed(args.seed)
+
+    print("--- Starting Evaluation on SORTED Dataset ---")
+
     if not SORTED_DATASET_ROOT.exists():
         print(f"❌ Sorted dataset not found at {SORTED_DATASET_ROOT}")
-        print("Please run 'python sort_dataset.py' first.")
         return
 
-    # 1. Load Model
-    try:
-        classifier = CivicClassifier()
-        print("✅ Model Loaded Successfully")
-    except Exception as e:
-        print(f"❌ Failed to load model: {e}")
-        return
+    # 1. Load classifier (no model to load — just initialises the class)
+    classifier = CivicClassifier()
+    print("✅ Classifier ready (Ollama pipeline)")
 
-    # 2. Find Images
-    all_images = get_all_images(SORTED_DATASET_ROOT)
-    print(f"Found {len(all_images)} images.")
+    # 2. Find images
+    if args.sample == 0:
+        print("\nMode: FULL dataset (this will take many hours)")
+        all_images = get_all_images(SORTED_DATASET_ROOT)
+    else:
+        print(f"\nMode: SAMPLE — {args.sample} images per folder")
+        all_images = get_sampled_images(SORTED_DATASET_ROOT, args.sample)
 
-    # 3. Setup CSV headers
-    headers = ["Filename", "Ground_Truth_Folder", "Predicted_Dept", "Predicted_Label", "Confidence", "Match"]
-    
+    print(f"\nTotal images to evaluate: {len(all_images)}")
+    est_minutes = len(all_images) * 15 / 60
+    print(f"Estimated time: ~{est_minutes:.0f} minutes\n")
+
+    # 3. Run evaluation
+    headers = [
+        "Filename",
+        "Ground_Truth_Folder",
+        "Expected_Label",
+        "Predicted_Dept",
+        "Predicted_Canonical",
+        "Vision_Description",
+        "Confidence",
+        "Match",
+    ]
+
+    correct = 0
+    total = 0
+    mismatches = []
+
     with open(OUTPUT_FILE, 'w', newline='', encoding='utf-8') as f:
         writer = csv.DictWriter(f, fieldnames=headers)
         writer.writeheader()
 
-        correct = 0
-        total = 0
-
-        # Iterate
-        for img_path in tqdm(all_images):
+        for img_path in tqdm(all_images, desc="Evaluating"):
             try:
-                # Ground Truth is the folder name
-                # Folder: Municipal_-_PWD_Roads -> Category: Municipal - PWD (Roads)
-                folder_name = img_path.parent.name
-                
-                # Simple heuristic to revert "Safe Name" to "Category Name"
-                # This isn't perfect but allows loose matching.
-                # Or we just check if the prediction helps.
-                
-                # --- CLASSIFY ---
-                image = Image.open(img_path)
-                result = classifier.classify(image)
-                
-                pred_dept = result['department']
-                pred_label = result.get('label', result.get('description', 'Unknown'))
-                pred_conf = result['confidence']
+                folder_name   = img_path.parent.name
+                absolute_path = str(img_path.resolve())
 
-                # Normalize for comparison
-                # Folder: "Municipal_-_PWD_Roads"
-                # Pred: "Municipal - PWD (Roads)"
-                
-                normalized_folder = folder_name.replace("_", " ").lower()
-                normalized_pred = pred_dept.replace("-", " ").replace("(", "").replace(")", "").lower()
-                
-                # Check match (loose string match)
-                # e.g. "manual - sanitation" vs "sanitation"
-                
-                # Better approach: check if key parts of prediction exist in folder name
-                # Folder: Municipal_-_Sanitation
-                # Pred: Municipal - Sanitation
-                
-                is_match = False
-                
-                # Convert "Municipal_-_PWD_Roads" -> "Municipal - PWD (Roads)" approx
-                # We can just use the label map from classifier if we really want strictness, 
-                # but string similarity is often enough for reports.
-                
-                if pred_dept.replace(" ", "_").replace("(", "").replace(")", "").replace("&", "and") == folder_name:
-                    is_match = True
-                
-                # Fallback check
-                if not is_match:
-                    # check if "Sanitation" is in both
-                    parts = pred_dept.split("-")
-                    main_part = parts[-1].strip().lower() # e.g. sanitation
-                    if main_part in normalized_folder:
-                        is_match = True
+                result = classifier.classify(absolute_path)
+
+                expected_label  = folder_to_label(folder_name)
+                pred_dept       = result.get('department', 'Uncategorized')
+                pred_canonical  = canonicalize_label(pred_dept)
+                vision_desc     = result.get('vision_description', result.get('label', ''))
+                pred_conf       = result.get('confidence', 0.0)
+                is_match        = labels_match(expected_label, pred_canonical)
 
                 if is_match:
                     correct += 1
-                
+                else:
+                    mismatches.append({
+                        "file":      img_path.name,
+                        "folder":    folder_name,
+                        "expected":  expected_label,
+                        "predicted": pred_canonical,
+                        "vision":    vision_desc,
+                    })
+
                 total += 1
 
                 writer.writerow({
-                    "Filename": img_path.name,
+                    "Filename":            img_path.name,
                     "Ground_Truth_Folder": folder_name,
-                    "Predicted_Dept": pred_dept,
-                    "Predicted_Label": pred_label,
-                    "Confidence": pred_conf,
-                    "Match": is_match
+                    "Expected_Label":      expected_label,
+                    "Predicted_Dept":      pred_dept,
+                    "Predicted_Canonical": pred_canonical,
+                    "Vision_Description":  vision_desc,
+                    "Confidence":          round(pred_conf, 3),
+                    "Match":               is_match,
                 })
-                
-            except Exception as e:
-                print(f"Error skipping {img_path}: {e}")
 
-    print(f"Evaluation Complete. Report saved to {OUTPUT_FILE}")
+            except Exception as e:
+                print(f"\n⚠  Skipped {img_path.name}: {e}")
+
+    # 4. Print summary
+    print(f"\n✅ Evaluation complete  →  {OUTPUT_FILE}")
     if total > 0:
-        print(f"Accuracy: {correct/total*100:.2f}% ({correct}/{total})")
+        accuracy = correct / total * 100
+        print(f"Accuracy  : {accuracy:.1f}%  ({correct}/{total} correct)")
+        print(f"Mismatches: {len(mismatches)}")
+
+        if mismatches:
+            print("\n--- Mismatched Images (first 20 shown) ---")
+            for m in mismatches[:20]:
+                print(f"  [{m['folder']}]  {m['file']}")
+                print(f"    Expected  : {m['expected']}")
+                print(f"    Predicted : {m['predicted']}")
+                print(f"    AI saw    : {m['vision']}")
+                print()
+
+        # Per-folder accuracy
+        print("--- Per-Folder Accuracy ---")
+        from collections import defaultdict
+        per_folder: dict = defaultdict(lambda: {"correct": 0, "total": 0})
+        import csv as _csv
+        with open(OUTPUT_FILE, newline='', encoding='utf-8') as rf:
+            for row in _csv.DictReader(rf):
+                folder = row["Ground_Truth_Folder"]
+                per_folder[folder]["total"] += 1
+                if row["Match"] == "True":
+                    per_folder[folder]["correct"] += 1
+        for folder, counts in sorted(per_folder.items()):
+            pct = counts["correct"] / counts["total"] * 100 if counts["total"] else 0
+            print(f"  {folder:<40} {pct:5.1f}%  ({counts['correct']}/{counts['total']})")
+
 
 if __name__ == "__main__":
     main()
