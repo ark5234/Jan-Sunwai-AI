@@ -38,6 +38,13 @@ backend/sorted_dataset/
 **/sorted_dataset/
 sorted_dataset
 
+# AI re-sorted dataset + move history (generated, large)
+ai_sorted_dataset/
+backend/ai_sorted_dataset/
+**/ai_sorted_dataset/
+ai_resort_report.csv
+backend/ai_resort_report.csv
+
 # Never commit image assets/datasets
 *.png
 *.jpg
