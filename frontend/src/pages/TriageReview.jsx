@@ -78,8 +78,8 @@ const TriageReview = () => {
             <thead className="bg-gray-50">
               <tr>
                 <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Image</th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">CLIP</th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">LLaVA</th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Vision Model</th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">AI Label</th>
                 <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
               </tr>
             </thead>
@@ -87,8 +87,8 @@ const TriageReview = () => {
               {items.map((item) => (
                 <tr key={item.image}>
                   <td className="px-4 py-3 text-sm text-gray-700 break-all">{item.image}</td>
-                  <td className="px-4 py-3 text-sm text-gray-700">{item.clip_top_label} ({Number(item.clip_top_score || 0).toFixed(2)})</td>
-                  <td className="px-4 py-3 text-sm text-gray-700">{item.llava_label}</td>
+                  <td className="px-4 py-3 text-sm text-gray-700">{item.clip_top_label || item.vision_summary || '—'}</td>
+                  <td className="px-4 py-3 text-sm text-gray-700">{item.llava_label || item.ai_label || '—'}</td>
                   <td className="px-4 py-3">
                     <div className="flex gap-2">
                       <button

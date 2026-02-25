@@ -69,7 +69,7 @@ export default function Home() {
                   </div>
                   Draft & Send
                 </dt>
-                <dd className="mt-2 text-base leading-7 text-slate-600">LLaVA Generative AI writes a compliant formal letter addressed to the exact municipal department.</dd>
+                <dd className="mt-2 text-base leading-7 text-slate-600">Ollama AI writes a compliant formal letter addressed to the exact municipal department.</dd>
               </div>
             </dl>
           </div>
