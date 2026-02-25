@@ -1,5 +1,7 @@
+import io
 import os
 import ollama
+from PIL import Image
 from app.config import settings
 from app.category_utils import CANONICAL_CATEGORIES, canonicalize_label
 
@@ -27,6 +29,22 @@ _NEGATIVE_KEYWORDS = [
 ]
 
 
+def _load_image_as_jpeg_bytes(image_path: str) -> bytes:
+    """
+    Load any image file, convert to RGB, and return JPEG bytes.
+    This prevents:
+    - GGML_ASSERT errors from RGBA/4-channel images
+    - "unknown format" errors from BMP, TIFF, WebP variants, etc.
+    """
+    with Image.open(image_path) as img:
+        # Strip alpha channel and palette modes
+        if img.mode not in ("RGB",):
+            img = img.convert("RGB")
+        buf = io.BytesIO()
+        img.save(buf, format="JPEG", quality=90)
+        return buf.getvalue()
+
+
 class CivicClassifier:
     """
     Two-step Vision-to-Reasoning classifier.
@@ -48,6 +66,10 @@ class CivicClassifier:
             }
 
         try:
+            # Convert image to RGB JPEG bytes (avoids GGML_ASSERT on RGBA
+            # images and "unknown format" errors on BMP/TIFF/WebP variants)
+            image_bytes = _load_image_as_jpeg_bytes(image_path)
+
             # ------------------------------------------------------------------
             # STEP 1 — Vision: Describe the image
             # ------------------------------------------------------------------
@@ -61,7 +83,7 @@ class CivicClassifier:
                     "and any visible hazards or health/safety risks. "
                     "Be specific and objective. Do not greet or explain yourself."
                 ),
-                images=[image_path],
+                images=[image_bytes],
                 options={"num_ctx": 2048},
             )
             description: str = vision_response["response"].strip()
@@ -84,18 +106,21 @@ class CivicClassifier:
                     f"Categories:\n"
                     f"{categories_block}\n\n"
                     f"Decision rules (apply in order):\n"
-                    f"1. If description mentions trees, plants, parks, fallen branches, overgrown vegetation → Municipal - Horticulture\n"
-                    f"2. If description mentions street lights, lamp posts, broken light, dark road (no flooding) → Municipal - Street Lighting\n"
-                    f"3. If description mentions garbage, trash, waste, dump, litter, bins → Municipal - Sanitation\n"
-                    f"4. If description mentions potholes, road cracks, broken road, bridge, footpath damage → Municipal - PWD (Roads)\n"
-                    f"5. If description mentions waterlogging, flooded, drain overflow, sewer, pipe leak, water gushing → Municipal - Water & Sewerage\n"
-                    f"6. If description mentions dangling wires, power cables, transformer → Utility - Power (DISCOM)\n"
-                    f"7. If description mentions smoke, burning, pollution, industrial waste → Pollution Control Board\n"
-                    f"8. If description mentions illegal parking, encroachment, shops on footpath → Police - Local Law Enforcement\n"
-                    f"9. If description mentions traffic signal, congestion, road blockage → Police - Traffic\n"
-                    f"10. If description mentions bus shelter, bus terminal, state bus → State Transport\n"
-                    f"11. If nothing matches clearly → Uncategorized\n\n"
+                    f"1. If description mentions dangling wires, power cables, open transformer, fallen electric pole → Utility - Power (DISCOM)\n"
+                    f"2. If description mentions waterlogging, flooded street, drain overflow, sewer, pipe leak, water gushing → Municipal - Water & Sewerage\n"
+                    f"3. If description mentions garbage, trash, waste, dump, litter, bins, debris scattered on ground → Municipal - Sanitation\n"
+                    f"4. If description mentions potholes, road cracks, broken road, damaged pavement, footpath damage, manhole cover damage → Municipal - PWD (Roads)\n"
+                    f"5. If description mentions broken street lights, non-functional lamp posts, unlit road (no wires mentioned) → Municipal - Street Lighting\n"
+                    f"6. If description mentions fallen/uprooted trees, overgrown parks, dead plants, tree branches blocking road → Municipal - Horticulture\n"
+                    f"7. If description mentions smoke, burning, industrial pollution, waste dumping into water → Pollution Control Board\n"
+                    f"8. If description mentions illegal parking, footpath encroachment, shops blocking path → Police - Local Law Enforcement\n"
+                    f"9. If description mentions traffic signal failure, severe road blockage, traffic jam → Police - Traffic\n"
+                    f"10. If description mentions damaged bus shelter, broken state bus, bus terminal → State Transport\n"
+                    f"11. If the image is black, blurry, unrecognisable, or shows a person/selfie/food → Uncategorized\n"
+                    f"12. If nothing matches clearly → Uncategorized\n\n"
                     f"IMPORTANT: Do NOT default to Municipal - Water & Sewerage unless water/flooding/drain is explicitly described.\n"
+                    f"IMPORTANT: Litter and waste on a road/street = Municipal - Sanitation (not Transport, not Roads).\n"
+                    f"IMPORTANT: A pole with hanging wires = Utility - Power (DISCOM), not Horticulture or Roads.\n"
                     f"Reply with ONLY the exact category name. No explanation.\n\n"
                     f"Category:"
                 ),
