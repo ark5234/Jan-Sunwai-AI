@@ -132,14 +132,11 @@ try {
 }
 
 # ── 9. Pull Ollama models ─────────────────────────────────────────────────────
-Write-Step "Pulling AI models (this downloads ~4.5 GB — please wait)..."
-Write-Host "  Pulling qwen2.5vl:3b (Vision model — 3.2 GB)..." -ForegroundColor Gray
-ollama pull qwen2.5vl:3b
-Write-Ok "qwen2.5vl:3b ready"
-
-Write-Host "  Pulling llama3.2:1b (Reasoning model — 1.3 GB)..." -ForegroundColor Gray
-ollama pull llama3.2:1b
-Write-Ok "llama3.2:1b ready"
+Write-Step "Pulling AI models (reads model names from backend/.env.example)..."
+# Model names come from .env — to change them edit VISION_MODEL/REASONING_MODEL in backend/.env
+# then re-run:  python backend/download_models.py
+& "$PSScriptRoot\.venv\Scripts\python.exe" "$PSScriptRoot\backend\download_models.py"
+if ($LASTEXITCODE -ne 0) { Write-Warn "Model pull failed. Run manually: python backend/download_models.py" }
 
 # ── 10. Summary ───────────────────────────────────────────────────────────────
 Write-Host "`n============================================" -ForegroundColor Magenta

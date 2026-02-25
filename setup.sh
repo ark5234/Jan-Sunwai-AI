@@ -113,14 +113,11 @@ else
 fi
 
 # ── 9. Pull Ollama models ─────────────────────────────────────────────────────
-step "Pulling AI models (downloads ~4.5 GB — please wait)..."
-echo "  Pulling qwen2.5vl:3b (Vision model — 3.2 GB)..."
-ollama pull qwen2.5vl:3b
-ok "qwen2.5vl:3b ready"
-
-echo "  Pulling llama3.2:1b (Reasoning model — 1.3 GB)..."
-ollama pull llama3.2:1b
-ok "llama3.2:1b ready"
+step "Pulling AI models (reads model names from backend/.env)..."
+# Model names come from .env — to change them edit VISION_MODEL/REASONING_MODEL in backend/.env
+# then re-run:  python backend/download_models.py
+"$SCRIPT_DIR/.venv/bin/python" "$SCRIPT_DIR/backend/download_models.py" || \
+    warn "Model pull failed. Run manually: python backend/download_models.py"
 
 # ── 10. Make run scripts executable ───────────────────────────────────────────
 step "Setting script permissions..."
