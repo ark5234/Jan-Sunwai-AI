@@ -331,7 +331,7 @@ def run_pipeline(
     print(f"Kept for labeling: {len(kept_images)}")
 
     if not kept_images:
-        print("⚠️ No images available after audit. Exiting without CLIP/LLaVA stages.")
+        print("⚠️ No images available after audit. Exiting without Ollama AI pipeline stages.")
         audit_csv = output_dir / "audit_issues.csv"
         labels_csv = output_dir / "triage_labels.csv"
         review_csv = output_dir / "review_queue.csv"

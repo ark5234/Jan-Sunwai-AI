@@ -17,6 +17,12 @@ Docker provides a containerized, consistent environment for running Jan-Sunwai A
 .\scripts\docker-start.bat
 ```
 
+**Option 1 (Linux/macOS):**
+```bash
+chmod +x scripts/docker-start.sh
+./scripts/docker-start.sh
+```
+
 **Option 2: Manual Commands**
 ```bash
 # Start all services (backend + MongoDB)
