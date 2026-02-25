@@ -4,7 +4,7 @@ from app.config import settings
 
 def generate_complaint(image_path, classification_result, user_details, location_details):
     """
-    Generates a formal government complaint letter using LLaVA.
+    Generates a formal government complaint letter using the configured Ollama vision model.
     
     Args:
         image_path (str): Path to the image file.

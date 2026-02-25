@@ -285,9 +285,8 @@ def vision_reasoning_label(
         used_vision_model = vision_model
         try:
             vision_payload = vision_describe(image_path, categories, used_vision_model)
-        except Exception:
-            used_vision_model = "llava"
-            vision_payload = vision_describe(image_path, categories, used_vision_model)
+        except Exception as vision_err:
+            raise RuntimeError(f"Vision step failed for {image_path}: {vision_err}") from vision_err
         judged = reason_label(vision_payload, category_prompts, reasoner_model)
         label = judged.get("label", "Uncategorized")
         if label not in categories:
