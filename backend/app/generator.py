@@ -50,8 +50,9 @@ def generate_complaint(image_path, classification_result, user_details, location
     """
     
     try:
-        # Call Ollama — reuse vision model (qwen2.5-vl) which is already warm in memory
-        response = ollama.generate(
+        # Use explicit client so host URL comes from config (not localhost default)
+        client = ollama.Client(host=settings.ollama_base_url)
+        response = client.generate(
             model=settings.vision_model,
             prompt=prompt,
             images=[image_path]

@@ -5,6 +5,12 @@ from PIL import Image
 from app.config import settings
 from app.category_utils import CANONICAL_CATEGORIES, canonicalize_label
 
+# Use an explicit client so the host URL comes from OLLAMA_BASE_URL config
+# (the module-level ollama.generate() defaults to localhost:11434 which
+# breaks inside Docker where localhost = the container, not the host).
+def _get_ollama_client() -> ollama.Client:
+    return ollama.Client(host=settings.ollama_base_url)
+
 # Human-readable definitions passed to the reasoning model so it can
 # make a contextual decision rather than just matching a string.
 CATEGORY_DEFINITIONS: dict[str, str] = {
@@ -69,11 +75,12 @@ class CivicClassifier:
             # Convert image to RGB JPEG bytes (avoids GGML_ASSERT on RGBA
             # images and "unknown format" errors on BMP/TIFF/WebP variants)
             image_bytes = _load_image_as_jpeg_bytes(image_path)
+            client = _get_ollama_client()
 
             # ------------------------------------------------------------------
             # STEP 1 — Vision: Describe the image
             # ------------------------------------------------------------------
-            vision_response = ollama.generate(
+            vision_response = client.generate(
                 model=settings.vision_model,
                 prompt=(
                     "You are analyzing a civic complaint photo from India. "
@@ -96,7 +103,7 @@ class CivicClassifier:
                 for cat in CANONICAL_CATEGORIES
             )
 
-            reasoning_response = ollama.generate(
+            reasoning_response = client.generate(
                 model=settings.reasoning_model,
                 options={"num_ctx": 1024},
                 prompt=(
