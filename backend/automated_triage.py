@@ -1,6 +1,7 @@
 import argparse
 import json
 import os
+import random
 import shutil
 import re
 from pathlib import Path
@@ -34,7 +35,20 @@ CATEGORY_PROMPTS: Dict[str, str] = {
 }
 
 
-def list_images(root: Path) -> List[Path]:
+def list_images(root: Path, sample_per_folder: int = 0) -> List[Path]:
+    """Collect images from root. If sample_per_folder > 0, pick N random images per subfolder."""
+    if sample_per_folder > 0:
+        random.seed(42)
+        images = []
+        for folder in sorted(root.iterdir()):
+            if not folder.is_dir():
+                continue
+            found = [p for p in folder.iterdir() if p.suffix.lower() in IMAGE_EXTS]
+            if not found:
+                continue
+            picked = random.sample(found, min(sample_per_folder, len(found)))
+            images.extend(picked)
+        return images
     return [p for p in root.rglob("*") if p.suffix.lower() in IMAGE_EXTS]
 
 
@@ -87,8 +101,8 @@ def resolve_dataset_dir(dataset_dir: Path) -> Path:
     return dataset_dir
 
 
-def run_cleanvision_audit(dataset_dir: Path, prune_ratio: float, work_dir: Path) -> Tuple[List[Path], List[Path], pd.DataFrame]:
-    images = list_images(dataset_dir)
+def run_cleanvision_audit(dataset_dir: Path, prune_ratio: float, work_dir: Path, sample_per_folder: int = 0) -> Tuple[List[Path], List[Path], pd.DataFrame]:
+    images = list_images(dataset_dir, sample_per_folder=sample_per_folder)
     if not images:
         return [], [], pd.DataFrame()
 
@@ -369,6 +383,7 @@ def run_pipeline(
     prune_ratio: float,
     vision_model: str,
     reasoner_model: str,
+    sample_per_folder: int = 0,
 ):
     output_dir.mkdir(parents=True, exist_ok=True)
     triage_dir = output_dir / "triaged_dataset"
@@ -376,8 +391,11 @@ def run_pipeline(
 
     dataset_dir = resolve_dataset_dir(dataset_dir)
 
+    if sample_per_folder > 0:
+        print(f"\n⚡ Sampling mode: {sample_per_folder} images per folder")
+
     print("\n=== STEP 1: Automated Cleaning (Audit) ===")
-    kept_images, rejected_images, issues_df = run_cleanvision_audit(dataset_dir, prune_ratio, output_dir)
+    kept_images, rejected_images, issues_df = run_cleanvision_audit(dataset_dir, prune_ratio, output_dir, sample_per_folder=sample_per_folder)
     print(f"Total images: {len(kept_images) + len(rejected_images)}")
     print(f"Rejected by audit: {len(rejected_images)}")
     print(f"Kept for labeling: {len(kept_images)}")
@@ -475,6 +493,7 @@ def parse_args():
     parser.add_argument("--prune-ratio", type=float, default=0.15, help="Fraction of worst images to prune (0.1 to 0.2 recommended)")
     parser.add_argument("--vision-model", type=str, default="qwen2.5vl:3b", help="Ollama vision model for image narration")
     parser.add_argument("--reasoner-model", type=str, default="llama3.2:1b", help="Ollama text model for folder reasoning")
+    parser.add_argument("--sample-per-folder", type=int, default=0, help="0 = all images; >0 = sample N per folder for quick testing")
     return parser.parse_args()
 
 
@@ -486,4 +505,5 @@ if __name__ == "__main__":
         prune_ratio=args.prune_ratio,
         vision_model=args.vision_model,
         reasoner_model=args.reasoner_model,
+        sample_per_folder=args.sample_per_folder,
     )
