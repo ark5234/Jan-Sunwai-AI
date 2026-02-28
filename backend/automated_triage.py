@@ -1,4 +1,5 @@
 import argparse
+import io
 import json
 import os
 import random
@@ -6,6 +7,14 @@ import shutil
 import re
 from pathlib import Path
 from typing import Any, Dict, List, Tuple
+
+# Fix: OLLAMA_HOST=0.0.0.0 is a bind address and cannot be used as a connection
+# target. If we detect it, remap to 127.0.0.1 so the Python client can connect.
+_ollama_host = os.getenv('OLLAMA_HOST', '')
+if _ollama_host.startswith('0.0.0.0'):
+    _fixed = _ollama_host.replace('0.0.0.0', '127.0.0.1', 1)
+    os.environ['OLLAMA_HOST'] = _fixed
+    print(f'[startup] OLLAMA_HOST remapped: {_ollama_host} → {_fixed}')
 
 import ollama
 import pandas as pd
@@ -144,46 +153,61 @@ def run_cleanvision_audit(dataset_dir: Path, prune_ratio: float, work_dir: Path,
     if "given_label" in issues_df.columns:
         issues_df = issues_df.drop(columns=["given_label"])
 
-    path_col = None
-    for candidate in ["filepath", "image", "filename"]:
-        if candidate in issues_df.columns:
-            path_col = candidate
-            break
+    # CleanVision uses the file path (relative to data_path) as the DataFrame INDEX.
+    # Build a map: staged_path → original_path for fast lookup.
+    staged_to_orig: Dict[str, Path] = {}
+    for orig in valid_images:
+        try:
+            rel = orig.relative_to(dataset_dir)
+            staged = str(staged_dataset_dir / rel)
+            staged_to_orig[staged] = orig
+            # Also index by just the relative portion (CleanVision may use either)
+            staged_to_orig[str(rel)] = orig
+            staged_to_orig[orig.name] = orig
+        except Exception:
+            pass
 
-    if path_col is None:
-        issues_df["filepath"] = [str(p) for p in valid_images]
-        path_col = "filepath"
+    def resolve_orig(idx_val: str) -> Path | None:
+        """Resolve a CleanVision index value back to the original dataset path."""
+        # Try direct lookup first
+        if idx_val in staged_to_orig:
+            return staged_to_orig[idx_val]
+        # Try as relative path under staged_dataset_dir
+        p = staged_dataset_dir / idx_val
+        if str(p) in staged_to_orig:
+            return staged_to_orig[str(p)]
+        if p.exists():
+            try:
+                orig = dataset_dir / p.relative_to(staged_dataset_dir)
+                if orig.exists():
+                    return orig
+            except Exception:
+                pass
+        return None
 
-    issues_df[path_col] = issues_df[path_col].astype(str)
-    issues_df = issues_df.sort_values("issue_count", ascending=False).reset_index(drop=True)
+    issues_df["filepath"] = [str(p) for p in valid_images]  # fallback column
+    issues_df = issues_df.sort_values("issue_count", ascending=False)
 
     prune_count = int(len(issues_df) * prune_ratio)
     bad_df = issues_df.head(prune_count)
     keep_df = issues_df.iloc[prune_count:]
 
     rejected = []
-    for raw_path in bad_df[path_col].tolist():
-        p = Path(raw_path)
-        if not p.is_absolute():
-            p = staged_dataset_dir / p
-        try:
-            p = dataset_dir / p.relative_to(staged_dataset_dir)
-        except Exception:
-            pass
-        if p.exists():
-            rejected.append(p)
+    for idx_val in bad_df.index.tolist():
+        orig = resolve_orig(str(idx_val))
+        if orig and orig.exists():
+            rejected.append(orig)
 
     kept = []
-    for raw_path in keep_df[path_col].tolist():
-        p = Path(raw_path)
-        if not p.is_absolute():
-            p = staged_dataset_dir / p
-        try:
-            p = dataset_dir / p.relative_to(staged_dataset_dir)
-        except Exception:
-            pass
-        if p.exists():
-            kept.append(p)
+    for idx_val in keep_df.index.tolist():
+        orig = resolve_orig(str(idx_val))
+        if orig and orig.exists():
+            kept.append(orig)
+
+    # Fallback: if resolution completely failed, keep all valid images
+    if not kept and not rejected:
+        print("⚠️ CleanVision path resolution failed — keeping all valid images.")
+        kept = list(valid_images)
 
     rejected_dir = work_dir / "audit_rejected"
     rejected_dir.mkdir(parents=True, exist_ok=True)
@@ -262,6 +286,16 @@ def _keyword_fallback(description: str) -> str:
     return "Uncategorized"
 
 
+def _load_image_bytes(image_path: Path) -> bytes:
+    """Load an image file and return JPEG bytes — works with all Ollama versions."""
+    with Image.open(image_path) as img:
+        if img.mode != 'RGB':
+            img = img.convert('RGB')
+        buf = io.BytesIO()
+        img.save(buf, format='JPEG', quality=85)
+        return buf.getvalue()
+
+
 def vision_describe(image_path: Path, categories: List[str], model: str) -> Dict[str, Any]:
     schema = {
         "summary": "short factual description",
@@ -278,7 +312,8 @@ def vision_describe(image_path: Path, categories: List[str], model: str) -> Dict
         "candidate_labels must be chosen only from the allowed labels."
     )
 
-    response = ollama.generate(model=model, prompt=prompt, images=[str(image_path)], format="json")
+    image_bytes = _load_image_bytes(image_path)
+    response = ollama.generate(model=model, prompt=prompt, images=[image_bytes], format="json")
     payload = _extract_json(response.get("response", ""))
 
     if not payload:
@@ -366,11 +401,12 @@ def vision_reasoning_label(
             "vision_summary": vision_payload.get("summary", ""),
             "vision_payload": vision_payload,
         }
-    except Exception:
+    except Exception as e:
+        print(f"  ⚠ vision_reasoning failed for {image_path.name}: {e}")
         return {
             "label": "Uncategorized",
             "confidence": 0.0,
-            "rationale": "vision_reasoning_failed",
+            "rationale": f"vision_reasoning_failed: {e}",
             "used_vision_model": vision_model,
             "vision_summary": "",
             "vision_payload": {},
