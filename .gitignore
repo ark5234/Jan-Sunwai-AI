@@ -7,6 +7,7 @@ __pycache__/
 venv/
 .venv/
 env/
+.pytest_cache/
 
 # Node
 node_modules/
@@ -16,11 +17,14 @@ dist/
 # Editor
 .vscode/
 
+# Logs
+*.log
+backend/logs/
+
 downloaded_images_department_final (2)/
 dataset/
 data/
 
-backend/logs/
 backend/uploads/
 backend/backend/uploads/
 backend/backend/logs/
@@ -32,11 +36,13 @@ TEST_ACCOUNTS_CREDENTIALS.txt
 backend/create_test_users.py
 create_test_users.py
 
-# Sorted dataset
+# Sorted dataset (source + split parts)
 sorted_dataset/
 backend/sorted_dataset/
 **/sorted_dataset/
 sorted_dataset
+backend/sorted_dataset_parts/
+**/sorted_dataset_parts/
 
 # AI re-sorted dataset + move history (generated, large)
 ai_sorted_dataset/
