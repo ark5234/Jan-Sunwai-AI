@@ -1,9 +1,11 @@
 import io
+import json
 import os
 import ollama
 from PIL import Image
 from app.config import settings
 from app.category_utils import CANONICAL_CATEGORIES, canonicalize_label
+from app.rule_engine import classify_by_rules, parse_vision_text_to_payload
 
 # Use an explicit client so the host URL comes from OLLAMA_BASE_URL config
 # (the module-level ollama.generate() defaults to localhost:11434 which
@@ -34,6 +36,45 @@ _NEGATIVE_KEYWORDS = [
     "beautiful landscape", "clear sky",
 ]
 
+# Keyword fallback: if reasoning model fails, map description keywords → category
+# Ordered from most-specific to least-specific
+_KEYWORD_FALLBACK: list[tuple[list[str], str]] = [
+    (["pothole", "road damage", "cracked road", "broken road", "damaged road",
+      "damaged pavement", "broken pavement", "footpath damage", "manhole"],
+     "Municipal - PWD (Roads)"),
+    (["waterlog", "flooded", "flood", "drain overflow", "sewer overflow",
+      "pipe leak", "water gushing", "stagnant water", "blocked drain",
+      "drainage problem"],
+     "Municipal - Water & Sewerage"),
+    (["garbage", "trash", "waste", "litter", "dump", "rubbish", "overflowing bin"],
+     "Municipal - Sanitation"),
+    (["fallen tree", "uprooted tree", "overgrown", "dead plant", "broken branch",
+      "tree blocking"],
+     "Municipal - Horticulture"),
+    (["street light", "lamp post", "unlit road", "broken light", "dark road"],
+     "Municipal - Street Lighting"),
+    (["dangling wire", "hanging wire", "open transformer", "fallen electric pole",
+      "exposed wire", "power cable"],
+     "Utility - Power (DISCOM)"),
+    (["smoke", "burning", "industrial waste", "air pollution", "open burning"],
+     "Pollution Control Board"),
+    (["traffic signal", "signal failure", "traffic jam", "road blockage"],
+     "Police - Traffic"),
+    (["illegal parking", "encroachment", "footpath blocked", "public nuisance"],
+     "Police - Local Law Enforcement"),
+    (["bus shelter", "state bus", "transport terminal"],
+     "State Transport"),
+]
+
+
+def _keyword_fallback(description: str) -> str:
+    """Scan the vision description for civic keywords and return best category."""
+    desc = description.lower()
+    for keywords, category in _KEYWORD_FALLBACK:
+        if any(kw in desc for kw in keywords):
+            return category
+    return "Uncategorized"
+
 
 def _load_image_as_jpeg_bytes(image_path: str) -> bytes:
     """
@@ -53,14 +94,30 @@ def _load_image_as_jpeg_bytes(image_path: str) -> bytes:
 
 class CivicClassifier:
     """
-    Two-step Vision-to-Reasoning classifier.
+    Hybrid Vision → Rule Engine → Optional Reasoning classifier.
 
-    Step 1 — Vision (qwen2.5-vl:3b):
-        Narrates what is physically present and problematic in the image.
+    Optimised for 4 GB VRAM (RTX 3050) local deployment.
 
-    Step 2 — Reasoning (llama3.2:1b):
-        Maps the narration to a canonical civic category using folder definitions.
+    Pipeline:
+        Step 1 — Vision (qwen2.5vl:3b): Produces structured JSON description.
+        Step 2 — Rule Engine (Python, zero VRAM): Deterministic keyword scoring.
+        Step 3 — Reasoning (llama3.2:1b, OPTIONAL): Only invoked when the rule
+                 engine flags the result as ambiguous.
+
+    This hybrid approach:
+        - Saves ~1.2 GB VRAM (reasoning model unloaded most of the time)
+        - Is faster (rule engine is instant)
+        - Is more deterministic (known rule set for 11 categories)
+        - Falls back to LLM only for genuinely hard cases
     """
+
+    def _unload_model(self, model_name: str) -> None:
+        """Ask Ollama to unload a model from VRAM (keep_alive=0)."""
+        try:
+            client = _get_ollama_client()
+            client.generate(model=model_name, prompt="", keep_alive=0)
+        except Exception:
+            pass  # best-effort; server may not support keep_alive
 
     def classify(self, image_path: str) -> dict:
         if not os.path.exists(image_path):
@@ -69,76 +126,135 @@ class CivicClassifier:
                 "label": "Image file not found",
                 "confidence": 0.0,
                 "is_valid": False,
+                "method": "error",
+                "rationale": "file not found",
+                "raw_json": "",
             }
 
         try:
-            # Convert image to RGB JPEG bytes (avoids GGML_ASSERT on RGBA
-            # images and "unknown format" errors on BMP/TIFF/WebP variants)
             image_bytes = _load_image_as_jpeg_bytes(image_path)
             client = _get_ollama_client()
 
             # ------------------------------------------------------------------
-            # STEP 1 — Vision: Describe the image
+            # STEP 1 — Vision: Structured JSON description (qwen2.5vl:3b)
             # ------------------------------------------------------------------
             vision_response = client.generate(
                 model=settings.vision_model,
+                format="json",
                 prompt=(
-                    "You are analyzing a civic complaint photo from India. "
-                    "Describe what you see in 2-3 factual sentences. "
-                    "Focus on: what is visibly damaged or problematic, "
-                    "the setting (road, park, building, drain, etc.), "
-                    "and any visible hazards or health/safety risks. "
-                    "Be specific and objective. Do not greet or explain yourself."
+                    "You are a civic-issue vision analyst for Indian municipal complaints. "
+                    "Analyze the image and return strict JSON only.\n\n"
+                    "JSON schema:\n"
+                    "{\n"
+                    '  "description": "2-3 sentence factual description of what you see",\n'
+                    '  "visible_objects": ["object1", "object2"],\n'
+                    '  "primary_issue": "single phrase describing the main problem",\n'
+                    '  "secondary_issue": "single phrase or empty string",\n'
+                    '  "hazards": ["hazard1", "hazard2"],\n'
+                    '  "setting": "road/park/drain/building/etc",\n'
+                    '  "confidence": "low/medium/high"\n'
+                    "}\n\n"
+                    "Rules:\n"
+                    "- Keep description under 40 words\n"
+                    "- Be specific about damage type (pothole, crack, leak, etc.)\n"
+                    "- List all visible hazards\n"
+                    "- No markdown, no explanation outside JSON"
                 ),
                 images=[image_bytes],
-                options={"num_ctx": 2048},
-            )
-            description: str = vision_response["response"].strip()
-
-            # ------------------------------------------------------------------
-            # STEP 2 — Reasoning: Map description to canonical category
-            # ------------------------------------------------------------------
-            categories_block = "\n".join(
-                f"- {cat}: {CATEGORY_DEFINITIONS[cat]}"
-                for cat in CANONICAL_CATEGORIES
-            )
-
-            reasoning_response = client.generate(
-                model=settings.reasoning_model,
                 options={"num_ctx": 1024},
-                prompt=(
-                    f"You are a civic complaint classifier for Indian municipal authorities.\n\n"
-                    f"Image description: \"{description}\"\n\n"
-                    f"Choose the SINGLE best matching category. Read ALL options before deciding.\n\n"
-                    f"Categories:\n"
-                    f"{categories_block}\n\n"
-                    f"Decision rules (apply in order):\n"
-                    f"1. If description mentions dangling wires, power cables, open transformer, fallen electric pole → Utility - Power (DISCOM)\n"
-                    f"2. If description mentions waterlogging, flooded street, drain overflow, sewer, pipe leak, water gushing → Municipal - Water & Sewerage\n"
-                    f"3. If description mentions garbage, trash, waste, dump, litter, bins, debris scattered on ground → Municipal - Sanitation\n"
-                    f"4. If description mentions potholes, road cracks, broken road, damaged pavement, footpath damage, manhole cover damage → Municipal - PWD (Roads)\n"
-                    f"5. If description mentions broken street lights, non-functional lamp posts, unlit road (no wires mentioned) → Municipal - Street Lighting\n"
-                    f"6. If description mentions fallen/uprooted trees, overgrown parks, dead plants, tree branches blocking road → Municipal - Horticulture\n"
-                    f"7. If description mentions smoke, burning, industrial pollution, waste dumping into water → Pollution Control Board\n"
-                    f"8. If description mentions illegal parking, footpath encroachment, shops blocking path → Police - Local Law Enforcement\n"
-                    f"9. If description mentions traffic signal failure, severe road blockage, traffic jam → Police - Traffic\n"
-                    f"10. If description mentions damaged bus shelter, broken state bus, bus terminal → State Transport\n"
-                    f"11. If the image is black, blurry, unrecognisable, or shows a person/selfie/food → Uncategorized\n"
-                    f"12. If nothing matches clearly → Uncategorized\n\n"
-                    f"IMPORTANT: Do NOT default to Municipal - Water & Sewerage unless water/flooding/drain is explicitly described.\n"
-                    f"IMPORTANT: Litter and waste on a road/street = Municipal - Sanitation (not Transport, not Roads).\n"
-                    f"IMPORTANT: A pole with hanging wires = Utility - Power (DISCOM), not Horticulture or Roads.\n"
-                    f"Reply with ONLY the exact category name. No explanation.\n\n"
-                    f"Category:"
-                ),
             )
-            raw_label: str = reasoning_response["response"].strip()
+            raw_vision_json: str = vision_response["response"].strip()
 
-            # Guard: some models echo "Category: X" — strip the prefix if present
-            if ":" in raw_label:
-                raw_label = raw_label.split(":", 1)[-1].strip()
+            # Parse the structured vision output
+            try:
+                vision_payload = json.loads(raw_vision_json)
+            except json.JSONDecodeError:
+                # Fallback: treat raw output as plain description
+                vision_payload = parse_vision_text_to_payload(raw_vision_json)
 
-            canonical = canonicalize_label(raw_label)
+            # Ensure all expected keys exist
+            vision_payload.setdefault("description", "")
+            vision_payload.setdefault("visible_objects", [])
+            vision_payload.setdefault("primary_issue", "")
+            vision_payload.setdefault("secondary_issue", "")
+            vision_payload.setdefault("hazards", [])
+            vision_payload.setdefault("setting", "")
+
+            description = str(vision_payload.get("description", ""))
+
+            # ------------------------------------------------------------------
+            # STEP 2 — Rule Engine: Deterministic classification (zero VRAM)
+            # ------------------------------------------------------------------
+            rule_result = classify_by_rules(vision_payload)
+            canonical = rule_result["category"]
+            model_confidence = rule_result["confidence"]
+            method = rule_result["method"]
+            rationale = f"top_score={rule_result['scores'].get(canonical, 0):.1f}"
+            is_ambiguous = rule_result["is_ambiguous"]
+
+            print(f"[classifier] rule_engine: {canonical} "
+                  f"(conf={model_confidence:.2f}, ambiguous={is_ambiguous})")
+
+            # ------------------------------------------------------------------
+            # STEP 3 — Optional Reasoning: Only if rule engine is ambiguous
+            #          Skipped entirely when RULE_ENGINE_ONLY=true
+            # ------------------------------------------------------------------
+            raw_json_str = raw_vision_json  # default audit trail
+
+            if is_ambiguous and settings.reasoning_model and not settings.rule_engine_only:
+                print(f"[classifier] ambiguous → invoking {settings.reasoning_model}")
+                categories_block = "\n".join(
+                    f"- {cat}: {CATEGORY_DEFINITIONS[cat]}"
+                    for cat in CANONICAL_CATEGORIES
+                )
+
+                reasoning_response = client.generate(
+                    model=settings.reasoning_model,
+                    format="json",
+                    options={"num_ctx": 1024},
+                    prompt=(
+                        f"You are a civic complaint classifier for Indian municipal authorities.\n\n"
+                        f"Image description: \"{description}\"\n"
+                        f"Visible objects: {json.dumps(vision_payload.get('visible_objects', []))}\n"
+                        f"Primary issue: \"{vision_payload.get('primary_issue', '')}\"\n"
+                        f"Hazards: {json.dumps(vision_payload.get('hazards', []))}\n\n"
+                        f"Categories:\n{categories_block}\n\n"
+                        f"Respond with JSON: "
+                        f"{{\"department\": \"<exact category name>\", "
+                        f"\"confidence\": <0.0-1.0>, \"rationale\": \"<brief reason>\"}}"
+                    ),
+                )
+                raw_json_str = reasoning_response["response"].strip()
+
+                try:
+                    parsed = json.loads(raw_json_str)
+                    reasoning_label = str(parsed.get("department", "Uncategorized"))
+                    reasoning_conf = float(parsed.get("confidence", 0.5))
+                    rationale = str(parsed.get("rationale", ""))
+                except (json.JSONDecodeError, ValueError, TypeError):
+                    reasoning_label = raw_json_str
+                    reasoning_conf = 0.5
+                    rationale = ""
+
+                reasoning_canonical = canonicalize_label(reasoning_label)
+
+                # Use reasoning result if it's more confident than rule engine
+                if reasoning_canonical != "Uncategorized" or canonical == "Uncategorized":
+                    canonical = reasoning_canonical
+                    model_confidence = reasoning_conf
+                    method = "reasoning"
+
+                # Unload reasoning model to free VRAM after use
+                if settings.unload_after_reasoning:
+                    self._unload_model(settings.reasoning_model)
+
+            # Final fallback: keyword scan if still Uncategorized
+            if canonical == "Uncategorized":
+                keyword_result = _keyword_fallback(description)
+                if keyword_result != "Uncategorized":
+                    canonical = keyword_result
+                    method = "keyword_fallback"
+                    model_confidence = min(model_confidence, 0.65)
 
             # Determine validity
             desc_lower = description.lower()
@@ -148,10 +264,14 @@ class CivicClassifier:
             return {
                 "department": canonical,
                 "label": description,
-                "confidence": 0.9 if is_valid else 0.4,
+                "confidence": model_confidence if is_valid else max(model_confidence * 0.5, 0.1),
                 "is_valid": is_valid,
                 "vision_description": description,
-                "raw_category": raw_label,
+                "vision_payload": vision_payload,
+                "raw_category": canonical,
+                "rationale": rationale,
+                "method": method,
+                "raw_json": raw_json_str,
             }
 
         except Exception as e:
@@ -162,5 +282,8 @@ class CivicClassifier:
                 "confidence": 0.0,
                 "is_valid": False,
                 "error": str(e),
+                "method": "error",
+                "rationale": "",
+                "raw_json": "",
             }
 

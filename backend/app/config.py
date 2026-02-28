@@ -29,6 +29,14 @@ class Settings:
     default_page_size: int = int(os.getenv("DEFAULT_PAGE_SIZE", "25"))
     max_page_size: int = int(os.getenv("MAX_PAGE_SIZE", "100"))
 
+    # ── VRAM-aware settings for hybrid classifier ──
+    # rule_engine_only: if True, skip reasoning model entirely (saves ~1.2 GB VRAM)
+    rule_engine_only: bool = os.getenv("RULE_ENGINE_ONLY", "false").lower() in ("true", "1", "yes")
+    # ambiguity_threshold: minimum rule engine score to be considered confident
+    ambiguity_threshold: float = float(os.getenv("AMBIGUITY_THRESHOLD", "2.0"))
+    # unload_after_reasoning: free VRAM by unloading reasoning model after each use
+    unload_after_reasoning: bool = os.getenv("UNLOAD_AFTER_REASONING", "true").lower() in ("true", "1", "yes")
+
     @property
     def allowed_origins(self) -> list[str]:
         return _parse_origins(self.allowed_origins_raw)
