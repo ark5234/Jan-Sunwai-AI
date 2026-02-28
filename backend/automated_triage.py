@@ -209,6 +209,45 @@ def _extract_json(text: str) -> Dict[str, Any]:
         return {}
 
 
+# ── Keyword fallback: scan description text for civic keywords ────────────
+_KEYWORD_FALLBACK_RULES: list[tuple[list[str], str]] = [
+    (["pothole", "road damage", "cracked road", "broken road", "damaged road",
+      "damaged pavement", "broken pavement", "footpath damage", "manhole"],
+     "Municipal - PWD (Roads)"),
+    (["waterlog", "flooded", "flood", "drain overflow", "sewer overflow",
+      "pipe leak", "water gushing", "stagnant water", "blocked drain",
+      "drainage problem"],
+     "Municipal - Water & Sewerage"),
+    (["garbage", "trash", "waste", "litter", "dump", "rubbish", "overflowing bin"],
+     "Municipal - Sanitation"),
+    (["fallen tree", "uprooted tree", "overgrown", "dead plant", "broken branch",
+      "tree blocking"],
+     "Municipal - Horticulture"),
+    (["street light", "lamp post", "unlit road", "broken light", "dark road"],
+     "Municipal - Street Lighting"),
+    (["dangling wire", "hanging wire", "open transformer", "fallen electric pole",
+      "exposed wire", "power cable"],
+     "Utility - Power (DISCOM)"),
+    (["smoke", "burning", "industrial waste", "air pollution", "open burning"],
+     "Pollution Control Board"),
+    (["traffic signal", "signal failure", "traffic jam", "road blockage"],
+     "Police - Traffic"),
+    (["illegal parking", "encroachment", "footpath blocked", "public nuisance"],
+     "Police - Local Law Enforcement"),
+    (["bus shelter", "state bus", "transport terminal"],
+     "State Transport"),
+]
+
+
+def _keyword_fallback(description: str) -> str:
+    """Scan text for civic keywords and return best matching category."""
+    desc = description.lower()
+    for keywords, category in _KEYWORD_FALLBACK_RULES:
+        if any(kw in desc for kw in keywords):
+            return category
+    return "Uncategorized"
+
+
 def vision_describe(image_path: Path, categories: List[str], model: str) -> Dict[str, Any]:
     schema = {
         "summary": "short factual description",
@@ -225,7 +264,7 @@ def vision_describe(image_path: Path, categories: List[str], model: str) -> Dict
         "candidate_labels must be chosen only from the allowed labels."
     )
 
-    response = ollama.generate(model=model, prompt=prompt, images=[str(image_path)])
+    response = ollama.generate(model=model, prompt=prompt, images=[str(image_path)], format="json")
     payload = _extract_json(response.get("response", ""))
 
     if not payload:
@@ -259,7 +298,7 @@ def reason_label(
         "confidence must be a number between 0 and 1."
     )
 
-    response = ollama.generate(model=model, prompt=prompt)
+    response = ollama.generate(model=model, prompt=prompt, format="json")
     payload = _extract_json(response.get("response", ""))
 
     label = str(payload.get("label", "Uncategorized")) if payload else "Uncategorized"
@@ -291,10 +330,24 @@ def vision_reasoning_label(
         label = judged.get("label", "Uncategorized")
         if label not in categories:
             label = "Uncategorized"
+        method = "vision_reasoning"
+        # Keyword fallback if reasoning returned Uncategorized
+        if label == "Uncategorized":
+            fallback_text = " ".join([
+                vision_payload.get("summary", ""),
+                vision_payload.get("main_action", ""),
+                vision_payload.get("setting", ""),
+                " ".join(vision_payload.get("hazards", [])),
+            ])
+            keyword_result = _keyword_fallback(fallback_text)
+            if keyword_result != "Uncategorized":
+                label = keyword_result
+                method = "keyword_fallback"
         return {
             "label": label,
             "confidence": float(judged.get("confidence", 0.0)),
             "rationale": judged.get("rationale", ""),
+            "method": method,
             "used_vision_model": used_vision_model,
             "vision_summary": vision_payload.get("summary", ""),
             "vision_payload": vision_payload,
