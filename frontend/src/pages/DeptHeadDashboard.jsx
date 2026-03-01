@@ -12,10 +12,13 @@ const DeptHeadDashboard = () => {
   const [updateError, setUpdateError] = useState(null);
 
   useEffect(() => {
-    fetchDepartmentComplaints();
-  }, [statusFilter]);
+    if (user?.access_token) {
+      fetchDepartmentComplaints();
+    }
+  }, [statusFilter, user]);
 
   const fetchDepartmentComplaints = async () => {
+    if (!user?.access_token) return;
     try {
       setLoading(true);
       const params = {};
@@ -33,7 +36,11 @@ const DeptHeadDashboard = () => {
       setError(null);
     } catch (err) {
       console.error('Error fetching complaints:', err);
-      setError('Failed to load complaints');
+      if (err.response?.status === 401) {
+        setError('Session expired. Please log out and log back in.');
+      } else {
+        setError('Failed to load complaints');
+      }
     } finally {
       setLoading(false);
     }

@@ -11,10 +11,13 @@ const CitizenDashboard = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetchMyComplaints();
-  }, []);
+    if (user?.access_token) {
+      fetchMyComplaints();
+    }
+  }, [user]);
 
   const fetchMyComplaints = async () => {
+    if (!user?.access_token) return;
     try {
       setLoading(true);
       const response = await axios.get('http://localhost:8000/complaints', {
@@ -26,7 +29,11 @@ const CitizenDashboard = () => {
       setError(null);
     } catch (err) {
       console.error('Error fetching complaints:', err);
-      setError('Failed to load complaints');
+      if (err.response?.status === 401) {
+        setError('Session expired. Please log out and log back in.');
+      } else {
+        setError('Failed to load complaints');
+      }
     } finally {
       setLoading(false);
     }

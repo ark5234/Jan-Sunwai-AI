@@ -17,10 +17,13 @@ const AdminDashboard = () => {
   const departments = [...new Set(complaints.map(c => c.department))].sort();
 
   useEffect(() => {
-    fetchAllComplaints();
-  }, [statusFilter, departmentFilter]);
+    if (user?.access_token) {
+      fetchAllComplaints();
+    }
+  }, [statusFilter, departmentFilter, user]);
 
   const fetchAllComplaints = async () => {
+    if (!user?.access_token) return;
     try {
       setLoading(true);
       const params = {};
@@ -41,7 +44,11 @@ const AdminDashboard = () => {
       setError(null);
     } catch (err) {
       console.error('Error fetching complaints:', err);
-      setError('Failed to load complaints');
+      if (err.response?.status === 401) {
+        setError('Session expired. Please log out and log back in.');
+      } else {
+        setError('Failed to load complaints');
+      }
     } finally {
       setLoading(false);
     }
