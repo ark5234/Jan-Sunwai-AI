@@ -78,7 +78,6 @@ app.add_middleware(
 # Mount Uploads for Static Access
 os.makedirs(UPLOADS_DIR, exist_ok=True)
 app.mount("/uploads", StaticFiles(directory=str(UPLOADS_DIR)), name="uploads")
-app.mount("/backend/uploads", StaticFiles(directory=str(UPLOADS_DIR)), name="uploads_legacy")
 
 # Include Routers
 app.include_router(complaints.router, tags=["Complaints"])

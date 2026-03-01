@@ -311,6 +311,51 @@ python backend/evaluate_sorted_dataset.py --sample 20
 python backend/download_models.py
 ```
 
+### Benchmark Results (200-image sample, Kaggle)
+
+Evaluated on 200 civic images (25 sampled per department) using the two-step Vision → Reasoning pipeline (`qwen2.5vl:3b` + `llama3.2:1b`):
+
+| Metric | Result |
+|---|---|
+| Images processed | 200 |
+| Re-labelled | 128 (64.0%) |
+| Confirmed (label unchanged) | 72 (36.0%) |
+| Errors | 0 |
+| Uncategorized | 9 / 200 (4.5%) |
+
+**Classification method breakdown:**
+
+| Method | Count | % |
+|---|---|---|
+| `reasoning` (LLM) | 194 | 97.0% |
+| `keyword_fallback` | 2 | 1.0% |
+| `error` | 4 | 2.0% |
+
+**Confidence statistics:**
+
+| Stat | Value |
+|---|---|
+| Mean | 0.811 |
+| Median | 0.900 |
+| Min | 0.000 |
+| Max | 1.000 |
+
+**Output distribution:**
+
+| Category | Images |
+|---|---|
+| Municipal - PWD (Roads) | 49 |
+| Municipal - Sanitation | 45 |
+| Municipal - Street Lighting | 31 |
+| Utility - Power (DISCOM) | 26 |
+| Municipal - Horticulture | 18 |
+| Municipal - Water & Sewerage | 18 |
+| Uncategorized | 9 |
+| Police - Local Law Enforcement | 2 |
+| Police - Traffic | 2 |
+
+> The high re-labelling rate (64%) reflects genuine dataset noise in the original Kaggle labels — the model correctly identifies misclassified images (e.g. broken lamp-posts labelled as "Horticulture", open drains labelled as "Pollution Control Board").
+
 ---
 
 ## Environment Variables

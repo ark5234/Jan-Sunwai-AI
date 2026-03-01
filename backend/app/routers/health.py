@@ -37,7 +37,8 @@ async def model_health():
     ollama_error = None
     models = []
     try:
-        response = ollama.list()
+        client = ollama.Client(host=settings.ollama_base_url)
+        response = client.list()
         models = response.get("models", []) if isinstance(response, dict) else []
     except Exception as exc:
         ollama_ok = False
@@ -61,7 +62,7 @@ async def gpu_check():
     A model with size_vram > 0 is running on GPU.
     """
     try:
-        resp = requests.get("http://localhost:11434/api/ps", timeout=5)
+        resp = requests.get(f"{settings.ollama_base_url}/api/ps", timeout=5)
         resp.raise_for_status()
         data = resp.json()
         running_models = data.get("models", [])

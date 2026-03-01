@@ -50,7 +50,7 @@ export default function Result() {
           source: location.coordinates ? 'exif' : 'manual'
         },
         ai_metadata: {
-          model_used: 'CLIP-ViT-B/32',
+          model_used: classification.model_used || 'qwen2.5vl:3b',
           confidence_score: classification.confidence,
           detected_department: classification.department,
           detected_issue: classification.label,

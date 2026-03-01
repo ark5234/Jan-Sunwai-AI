@@ -203,6 +203,8 @@ class CivicClassifier:
 
             if is_ambiguous and settings.reasoning_model and not settings.rule_engine_only:
                 print(f"[classifier] ambiguous → invoking {settings.reasoning_model}")
+                # Unload vision model before loading reasoning model to stay within VRAM budget
+                self._unload_model(settings.vision_model)
                 categories_block = "\n".join(
                     f"- {cat}: {CATEGORY_DEFINITIONS[cat]}"
                     for cat in CANONICAL_CATEGORIES
@@ -271,6 +273,7 @@ class CivicClassifier:
                 "raw_category": canonical,
                 "rationale": rationale,
                 "method": method,
+                "model_used": settings.vision_model,
                 "raw_json": raw_json_str,
             }
 
