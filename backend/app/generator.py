@@ -19,12 +19,9 @@ def _load_image_as_jpeg_bytes(image_path: str) -> bytes:
 def generate_complaint(image_path, classification_result, user_details, location_details):
     """
     Generates a formal government complaint letter using the configured Ollama vision model.
-    
-    Args:
-        image_path (str): Path to the image file.
-        classification_result (dict): Result from the classifier (label, confidence).
-        user_details (dict): User info (name).
-        location_details (dict): Location info (address, lat/long).
+    For capable models (qwen2.5vl), uses the image directly with a detailed prompt.
+    For small models (moondream), uses a simpler prompt and supplements with
+    the classifier's description for better results.
     """
     
     # Validation
@@ -33,36 +30,9 @@ def generate_complaint(image_path, classification_result, user_details, location
 
     # Use the civic department/category, not 'label' which is the raw vision description text
     category = classification_result.get("department") or classification_result.get("label", "Civic Issue")
+    description = classification_result.get("vision_description") or classification_result.get("label", "")
     user_name = user_details.get("name", "Concerned Citizen")
     address = location_details.get("address", "New Delhi (Exact location pending)")
-    
-    prompt = f"""
-    You are writing a civic grievance complaint for Indian municipal authorities.
-    
-    TASK: Write a SHORT grievance complaint (80-100 words) about the issue shown in the image.
-    
-    DETAILS:
-    - Complainant: {user_name}
-    - Location: {address}
-    - Issue Type: {category}
-    
-    FORMAT:
-    Subject: [One line describing the issue]
-    
-    To The Municipal Officer,
-    
-    [2-3 sentences describing what you observe in the image and why it's a problem]
-    
-    [1 sentence on how it affects public convenience/safety]
-    
-    [1 sentence requesting immediate action]
-    
-    Respectfully submitted,
-    {user_name}
-    
-    TONE: Direct, concise, factual. Like filing a grievance, not writing a formal letter.
-    NO elaborate descriptions. Maximum 100 words total.
-    """
     
     try:
         # Use explicit client so host URL comes from config (not localhost default)
@@ -71,6 +41,40 @@ def generate_complaint(image_path, classification_result, user_details, location
 
         # Proactive RAM check: pick the best model that fits in available memory
         selected_model = select_vision_model()
+        is_primary = (selected_model == settings.vision_model)
+
+        if is_primary:
+            # Full prompt for capable models
+            prompt = (
+                f"You are writing a civic grievance complaint for Indian municipal authorities.\n\n"
+                f"TASK: Write a SHORT grievance complaint (80-100 words) about the issue shown in the image.\n\n"
+                f"DETAILS:\n"
+                f"- Complainant: {user_name}\n"
+                f"- Location: {address}\n"
+                f"- Issue Type: {category}\n\n"
+                f"FORMAT:\n"
+                f"Subject: [One line describing the issue]\n\n"
+                f"To The Municipal Officer,\n\n"
+                f"[2-3 sentences describing what you observe in the image and why it's a problem]\n\n"
+                f"[1 sentence on how it affects public convenience/safety]\n\n"
+                f"[1 sentence requesting immediate action]\n\n"
+                f"Respectfully submitted,\n"
+                f"{user_name}\n\n"
+                f"TONE: Direct, concise, factual. Maximum 100 words total."
+            )
+        else:
+            # Simpler, shorter prompt for small/captioning models (moondream).
+            # Use the classifier's description to compensate for weaker vision.
+            prompt = (
+                f"Write a short civic complaint (60-80 words) about this image.\n"
+                f"Issue: {category}. Description: {description}\n"
+                f"Complainant: {user_name}. Location: {address}.\n\n"
+                f"Subject: [issue]\n"
+                f"To The Municipal Officer,\n"
+                f"[describe the problem, its impact, and request action]\n"
+                f"Respectfully, {user_name}"
+            )
+
         models_to_try = [selected_model]
         other = (settings.fallback_vision_model
                  if selected_model == settings.vision_model

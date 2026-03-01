@@ -141,28 +141,54 @@ class CivicClassifier:
             #          Proactively selects the best model that fits in RAM.
             #          Falls back to lighter model on OOM as safety net.
             # ------------------------------------------------------------------
-            vision_prompt = (
-                "You are a civic-issue vision analyst for Indian municipal complaints. "
-                "Analyze the image and return strict JSON only.\n\n"
-                "JSON schema:\n"
-                "{\n"
-                '  "description": "2-3 sentence factual description of what you see",\n'
-                '  "visible_objects": ["object1", "object2"],\n'
-                '  "primary_issue": "single phrase describing the main problem",\n'
-                '  "secondary_issue": "single phrase or empty string",\n'
-                '  "hazards": ["hazard1", "hazard2"],\n'
-                '  "setting": "road/park/drain/building/etc",\n'
-                '  "confidence": "low/medium/high"\n'
-                "}\n\n"
-                "Rules:\n"
-                "- Keep description under 40 words\n"
-                "- Be specific about damage type (pothole, crack, leak, etc.)\n"
-                "- List all visible hazards\n"
-                "- No markdown, no explanation outside JSON"
-            )
 
             # Proactive RAM check: pick the best model that fits
             active_vision_model = select_vision_model()
+            is_primary = (active_vision_model == settings.vision_model)
+
+            # Model-appropriate prompts: large models handle structured JSON,
+            # small models (moondream) need a simple direct prompt.
+            if is_primary:
+                vision_prompt = (
+                    "You are a civic-issue vision analyst for Indian municipal complaints. "
+                    "Analyze the image and return strict JSON only.\n\n"
+                    "JSON schema:\n"
+                    "{\n"
+                    '  "description": "2-3 sentence factual description of what you see",\n'
+                    '  "visible_objects": ["object1", "object2"],\n'
+                    '  "primary_issue": "single phrase describing the main problem",\n'
+                    '  "secondary_issue": "single phrase or empty string",\n'
+                    '  "hazards": ["hazard1", "hazard2"],\n'
+                    '  "setting": "road/park/drain/building/etc",\n'
+                    '  "confidence": "low/medium/high"\n'
+                    "}\n\n"
+                    "Rules:\n"
+                    "- Keep description under 40 words\n"
+                    "- Be specific about damage type (pothole, crack, leak, etc.)\n"
+                    "- List all visible hazards\n"
+                    "- No markdown, no explanation outside JSON"
+                )
+                generate_kwargs = dict(
+                    model=active_vision_model,
+                    format="json",
+                    prompt=vision_prompt,
+                    images=[image_bytes],
+                    options={"num_ctx": 1024},
+                )
+            else:
+                # Simple prompt for small/captioning models (moondream, etc.)
+                vision_prompt = (
+                    "Describe this image in 2-3 sentences. "
+                    "Focus on: what civic problem is visible (pothole, garbage, broken light, "
+                    "waterlogging, fallen tree, damaged wire, traffic issue, etc.), "
+                    "what objects are in the scene, and any hazards to public safety. "
+                    "Be specific and factual."
+                )
+                generate_kwargs = dict(
+                    model=active_vision_model,
+                    prompt=vision_prompt,
+                    images=[image_bytes],
+                )
 
             # Build ordered list: selected model first, then the other as OOM safety net
             models_to_try = [active_vision_model]
@@ -175,13 +201,12 @@ class CivicClassifier:
             vision_response = None
             for model_name in models_to_try:
                 try:
-                    vision_response = client.generate(
-                        model=model_name,
-                        format="json",
-                        prompt=vision_prompt,
-                        images=[image_bytes],
-                        options={"num_ctx": 1024},
-                    )
+                    # Update model name in kwargs for retries
+                    generate_kwargs["model"] = model_name
+                    # Only use format="json" for the primary (capable) model
+                    if model_name != settings.vision_model and "format" in generate_kwargs:
+                        del generate_kwargs["format"]
+                    vision_response = client.generate(**generate_kwargs)
                     active_vision_model = model_name
                     break  # success
                 except Exception as model_err:
@@ -197,14 +222,20 @@ class CivicClassifier:
                         continue
                     raise  # not OOM or last model → propagate
 
-            raw_vision_json: str = vision_response["response"].strip()
+            raw_vision_text: str = vision_response["response"].strip()
 
-            # Parse the structured vision output
-            try:
-                vision_payload = json.loads(raw_vision_json)
-            except json.JSONDecodeError:
-                # Fallback: treat raw output as plain description
-                vision_payload = parse_vision_text_to_payload(raw_vision_json)
+            # Parse the vision output based on model type
+            if active_vision_model == settings.vision_model:
+                # Primary model returns structured JSON
+                try:
+                    vision_payload = json.loads(raw_vision_text)
+                except json.JSONDecodeError:
+                    vision_payload = parse_vision_text_to_payload(raw_vision_text)
+            else:
+                # Fallback model returns plain text description
+                vision_payload = parse_vision_text_to_payload(raw_vision_text)
+
+            raw_vision_json = raw_vision_text  # audit trail
 
             # Ensure all expected keys exist
             vision_payload.setdefault("description", "")
@@ -215,6 +246,7 @@ class CivicClassifier:
             vision_payload.setdefault("setting", "")
 
             description = str(vision_payload.get("description", ""))
+            print(f"[classifier] vision ({active_vision_model}): {description[:120]}")
 
             # ------------------------------------------------------------------
             # STEP 2 — Rule Engine: Deterministic classification (zero VRAM)
