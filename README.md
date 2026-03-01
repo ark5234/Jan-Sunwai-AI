@@ -313,7 +313,7 @@ python backend/download_models.py
 
 ### Benchmark Results (200-image sample, Kaggle)
 
-Evaluated on 200 civic images (25 sampled per department) using the two-step Vision → Reasoning pipeline (`qwen2.5vl:3b` + `llama3.2:1b`):
+Evaluated on 200 civic images (25 sampled per department) using the two-step Vision → Reasoning pipeline (`llama3.2-vision:11b` + `mistral:7b`):
 
 | Metric | Result |
 |---|---|
