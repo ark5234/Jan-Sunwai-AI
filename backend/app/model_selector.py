@@ -8,8 +8,12 @@ fit, automatically selects the lighter fallback model.
 No external dependencies — uses only Python stdlib + the Ollama client.
 """
 
+from __future__ import annotations
+
 import os
 import platform
+from typing import Optional
+
 import ollama
 from app.config import settings
 
@@ -28,16 +32,18 @@ _VISION_FAMILIES = {"qwen25vl", "llava", "clip", "phi2", "minicpm"}
 _SAFETY_MARGIN_BYTES = 512 * 1024 * 1024  # 512 MB
 
 
-def _get_available_ram_bytes() -> int | None:
+def _get_available_ram_bytes() -> Optional[int]:
     """Return available (free) system RAM in bytes, or None if unknown."""
     system = platform.system()
     try:
-        if system == "Linux":
+        if system in ("Linux", "Darwin"):
             # Works in Docker containers too (reads host /proc/meminfo via cgroup)
-            return os.sysconf("SC_PAGE_SIZE") * os.sysconf("SC_AVPHYS_PAGES")
+            page_size: int = getattr(os, "sysconf")("SC_PAGE_SIZE")
+            avail_pages: int = getattr(os, "sysconf")("SC_AVPHYS_PAGES")
+            return page_size * avail_pages
         elif system == "Windows":
             import ctypes
-            kernel32 = ctypes.windll.kernel32
+            kernel32 = ctypes.windll.kernel32  # type: ignore[attr-defined]
             class MEMORYSTATUSEX(ctypes.Structure):
                 _fields_ = [
                     ("dwLength",                ctypes.c_ulong),
@@ -53,9 +59,7 @@ def _get_available_ram_bytes() -> int | None:
             stat = MEMORYSTATUSEX()
             stat.dwLength = ctypes.sizeof(stat)
             kernel32.GlobalMemoryStatusEx(ctypes.byref(stat))
-            return stat.ullAvailPhys
-        elif system == "Darwin":  # macOS
-            return os.sysconf("SC_PAGE_SIZE") * os.sysconf("SC_AVPHYS_PAGES")
+            return int(stat.ullAvailPhys)
     except Exception:
         pass
     return None
@@ -69,13 +73,20 @@ def _get_model_info(client: ollama.Client) -> dict[str, dict]:
     info: dict[str, dict] = {}
     try:
         response = client.list()
-        models = response.models if hasattr(response, "models") else response.get("models", [])
+        models = response.models if hasattr(response, "models") else response.get("models", [])  # type: ignore[union-attr]
         for m in models:
-            name = m.model if hasattr(m, "model") else m.get("model", m.get("name", ""))
-            size = m.size if hasattr(m, "size") else m.get("size", 0)
-            details = m.details if hasattr(m, "details") else m.get("details", {})
-            families_raw = details.families if hasattr(details, "families") else details.get("families", [])
-            families = set(f.lower() for f in (families_raw or []))
+            name: str = str(
+                m.model if hasattr(m, "model") else m.get("model", m.get("name", ""))  # type: ignore[union-attr]
+            )
+            size: int = int(
+                m.size if hasattr(m, "size") else m.get("size", 0)  # type: ignore[union-attr]
+            )
+            details = m.details if hasattr(m, "details") else m.get("details", {})  # type: ignore[union-attr]
+            families_raw = (
+                details.families if hasattr(details, "families") and details is not None
+                else (details.get("families", []) if isinstance(details, dict) else [])
+            )
+            families: set[str] = set(f.lower() for f in (families_raw or []))
 
             is_vision = bool(families & _VISION_FAMILIES)
             multiplier = _VISION_RUNTIME_MULTIPLIER if is_vision else _TEXT_RUNTIME_MULTIPLIER
