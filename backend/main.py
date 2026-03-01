@@ -3,7 +3,7 @@ from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-from app.routers import complaints, users, health, triage
+from app.routers import complaints, users, health, triage, notifications
 from app.database import connect_to_mongo, close_mongo_connection
 from app.services.llm_queue import llm_queue_service
 from app.config import settings
@@ -84,6 +84,7 @@ app.include_router(complaints.router, tags=["Complaints"])
 app.include_router(users.router, prefix="/users", tags=["Users"])
 app.include_router(health.router)
 app.include_router(triage.router)
+app.include_router(notifications.router)
 
 @app.get("/")
 def read_root():

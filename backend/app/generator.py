@@ -46,21 +46,20 @@ def generate_complaint(image_path, classification_result, user_details, location
         if is_primary:
             # Full prompt for capable models
             prompt = (
-                f"You are writing a civic grievance complaint for Indian municipal authorities.\n\n"
-                f"TASK: Write a SHORT grievance complaint (80-100 words) about the issue shown in the image.\n\n"
+                f"You are writing a civic grievance description for an Indian government complaint portal.\n\n"
+                f"TASK: Write a SHORT factual grievance description (60-90 words) about the issue shown in the image.\n\n"
                 f"DETAILS:\n"
-                f"- Complainant: {user_name}\n"
                 f"- Location: {address}\n"
                 f"- Issue Type: {category}\n\n"
-                f"FORMAT:\n"
-                f"Subject: [One line describing the issue]\n\n"
-                f"To The Municipal Officer,\n\n"
-                f"[2-3 sentences describing what you observe in the image and why it's a problem]\n\n"
-                f"[1 sentence on how it affects public convenience/safety]\n\n"
-                f"[1 sentence requesting immediate action]\n\n"
-                f"Respectfully submitted,\n"
-                f"{user_name}\n\n"
-                f"TONE: Direct, concise, factual. Maximum 100 words total."
+                f"RULES:\n"
+                f"- Do NOT write a letter. No 'Dear Sir', 'To The Officer', 'Respectfully submitted', salutations, or sign-offs.\n"
+                f"- Do NOT include Subject line.\n"
+                f"- Write ONLY a plain description of the problem as if filling a complaint form.\n"
+                f"- First sentence: What the issue is and where it is located.\n"
+                f"- Second/third sentences: Why it is dangerous or inconvenient for the public.\n"
+                f"- Last sentence: What action is needed.\n"
+                f"- Be direct, specific, factual. Maximum 90 words.\n\n"
+                f"Write the grievance description now:"
             )
         else:
             # Small vision models (moondream) can't write structured text well.
@@ -68,19 +67,18 @@ def generate_complaint(image_path, classification_result, user_details, location
             # much better at following instructions.  Feed it the classifier's
             # description so it doesn't need to see the image.
             reasoning_prompt = (
-                f"Write a formal civic grievance complaint (80-100 words).\n\n"
+                f"Write a civic grievance description (60-90 words) for a government complaint portal.\n\n"
                 f"Issue observed: {description}\n"
                 f"Department: {category}\n"
-                f"Complainant: {user_name}\n"
                 f"Location: {address}\n\n"
-                f"Format:\n"
-                f"Subject: <one-line summary of the issue>\n\n"
-                f"To The Municipal Officer,\n\n"
-                f"<2-3 sentences describing the problem and why it is dangerous>\n\n"
-                f"<1 sentence requesting immediate action>\n\n"
-                f"Respectfully submitted,\n"
-                f"{user_name}\n\n"
-                f"Write the complaint now. Be direct and factual. Maximum 100 words."
+                f"RULES:\n"
+                f"- Do NOT write a letter. No salutations, sign-offs, 'Dear Sir', or 'Subject:' line.\n"
+                f"- Write ONLY a plain description as if filling a complaint form.\n"
+                f"- First sentence: what the issue is and where.\n"
+                f"- Next sentences: why it is dangerous or inconvenient.\n"
+                f"- Last sentence: what action is needed.\n"
+                f"- Be direct and factual. Maximum 90 words.\n\n"
+                f"Write the grievance description now:"
             )
 
             try:

@@ -113,3 +113,27 @@ class ComplaintResponse(ComplaintBase):
     class Config:
         populate_by_name = True
 
+
+# --- Notification Schemas ---
+
+class NotificationType(str, Enum):
+    STATUS_CHANGE = "status_change"
+    ESCALATION = "escalation"
+    ASSIGNMENT = "assignment"
+    SYSTEM = "system"
+
+class NotificationResponse(BaseModel):
+    id: Optional[str] = Field(None, alias="_id")
+    user_id: str
+    complaint_id: Optional[str] = None
+    type: NotificationType
+    title: str
+    message: str
+    status_from: Optional[str] = None
+    status_to: Optional[str] = None
+    is_read: bool = False
+    created_at: datetime
+
+    class Config:
+        populate_by_name = True
+

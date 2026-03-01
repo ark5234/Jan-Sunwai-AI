@@ -22,6 +22,8 @@ async def ensure_indexes():
     await database["complaints"].create_index([("status", 1), ("created_at", -1)])
     await database["complaints"].create_index([("department", 1), ("created_at", -1)])
     await database["complaints"].create_index("authority_id")
+    await database["notifications"].create_index([("user_id", 1), ("created_at", -1)])
+    await database["notifications"].create_index([("user_id", 1), ("is_read", 1)])
 
 async def connect_to_mongo():
     try:

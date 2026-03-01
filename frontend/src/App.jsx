@@ -11,6 +11,8 @@ import CitizenDashboard from './pages/CitizenDashboard';
 import DeptHeadDashboard from './pages/DeptHeadDashboard';
 import AdminDashboard from './pages/AdminDashboard';
 import TriageReview from './pages/TriageReview';
+import Profile from './pages/Profile';
+import Notifications from './pages/Notifications';
 
 // Protected Route Component
 function ProtectedRoute({ children, allowedRoles }) {
@@ -80,6 +82,22 @@ function App() {
                 element={
                   <ProtectedRoute>
                     <Result />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/profile" 
+                element={
+                  <ProtectedRoute>
+                    <Profile />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/notifications" 
+                element={
+                  <ProtectedRoute>
+                    <Notifications />
                   </ProtectedRoute>
                 } 
               />

@@ -14,6 +14,8 @@ from app.schemas import (
     UserRole
 )
 from app.authorities import route_authority, get_authority_by_id
+from app.routers.notifications import create_notification
+from app.schemas import NotificationType
 from app.config import settings
 from PIL import Image
 from typing import List, Optional
@@ -141,8 +143,18 @@ async def create_complaint(
     # 3. Insert into DB
     result = await db["complaints"].insert_one(complaint_dict)
     
-    # 4. Return Created
+    # 4. Notify citizen that complaint was filed
     complaint_dict["_id"] = str(result.inserted_id)
+    await create_notification(
+        user_id=user_id,
+        notification_type=NotificationType.STATUS_CHANGE,
+        title="Grievance Registered",
+        message=f"Your grievance has been registered and routed to {complaint.department}. Current status: Open.",
+        complaint_id=complaint_dict["_id"],
+        status_from=None,
+        status_to=ComplaintStatus.OPEN,
+    )
+    
     return complaint_dict
 
 @router.get("/complaints", response_model=List[ComplaintResponse])
@@ -253,7 +265,29 @@ async def update_complaint_status(
     
     if not result:
         raise HTTPException(status_code=404, detail="Complaint not found")
-        
+    
+    # Notify the citizen who filed the complaint
+    old_status = existing.get("status", ComplaintStatus.OPEN)
+    citizen_id = existing.get("user_id")
+    if citizen_id:
+        status_messages = {
+            ComplaintStatus.IN_PROGRESS: "Your grievance is now being reviewed by the department.",
+            ComplaintStatus.RESOLVED: "Your grievance has been resolved. If the issue persists, please file a new complaint.",
+            ComplaintStatus.REJECTED: "Your grievance has been reviewed and was not accepted. Please check the details.",
+            ComplaintStatus.OPEN: "Your grievance has been re-opened for further review.",
+        }
+        dept = existing.get("department", "the department")
+        msg = status_messages.get(status, f"Status updated to {status}.")
+        await create_notification(
+            user_id=citizen_id,
+            notification_type=NotificationType.STATUS_CHANGE,
+            title=f"Status Updated: {status}",
+            message=f"{msg} Department: {dept}.",
+            complaint_id=complaint_id,
+            status_from=old_status,
+            status_to=status,
+        )
+
     return fix_id(result)
 
 
@@ -298,4 +332,16 @@ async def escalate_complaint(complaint_id: str, current_user: dict = Depends(get
         update_data,
         return_document=True,
     )
+
+    # Notify citizen about escalation
+    citizen_id = complaint.get("user_id")
+    if citizen_id:
+        await create_notification(
+            user_id=citizen_id,
+            notification_type=NotificationType.ESCALATION,
+            title="Grievance Escalated",
+            message=f"Your grievance for {complaint.get('department', 'the department')} has been escalated to a higher authority for faster resolution.",
+            complaint_id=complaint_id,
+        )
+
     return fix_id(updated)
