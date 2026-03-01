@@ -3,6 +3,7 @@ import ollama
 import os
 from PIL import Image
 from app.config import settings
+from app.model_selector import select_vision_model
 
 
 def _load_image_as_jpeg_bytes(image_path: str) -> bytes:
@@ -68,13 +69,17 @@ def generate_complaint(image_path, classification_result, user_details, location
         client = ollama.Client(host=settings.ollama_base_url)
         image_bytes = _load_image_as_jpeg_bytes(image_path)
 
-        # Try primary vision model; fall back to lighter model on OOM
-        models_to_try = [settings.vision_model]
-        if settings.fallback_vision_model and settings.fallback_vision_model != settings.vision_model:
-            models_to_try.append(settings.fallback_vision_model)
+        # Proactive RAM check: pick the best model that fits in available memory
+        selected_model = select_vision_model()
+        models_to_try = [selected_model]
+        other = (settings.fallback_vision_model
+                 if selected_model == settings.vision_model
+                 else settings.vision_model)
+        if other and other != selected_model:
+            models_to_try.append(other)
 
         response = None
-        used_model = settings.vision_model
+        used_model = selected_model
         for model_name in models_to_try:
             try:
                 response = client.generate(

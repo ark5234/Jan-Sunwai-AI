@@ -6,6 +6,7 @@ from PIL import Image
 from app.config import settings
 from app.category_utils import CANONICAL_CATEGORIES, canonicalize_label
 from app.rule_engine import classify_by_rules, parse_vision_text_to_payload
+from app.model_selector import select_vision_model
 
 # Use an explicit client so the host URL comes from OLLAMA_BASE_URL config
 # (the module-level ollama.generate() defaults to localhost:11434 which
@@ -137,8 +138,8 @@ class CivicClassifier:
 
             # ------------------------------------------------------------------
             # STEP 1 — Vision: Structured JSON description
-            #          Tries primary model first; falls back to lighter model
-            #          if OOM / insufficient-memory errors occur.
+            #          Proactively selects the best model that fits in RAM.
+            #          Falls back to lighter model on OOM as safety net.
             # ------------------------------------------------------------------
             vision_prompt = (
                 "You are a civic-issue vision analyst for Indian municipal complaints. "
@@ -160,11 +161,16 @@ class CivicClassifier:
                 "- No markdown, no explanation outside JSON"
             )
 
-            # Try primary vision model, then fallback on OOM
-            active_vision_model = settings.vision_model
-            models_to_try = [settings.vision_model]
-            if settings.fallback_vision_model and settings.fallback_vision_model != settings.vision_model:
-                models_to_try.append(settings.fallback_vision_model)
+            # Proactive RAM check: pick the best model that fits
+            active_vision_model = select_vision_model()
+
+            # Build ordered list: selected model first, then the other as OOM safety net
+            models_to_try = [active_vision_model]
+            other = (settings.fallback_vision_model
+                     if active_vision_model == settings.vision_model
+                     else settings.vision_model)
+            if other and other != active_vision_model:
+                models_to_try.append(other)
 
             vision_response = None
             for model_name in models_to_try:
@@ -187,7 +193,7 @@ class CivicClassifier:
                     if is_oom and model_name != models_to_try[-1]:
                         print(f"[classifier] {model_name} OOM ({model_err}), "
                               f"falling back to {models_to_try[-1]}")
-                        self._unload_model(model_name)  # free whatever was partially loaded
+                        self._unload_model(model_name)
                         continue
                     raise  # not OOM or last model → propagate
 
