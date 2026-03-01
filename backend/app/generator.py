@@ -63,18 +63,50 @@ def generate_complaint(image_path, classification_result, user_details, location
                 f"TONE: Direct, concise, factual. Maximum 100 words total."
             )
         else:
-            # Simpler, shorter prompt for small/captioning models (moondream).
-            # Use the classifier's description to compensate for weaker vision.
-            prompt = (
-                f"Write a short civic complaint (60-80 words) about this image.\n"
-                f"Issue: {category}. Description: {description}\n"
-                f"Complainant: {user_name}. Location: {address}.\n\n"
-                f"Subject: [issue]\n"
-                f"To The Municipal Officer,\n"
-                f"[describe the problem, its impact, and request action]\n"
-                f"Respectfully, {user_name}"
+            # Small vision models (moondream) can't write structured text well.
+            # Use the text-only reasoning model (llama3.2:1b) instead — it's
+            # much better at following instructions.  Feed it the classifier's
+            # description so it doesn't need to see the image.
+            reasoning_prompt = (
+                f"Write a formal civic grievance complaint (80-100 words).\n\n"
+                f"Issue observed: {description}\n"
+                f"Department: {category}\n"
+                f"Complainant: {user_name}\n"
+                f"Location: {address}\n\n"
+                f"Format:\n"
+                f"Subject: <one-line summary of the issue>\n\n"
+                f"To The Municipal Officer,\n\n"
+                f"<2-3 sentences describing the problem and why it is dangerous>\n\n"
+                f"<1 sentence requesting immediate action>\n\n"
+                f"Respectfully submitted,\n"
+                f"{user_name}\n\n"
+                f"Write the complaint now. Be direct and factual. Maximum 100 words."
             )
 
+            try:
+                # Unload vision model first to free memory for reasoning model
+                try:
+                    client.generate(model=selected_model, prompt="", keep_alive=0)
+                except Exception:
+                    pass
+
+                response = client.generate(
+                    model=settings.reasoning_model,
+                    prompt=reasoning_prompt,
+                )
+                # Unload reasoning model after use
+                try:
+                    client.generate(model=settings.reasoning_model, prompt="", keep_alive=0)
+                except Exception:
+                    pass
+                return response["response"]
+            except Exception as e:
+                return (
+                    f"System Note: Automated drafting failed ({str(e)}). "
+                    f"Please draft manually based on category: {category}."
+                )
+
+        # --- Primary model path: use vision model with full prompt ---
         models_to_try = [selected_model]
         other = (settings.fallback_vision_model
                  if selected_model == settings.vision_model

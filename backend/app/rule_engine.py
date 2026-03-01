@@ -28,12 +28,14 @@ from app.category_utils import CANONICAL_CATEGORIES
 _CATEGORY_RULES: Dict[str, List[Tuple[List[str], float]]] = {
     "Municipal - PWD (Roads)": [
         (["pothole", "potholes"], 3.0),
+        (["pothole-filled"], 3.5),
         (["road damage", "damaged road", "broken road", "cracked road"], 3.0),
         (["damaged pavement", "broken pavement", "cracked pavement"], 2.5),
         (["footpath damage", "broken footpath", "damaged footpath"], 2.5),
         (["manhole", "manhole cover"], 2.0),
         (["road crack", "road surface"], 2.0),
         (["bridge damage", "damaged bridge"], 2.0),
+        (["puddle", "puddles", "water on road", "water on the road"], 1.5),
         (["asphalt", "tar road", "concrete road"], 1.0),
         (["road", "street", "highway", "lane"], 0.3),
     ],
@@ -127,6 +129,17 @@ def _score_text(text: str, rules: List[Tuple[List[str], float]]) -> float:
     return score
 
 
+def _first_mention_position(text: str, keywords: List[str]) -> int:
+    """Return the earliest character position of any keyword, or -1 if none found."""
+    text_lower = text.lower()
+    best = -1
+    for kw in keywords:
+        pos = text_lower.find(kw)
+        if pos != -1 and (best == -1 or pos < best):
+            best = pos
+    return best
+
+
 def classify_by_rules(
     vision_payload: Dict[str, Any],
     ambiguity_threshold: float = 2.0,
@@ -173,6 +186,36 @@ def classify_by_rules(
     scores: Dict[str, float] = {}
     for category, rules in _CATEGORY_RULES.items():
         scores[category] = _score_text(combined, rules)
+
+    # ── First-mention boost ────────────────────────────────────────
+    # When the description mentions keywords from multiple categories,
+    # boost the category whose keywords appear FIRST in the text.
+    # This approximates "primary issue" for plain-text descriptions
+    # (e.g. moondream) where primary_issue field is empty.
+    # Only apply when the gap between top-2 is small (≤ 2.0).
+    desc_lower = combined.lower()
+    _ALL_CATEGORY_SIGNALS: Dict[str, List[str]] = {
+        cat: [kw for kws, _w in rules for kw in kws if _w >= 2.0]
+        for cat, rules in _CATEGORY_RULES.items()
+    }
+    first_positions = {}
+    for cat, kws in _ALL_CATEGORY_SIGNALS.items():
+        pos = _first_mention_position(desc_lower, kws)
+        if pos >= 0:
+            first_positions[cat] = pos
+
+    ranked_raw = sorted(scores.items(), key=lambda x: -x[1])
+    if len(ranked_raw) >= 2:
+        top_cat, top_sc = ranked_raw[0]
+        run_cat, run_sc = ranked_raw[1]
+        # If both categories have signals and gap is small, boost the one mentioned first
+        if (top_sc - run_sc) <= 2.0 and top_cat in first_positions and run_cat in first_positions:
+            if first_positions[run_cat] < first_positions[top_cat]:
+                # Runner-up's keywords appear first → boost it
+                scores[run_cat] += 2.0
+                print(f"[rule_engine] first-mention boost: {run_cat} "
+                      f"(pos {first_positions[run_cat]}) over {top_cat} "
+                      f"(pos {first_positions[top_cat]})")
 
     # Sort by score descending
     ranked = sorted(scores.items(), key=lambda x: -x[1])
