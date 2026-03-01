@@ -1,17 +1,24 @@
 @import "tailwindcss";
 
 @theme {
-  --color-primary: #1a56db;
-  --color-secondary: #f97316;
-  --color-success: #22c55e;
-  --color-danger: #ef4444;
-  --color-neutral: #64748b;
-  --font-sans: 'Inter', sans-serif;
+  /* Government Portal Color Palette */
+  --color-primary: #1a237e;        /* Deep navy — official govt blue */
+  --color-primary-light: #283593;  /* Lighter navy for hover states */
+  --color-primary-dark: #0d1642;   /* Darkest navy for navbar */
+  --color-saffron: #e65100;        /* Indian saffron */
+  --color-saffron-light: #ff6f00;  /* Lighter saffron for hover */
+  --color-trigreen: #1b5e20;       /* India green */
+  --color-secondary: #e65100;      /* Alias for saffron */
+  --color-success: #2e7d32;        /* Official green */
+  --color-danger: #c62828;         /* Deep red */
+  --color-neutral: #546e7a;        /* Blue grey */
+  --color-cream: #fffde7;          /* Light warm bg for sections */
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
 }
 
 /* Base Styles */
 * {
-  -webkit-tap-highlight-color: rgba(59, 130, 246, 0.1);
+  -webkit-tap-highlight-color: rgba(26, 35, 126, 0.1);
 }
 
 html {
@@ -22,17 +29,38 @@ html {
 body {
   margin: 0;
   min-height: 100vh;
-  background-color: #f8fafc; /* slate-50 equivalent */
-  color: #1e293b; /* slate-800 equivalent */
+  background-color: #f5f5f5;
+  color: #212121;
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   touch-action: manipulation;
 }
 
+/* Tricolor stripe bar used under navbar */
+.tricolor-bar {
+  height: 4px;
+  background: linear-gradient(to right, #ff6f00 33.33%, #ffffff 33.33%, #ffffff 66.66%, #1b5e20 66.66%);
+}
+
+/* Government heading font style */
+.govt-heading {
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+}
+
+/* Emblem spin-in animation for hero */
+@keyframes emblemFade {
+  from { opacity: 0; transform: scale(0.8); }
+  to { opacity: 1; transform: scale(1); }
+}
+.animate-emblem {
+  animation: emblemFade 0.6s ease-out;
+}
+
 /* Mobile Optimizations */
 @media (max-width: 640px) {
-  /* Better touch targets for mobile */
   button,
   a,
   input[type="submit"],
@@ -41,8 +69,7 @@ body {
     min-height: 44px;
     min-width: 44px;
   }
-  
-  /* Prevent text size adjustment on orientation change */
+
   html {
     -webkit-text-size-adjust: none;
   }
@@ -58,7 +85,7 @@ body {
 button,
 a {
   cursor: pointer;
-  -webkit-tap-highlight-color: rgba(59, 130, 246, 0.2);
+  -webkit-tap-highlight-color: rgba(26, 35, 126, 0.2);
   touch-action: manipulation;
 }
 
@@ -76,7 +103,6 @@ a {
   }
 }
 
-/* Better image rendering on mobile */
 img {
   max-width: 100%;
   height: auto;
@@ -96,4 +122,13 @@ img {
 
 .animate-fadeIn {
   animation: fadeIn 0.3s ease-out;
+}
+
+/* Stat card hover lift for dashboards */
+.stat-card {
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
 }

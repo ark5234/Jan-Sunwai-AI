@@ -92,7 +92,7 @@ export default function ImageUpload({ onImageSelect }) {
     <div className="w-full">
       <div 
         className={`relative flex flex-col items-center justify-center w-full h-80 border-2 border-dashed rounded-lg cursor-pointer transition-all
-          ${dragActive ? "border-primary bg-blue-50 scale-[1.02]" : "border-slate-300 bg-slate-50 hover:bg-slate-100 hover:border-slate-400"}
+          ${dragActive ? "border-primary bg-primary/5 scale-[1.01]" : "border-gray-300 bg-gray-50 hover:bg-gray-100 hover:border-gray-400"}
           ${error ? "border-red-400 bg-red-50" : ""}
         `}
         onDragEnter={handleDrag}
@@ -137,7 +137,7 @@ export default function ImageUpload({ onImageSelect }) {
             >
               <X className="w-5 h-5" />
             </button>
-            <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity rounded pointer-events-none flex items-end justify-center pb-6">
+            <div className="absolute inset-0 bg-linear-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity rounded pointer-events-none flex items-end justify-center pb-6">
                 <span className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-primary/90 backdrop-blur-sm rounded-lg shadow-lg">
                     <Upload className="w-4 h-4" />
                     Click to Change Image

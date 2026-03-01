@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { Link } from 'react-router-dom';
-import { FileText, MapPin, Calendar, AlertCircle } from 'lucide-react';
+import { FileText, MapPin, Calendar, AlertCircle, PlusCircle, Clock, CheckCircle2 } from 'lucide-react';
 import axios from 'axios';
 
 const CitizenDashboard = () => {
@@ -42,15 +42,15 @@ const CitizenDashboard = () => {
   const getStatusColor = (status) => {
     switch (status) {
       case 'Open':
-        return 'bg-blue-100 text-blue-800';
+        return 'bg-blue-50 text-primary border border-blue-200';
       case 'In Progress':
-        return 'bg-yellow-100 text-yellow-800';
+        return 'bg-amber-50 text-saffron border border-amber-200';
       case 'Resolved':
-        return 'bg-green-100 text-green-800';
+        return 'bg-green-50 text-success border border-green-200';
       case 'Rejected':
-        return 'bg-red-100 text-red-800';
+        return 'bg-red-50 text-danger border border-red-200';
       default:
-        return 'bg-gray-100 text-gray-800';
+        return 'bg-gray-100 text-gray-700 border border-gray-200';
     }
   };
 
@@ -66,51 +66,59 @@ const CitizenDashboard = () => {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
       {/* Header */}
       <div className="mb-6 sm:mb-8">
-        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">My Complaints</h1>
-        <p className="mt-2 text-sm sm:text-base text-gray-600">Track and manage your submitted complaints</p>
+        <h1 className="govt-heading text-2xl sm:text-3xl text-gray-900">My Complaints</h1>
+        <p className="mt-2 text-sm text-gray-600">Track and manage your submitted grievances</p>
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mb-6 sm:mb-8">
-        <div className="bg-white rounded-lg shadow p-4 sm:p-6">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mb-6 sm:mb-8">
+        <div className="stat-card bg-white rounded-lg border border-gray-200 p-4 sm:p-5">
           <div className="flex items-center">
-            <FileText className="h-6 w-6 sm:h-8 sm:w-8 text-blue-600" />
-            <div className="ml-3 sm:ml-4">
-              <p className="text-xl sm:text-2xl font-semibold">{complaints.length}</p>
-              <p className="text-xs sm:text-sm text-gray-600">Total</p>
+            <div className="p-2 bg-primary/10 rounded">
+              <FileText className="h-5 w-5 text-primary" />
+            </div>
+            <div className="ml-3">
+              <p className="text-xl font-bold text-gray-900">{complaints.length}</p>
+              <p className="text-xs text-gray-500">Total</p>
             </div>
           </div>
         </div>
-        <div className="bg-white rounded-lg shadow p-4 sm:p-6">
+        <div className="stat-card bg-white rounded-lg border border-gray-200 p-4 sm:p-5">
           <div className="flex items-center">
-            <AlertCircle className="h-6 w-6 sm:h-8 sm:w-8 text-yellow-600" />
-            <div className="ml-3 sm:ml-4">
-              <p className="text-xl sm:text-2xl font-semibold">
+            <div className="p-2 bg-saffron/10 rounded">
+              <AlertCircle className="h-5 w-5 text-saffron" />
+            </div>
+            <div className="ml-3">
+              <p className="text-xl font-bold text-gray-900">
                 {complaints.filter(c => c.status === 'Open').length}
               </p>
-              <p className="text-xs sm:text-sm text-gray-600">Open</p>
+              <p className="text-xs text-gray-500">Open</p>
             </div>
           </div>
         </div>
-        <div className="bg-white rounded-lg shadow p-4 sm:p-6">
+        <div className="stat-card bg-white rounded-lg border border-gray-200 p-4 sm:p-5">
           <div className="flex items-center">
-            <AlertCircle className="h-6 w-6 sm:h-8 sm:w-8 text-blue-600" />
-            <div className="ml-3 sm:ml-4">
-              <p className="text-xl sm:text-2xl font-semibold">
+            <div className="p-2 bg-blue-50 rounded">
+              <Clock className="h-5 w-5 text-primary" />
+            </div>
+            <div className="ml-3">
+              <p className="text-xl font-bold text-gray-900">
                 {complaints.filter(c => c.status === 'In Progress').length}
               </p>
-              <p className="text-xs sm:text-sm text-gray-600">In Progress</p>
+              <p className="text-xs text-gray-500">In Progress</p>
             </div>
           </div>
         </div>
-        <div className="bg-white rounded-lg shadow p-4 sm:p-6">
+        <div className="stat-card bg-white rounded-lg border border-gray-200 p-4 sm:p-5">
           <div className="flex items-center">
-            <AlertCircle className="h-6 w-6 sm:h-8 sm:w-8 text-green-600" />
-            <div className="ml-3 sm:ml-4">
-              <p className="text-xl sm:text-2xl font-semibold">
+            <div className="p-2 bg-green-50 rounded">
+              <CheckCircle2 className="h-5 w-5 text-success" />
+            </div>
+            <div className="ml-3">
+              <p className="text-xl font-bold text-gray-900">
                 {complaints.filter(c => c.status === 'Resolved').length}
               </p>
-              <p className="text-xs sm:text-sm text-gray-600">Resolved</p>
+              <p className="text-xs text-gray-500">Resolved</p>
             </div>
           </div>
         </div>
@@ -120,9 +128,9 @@ const CitizenDashboard = () => {
       <div className="mb-6">
         <Link
           to="/analyze"
-          className="inline-flex items-center px-4 py-2.5 sm:py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 w-full sm:w-auto justify-center"
+          className="inline-flex items-center px-5 py-2.5 rounded text-sm font-semibold text-white bg-saffron hover:bg-saffron-light transition shadow-sm w-full sm:w-auto justify-center"
         >
-          <FileText className="h-5 w-5 mr-2" />
+          <PlusCircle className="h-4 w-4 mr-2" />
           File New Complaint
         </Link>
       </div>
@@ -167,11 +175,11 @@ const CitizenDashboard = () => {
                       </p>
                       <div className="mt-2 flex flex-col sm:flex-row sm:items-center text-sm text-gray-500 gap-2">
                         <div className="flex items-center">
-                          <MapPin className="h-4 w-4 mr-1 flex-shrink-0" />
+                          <MapPin className="h-4 w-4 mr-1 shrink-0" />
                           <span className="truncate">{complaint.location?.address || 'Location not available'}</span>
                         </div>
                         <div className="flex items-center">
-                          <Calendar className="h-4 w-4 sm:ml-4 mr-1 flex-shrink-0" />
+                          <Calendar className="h-4 w-4 sm:ml-4 mr-1 shrink-0" />
                           <span>{new Date(complaint.created_at).toLocaleDateString()}</span>
                         </div>
                       </div>
@@ -182,7 +190,7 @@ const CitizenDashboard = () => {
                       )}
                     </div>
                     {complaint.image_url && (
-                      <div className="sm:ml-4 flex-shrink-0">
+                      <div className="sm:ml-4 shrink-0">
                         <img
                           src={`http://localhost:8000/${complaint.image_url}`}
                           alt="Complaint"

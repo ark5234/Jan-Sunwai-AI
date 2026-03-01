@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useLocation, Link, useNavigate } from 'react-router-dom';
-import { MapPin, FileText, CheckCircle, AlertTriangle, ArrowLeft } from 'lucide-react';
+import { MapPin, FileText, CheckCircle, AlertTriangle, ArrowLeft, Shield, Copy } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import axios from 'axios';
 
@@ -14,20 +14,20 @@ export default function Result() {
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState(null);
   const [submitSuccess, setSubmitSuccess] = useState(false);
+  const [copied, setCopied] = useState(false);
 
   if (!result) {
     return (
       <div className="max-w-4xl mx-auto px-4 py-12 text-center">
-        <h2 className="text-2xl font-bold text-slate-800">No Result Found</h2>
-        <p className="text-slate-600 mb-6">Please upload an image first.</p>
-        <Link to="/analyze" className="text-primary hover:underline">Go back to Upload</Link>
+        <h2 className="text-xl font-bold text-gray-900">No Result Found</h2>
+        <p className="text-gray-600 mb-6 text-sm">Please upload an image first.</p>
+        <Link to="/analyze" className="text-primary hover:underline font-medium">Go back to Upload</Link>
       </div>
     );
   }
 
   const { classification, location, generated_complaint, image_url } = result;
   
-  // Handle complaint submission
   const handleSubmit = async () => {
     if (!user?.access_token) {
       setSubmitError('Please login to submit a complaint');
@@ -69,11 +69,10 @@ export default function Result() {
         }
       );
       
-      // Success! Show success message and navigate after brief delay
       setSubmitSuccess(true);
       setTimeout(() => {
         navigate('/dashboard');
-      }, 2000); // Navigate after 2 seconds
+      }, 2000);
       
     } catch (error) {
       console.error('Submission error:', error);
@@ -83,8 +82,12 @@ export default function Result() {
     }
   };
   
-  // Construct full image URL (assuming backend is on localhost:8000)
-  // Ensure image_url is sanitized of backslashes from Windows paths
+  const handleCopy = () => {
+    navigator.clipboard.writeText(complaintText);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
   const cleanPath = image_url.replace(/\\/g, '/');
   const fullImageUrl = `http://localhost:8000/${cleanPath}`;
 
@@ -93,132 +96,132 @@ export default function Result() {
   const isInvalid = ['Invalid Content', 'Uncertain'].includes(classification.department);
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+      {/* Breadcrumb */}
       <div className="mb-6">
-        <Link to="/analyze" className="inline-flex items-center text-sm text-slate-500 hover:text-primary transition-colors">
+        <Link to="/analyze" className="inline-flex items-center text-sm text-gray-500 hover:text-primary transition">
           <ArrowLeft className="w-4 h-4 mr-1" />
-          Upload Another
+          File Another Complaint
         </Link>
       </div>
 
-      {/* Success Notification */}
+      {/* Success Banner */}
       {submitSuccess && (
         <div className="mb-6 bg-green-50 border border-green-200 rounded-lg p-4 flex items-center gap-3 animate-fadeIn">
-          <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0" />
+          <CheckCircle className="w-5 h-5 text-success shrink-0" />
           <div>
-            <p className="text-green-800 font-medium">Complaint submitted successfully!</p>
-            <p className="text-green-700 text-sm">Redirecting to your dashboard...</p>
+            <p className="text-green-800 font-medium text-sm">Complaint submitted successfully!</p>
+            <p className="text-green-700 text-xs">Redirecting to your dashboard...</p>
           </div>
         </div>
       )}
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* Left Column: Evidence & Details */}
-        <div className="space-y-6">
-          {/* Image Card */}
-          <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-            <div className="bg-slate-50 px-4 py-3 border-b border-slate-100 flex justify-between items-center">
-              <h3 className="font-semibold text-slate-700">Visual Evidence</h3>
-              <span className={`text-xs px-2 py-1 rounded-full border ${isHighConfidence ? 'bg-green-50 text-green-700 border-green-200' : 'bg-yellow-50 text-yellow-700 border-yellow-200'}`}>
-                AI Confidence: {confidence}%
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
+        {/* Left Column: Evidence & Classification */}
+        <div className="space-y-5">
+          {/* Image Evidence Card */}
+          <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+            <div className="bg-primary px-4 py-3 flex justify-between items-center">
+              <h3 className="font-semibold text-white text-sm flex items-center gap-2">
+                <Shield className="w-4 h-4" />
+                Visual Evidence
+              </h3>
+              <span className={`text-xs px-2.5 py-1 rounded font-medium ${
+                isHighConfidence 
+                  ? 'bg-green-500/20 text-green-100 border border-green-400/30' 
+                  : 'bg-amber-500/20 text-amber-100 border border-amber-400/30'
+              }`}>
+                Confidence: {confidence}%
               </span>
             </div>
-            <div className="aspect-video w-full bg-slate-100 flex items-center justify-center overflow-hidden">
+            <div className="aspect-video w-full bg-gray-100 flex items-center justify-center overflow-hidden">
               <img src={fullImageUrl} alt="Evidence" className="w-full h-full object-contain" />
             </div>
-            <div className="p-4 bg-white border-t border-slate-100">
-              <div className="space-y-3">
-                <div className="flex items-start gap-3">
-                  <div className="p-2 bg-blue-100 rounded-lg text-primary">
-                    <CheckCircle className="w-5 h-5" />
-                  </div>
-                  <div className="flex-1">
-                    <p className="text-xs text-slate-500 uppercase tracking-wide font-semibold">Detected Issue</p>
-                    <p className="text-base font-semibold text-slate-900">{classification.label}</p>
-                  </div>
-                </div>
-                <div className="flex items-start gap-3 pl-11">
-                  <div className="flex-1">
-                    <p className="text-xs text-slate-500 uppercase tracking-wide font-semibold mb-1">Assigned Department</p>
-                    <span className={`inline-block px-3 py-1.5 text-sm font-bold text-white rounded-full shadow-sm ${
-                      isInvalid ? 'bg-red-500' : 'bg-primary'
-                    }`}>
-                      {classification.department}
-                    </span>
-                  </div>
-                </div>
+            <div className="p-4 bg-white space-y-3">
+              <div>
+                <p className="text-[10px] text-gray-400 uppercase tracking-wider font-semibold mb-1">Detected Issue</p>
+                <p className="text-sm font-semibold text-gray-900">{classification.label}</p>
+              </div>
+              <div>
+                <p className="text-[10px] text-gray-400 uppercase tracking-wider font-semibold mb-1">Assigned Department</p>
+                <span className={`inline-block px-3 py-1 text-xs font-bold text-white rounded ${
+                  isInvalid ? 'bg-danger' : 'bg-primary'
+                }`}>
+                  {classification.department}
+                </span>
               </div>
             </div>
           </div>
 
           {/* Location Card */}
-          <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-4">
-             <div className="flex items-start gap-3">
-                <div className="p-2 bg-orange-100 rounded-lg text-secondary">
-                  <MapPin className="w-5 h-5" />
-                </div>
-                <div className="flex-1">
-                  <p className="text-xs text-slate-500 uppercase tracking-wide font-semibold">Location</p>
-                  <p className="text-slate-800 text-sm mt-1">{location.address}</p>
-                  {location.coordinates && (
-                    <p className="text-xs text-slate-400 mt-1">
-                      Lat: {location.coordinates.lat.toFixed(4)}, Lon: {location.coordinates.lon.toFixed(4)}
-                    </p>
-                  )}
-                  {!location.coordinates && (
-                    <div className="mt-2 flex items-center text-xs text-amber-600 bg-amber-50 p-2 rounded">
-                        <AlertTriangle className="w-3 h-3 mr-1" />
-                        GPS Data missing from image. Using default defaults.
-                    </div>
-                  )}
-                </div>
+          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+            <div className="flex items-start gap-3">
+              <div className="p-2 bg-saffron/10 rounded text-saffron">
+                <MapPin className="w-4 h-4" />
               </div>
+              <div className="flex-1">
+                <p className="text-[10px] text-gray-400 uppercase tracking-wider font-semibold">Location</p>
+                <p className="text-gray-800 text-sm mt-0.5">{location.address}</p>
+                {location.coordinates && (
+                  <p className="text-xs text-gray-400 mt-1">
+                    {location.coordinates.lat.toFixed(4)}°N, {location.coordinates.lon.toFixed(4)}°E
+                  </p>
+                )}
+                {!location.coordinates && (
+                  <div className="mt-2 flex items-center text-xs text-amber-700 bg-amber-50 p-2 rounded border border-amber-200">
+                    <AlertTriangle className="w-3 h-3 mr-1.5 shrink-0" />
+                    GPS data not found in image. Default location used.
+                  </div>
+                )}
+              </div>
+            </div>
           </div>
         </div>
 
-        {/* Right Column: The Generated Letter */}
-        <div className="bg-white rounded-xl shadow-lg border border-primary/20 flex flex-col h-full">
-            <div className="px-6 py-4 border-b border-slate-100 bg-slate-50 flex justify-between items-center rounded-t-xl">
-                 <div className="flex items-center gap-2">
-                    <FileText className="w-5 h-5 text-primary" />
-                    <h3 className="font-bold text-slate-800">Official Complaint Draft</h3>
-                 </div>
-                 <button 
-                    onClick={() => navigator.clipboard.writeText(generated_complaint)}
-                    className="text-xs font-medium text-primary hover:text-blue-700"
-                 >
-                    Copy Text
-                 </button>
+        {/* Right Column: Complaint Draft */}
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 flex flex-col h-full">
+          <div className="px-5 py-3 border-b border-gray-100 bg-gray-50 flex justify-between items-center rounded-t-lg">
+            <div className="flex items-center gap-2">
+              <FileText className="w-4 h-4 text-primary" />
+              <h3 className="font-bold text-gray-800 text-sm">Official Complaint Draft</h3>
             </div>
-            <div className="p-6 flex-grow">
-                <textarea 
-                    className="w-full h-full min-h-[400px] p-4 text-slate-700 bg-slate-50 border border-slate-200 rounded-md focus:ring-2 focus:ring-primary focus:border-transparent outline-none resize-none font-serif leading-relaxed"
-                    value={complaintText}
-                    onChange={(e) => setComplaintText(e.target.value)}
-                />
+            <button 
+              onClick={handleCopy}
+              className="text-xs font-medium text-primary hover:text-primary-light flex items-center gap-1 transition"
+            >
+              <Copy className="w-3.5 h-3.5" />
+              {copied ? 'Copied!' : 'Copy'}
+            </button>
+          </div>
+          <div className="p-5 grow">
+            <textarea 
+              className="w-full h-full min-h-95 p-4 text-gray-700 bg-gray-50 border border-gray-200 rounded focus:ring-2 focus:ring-primary focus:border-transparent outline-none resize-none font-serif text-sm leading-relaxed"
+              value={complaintText}
+              onChange={(e) => setComplaintText(e.target.value)}
+            />
+          </div>
+          <div className="px-5 py-4 bg-gray-50 border-t border-gray-100 rounded-b-lg">
+            {submitError && (
+              <div className="mb-3 p-2.5 bg-red-50 text-danger text-xs rounded border border-red-200">
+                {submitError}
+              </div>
+            )}
+            <div className="flex justify-between items-center">
+              <span className="text-[10px] text-gray-400 uppercase tracking-wider">
+                AI-Generated • Editable
+              </span>
+              <button 
+                onClick={handleSubmit}
+                disabled={submitting || isInvalid}
+                className={`px-5 py-2 text-white text-sm font-semibold rounded transition disabled:opacity-50 disabled:cursor-not-allowed ${
+                  isInvalid ? 'bg-gray-400' : 'bg-saffron hover:bg-saffron-light'
+                }`}
+                title={isInvalid ? "Cannot submit invalid complaint" : "Submit to authorities"}
+              >
+                {isInvalid ? 'Invalid Complaint' : (submitting ? 'Submitting...' : 'Submit Complaint')}
+              </button>
             </div>
-            <div className="px-6 py-4 bg-slate-50 border-t border-slate-100 rounded-b-xl">
-                {submitError && (
-                  <div className="mb-3 p-3 bg-red-50 text-red-700 text-sm rounded border border-red-200">
-                    {submitError}
-                  </div>
-                )}
-                <div className="flex justify-between items-center">
-                    <span className="text-xs text-slate-500">
-                        Generated by Ollama AI
-                    </span>
-                    <button 
-                        onClick={handleSubmit}
-                        disabled={submitting || isInvalid}
-                        className={`px-4 py-2 text-white text-sm font-medium rounded transition disabled:opacity-50 disabled:cursor-not-allowed ${
-                          isInvalid ? 'bg-slate-400' : 'bg-primary hover:bg-blue-700'
-                        }`}
-                        title={isInvalid ? "Cannot submit invalid complaint" : "Submit to authorities"}
-                    >
-                        {isInvalid ? 'Invalid Complaint' : (submitting ? 'Submitting...' : 'Submit Complaint')}
-                    </button>
-                </div>
-            </div>
+          </div>
         </div>
       </div>
     </div>

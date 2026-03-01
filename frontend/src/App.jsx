@@ -50,7 +50,7 @@ function App() {
   return (
     <AuthProvider>
       <Router>
-        <div className="min-h-screen bg-slate-50 font-sans">
+          <div className="min-h-screen bg-gray-50 font-sans">
           <Navbar />
           <main>
             <Routes>
