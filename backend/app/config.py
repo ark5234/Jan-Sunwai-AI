@@ -23,6 +23,7 @@ class Settings:
     allowed_origins_raw: str = os.getenv("ALLOWED_ORIGINS", "http://localhost:5173,http://127.0.0.1:5173")
     ollama_base_url: str = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
     vision_model: str = os.getenv("VISION_MODEL", "qwen2.5vl:3b")
+    fallback_vision_model: str = os.getenv("FALLBACK_VISION_MODEL", "moondream:latest")
     reasoning_model: str = os.getenv("REASONING_MODEL", "llama3.2:1b")
     llm_inline_timeout_seconds: float = float(os.getenv("LLM_INLINE_TIMEOUT_SECONDS", "8"))
     llm_queue_workers: int = int(os.getenv("LLM_QUEUE_WORKERS", "2"))

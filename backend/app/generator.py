@@ -67,14 +67,41 @@ def generate_complaint(image_path, classification_result, user_details, location
         # Use explicit client so host URL comes from config (not localhost default)
         client = ollama.Client(host=settings.ollama_base_url)
         image_bytes = _load_image_as_jpeg_bytes(image_path)
-        response = client.generate(
-            model=settings.vision_model,
-            prompt=prompt,
-            images=[image_bytes]
-        )
+
+        # Try primary vision model; fall back to lighter model on OOM
+        models_to_try = [settings.vision_model]
+        if settings.fallback_vision_model and settings.fallback_vision_model != settings.vision_model:
+            models_to_try.append(settings.fallback_vision_model)
+
+        response = None
+        used_model = settings.vision_model
+        for model_name in models_to_try:
+            try:
+                response = client.generate(
+                    model=model_name,
+                    prompt=prompt,
+                    images=[image_bytes]
+                )
+                used_model = model_name
+                break
+            except Exception as model_err:
+                err_msg = str(model_err).lower()
+                is_oom = any(kw in err_msg for kw in [
+                    "memory", "oom", "out of memory", "not enough",
+                    "insufficient", "cannot allocate",
+                ])
+                if is_oom and model_name != models_to_try[-1]:
+                    print(f"[generator] {model_name} OOM, falling back to {models_to_try[-1]}")
+                    try:
+                        client.generate(model=model_name, prompt="", keep_alive=0)
+                    except Exception:
+                        pass
+                    continue
+                raise
+
         # Unload vision model after letter generation to free VRAM
         try:
-            client.generate(model=settings.vision_model, prompt="", keep_alive=0)
+            client.generate(model=used_model, prompt="", keep_alive=0)
         except Exception:
             pass
         return response['response']

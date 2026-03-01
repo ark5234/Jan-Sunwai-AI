@@ -136,33 +136,61 @@ class CivicClassifier:
             client = _get_ollama_client()
 
             # ------------------------------------------------------------------
-            # STEP 1 — Vision: Structured JSON description (qwen2.5vl:3b)
+            # STEP 1 — Vision: Structured JSON description
+            #          Tries primary model first; falls back to lighter model
+            #          if OOM / insufficient-memory errors occur.
             # ------------------------------------------------------------------
-            vision_response = client.generate(
-                model=settings.vision_model,
-                format="json",
-                prompt=(
-                    "You are a civic-issue vision analyst for Indian municipal complaints. "
-                    "Analyze the image and return strict JSON only.\n\n"
-                    "JSON schema:\n"
-                    "{\n"
-                    '  "description": "2-3 sentence factual description of what you see",\n'
-                    '  "visible_objects": ["object1", "object2"],\n'
-                    '  "primary_issue": "single phrase describing the main problem",\n'
-                    '  "secondary_issue": "single phrase or empty string",\n'
-                    '  "hazards": ["hazard1", "hazard2"],\n'
-                    '  "setting": "road/park/drain/building/etc",\n'
-                    '  "confidence": "low/medium/high"\n'
-                    "}\n\n"
-                    "Rules:\n"
-                    "- Keep description under 40 words\n"
-                    "- Be specific about damage type (pothole, crack, leak, etc.)\n"
-                    "- List all visible hazards\n"
-                    "- No markdown, no explanation outside JSON"
-                ),
-                images=[image_bytes],
-                options={"num_ctx": 1024},
+            vision_prompt = (
+                "You are a civic-issue vision analyst for Indian municipal complaints. "
+                "Analyze the image and return strict JSON only.\n\n"
+                "JSON schema:\n"
+                "{\n"
+                '  "description": "2-3 sentence factual description of what you see",\n'
+                '  "visible_objects": ["object1", "object2"],\n'
+                '  "primary_issue": "single phrase describing the main problem",\n'
+                '  "secondary_issue": "single phrase or empty string",\n'
+                '  "hazards": ["hazard1", "hazard2"],\n'
+                '  "setting": "road/park/drain/building/etc",\n'
+                '  "confidence": "low/medium/high"\n'
+                "}\n\n"
+                "Rules:\n"
+                "- Keep description under 40 words\n"
+                "- Be specific about damage type (pothole, crack, leak, etc.)\n"
+                "- List all visible hazards\n"
+                "- No markdown, no explanation outside JSON"
             )
+
+            # Try primary vision model, then fallback on OOM
+            active_vision_model = settings.vision_model
+            models_to_try = [settings.vision_model]
+            if settings.fallback_vision_model and settings.fallback_vision_model != settings.vision_model:
+                models_to_try.append(settings.fallback_vision_model)
+
+            vision_response = None
+            for model_name in models_to_try:
+                try:
+                    vision_response = client.generate(
+                        model=model_name,
+                        format="json",
+                        prompt=vision_prompt,
+                        images=[image_bytes],
+                        options={"num_ctx": 1024},
+                    )
+                    active_vision_model = model_name
+                    break  # success
+                except Exception as model_err:
+                    err_msg = str(model_err).lower()
+                    is_oom = any(kw in err_msg for kw in [
+                        "memory", "oom", "out of memory", "not enough",
+                        "insufficient", "cannot allocate",
+                    ])
+                    if is_oom and model_name != models_to_try[-1]:
+                        print(f"[classifier] {model_name} OOM ({model_err}), "
+                              f"falling back to {models_to_try[-1]}")
+                        self._unload_model(model_name)  # free whatever was partially loaded
+                        continue
+                    raise  # not OOM or last model → propagate
+
             raw_vision_json: str = vision_response["response"].strip()
 
             # Parse the structured vision output
@@ -273,7 +301,7 @@ class CivicClassifier:
                 "raw_category": canonical,
                 "rationale": rationale,
                 "method": method,
-                "model_used": settings.vision_model,
+                "model_used": active_vision_model,
                 "raw_json": raw_json_str,
             }
 
