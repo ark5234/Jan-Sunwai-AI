@@ -1,6 +1,29 @@
 import ollama
 import os
+import time
 from app.config import settings
+
+
+def _wait_for_model_unload(client: ollama.Client, model_name: str, timeout: float = 30.0) -> None:
+    """
+    Poll Ollama's running-models list until `model_name` is no longer present
+    or `timeout` seconds have elapsed. The keep_alive=0 call is async on the
+    Ollama side — without this wait llama3.2:1b starts loading while the vision
+    model is still resident, causing OOM or slow generation.
+    """
+    deadline = time.monotonic() + timeout
+    while time.monotonic() < deadline:
+        try:
+            running = client.ps()  # returns list of currently loaded models
+            names = [
+                (m.model if hasattr(m, "model") else m.get("model", ""))
+                for m in (running.models if hasattr(running, "models") else running.get("models", []))
+            ]
+            if not any(model_name in n for n in names):
+                return  # fully unloaded
+        except Exception:
+            return  # if ps() fails, proceed anyway
+        time.sleep(0.5)
 
 
 def generate_complaint(image_path, classification_result, user_details, location_details):
@@ -8,11 +31,10 @@ def generate_complaint(image_path, classification_result, user_details, location
     Generates a civic grievance description using the reasoning model (llama3.2:1b).
 
     Always uses text-only generation — the vision model has already run during
-    classification and produced a structured description. Re-running a vision model
-    with the image here was the original bottleneck (took 60–250 s extra).
+    classification and produced a structured description. Re-running the vision model
+    here was the original bottleneck (60–250 s extra per request).
     """
 
-    # Use the civic department/category, not 'label' (raw vision description text)
     category = classification_result.get("department") or classification_result.get("label", "Civic Issue")
     description = (
         classification_result.get("vision_description")
@@ -37,15 +59,17 @@ def generate_complaint(image_path, classification_result, user_details, location
     try:
         client = ollama.Client(host=settings.ollama_base_url)
 
-        # Unload any vision model currently in VRAM before loading the reasoning model.
-        # This is the key step — without it, llama3.2:1b can't load if qwen2.5vl:3b
-        # or granite is still resident after classification.
-        for vision_model in {settings.vision_model, settings.mid_vision_model}:
-            if vision_model:
-                try:
-                    client.generate(model=vision_model, prompt="", keep_alive=0)
-                except Exception:
-                    pass
+        # Signal each vision model to unload, then WAIT until Ollama confirms
+        # it is no longer in the running-models list before loading llama3.2:1b.
+        for vision_model in dict.fromkeys(
+            m for m in [settings.vision_model, settings.mid_vision_model] if m
+        ):
+            try:
+                client.generate(model=vision_model, prompt="", keep_alive=0)
+                _wait_for_model_unload(client, vision_model, timeout=30.0)
+                print(f"[generator] {vision_model} unloaded, loading {settings.reasoning_model}")
+            except Exception:
+                pass
 
         response = client.generate(
             model=settings.reasoning_model,

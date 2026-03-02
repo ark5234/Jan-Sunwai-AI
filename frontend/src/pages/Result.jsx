@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, Link, useNavigate } from 'react-router-dom';
-import { MapPin, FileText, CheckCircle, AlertTriangle, ArrowLeft, Shield, Copy, Edit3, Navigation, Search } from 'lucide-react';
+import { MapPin, FileText, CheckCircle, AlertTriangle, ArrowLeft, Shield, Copy, Edit3, Navigation, Search, RefreshCw } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import axios from 'axios';
 
@@ -12,11 +12,13 @@ export default function Result() {
   
   const [complaintText, setComplaintText] = useState(result?.generated_complaint || '');
   const [generationStatus, setGenerationStatus] = useState(result?.generation_status || 'completed');
-  const generationJobId = result?.generation_job_id;
+  const [generationJobId, setGenerationJobId] = useState(result?.generation_job_id);
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState(null);
   const [submitSuccess, setSubmitSuccess] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [regenerating, setRegenerating] = useState(false);
+  const [regenerateError, setRegenerateError] = useState(null);
 
   // Poll the backend for the complaint generation result when the job is still running.
   useEffect(() => {
@@ -205,6 +207,31 @@ export default function Result() {
     navigator.clipboard.writeText(complaintText);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
+  };
+
+  const handleRegenerate = async () => {
+    setRegenerateError(null);
+    setRegenerating(true);
+    try {
+      const res = await axios.post(
+        'http://localhost:8000/analyze/regenerate',
+        {
+          classification,
+          location: result?.location || {},
+          image_url,
+        },
+        { headers: { Authorization: `Bearer ${user?.access_token}` } }
+      );
+      const { job_id } = res.data;
+      setComplaintText('');
+      setGenerationJobId(job_id);
+      setGenerationStatus('queued');
+    } catch (err) {
+      console.error('Regenerate error:', err);
+      setRegenerateError('Failed to start regeneration. Please try again.');
+    } finally {
+      setRegenerating(false);
+    }
   };
 
   const cleanPath = image_url.replace(/\\/g, '/');
@@ -418,13 +445,25 @@ export default function Result() {
                 <FileText className="w-4 h-4 text-primary" />
                 <h3 className="font-bold text-gray-800 text-sm">Grievance Description</h3>
               </div>
-              <button 
-                onClick={handleCopy}
-                className="text-xs font-medium text-primary hover:text-primary-light flex items-center gap-1 transition"
-              >
-                <Copy className="w-3.5 h-3.5" />
-                {copied ? 'Copied!' : 'Copy'}
-              </button>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={handleRegenerate}
+                  disabled={isGenerating || regenerating}
+                  title="Regenerate grievance description using AI"
+                  className="text-xs font-medium text-gray-500 hover:text-primary flex items-center gap-1 transition disabled:opacity-40 disabled:cursor-not-allowed"
+                >
+                  <RefreshCw className={`w-3.5 h-3.5 ${(isGenerating || regenerating) ? 'animate-spin' : ''}`} />
+                  {regenerating ? 'Starting…' : isGenerating ? 'Generating…' : 'Regenerate'}
+                </button>
+                <span className="text-gray-300">|</span>
+                <button 
+                  onClick={handleCopy}
+                  className="text-xs font-medium text-primary hover:text-primary-light flex items-center gap-1 transition"
+                >
+                  <Copy className="w-3.5 h-3.5" />
+                  {copied ? 'Copied!' : 'Copy'}
+                </button>
+              </div>
             </div>
 
             <div className="p-5 space-y-4">
@@ -463,6 +502,12 @@ export default function Result() {
 
             {/* Submit footer */}
             <div className="px-5 py-4 bg-gray-50 border-t border-gray-100">
+              {regenerateError && (
+                <div className="mb-3 p-2.5 bg-amber-50 text-amber-700 text-sm rounded border border-amber-200 flex items-start gap-2">
+                  <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" />
+                  {regenerateError}
+                </div>
+              )}
               {submitError && (
                 <div className="mb-3 p-2.5 bg-red-50 text-danger text-sm rounded border border-red-200 flex items-start gap-2">
                   <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" />

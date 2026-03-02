@@ -106,7 +106,30 @@ async def get_generation_result(job_id: str, current_user: dict = Depends(get_cu
         raise HTTPException(status_code=404, detail="Generation job not found")
     return result
 
-# --- CRUD Endpoints ---
+
+@router.post("/analyze/regenerate")
+async def regenerate_complaint(
+    payload: dict = Body(...),
+    current_user: dict = Depends(get_current_user)
+):
+    """
+    Re-run the complaint draft generator for an already-analysed image.
+    Expects: { classification, location, image_url }
+    Returns:  { job_id, status } — poll /complaints/generation/{job_id}
+    """
+    username = current_user["username"]
+    classification = payload.get("classification", {})
+    location       = payload.get("location", {})
+    image_url      = payload.get("image_url", "")
+
+    absolute_file_path = storage_service.resolve_path(image_url)
+
+    job_id = await llm_queue_service.enqueue(
+        absolute_file_path, classification, {"name": username}, location
+    )
+    return {"job_id": job_id, "status": "queued"}
+
+
 
 @router.post("/complaints", response_model=ComplaintResponse)
 async def create_complaint(
