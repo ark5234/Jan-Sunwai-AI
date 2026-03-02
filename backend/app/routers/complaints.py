@@ -175,7 +175,7 @@ async def create_complaint(
         message=f"Your grievance has been registered and routed to {complaint.department}. Current status: Open.",
         complaint_id=complaint_dict["_id"],
         status_from=None,
-        status_to=ComplaintStatus.OPEN,
+        status_to=ComplaintStatus.OPEN.value,
     )
     
     return complaint_dict
@@ -301,14 +301,16 @@ async def update_complaint_status(
         }
         dept = existing.get("department", "the department")
         msg = status_messages.get(status, f"Status updated to {status}.")
+        status_val = status.value if hasattr(status, 'value') else str(status)
+        old_status_val = old_status.value if hasattr(old_status, 'value') else str(old_status)
         await create_notification(
             user_id=citizen_id,
             notification_type=NotificationType.STATUS_CHANGE,
-            title=f"Status Updated: {status}",
+            title=f"Status Updated: {status_val}",
             message=f"{msg} Department: {dept}.",
             complaint_id=complaint_id,
-            status_from=old_status,
-            status_to=status,
+            status_from=old_status_val,
+            status_to=status_val,
         )
 
     return fix_id(result)

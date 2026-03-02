@@ -315,6 +315,7 @@ class CivicClassifier:
                 str(vision_payload.get("secondary_issue", "")),
                 str(vision_payload.get("setting", "")),
                 " ".join(str(h) for h in vision_payload.get("hazards", [])),
+                raw_vision_json,  # also scan raw model output for any rail terms
             ]).lower()
 
             _RAIL_TRANSIT_TERMS = [
@@ -398,6 +399,29 @@ class CivicClassifier:
                   f"(conf={model_confidence:.2f}, ambiguous={is_ambiguous})")
 
             # ------------------------------------------------------------------
+            # POLICE-TRAFFIC VETO: "traffic congestion" (or similar congestion
+            # phrases) alone is not sufficient evidence — a crowded railway
+            # platform, festival crowd, or busy market also "looks congested".
+            # Require at least ONE vehicle term anywhere in the combined payload.
+            # If absent, override to Uncategorized so the reasoning model (or
+            # the keyword fallback) gets a chance to re-evaluate.
+            # ------------------------------------------------------------------
+            if canonical == "Police - Traffic":
+                _VEHICLE_TERMS = [
+                    "car", "cars", "vehicle", "vehicles", "bus", "buses",
+                    "truck", "trucks", "motorcycle", "motorcycles", "auto",
+                    "autorickshaw", "rickshaw", "two-wheeler", "scooter",
+                    "cab", "taxi", "van", "jeep", "lorry", "minibus",
+                ]
+                has_vehicle = any(v in _all_payload_text for v in _VEHICLE_TERMS)
+                if not has_vehicle:
+                    print(f"[classifier] Police-Traffic VETO: no vehicle terms in payload "
+                          f"— overriding to Uncategorized (was conf={model_confidence:.2f})")
+                    canonical = "Uncategorized"
+                    is_ambiguous = True          # allow reasoning model to re-classify
+                    model_confidence = 0.3
+
+            # ------------------------------------------------------------------
             # STEP 3 — Optional Reasoning: Only if rule engine is ambiguous
             #          Skipped entirely when RULE_ENGINE_ONLY=true
             # ------------------------------------------------------------------
@@ -421,7 +445,10 @@ class CivicClassifier:
                         f"Image description: \"{description}\"\n"
                         f"Visible objects: {json.dumps(vision_payload.get('visible_objects', []))}\n"
                         f"Primary issue: \"{vision_payload.get('primary_issue', '')}\"\n"
+                        f"Setting: \"{vision_payload.get('setting', '')}\"\n"
                         f"Hazards: {json.dumps(vision_payload.get('hazards', []))}\n\n"
+                        f"NOTE: If the setting is a railway station, train platform, or metro station, "
+                        f"classify as 'Uncategorized' — those are Central Government issues outside this portal's scope.\n\n"
                         f"Categories:\n{categories_block}\n\n"
                         f"Respond with JSON: "
                         f"{{\"department\": \"<exact category name>\", "

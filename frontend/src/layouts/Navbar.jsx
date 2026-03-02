@@ -14,6 +14,7 @@ export default function Navbar() {
   // Notification state
   const [showNotifications, setShowNotifications] = useState(false);
   const [notifications, setNotifications] = useState([]);
+  const [notifLoading, setNotifLoading] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
   const bellRef = useRef(null);
   const dropdownRef = useRef(null);
@@ -50,10 +51,24 @@ export default function Navbar() {
     const headers = { Authorization: `Bearer ${user.access_token}` };
 
     (async () => {
+      setNotifLoading(true);
       try {
         const res = await fetch(`${API}/notifications?limit=10`, { headers });
-        if (res.ok) setNotifications(await res.json());
-      } catch { /* ignore */ }
+        if (res.ok) {
+          const data = await res.json();
+          setNotifications(data);
+        } else if (res.status === 401) {
+          // Token expired — clear stale count
+          setUnreadCount(0);
+          setNotifications([]);
+        } else {
+          console.warn('[Navbar] notifications fetch returned', res.status);
+        }
+      } catch (err) {
+        console.error('[Navbar] notifications fetch error:', err);
+      } finally {
+        setNotifLoading(false);
+      }
     })();
   }, [showNotifications, user?.access_token]);
 
@@ -200,7 +215,11 @@ export default function Navbar() {
                           )}
                         </div>
                         <div className="max-h-80 overflow-y-auto">
-                          {notifications.length === 0 ? (
+                          {notifLoading ? (
+                            <div className="px-4 py-8 text-center">
+                              <p className="text-sm text-gray-400">Loading...</p>
+                            </div>
+                          ) : notifications.length === 0 ? (
                             <div className="px-4 py-8 text-center">
                               <Bell className="w-8 h-8 text-gray-300 mx-auto mb-2" />
                               <p className="text-sm text-gray-500">No notifications yet</p>
