@@ -11,10 +11,49 @@ export default function Result() {
   const result = state?.result;
   
   const [complaintText, setComplaintText] = useState(result?.generated_complaint || '');
+  const [generationStatus, setGenerationStatus] = useState(result?.generation_status || 'completed');
+  const generationJobId = result?.generation_job_id;
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState(null);
   const [submitSuccess, setSubmitSuccess] = useState(false);
   const [copied, setCopied] = useState(false);
+
+  // Poll the backend for the complaint generation result when the job is still running.
+  useEffect(() => {
+    if (!generationJobId || !['queued', 'processing'].includes(generationStatus)) return;
+
+    const POLL_INTERVAL_MS = 3000;
+    const MAX_ATTEMPTS = 20; // give up after ~60 s
+    let attempts = 0;
+
+    const intervalId = setInterval(async () => {
+      attempts += 1;
+      try {
+        const res = await axios.get(
+          `http://localhost:8000/complaints/generation/${generationJobId}`,
+          { headers: { Authorization: `Bearer ${user?.access_token}` } }
+        );
+        const data = res.data;
+        if (data.status === 'completed') {
+          setComplaintText(data.generated_complaint || '');
+          setGenerationStatus('completed');
+          clearInterval(intervalId);
+        } else if (data.status === 'failed') {
+          setComplaintText('AI draft failed. Please write the complaint manually.');
+          setGenerationStatus('failed');
+          clearInterval(intervalId);
+        } else if (attempts >= MAX_ATTEMPTS) {
+          setGenerationStatus('timeout');
+          clearInterval(intervalId);
+        }
+      } catch (err) {
+        console.error('Generation polling error:', err);
+        if (attempts >= MAX_ATTEMPTS) clearInterval(intervalId);
+      }
+    }, POLL_INTERVAL_MS);
+
+    return () => clearInterval(intervalId);
+  }, [generationJobId, generationStatus, user?.access_token]);
 
   // Location state — editable if EXIF not found
   const hasExifLocation = !!result?.location?.coordinates;
@@ -174,7 +213,8 @@ export default function Result() {
   const confidence = (classification.confidence * 100).toFixed(1);
   const isHighConfidence = classification.confidence > 0.8;
   const isInvalid = ['Invalid Content', 'Uncertain'].includes(classification.department);
-  const canSubmit = !isInvalid && isLocationValid && complaintText.trim().length > 0;
+  const isGenerating = ['queued', 'processing'].includes(generationStatus);
+  const canSubmit = !isInvalid && isLocationValid && complaintText.trim().length > 0 && !isGenerating;
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
@@ -232,7 +272,14 @@ export default function Result() {
             <h4 className="text-[10px] text-gray-400 uppercase tracking-wider font-semibold">AI Analysis</h4>
             <div>
               <p className="text-[10px] text-gray-400 uppercase tracking-wider font-semibold mb-1">Issue Detected</p>
-              <p className="text-sm text-gray-900">{classification.label}</p>
+              <p className="text-sm text-gray-900">
+                {(() => {
+                  const raw = classification.label || '';
+                  // Hide garbled/raw JSON output from the model
+                  const isGarbled = !raw || raw.trim().startsWith('{') || raw.trim().startsWith('[') || raw.length < 4;
+                  return isGarbled ? (classification.vision_description || classification.department || 'Civic issue detected') : raw;
+                })()}
+              </p>
             </div>
             <div>
               <p className="text-[10px] text-gray-400 uppercase tracking-wider font-semibold mb-1">Department</p>
@@ -398,12 +445,18 @@ export default function Result() {
                 <label className="flex items-center gap-1.5 text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1.5">
                   <Edit3 className="w-3 h-3" />
                   Issue Details (AI-generated — edit if needed)
+                  {['queued', 'processing'].includes(generationStatus) && (
+                    <span className="ml-2 text-[10px] text-primary animate-pulse font-normal normal-case tracking-normal">Generating…</span>
+                  )}
                 </label>
                 <textarea 
-                  className="w-full min-h-44 p-4 text-gray-700 bg-white border border-gray-300 rounded focus:ring-2 focus:ring-primary focus:border-transparent outline-none resize-y text-sm leading-relaxed"
+                  className={`w-full min-h-44 p-4 text-gray-700 bg-white border border-gray-300 rounded focus:ring-2 focus:ring-primary focus:border-transparent outline-none resize-y text-sm leading-relaxed ${
+                    ['queued', 'processing'].includes(generationStatus) ? 'opacity-60 cursor-wait' : ''
+                  }`}
                   value={complaintText}
                   onChange={(e) => setComplaintText(e.target.value)}
-                  placeholder="Describe the issue in detail..."
+                  placeholder={['queued', 'processing'].includes(generationStatus) ? 'Generating complaint draft…' : 'Describe the issue in detail...'}
+                  disabled={['queued', 'processing'].includes(generationStatus)}
                 />
               </div>
             </div>
@@ -421,7 +474,10 @@ export default function Result() {
                   {!isLocationValid && (
                     <p className="text-amber-600 font-medium">⚠ Location required to submit</p>
                   )}
-                  {!complaintText.trim() && (
+                  {isGenerating && (
+                    <p className="text-primary font-medium animate-pulse">⏳ Generating complaint draft…</p>
+                  )}
+                  {!isGenerating && !complaintText.trim() && (
                     <p className="text-amber-600 font-medium">⚠ Description required</p>
                   )}
                 </div>
@@ -433,6 +489,7 @@ export default function Result() {
                   }`}
                   title={
                     isInvalid ? "Cannot submit invalid complaint" 
+                    : isGenerating ? "Please wait for draft generation to complete"
                     : !isLocationValid ? "Location is required" 
                     : "Submit to authorities"
                   }

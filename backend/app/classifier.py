@@ -1,6 +1,7 @@
 import io
 import json
 import os
+import re
 import ollama
 from PIL import Image
 from app.config import settings
@@ -26,7 +27,7 @@ CATEGORY_DEFINITIONS: dict[str, str] = {
     "State Transport":                 "damaged bus shelters, broken state buses, transport terminal damage",
     "Pollution Control Board":         "air pollution, thick smoke, industrial waste dumping, open burning of garbage",
     "Police - Local Law Enforcement":  "illegal parking, footpath encroachment, public nuisance, fights or brawls",
-    "Police - Traffic":                "failed traffic signals, road blockages, severe traffic congestion",
+    "Police - Traffic":                "failed traffic signals, road blockages, severe traffic congestion, traffic deadlock, gridlock, chaotic traffic, peak-hour jams, no lane marking, uncontrolled intersections, crowded marketplace roads",
     "Uncategorized":                   "does not clearly match any of the above civic categories",
 }
 
@@ -59,7 +60,9 @@ _KEYWORD_FALLBACK: list[tuple[list[str], str]] = [
      "Utility - Power (DISCOM)"),
     (["smoke", "burning", "industrial waste", "air pollution", "open burning"],
      "Pollution Control Board"),
-    (["traffic signal", "signal failure", "traffic jam", "road blockage"],
+    (["traffic signal", "signal failure", "traffic jam", "road blockage",
+      "traffic congestion", "congestion", "gridlock", "traffic deadlock",
+      "standstill", "peak hour", "rush hour", "no lane", "chaotic traffic"],
      "Police - Traffic"),
     (["illegal parking", "encroachment", "footpath blocked", "public nuisance"],
      "Police - Local Law Enforcement"),
@@ -154,18 +157,24 @@ class CivicClassifier:
                     "Analyze the image and return strict JSON only.\n\n"
                     "JSON schema:\n"
                     "{\n"
-                    '  "description": "2-3 sentence factual description of what you see",\n'
+                    '  "description": "2-3 sentence factual description of what you CLEARLY see",\n'
                     '  "visible_objects": ["object1", "object2"],\n'
-                    '  "primary_issue": "single phrase describing the main problem",\n'
+                    '  "primary_issue": "single phrase — the DOMINANT problem visible",\n'
                     '  "secondary_issue": "single phrase or empty string",\n'
                     '  "hazards": ["hazard1", "hazard2"],\n'
                     '  "setting": "road/park/drain/building/etc",\n'
                     '  "confidence": "low/medium/high"\n'
                     "}\n\n"
-                    "Rules:\n"
+                    "STRICT RULES:\n"
+                    "- ONLY describe what you can CLEARLY and DIRECTLY see. Do NOT infer or guess.\n"
+                    "- If the dominant scene is heavy vehicle traffic, crowded roads, traffic jam, "
+                    "or congestion with NO clear infrastructure damage, set primary_issue to "
+                    "'traffic congestion' and description should reflect that.\n"
+                    "- Do NOT mention potholes unless you can clearly see road surface damage.\n"
+                    "- Do NOT mention garbage/fallen trees unless clearly visible.\n"
+                    "- Be specific: 'traffic congestion' / 'pothole' / 'waterlogging' / "
+                    "'broken street light' / 'fallen tree' / 'garbage dump' / 'dangling wire'\n"
                     "- Keep description under 40 words\n"
-                    "- Be specific about damage type (pothole, crack, leak, etc.)\n"
-                    "- List all visible hazards\n"
                     "- No markdown, no explanation outside JSON"
                 )
                 generate_kwargs = dict(
@@ -177,12 +186,15 @@ class CivicClassifier:
                 )
             else:
                 # Simple prompt for small/captioning models (moondream, etc.)
+                # IMPORTANT: Do NOT list specific civic problem types as examples —
+                # small models will hallucinate whichever keyword appears first.
+                # Instead, ask for a plain neutral description.
                 vision_prompt = (
-                    "Describe this image in 2-3 sentences. "
-                    "Focus on: what civic problem is visible (pothole, garbage, broken light, "
-                    "waterlogging, fallen tree, damaged wire, traffic issue, etc.), "
-                    "what objects are in the scene, and any hazards to public safety. "
-                    "Be specific and factual."
+                    "Look at this image carefully and describe ONLY what you can clearly see. "
+                    "What is the main activity or condition visible in the scene? "
+                    "How many vehicles or people are present? "
+                    "Is there any obvious physical damage to roads, infrastructure, or surroundings? "
+                    "Describe in 2-3 factual sentences without guessing or assuming."
                 )
                 generate_kwargs = dict(
                     model=active_vision_model,
@@ -246,6 +258,46 @@ class CivicClassifier:
             vision_payload.setdefault("setting", "")
 
             description = str(vision_payload.get("description", ""))
+
+            # Guard: if description is empty, looks like raw JSON/binary, or is
+            # too short to be meaningful, reconstruct it from other available fields.
+            # The vision model (qwen2.5vl:3b) occasionally returns JSON that has
+            # no "description" key, or puts binary/garbage data there.
+            def _description_is_garbage(d: str) -> bool:
+                d = d.strip()
+                if not d or len(d) < 10:
+                    return True
+                if d.startswith("{") or d.startswith("["):
+                    return True
+                # Detect sequences that look like binary / function tokens
+                if re.search(r"\bfunction\s+\d+\b", d, re.IGNORECASE):
+                    return True
+                # Pure numeric / hex garbage
+                if re.fullmatch(r"[\d\s:,{}\[\]\"']+", d):
+                    return True
+                return False
+
+            if _description_is_garbage(description):
+                parts: list[str] = []
+                primary = str(vision_payload.get("primary_issue", "")).strip()
+                if primary:
+                    parts.append(primary.capitalize())
+                objects = vision_payload.get("visible_objects", [])
+                if objects:
+                    parts.append(f"visible objects: {', '.join(str(o) for o in objects[:4])}")
+                setting = str(vision_payload.get("setting", "")).strip()
+                if setting:
+                    parts.append(f"setting: {setting}")
+                secondary = str(vision_payload.get("secondary_issue", "")).strip()
+                if secondary:
+                    parts.append(secondary)
+                description = ". ".join(parts) if parts else ""
+                if description:
+                    vision_payload["description"] = description
+                    print(f"[classifier] rebuilt description from structured fields: {description[:80]}")
+                else:
+                    print(f"[classifier] WARNING: vision model returned uninterpretable output — description left empty")
+
             print(f"[classifier] vision ({active_vision_model}): {description[:120]}")
 
             # ------------------------------------------------------------------
