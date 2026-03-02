@@ -40,7 +40,12 @@ async def get_review_queue(skip: int = 0, limit: int = 50, _: dict = Depends(get
     if not REVIEW_QUEUE_CSV.exists():
         return {"items": [], "total": 0}
 
-    df = pd.read_csv(REVIEW_QUEUE_CSV)
+    try:
+        df = pd.read_csv(REVIEW_QUEUE_CSV)
+    except pd.errors.EmptyDataError:
+        # CSV exists but has no rows/headers yet
+        return {"items": [], "total": 0}
+
     total = len(df)
     rows = df.iloc[skip : skip + limit].fillna("").to_dict(orient="records")
     return {"items": rows, "total": total}

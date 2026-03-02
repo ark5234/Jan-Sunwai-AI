@@ -70,12 +70,21 @@ async def add_process_time_header(request: Request, call_next):
     return response
 
 # Global Exception Handler
+# NOTE: FastAPI exception handlers bypass CORSMiddleware, so we must inject
+# CORS headers manually here or the browser will report a CORS error instead
+# of the real error.
 @app.exception_handler(Exception)
 async def global_exception_handler(request: Request, exc: Exception):
     logger.error(f"Unhandled Exception: {str(exc)}", exc_info=True)
+    origin = request.headers.get("origin", "")
+    cors_headers = {}
+    if origin and (origin in settings.allowed_origins or "*" in settings.allowed_origins):
+        cors_headers["Access-Control-Allow-Origin"] = origin
+        cors_headers["Access-Control-Allow-Credentials"] = "true"
     return JSONResponse(
         status_code=500,
         content={"message": "Internal Server Error", "details": str(exc)},
+        headers=cors_headers,
     )
 
 # Mount Uploads for Static Access
