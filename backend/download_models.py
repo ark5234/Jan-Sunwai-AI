@@ -5,8 +5,9 @@ Usage:
     python backend/download_models.py
 
 Model names are read from:
-    VISION_MODEL    (default: qwen2.5vl:3b)
-    REASONING_MODEL (default: llama3.2:1b)
+    VISION_MODEL       (default: qwen2.5vl:3b)
+    MID_VISION_MODEL   (default: granite3.2-vision:2b  — fallback if qwen2.5vl OOMs or times out)
+    REASONING_MODEL    (default: llama3.2:1b)
 
 To change models: edit backend/.env then re-run this script.
 """
@@ -37,15 +38,25 @@ if __name__ == "__main__":
         print("❌ 'ollama' not found in PATH. Install Ollama first: https://ollama.com/download")
         sys.exit(1)
 
+    # Deduplicated list: skip duplicates (e.g. mid == fallback == granite)
+    models_to_pull: list[str] = list(dict.fromkeys(
+        m for m in [
+            settings.vision_model,
+            settings.mid_vision_model,
+            settings.reasoning_model,
+        ] if m
+    ))
+
     print("Pulling Ollama models configured in .env...")
-    print(f"  Vision model    : {settings.vision_model}")
-    print(f"  Reasoning model : {settings.reasoning_model}")
+    print(f"  Vision model (primary)  : {settings.vision_model}")
+    print(f"  Vision model (fallback) : {settings.mid_vision_model}")
+    print(f"  Reasoning model         : {settings.reasoning_model}")
     print()
 
-    pull(settings.vision_model)
-    pull(settings.reasoning_model)
+    for model in models_to_pull:
+        pull(model)
 
     print()
     print("✅ All models ready.")
-    print("  To use different models: edit VISION_MODEL / REASONING_MODEL in backend/.env")
+    print("  To use different models: edit VISION_MODEL / MID_VISION_MODEL / REASONING_MODEL in backend/.env")
     print("  then re-run: python backend/download_models.py")

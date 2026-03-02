@@ -36,7 +36,10 @@ services:
       - OLLAMA_HOST=http://host.docker.internal:11434
       - ALLOWED_ORIGINS=${ALLOWED_ORIGINS:-http://localhost:5173,http://127.0.0.1:5173}
       - VISION_MODEL=${VISION_MODEL:-qwen2.5vl:3b}
+      - MID_VISION_MODEL=${MID_VISION_MODEL:-granite3.2-vision:2b}
+      - FALLBACK_VISION_MODEL=${FALLBACK_VISION_MODEL:-granite3.2-vision:2b}
       - REASONING_MODEL=${REASONING_MODEL:-llama3.2:1b}
+      - VISION_TIMEOUT_SECONDS=${VISION_TIMEOUT_SECONDS:-90}
       - LLM_INLINE_TIMEOUT_SECONDS=${LLM_INLINE_TIMEOUT_SECONDS:-8}
     depends_on:
       - mongodb
