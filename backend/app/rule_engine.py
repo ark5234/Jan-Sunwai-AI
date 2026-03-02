@@ -125,6 +125,9 @@ _NON_CIVIC_KEYWORDS = [
     "selfie", "portrait", "food", "meal", "restaurant", "cartoon", "anime",
     "gaming", "screenshot", "indoor furniture", "appliance", "pet", "animal",
     "beautiful landscape", "clear sky", "family photo", "group photo",
+    # Indian Railways is Central Government — outside this portal's scope
+    "railway station", "train station", "railway platform", "train platform",
+    "railway track", "train track", "metro station",
 ]
 
 

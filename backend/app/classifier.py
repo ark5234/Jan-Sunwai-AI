@@ -25,7 +25,7 @@ CATEGORY_DEFINITIONS: dict[str, str] = {
     "Municipal - Street Lighting":     "broken street lights, non-functional lamp posts, dark or unlit public roads",
     "Municipal - Water & Sewerage":    "waterlogging, flooded streets, blocked drains, sewer overflow, water pipe leaks",
     "Utility - Power (DISCOM)":        "dangling electrical wires, open or damaged transformers, hazardous power cables",
-    "State Transport":                 "damaged bus shelters, broken state buses, transport terminal damage",
+    "State Transport":                 "damaged bus shelters, broken state road buses, bus terminal damage — bus/road transport ONLY, does NOT include railway stations or trains",
     "Pollution Control Board":         "air pollution, thick smoke, industrial waste dumping, open burning of garbage",
     "Police - Local Law Enforcement":  "illegal parking, footpath encroachment, public nuisance, fights or brawls",
     "Police - Traffic":                "failed traffic signals, road blockages, severe traffic congestion, traffic deadlock, gridlock, chaotic traffic, peak-hour jams, no lane marking, uncontrolled intersections, crowded marketplace roads",
@@ -37,6 +37,9 @@ _NEGATIVE_KEYWORDS = [
     "selfie", "portrait", "food", "meal", "restaurant", "cartoon", "anime",
     "gaming", "screenshot", "indoor furniture", "appliance", "pet", "animal",
     "beautiful landscape", "clear sky",
+    # Indian Railways is Central Government — not in scope for this portal
+    "railway station", "train station", "railway platform", "train platform",
+    "railway track", "train track", "metro station",
 ]
 
 # Keyword fallback: if reasoning model fails, map description keywords → category
@@ -167,18 +170,21 @@ class CivicClassifier:
                 '  "primary_issue": "single phrase — the DOMINANT problem visible",\n'
                 '  "secondary_issue": "single phrase or empty string",\n'
                 '  "hazards": ["hazard1", "hazard2"],\n'
-                '  "setting": "road/park/drain/building/etc",\n'
+                '  "setting": "road/park/drain/building/railway station/train platform/etc",\n'
                 '  "confidence": "low/medium/high"\n'
                 "}\n\n"
                 "STRICT RULES:\n"
                 "- ONLY describe what you can CLEARLY and DIRECTLY see. Do NOT infer or guess.\n"
+                "- If you see a train, railway platform, or railway station, say so EXPLICITLY "
+                "in the description — do NOT describe a railway platform as a 'sidewalk' or 'road'.\n"
                 "- If the dominant scene is heavy vehicle traffic, crowded roads, traffic jam, "
                 "or congestion with NO clear infrastructure damage, set primary_issue to "
                 "'traffic congestion' and description should reflect that.\n"
                 "- Do NOT mention potholes unless you can clearly see road surface damage.\n"
                 "- Do NOT mention garbage/fallen trees unless clearly visible.\n"
                 "- Be specific: 'traffic congestion' / 'pothole' / 'waterlogging' / "
-                "'broken street light' / 'fallen tree' / 'garbage dump' / 'dangling wire'\n"
+                "'broken street light' / 'fallen tree' / 'garbage dump' / 'dangling wire' / "
+                "'railway platform' / 'train station'\n"
                 "- Keep description under 40 words\n"
                 "- No markdown, no explanation outside JSON"
             )
