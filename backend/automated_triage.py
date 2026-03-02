@@ -444,8 +444,8 @@ def run_pipeline(
         labels_json = output_dir / "triage_labels.json"
 
         issues_df.to_csv(audit_csv, index=False)
-        pd.DataFrame([]).to_csv(labels_csv, index=False)
-        pd.DataFrame([]).to_csv(review_csv, index=False)
+        pd.DataFrame(columns=["image", "final_label", "method", "confidence", "rationale", "vision_summary", "used_vision_model"]).to_csv(labels_csv, index=False)
+        pd.DataFrame(columns=["image", "final_label", "method", "confidence", "rationale", "vision_summary", "used_vision_model"]).to_csv(review_csv, index=False)
         with open(labels_json, "w", encoding="utf-8") as f:
             json.dump([], f, indent=2)
 
@@ -504,7 +504,11 @@ def run_pipeline(
 
     issues_df.to_csv(audit_csv, index=False)
     pd.DataFrame(records).to_csv(labels_csv, index=False)
-    pd.DataFrame([]).to_csv(review_csv, index=False)   # review queue now auto-handled by confidence field
+
+    # Items with confidence < 0.65 go into the human review queue
+    LOW_CONFIDENCE_THRESHOLD = 0.65
+    review_records = [r for r in records if r.get("confidence", 1.0) < LOW_CONFIDENCE_THRESHOLD]
+    pd.DataFrame(review_records).to_csv(review_csv, index=False)
 
     with open(labels_json, "w", encoding="utf-8") as f:
         json.dump(records, f, indent=2)
