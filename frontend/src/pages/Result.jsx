@@ -23,7 +23,7 @@ export default function Result() {
     if (!generationJobId || !['queued', 'processing'].includes(generationStatus)) return;
 
     const POLL_INTERVAL_MS = 3000;
-    const MAX_ATTEMPTS = 20; // give up after ~60 s
+    const MAX_ATTEMPTS = 60; // give up after ~3 minutes
     let attempts = 0;
 
     const intervalId = setInterval(async () => {
