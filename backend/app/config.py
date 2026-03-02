@@ -24,8 +24,9 @@ class Settings:
     ollama_base_url: str = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
     vision_model: str = os.getenv("VISION_MODEL", "qwen2.5vl:3b")
     # Fallback vision model: used when qwen2.5vl:3b is too large for available RAM
-    # or exceeds vision_timeout_seconds. granite3.2-vision:2b (~1.6 GB) is IBM's
-    # structured-extraction model — far better than moondream for civic issue JSON.
+    # or exceeds vision_timeout_seconds. granite3.2-vision:2b (~2.4 GB on disk)
+    # is IBM's structured-extraction model — supports JSON format and is far better
+    # than moondream for civic issue classification.
     # Pull with: ollama pull granite3.2-vision:2b
     mid_vision_model: str = os.getenv("MID_VISION_MODEL", "granite3.2-vision:2b")
     fallback_vision_model: str = os.getenv("FALLBACK_VISION_MODEL", "granite3.2-vision:2b")
