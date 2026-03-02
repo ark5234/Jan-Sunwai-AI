@@ -23,8 +23,15 @@ class Settings:
     allowed_origins_raw: str = os.getenv("ALLOWED_ORIGINS", "http://localhost:5173,http://127.0.0.1:5173")
     ollama_base_url: str = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
     vision_model: str = os.getenv("VISION_MODEL", "qwen2.5vl:3b")
+    # Mid-tier vision model: better than moondream, lighter than qwen2.5vl:3b.
+    # granite3.2-vision:2b (~1.6 GB) is IBM's structured-extraction model —
+    # pull with: ollama pull granite3.2-vision:2b
+    mid_vision_model: str = os.getenv("MID_VISION_MODEL", "granite3.2-vision:2b")
     fallback_vision_model: str = os.getenv("FALLBACK_VISION_MODEL", "moondream:latest")
     reasoning_model: str = os.getenv("REASONING_MODEL", "llama3.2:1b")
+    # Per-model wall-clock timeout for the vision generate() call (seconds).
+    # If a model exceeds this, it is unloaded and the next tier is tried.
+    vision_timeout_seconds: float = float(os.getenv("VISION_TIMEOUT_SECONDS", "90"))
     llm_inline_timeout_seconds: float = float(os.getenv("LLM_INLINE_TIMEOUT_SECONDS", "8"))
     llm_queue_workers: int = int(os.getenv("LLM_QUEUE_WORKERS", "2"))
     default_page_size: int = int(os.getenv("DEFAULT_PAGE_SIZE", "25"))

@@ -28,7 +28,7 @@ _TEXT_RUNTIME_MULTIPLIER    = 1.5   # e.g. 1.3 GB on disk → ~2.0 GB runtime
 _DEFAULT_RUNTIME_MULTIPLIER = 1.8   # safe middle ground
 
 # Families that include a vision encoder (higher memory overhead)
-_VISION_FAMILIES = {"qwen25vl", "llava", "clip", "phi2", "minicpm"}
+_VISION_FAMILIES = {"qwen25vl", "llava", "clip", "phi2", "minicpm", "granite", "moondream"}
 
 # ── Safety margin ───────────────────────────────────────────────────────
 # Keep some RAM free for OS + other processes (in bytes)
@@ -107,54 +107,53 @@ def _get_model_info(client: ollama.Client) -> dict[str, dict]:
 
 def select_vision_model() -> str:
     """
-    Pick the best vision model that fits in available RAM.
+    Pick the best vision model from the 3-tier priority chain that fits in RAM.
 
-    Priority: settings.vision_model  →  settings.fallback_vision_model
+    Priority order: vision_model → mid_vision_model → fallback_vision_model
 
-    Returns the model name string to use.
+    Returns the first model that fits, or the last model in the chain as a
+    last-resort fallback if none are detected in Ollama's model list.
     """
-    primary  = settings.vision_model
-    fallback = settings.fallback_vision_model
+    # Build deduplicated, ordered chain (skip empty / duplicate entries)
+    chain: list[str] = list(dict.fromkeys(
+        m for m in [
+            settings.vision_model,
+            settings.mid_vision_model,
+            settings.fallback_vision_model,
+        ] if m
+    ))
 
-    # If no fallback configured, always use primary (let Ollama handle errors)
-    if not fallback or fallback == primary:
-        return primary
+    if len(chain) == 1:
+        return chain[0]
 
     available_ram = _get_available_ram_bytes()
     if available_ram is None:
         print("[model_selector] could not detect available RAM, using primary model")
-        return primary
+        return chain[0]
 
     available_gb = available_ram / (1024 ** 3)
 
     client = ollama.Client(host=settings.ollama_base_url)
     model_info = _get_model_info(client)
 
-    primary_info  = model_info.get(primary)
-    fallback_info = model_info.get(fallback)
-
-    if not primary_info:
-        print(f"[model_selector] primary model '{primary}' not found in Ollama, "
-              f"trying fallback '{fallback}'")
-        return fallback if fallback_info else primary
-
-    needed = primary_info["estimated_runtime_bytes"] + _SAFETY_MARGIN_BYTES
-    needed_gb = needed / (1024 ** 3)
-
-    if available_ram >= needed:
-        print(f"[model_selector] ✓ {primary} fits "
-              f"(needs ~{needed_gb:.1f} GB, available {available_gb:.1f} GB)")
-        return primary
-    else:
-        # Check if fallback fits
-        if fallback_info:
-            fb_needed = fallback_info["estimated_runtime_bytes"] + _SAFETY_MARGIN_BYTES
-            fb_needed_gb = fb_needed / (1024 ** 3)
-            print(f"[model_selector] ✗ {primary} too large "
-                  f"(needs ~{needed_gb:.1f} GB, available {available_gb:.1f} GB) "
-                  f"→ switching to {fallback} (needs ~{fb_needed_gb:.1f} GB)")
+    for model in chain:
+        info = model_info.get(model)
+        if not info:
+            # Model not yet pulled — skip the RAM check, caller handles missing model
+            print(f"[model_selector] '{model}' not found in Ollama list, skipping RAM check")
+            continue
+        needed = info["estimated_runtime_bytes"] + _SAFETY_MARGIN_BYTES
+        needed_gb = needed / (1024 ** 3)
+        if available_ram >= needed:
+            print(f"[model_selector] ✓ {model} fits "
+                  f"(needs ~{needed_gb:.1f} GB, available {available_gb:.1f} GB)")
+            return model
         else:
-            print(f"[model_selector] ✗ {primary} too large "
+            print(f"[model_selector] ✗ {model} too large "
                   f"(needs ~{needed_gb:.1f} GB, available {available_gb:.1f} GB) "
-                  f"→ switching to {fallback}")
-        return fallback
+                  f"→ trying next tier")
+
+    # All models either too large or not found — use last in chain as last resort
+    last = chain[-1]
+    print(f"[model_selector] all tiers exhausted, falling back to last option: {last}")
+    return last

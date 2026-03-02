@@ -2,6 +2,7 @@ import io
 import json
 import os
 import re
+from concurrent.futures import ThreadPoolExecutor, TimeoutError as _FuturesTimeout
 import ollama
 from PIL import Image
 from app.config import settings
@@ -141,110 +142,129 @@ class CivicClassifier:
 
             # ------------------------------------------------------------------
             # STEP 1 — Vision: Structured JSON description
-            #          Proactively selects the best model that fits in RAM.
-            #          Falls back to lighter model on OOM as safety net.
+            #          3-tier cascade: primary → mid → fallback
+            #          Each tier has a wall-clock timeout; on timeout or OOM
+            #          the model is unloaded and the next tier is tried.
             # ------------------------------------------------------------------
 
-            # Proactive RAM check: pick the best model that fits
+            # Proactive RAM check: pick the best model that fits (3-tier aware)
             active_vision_model = select_vision_model()
-            is_primary = (active_vision_model == settings.vision_model)
 
-            # Model-appropriate prompts: large models handle structured JSON,
-            # small models (moondream) need a simple direct prompt.
-            if is_primary:
-                vision_prompt = (
-                    "You are a civic-issue vision analyst for Indian municipal complaints. "
-                    "Analyze the image and return strict JSON only.\n\n"
-                    "JSON schema:\n"
-                    "{\n"
-                    '  "description": "2-3 sentence factual description of what you CLEARLY see",\n'
-                    '  "visible_objects": ["object1", "object2"],\n'
-                    '  "primary_issue": "single phrase — the DOMINANT problem visible",\n'
-                    '  "secondary_issue": "single phrase or empty string",\n'
-                    '  "hazards": ["hazard1", "hazard2"],\n'
-                    '  "setting": "road/park/drain/building/etc",\n'
-                    '  "confidence": "low/medium/high"\n'
-                    "}\n\n"
-                    "STRICT RULES:\n"
-                    "- ONLY describe what you can CLEARLY and DIRECTLY see. Do NOT infer or guess.\n"
-                    "- If the dominant scene is heavy vehicle traffic, crowded roads, traffic jam, "
-                    "or congestion with NO clear infrastructure damage, set primary_issue to "
-                    "'traffic congestion' and description should reflect that.\n"
-                    "- Do NOT mention potholes unless you can clearly see road surface damage.\n"
-                    "- Do NOT mention garbage/fallen trees unless clearly visible.\n"
-                    "- Be specific: 'traffic congestion' / 'pothole' / 'waterlogging' / "
-                    "'broken street light' / 'fallen tree' / 'garbage dump' / 'dangling wire'\n"
-                    "- Keep description under 40 words\n"
-                    "- No markdown, no explanation outside JSON"
-                )
-                generate_kwargs = dict(
-                    model=active_vision_model,
-                    format="json",
-                    prompt=vision_prompt,
-                    images=[image_bytes],
-                    options={"num_ctx": 1024},
-                )
-            else:
-                # Simple prompt for small/captioning models (moondream, etc.)
-                # IMPORTANT: Do NOT list specific civic problem types as examples —
-                # small models will hallucinate whichever keyword appears first.
-                # Instead, ask for a plain neutral description.
-                vision_prompt = (
-                    "Look at this image carefully and describe ONLY what you can clearly see. "
-                    "What is the main activity or condition visible in the scene? "
-                    "How many vehicles or people are present? "
-                    "Is there any obvious physical damage to roads, infrastructure, or surroundings? "
-                    "Describe in 2-3 factual sentences without guessing or assuming."
-                )
-                generate_kwargs = dict(
-                    model=active_vision_model,
-                    prompt=vision_prompt,
-                    images=[image_bytes],
-                )
+            # Models that can handle the JSON-schema prompt and format="json".
+            # moondream (and other pure-captioning models) need a simpler prompt.
+            _json_capable: set[str] = {
+                m for m in [settings.vision_model, settings.mid_vision_model] if m
+            }
 
-            # Build ordered list: selected model first, then the other as OOM safety net
-            models_to_try = [active_vision_model]
-            other = (settings.fallback_vision_model
-                     if active_vision_model == settings.vision_model
-                     else settings.vision_model)
-            if other and other != active_vision_model:
-                models_to_try.append(other)
+            # Prompt strings — defined once, selected per tier inside the loop
+            _json_prompt = (
+                "You are a civic-issue vision analyst for Indian municipal complaints. "
+                "Analyze the image and return strict JSON only.\n\n"
+                "JSON schema:\n"
+                "{\n"
+                '  "description": "2-3 sentence factual description of what you CLEARLY see",\n'
+                '  "visible_objects": ["object1", "object2"],\n'
+                '  "primary_issue": "single phrase — the DOMINANT problem visible",\n'
+                '  "secondary_issue": "single phrase or empty string",\n'
+                '  "hazards": ["hazard1", "hazard2"],\n'
+                '  "setting": "road/park/drain/building/etc",\n'
+                '  "confidence": "low/medium/high"\n'
+                "}\n\n"
+                "STRICT RULES:\n"
+                "- ONLY describe what you can CLEARLY and DIRECTLY see. Do NOT infer or guess.\n"
+                "- If the dominant scene is heavy vehicle traffic, crowded roads, traffic jam, "
+                "or congestion with NO clear infrastructure damage, set primary_issue to "
+                "'traffic congestion' and description should reflect that.\n"
+                "- Do NOT mention potholes unless you can clearly see road surface damage.\n"
+                "- Do NOT mention garbage/fallen trees unless clearly visible.\n"
+                "- Be specific: 'traffic congestion' / 'pothole' / 'waterlogging' / "
+                "'broken street light' / 'fallen tree' / 'garbage dump' / 'dangling wire'\n"
+                "- Keep description under 40 words\n"
+                "- No markdown, no explanation outside JSON"
+            )
+            _simple_prompt = (
+                "Look at this image carefully and describe ONLY what you can clearly see. "
+                "What is the main activity or condition visible in the scene? "
+                "How many vehicles or people are present? "
+                "Is there any obvious physical damage to roads, infrastructure, or surroundings? "
+                "Describe in 2-3 factual sentences without guessing or assuming."
+            )
+
+            def _build_kwargs(model_name: str) -> dict:
+                if model_name in _json_capable:
+                    return dict(
+                        model=model_name,
+                        format="json",
+                        prompt=_json_prompt,
+                        images=[image_bytes],
+                        options={"num_ctx": 1024},
+                    )
+                return dict(model=model_name, prompt=_simple_prompt, images=[image_bytes])
+
+            # Build 3-tier ordered chain starting from the RAM-selected model.
+            # Tiers below the selected one are skipped (already known to be too large).
+            _full_chain: list[str] = list(dict.fromkeys(
+                m for m in [
+                    settings.vision_model,
+                    settings.mid_vision_model,
+                    settings.fallback_vision_model,
+                ] if m
+            ))
+            try:
+                start_idx = _full_chain.index(active_vision_model)
+            except ValueError:
+                start_idx = 0
+            models_to_try = _full_chain[start_idx:]
 
             vision_response = None
+            timeout_secs = settings.vision_timeout_seconds
+
             for model_name in models_to_try:
+                is_last = (model_name == models_to_try[-1])
                 try:
-                    # Update model name in kwargs for retries
-                    generate_kwargs["model"] = model_name
-                    # Only use format="json" for the primary (capable) model
-                    if model_name != settings.vision_model and "format" in generate_kwargs:
-                        del generate_kwargs["format"]
-                    vision_response = client.generate(**generate_kwargs)
+                    # Wrap in a thread so we can enforce a hard wall-clock timeout.
+                    # If the model is slow/hung we unload it and try the next tier.
+                    with ThreadPoolExecutor(max_workers=1) as _pool:
+                        future = _pool.submit(client.generate, **_build_kwargs(model_name))
+                        vision_response = future.result(timeout=timeout_secs)
                     active_vision_model = model_name
                     break  # success
+                except _FuturesTimeout:
+                    if not is_last:
+                        next_tier = models_to_try[models_to_try.index(model_name) + 1]
+                        print(f"[classifier] {model_name} timed out after {timeout_secs}s "
+                              f"→ unloading and trying next tier: {next_tier}")
+                        self._unload_model(model_name)
+                        continue
+                    raise RuntimeError(
+                        f"All vision models timed out after {timeout_secs}s. "
+                        "Try increasing VISION_TIMEOUT_SECONDS or freeing GPU/RAM."
+                    )
                 except Exception as model_err:
                     err_msg = str(model_err).lower()
                     is_oom = any(kw in err_msg for kw in [
                         "memory", "oom", "out of memory", "not enough",
                         "insufficient", "cannot allocate",
                     ])
-                    if is_oom and model_name != models_to_try[-1]:
-                        print(f"[classifier] {model_name} OOM ({model_err}), "
-                              f"falling back to {models_to_try[-1]}")
+                    if is_oom and not is_last:
+                        next_tier = models_to_try[models_to_try.index(model_name) + 1]
+                        print(f"[classifier] {model_name} OOM ({model_err}) "
+                              f"→ falling back to {next_tier}")
                         self._unload_model(model_name)
                         continue
                     raise  # not OOM or last model → propagate
 
             raw_vision_text: str = vision_response["response"].strip()
 
-            # Parse the vision output based on model type
-            if active_vision_model == settings.vision_model:
-                # Primary model returns structured JSON
+            # Parse the vision output based on model capability
+            if active_vision_model in _json_capable:
+                # JSON-capable model (qwen2.5vl, granite3.2-vision, etc.)
                 try:
                     vision_payload = json.loads(raw_vision_text)
                 except json.JSONDecodeError:
                     vision_payload = parse_vision_text_to_payload(raw_vision_text)
             else:
-                # Fallback model returns plain text description
+                # Plain-text fallback model (moondream, etc.)
                 vision_payload = parse_vision_text_to_payload(raw_vision_text)
 
             raw_vision_json = raw_vision_text  # audit trail
