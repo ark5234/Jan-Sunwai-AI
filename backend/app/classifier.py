@@ -233,11 +233,21 @@ class CivicClassifier:
             for model_name in models_to_try:
                 is_last = (model_name == models_to_try[-1])
                 try:
-                    # Wrap in a thread so we can enforce a hard wall-clock timeout.
-                    # If the model is slow/hung we unload it and try the next tier.
-                    with ThreadPoolExecutor(max_workers=1) as _pool:
+                    # Use shutdown(wait=False) so a timed-out model thread is
+                    # abandoned immediately rather than blocking until it finishes.
+                    _pool = ThreadPoolExecutor(max_workers=1)
+                    try:
                         future = _pool.submit(client.generate, **_build_kwargs(model_name))
                         vision_response = future.result(timeout=timeout_secs)
+                    except _FuturesTimeout:
+                        _pool.shutdown(wait=False, cancel_futures=True)
+                        raise
+                    finally:
+                        # non-timeout path: let the pool finish normally
+                        try:
+                            _pool.shutdown(wait=False)
+                        except Exception:
+                            pass
                     active_vision_model = model_name
                     break  # success
                 except _FuturesTimeout:
