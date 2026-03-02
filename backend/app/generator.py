@@ -75,6 +75,8 @@ def generate_complaint(image_path, classification_result, user_details, location
             model=settings.reasoning_model,
             prompt=prompt,
         )
+        if response is None:
+            raise RuntimeError("Reasoning model returned no response.")
         raw = response["response"].strip()
 
         # Strip meta-commentary the small model sometimes prepends

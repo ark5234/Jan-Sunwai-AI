@@ -222,6 +222,11 @@ class CivicClassifier:
                 start_idx = 0
             models_to_try = _full_chain[start_idx:]
 
+            if not models_to_try:
+                raise RuntimeError(
+                    "No vision models available (check VISION_MODEL / MID_VISION_MODEL config)."
+                )
+
             vision_response = None
             timeout_secs = settings.vision_timeout_seconds
 
@@ -260,7 +265,11 @@ class CivicClassifier:
                         continue
                     raise  # not OOM or last model → propagate
 
+            if vision_response is None:
+                raise RuntimeError("No vision model responded — all models timed out or failed.")
             raw_vision_text: str = vision_response["response"].strip()
+            if not raw_vision_text:
+                raise RuntimeError("Vision model returned an empty response.")
 
             # Parse the vision output based on model capability
             if active_vision_model in _json_capable:
