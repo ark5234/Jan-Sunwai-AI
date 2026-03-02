@@ -95,7 +95,11 @@ _CATEGORY_RULES: Dict[str, List[Tuple[List[str], float]]] = {
     "Police - Traffic": [
         (["traffic signal", "signal failure", "broken signal", "failed signal"], 3.5),
         (["traffic deadlock", "deadlock", "standstill", "bumper to bumper", "bumper-to-bumper"], 3.5),
-        (["traffic jam", "traffic congestion", "severe congestion", "heavily congested", "congestion"], 3.0),
+        (["traffic jam"], 3.0),
+        # 'traffic congestion' alone is insufficient — a packed platform or crowded
+        # market is also 'congested'. Score is low; rises only when vehicle keywords appear.
+        (["traffic congestion", "heavily congested", "severe congestion"], 1.5),
+        (["congestion"], 0.8),
         (["gridlock", "chaotic traffic", "traffic chaos", "disorganized traffic", "mismanagement"], 3.0),
         (["road blockage", "road blocked", "road obstruction"], 2.5),
         (["peak hour", "peak office", "rush hour", "office hour", "rush-hour"], 2.5),
@@ -103,7 +107,10 @@ _CATEGORY_RULES: Dict[str, List[Tuple[List[str], float]]] = {
         (["vehicles blocking", "vehicles crowding", "crowded road", "crowded street"], 2.5),
         (["uncontrolled traffic", "no signal", "traffic police", "traffic management"], 2.0),
         (["marketplace congestion", "market area", "congested market"], 1.5),
-        (["autorickshaw", "rickshaw", "tuk-tuk"], 0.5),
+        # Vehicle corroboration: without at least one of these, 'congestion' alone is ambiguous
+        (["car", "cars", "vehicle", "vehicles", "bus", "buses", "truck", "trucks",
+          "motorcycle", "motorcycles", "auto", "autorickshaw", "rickshaw", "two-wheeler",
+          "scooter", "cab", "taxi"], 2.0),
         (["multiple vehicles", "many vehicles", "heavy vehicles"], 0.5),
     ],
     "Police - Local Law Enforcement": [

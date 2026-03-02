@@ -65,7 +65,7 @@ _KEYWORD_FALLBACK: list[tuple[list[str], str]] = [
     (["smoke", "burning", "industrial waste", "air pollution", "open burning"],
      "Pollution Control Board"),
     (["traffic signal", "signal failure", "traffic jam", "road blockage",
-      "traffic congestion", "congestion", "gridlock", "traffic deadlock",
+      "traffic congestion", "gridlock", "traffic deadlock",
       "standstill", "peak hour", "rush hour", "no lane", "chaotic traffic"],
      "Police - Traffic"),
     (["illegal parking", "encroachment", "footpath blocked", "public nuisance"],
@@ -282,6 +282,45 @@ class CivicClassifier:
             vision_payload.setdefault("secondary_issue", "")
             vision_payload.setdefault("hazards", [])
             vision_payload.setdefault("setting", "")
+
+            # ------------------------------------------------------------------
+            # EARLY-EXIT: Non-civic scene detection across ALL vision fields.
+            # Check EVERY field the model returned, not just the description.
+            # This catches cases where the model correctly says "train" in
+            # visible_objects or setting but calls the ground a "sidewalk".
+            # ------------------------------------------------------------------
+            _all_payload_text = " ".join([
+                str(vision_payload.get("description", "")),
+                " ".join(str(o) for o in vision_payload.get("visible_objects", [])),
+                str(vision_payload.get("primary_issue", "")),
+                str(vision_payload.get("secondary_issue", "")),
+                str(vision_payload.get("setting", "")),
+                " ".join(str(h) for h in vision_payload.get("hazards", [])),
+            ]).lower()
+
+            _RAIL_TRANSIT_TERMS = [
+                "train", "railway", "railroad", "locomotive",
+                "railway station", "train station", "railway platform",
+                "train platform", "metro station", "station platform",
+                "rail track", "railway track", "train track",
+            ]
+            if any(term in _all_payload_text for term in _RAIL_TRANSIT_TERMS):
+                print(f"[classifier] non-civic scene detected (rail/transit) in payload — returning Uncategorized")
+                return {
+                    "department": "Uncategorized",
+                    "label": str(vision_payload.get("description", "Railway/transit scene")),
+                    "confidence": 0.85,
+                    "is_valid": False,
+                    "vision_description": str(vision_payload.get("description", "")),
+                    "vision_payload": vision_payload,
+                    "raw_category": "Uncategorized",
+                    "rationale": "railway/transit scene — not in civic portal scope",
+                    "method": "non_civic_guard",
+                    "model_used": active_vision_model,
+                    "raw_json": raw_vision_json,
+                }
+
+            print(f"[classifier] full payload — primary_issue={vision_payload.get('primary_issue','')!r}  setting={vision_payload.get('setting','')!r}")
 
             description = str(vision_payload.get("description", ""))
 
