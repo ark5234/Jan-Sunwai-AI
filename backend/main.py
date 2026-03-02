@@ -44,7 +44,18 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(title="Jan-Sunwai AI API", version="1.0.0", lifespan=lifespan)
 
-# --- 2. Performance Profiling Middleware ---
+# --- 2. CORS Middleware — MUST be registered first so its headers appear on
+#        ALL responses including error/exception responses. If added after other
+#        middleware or exception handlers, error responses bypass CORS injection.
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=settings.allowed_origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+# --- 3. Performance Profiling Middleware ---
 @app.middleware("http")
 async def add_process_time_header(request: Request, call_next):
     start_time = time.time()
@@ -66,14 +77,6 @@ async def global_exception_handler(request: Request, exc: Exception):
         status_code=500,
         content={"message": "Internal Server Error", "details": str(exc)},
     )
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=settings.allowed_origins,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
 
 # Mount Uploads for Static Access
 os.makedirs(UPLOADS_DIR, exist_ok=True)

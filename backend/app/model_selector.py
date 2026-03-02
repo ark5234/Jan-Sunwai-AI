@@ -19,10 +19,13 @@ from app.config import settings
 
 # ── Runtime memory multipliers ──────────────────────────────────────────
 # On-disk (quantised GGUF) size × multiplier ≈ runtime RAM needed.
-# Vision models carry an extra image encoder, so they need a higher factor.
-_VISION_RUNTIME_MULTIPLIER  = 2.6   # e.g. 3.2 GB on disk → ~8.3 GB runtime
+# qwen2.5vl:3b is ~2.0 GB on disk; at 1.8× that's ~3.6 GB estimated runtime
+# which fits comfortably on a 15 GB RAM machine while leaving headroom.
+# The previous 2.6× value was too aggressive and caused moondream (a poor
+# captioning model that hallucinates civic problems) to be selected instead.
+_VISION_RUNTIME_MULTIPLIER  = 1.8   # e.g. 2.0 GB on disk → ~3.6 GB runtime
 _TEXT_RUNTIME_MULTIPLIER    = 1.5   # e.g. 1.3 GB on disk → ~2.0 GB runtime
-_DEFAULT_RUNTIME_MULTIPLIER = 2.0   # safe middle ground
+_DEFAULT_RUNTIME_MULTIPLIER = 1.8   # safe middle ground
 
 # Families that include a vision encoder (higher memory overhead)
 _VISION_FAMILIES = {"qwen25vl", "llava", "clip", "phi2", "minicpm"}

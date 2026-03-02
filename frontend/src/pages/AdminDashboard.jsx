@@ -13,8 +13,21 @@ const AdminDashboard = () => {
   const [departmentFilter, setDepartmentFilter] = useState('all');
   const [updateError, setUpdateError] = useState(null);
 
-  // Extract unique departments from complaints
-  const departments = [...new Set(complaints.map(c => c.department))].sort();
+  // Full canonical department list — always show all 11 departments regardless of
+  // how many complaints exist, so the filter is useful from day one.
+  const departments = [
+    'Municipal - PWD (Roads)',
+    'Municipal - Sanitation',
+    'Municipal - Horticulture',
+    'Municipal - Street Lighting',
+    'Municipal - Water & Sewerage',
+    'Utility - Power (DISCOM)',
+    'State Transport',
+    'Pollution Control Board',
+    'Police - Local Law Enforcement',
+    'Police - Traffic',
+    'Uncategorized',
+  ];
 
   useEffect(() => {
     if (user?.access_token) {

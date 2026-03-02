@@ -37,7 +37,8 @@ _CATEGORY_RULES: Dict[str, List[Tuple[List[str], float]]] = {
         (["bridge damage", "damaged bridge"], 2.0),
         (["puddle", "puddles", "water on road", "water on the road"], 1.5),
         (["asphalt", "tar road", "concrete road"], 1.0),
-        (["road", "street", "highway", "lane"], 0.3),
+        # NOTE: generic terms like 'road'/'street'/'lane' intentionally removed —
+        # they fire on every road photo and unfairly inflate PWD Roads score.
     ],
     "Municipal - Sanitation": [
         (["garbage", "trash", "rubbish", "refuse"], 3.0),
@@ -92,10 +93,18 @@ _CATEGORY_RULES: Dict[str, List[Tuple[List[str], float]]] = {
         (["smoke", "smog", "haze"], 1.5),
     ],
     "Police - Traffic": [
-        (["traffic signal", "signal failure", "broken signal"], 3.0),
-        (["traffic jam", "traffic congestion", "gridlock"], 2.5),
+        (["traffic signal", "signal failure", "broken signal", "failed signal"], 3.5),
+        (["traffic deadlock", "deadlock", "standstill", "bumper to bumper", "bumper-to-bumper"], 3.5),
+        (["traffic jam", "traffic congestion", "severe congestion", "heavily congested", "congestion"], 3.0),
+        (["gridlock", "chaotic traffic", "traffic chaos", "disorganized traffic", "mismanagement"], 3.0),
         (["road blockage", "road blocked", "road obstruction"], 2.5),
-        (["traffic"], 0.5),
+        (["peak hour", "peak office", "rush hour", "office hour", "rush-hour"], 2.5),
+        (["no lane", "lane violation", "wrong side driving", "no traffic lane", "no proper lane"], 2.5),
+        (["vehicles blocking", "vehicles crowding", "crowded road", "crowded street"], 2.5),
+        (["uncontrolled traffic", "no signal", "traffic police", "traffic management"], 2.0),
+        (["marketplace congestion", "market area", "congested market"], 1.5),
+        (["autorickshaw", "rickshaw", "tuk-tuk"], 0.5),
+        (["multiple vehicles", "many vehicles", "heavy vehicles"], 0.5),
     ],
     "Police - Local Law Enforcement": [
         (["illegal parking", "wrong parking", "no parking zone"], 3.0),
@@ -169,9 +178,13 @@ def classify_by_rules(
     primary = str(vision_payload.get("primary_issue", ""))
     secondary = str(vision_payload.get("secondary_issue", ""))
     hazards = " ".join(vision_payload.get("hazards", []))
-    combined = f"{desc} {objects} {primary} {secondary} {hazards}"
+    # Background text: description + visible objects + secondary issue
+    background = f"{desc} {objects} {secondary}"
+    # High-signal text: primary_issue + hazards (vision model's most direct assertion)
+    high_signal = f"{primary} {hazards}"
 
     # Check for non-civic content first
+    combined = f"{background} {high_signal}"
     combined_lower = combined.lower()
     if any(kw in combined_lower for kw in _NON_CIVIC_KEYWORDS):
         return {
@@ -182,10 +195,16 @@ def classify_by_rules(
             "method": "rule_engine_non_civic",
         }
 
-    # Score every category
+    # Score every category:
+    # - background text scored at 1× (incidental mentions in description)
+    # - primary_issue + hazards scored at 3× (vision model's direct assertion)
+    # This prevents background observations ("road", "street") from drowning
+    # out the model's explicit primary classification signal.
     scores: Dict[str, float] = {}
     for category, rules in _CATEGORY_RULES.items():
-        scores[category] = _score_text(combined, rules)
+        bg_score = _score_text(background, rules)
+        hs_score = _score_text(high_signal, rules)
+        scores[category] = bg_score + (hs_score * 3.0)
 
     # ── First-mention boost ────────────────────────────────────────
     # When the description mentions keywords from multiple categories,
@@ -193,6 +212,7 @@ def classify_by_rules(
     # This approximates "primary issue" for plain-text descriptions
     # (e.g. moondream) where primary_issue field is empty.
     # Only apply when the gap between top-2 is small (≤ 2.0).
+    combined = f"{background} {high_signal}"  # rebuild for first-mention scan
     desc_lower = combined.lower()
     _ALL_CATEGORY_SIGNALS: Dict[str, List[str]] = {
         cat: [kw for kws, _w in rules for kw in kws if _w >= 2.0]

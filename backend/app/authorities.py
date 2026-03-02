@@ -93,7 +93,7 @@ AUTHORITIES_DB = [
         level=AuthorityLevel.SAFETY,
         domain="Law & Order, Illegal Parking, Nuisance",
         escalation_days=3,
-        parent_authority_id="STATE_HOME_DEPT"
+        parent_authority_id="STATE_CMO"
     ),
     Authority(
         id="POLICE_TRAFFIC",
@@ -101,7 +101,7 @@ AUTHORITIES_DB = [
         level=AuthorityLevel.SAFETY,
         domain="Traffic Signals, Obstructions",
         escalation_days=3,
-        parent_authority_id="STATE_HOME_DEPT"
+        parent_authority_id="STATE_CMO"
     ),
 
     # --- 4. Apex & Oversight Bodies ---

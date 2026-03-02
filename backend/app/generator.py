@@ -67,18 +67,16 @@ def generate_complaint(image_path, classification_result, user_details, location
             # much better at following instructions.  Feed it the classifier's
             # description so it doesn't need to see the image.
             reasoning_prompt = (
-                f"Write a civic grievance description (60-90 words) for a government complaint portal.\n\n"
+                f"[COMPLAINT FORM FIELD — plain text only, no letter format]\n\n"
                 f"Issue observed: {description}\n"
                 f"Department: {category}\n"
                 f"Location: {address}\n\n"
-                f"RULES:\n"
-                f"- Do NOT write a letter. No salutations, sign-offs, 'Dear Sir', or 'Subject:' line.\n"
-                f"- Write ONLY a plain description as if filling a complaint form.\n"
-                f"- First sentence: what the issue is and where.\n"
-                f"- Next sentences: why it is dangerous or inconvenient.\n"
-                f"- Last sentence: what action is needed.\n"
-                f"- Be direct and factual. Maximum 90 words.\n\n"
-                f"Write the grievance description now:"
+                f"Fill in the complaint description field below (60-90 words).\n"
+                f"Rules: no salutations, no sign-offs, no 'Dear Sir', no 'Subject:' line, "
+                f"no meta-commentary about writing style. "
+                f"Start directly with the issue. Describe what the problem is, "
+                f"why it is dangerous or inconvenient, and what action is needed.\n\n"
+                f"Complaint description:"
             )
 
             try:
@@ -92,12 +90,23 @@ def generate_complaint(image_path, classification_result, user_details, location
                     model=settings.reasoning_model,
                     prompt=reasoning_prompt,
                 )
+                raw = response["response"].strip()
+                # Strip any meta-commentary the small model prepends
+                # (lines starting with "I ", "Here ", "Note:", "Sure" etc.)
+                lines = raw.splitlines()
+                cleaned_lines = []
+                skip_prefixes = ("i \'d", "i'd", "here ", "note:", "sure", "certainly", "of course", "as requested")
+                for line in lines:
+                    if line.strip().lower().startswith(skip_prefixes):
+                        continue  # skip meta-commentary lines
+                    cleaned_lines.append(line)
+                clean_text = "\n".join(cleaned_lines).strip()
                 # Unload reasoning model after use
                 try:
                     client.generate(model=settings.reasoning_model, prompt="", keep_alive=0)
                 except Exception:
                     pass
-                return response["response"]
+                return clean_text if clean_text else raw
             except Exception as e:
                 return (
                     f"System Note: Automated drafting failed ({str(e)}). "

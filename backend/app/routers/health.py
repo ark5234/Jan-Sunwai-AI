@@ -73,7 +73,12 @@ async def gpu_check():
 
         return {
             "gpu_active": gpu_active,
-            "note": "gpu_active=true means at least one model is loaded in VRAM",
+            "note": (
+                "gpu_active=true means at least one model is currently loaded in VRAM. "
+                "During analysis, the vision model runs first then is UNLOADED to free VRAM "
+                "before the reasoning model loads — so you may see only the reasoning model here "
+                "if checked mid-pipeline or after analysis completes."
+            ),
             "configured_models": {
                 "vision": settings.vision_model,
                 "reasoning": settings.reasoning_model,
