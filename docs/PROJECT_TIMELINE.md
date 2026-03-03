@@ -134,190 +134,199 @@
 
 ---
 
-### Phase 2: Frontend & User Experience (Weeks 7-11)
+### Phase 2: Security, NDMC Features & Production Readiness (Weeks 7-14)
 
-#### Week 7: Mar 09 (Mon) – Mar 14 (Sat) [Deferred: Backend Security & Optimization]
-*   **Mar 09 (Mon):** **Input Validation & Security**
-    *   Implement strict file type validation (Magic Numbers) to ensure only valid images are processed, rejecting potential malware.
-    *   Enforce file size limits in Nginx/FastAPI layers to prevent Denial of Service (DoS) attacks via massive uploads.
-*   **Mar 10 (Tue):** **Global Error Handling**
-    *   Create a centralized exception handling architecture to catch unhandled errors and return standard JSON error responses.
-    *   Log all exceptions with stack traces to a local file for easier debugging during the development phase.
-*   **Mar 11 (Wed):** **API Documentation & Swagger**
-    *   Enhance the OpenAPI (Swagger) schema with detailed descriptions, response examples, and data type definitions.
-    *   Verify that the "Try it out" feature in Swagger UI works for file uploads, aiding in frontend developer communication.
-*   **Mar 12 (Thu):** **Performance Profiling**
-    *   Profile the application using Python profiling tools to identify bottlenecks in the image analysis pipeline.
-    *   Optimize image loading routines in `Pillow` to reduce memory footprint during concurrent requests.
-*   **Mar 13 (Fri):** **Security Middleware (CORS)**
-    *   Configure Cross-Origin Resource Sharing (CORS) middleware to allow requests strictly from the frontend development port.
-    *   Review API headers to ensure best practices for security (e.g., preventing content-type sniffing).
-*   **Mar 14 (Sat):** **Phase 1 System Integration Test**
-    *   Perform a complete system test of the entire backend stack, verifying seamless data flow from Upload -> Analyze -> Generate.
-    *   Document any known issues or "TODOs" discovered during testing to prioritize them for Phase 2.
+> **Context:** This project is currently a fully offline local deployment (Ollama + MongoDB on developer machine).
+> Target handover: **NDMC (New Delhi Municipal Council)** for real live civic use on their infrastructure.
+> All work from this phase onwards is designed with that production handover in mind.
+
+> **Note on acceleration:** Frontend work originally planned for Weeks 8-11
+> (ImageUpload, useAnalyze hook, Result page, AdminDashboard, DeptHeadDashboard,
+> CitizenDashboard, Notifications, Profile — all fully functional) was completed
+> **5 weeks ahead of schedule** during Weeks 2-6. Week 7 closes the remaining gaps
+> and locks in the foundation before security and NDMC-specific work begins.
+
+#### Week 7: Mar 09 (Mon) – Mar 14 (Sat) [Close Remaining Gaps]
+*   **Mar 09 (Mon):** **Leaflet Map Integration** - [COMPLETED]
+    *   Implement `MapContainer`, `TileLayer`, and `Marker` in `Result.jsx` using the `react-leaflet` library (already installed).
+    *   Fix Leaflet default icon issue in Vite/React environments; render map with EXIF coordinates when available.
+*   **Mar 10 (Tue):** **Draggable Marker & Browser GPS Fallback** - [COMPLETED]
+    *   Enable draggable marker so citizens can fine-tune location if EXIF GPS is inaccurate or missing.
+    *   Add "Use My Location" button using `navigator.geolocation` as a manual GPS fallback.
+*   **Mar 11 (Wed):** **LocalStorage Draft Backup** - [COMPLETED]
+    *   Save complaint text + location to `localStorage` on every edit; restore automatically on page refresh.
+    *   Add "Clear draft" button so users can start fresh without being locked into a saved draft.
+*   **Mar 12 (Thu):** **Global Error Boundary & 404 Page** - [COMPLETED]
+    *   Wrap the React app in an `ErrorBoundary` component to catch unhandled render errors gracefully.
+    *   Add a styled 404 page for unknown routes with a navigation link back to Home.
+*   **Mar 13 (Fri):** **Full End-to-End Walkthrough** - [COMPLETED]
+    *   Manual walkthrough of all 3 user journeys: Citizen (upload → analyze → map → submit), Dept Head (login → update status), Admin (filter → bulk review).
+    *   Confirm all 10 dept_head accounts and notification chain work end-to-end.
+*   **Mar 14 (Sat):** **Phase 1 & 2 Closure Commit** - [COMPLETED]
+    *   Tag commit `v0.9-beta`; document all known remaining TODOs (security, NDMC features, production config).
+    *   Confirm `docker compose up` starts backend + MongoDB cleanly; frontend runs via `npm run dev`.
 *   **Mar 15 (Sun):** *OFF*
 
-#### Week 8: Mar 16 (Mon) – Mar 21 (Sat)
-*   **Mar 16 (Mon):** **Drag & Drop Upload Component**
-    *   Design and build a sophisticated file upload zone supporting drag-and-drop functionality using HTML5 Drag and Drop API.
-    *   Implement visual feedback cues (highlight on hover, file name display) to improve user confidence during upload.
-*   **Mar 17 (Tue):** **Image Preview & Validation UI**
-    *   Develop client-side logic to generate and display a thumbnail preview of the selected image immediately.
-    *   Add client-side validation messages for invalid file types or sizes before the request is even sent to the server.
-*   **Mar 18 (Wed):** **Backend Integration (The Wiring)**
-    *   Write a custom React Hook (`useAnalyzeImage`) to manage the `axios` POST request to the `/analyze` endpoint.
-    *   Handle server responses, parsing the JSON data (Department, Text, Location) and storing it in the React State.
-*   **Mar 19 (Thu):** **Loading State UX**
-    *   Design and implement engaging loading animations (spinners or skeleton screens) to keep the user informed during the slow AI processing.
-    *   Test the UI application under "Slow 3G" network throttle to ensure the loading states appear correctly.
-*   **Mar 20 (Fri):** **Analysis Result Presentation**
-    *   Build the "Analysis Result" card component to beautifully display the detected Department and confidence score.
-    *   Implement logic to highlight low-confidence predictions, prompting the user to manually verify the category.
-*   **Mar 21 (Sat):** **Complaint Editing Feature**
-    *   Create a rich text area or expandable input field allowing users to edit the AI-generated complaint letter.
-    *   Implement "Reset" functionality to revert the text back to the original AI draft if the user makes a mistake.
+#### Week 8: Mar 16 (Mon) – Mar 21 (Sat) [Security Layer]
+*   **Mar 16 (Mon):** **File Magic Number Validation**
+    *   Implement server-side binary content-type check using file magic bytes — reject files that claim to be JPEG/PNG but contain malicious content.
+    *   Enforce strict 5 MB file size limit at the FastAPI layer (independent of client-side check) to prevent DoS via large uploads.
+*   **Mar 17 (Tue):** **Rate Limiting on Critical Endpoints**
+    *   Add `slowapi` rate limiter to `/complaints/analyze` (max 5 requests/min per IP) and `/users/login` (max 10 attempts/min) to prevent abuse.
+    *   Return HTTP 429 with a `Retry-After` header so the frontend can display a meaningful "Too many requests" message.
+*   **Mar 18 (Wed):** **Input Sanitization & XSS Prevention**
+    *   Sanitize all user-provided text fields (complaint title, remarks) on the backend to strip HTML tags and script injection.
+    *   Add `bleach` (Python) for server-side sanitization; document what is and isn't allowed in free-text fields.
+*   **Mar 19 (Thu):** **CORS Lockdown & Security Headers**
+    *   Replace the broad CORS origins list with an explicit NDMC production domain whitelist (configurable via env).
+    *   Add security headers via FastAPI middleware: `X-Content-Type-Options`, `X-Frame-Options`, `Referrer-Policy`.
+*   **Mar 20 (Fri):** **JWT Security Review**
+    *   Reduce access token expiry from 24 hours to 8 hours (shift-length session for NDMC officers).
+    *   Document refresh token strategy for NDMC production (current MVP uses single token; note what needs upgrading).
+    *   Ensure `JWT_SECRET_KEY` is flagged as a required env var with no insecure default in production config.
+*   **Mar 21 (Sat):** **MongoDB Indexing for Production Queries**
+    *   Add compound MongoDB indexes on `(department, status)`, `(created_at)`, and `(submitted_by)` to ensure dashboard queries stay under 50ms at scale.
+    *   Write a `create_indexes.py` migration script so NDMC's MongoDB is correctly indexed on first deploy.
 *   **Mar 22 (Sun):** *OFF*
 
-#### Week 9: Mar 23 (Mon) – Mar 28 (Sat)
-*   **Mar 23 (Mon):** **Map Integration Strategy**
-    *   Install `leaflet` and `react-leaflet` libraries; set up the base map component with OpenStreetMap tiles.
-    *   Fix common Leaflet CSS issues (missing marker icons) ensuring the map renders correctly in the React DOM.
-*   **Mar 24 (Tue):** **Dynamic Map Markers**
-    *   Implement logic to dynamically place a marker on the map based on the specific `lat/long` received from the backend.
-    *   Add popup tooltips to the marker showing the resolved address for user confirmation.
-*   **Mar 25 (Wed):** **Draggable Marker Logic**
-    *   Enable "Draggable" functionality on the marker, allowing users to fine-tune the location if the GPS was slightly off.
-    *   Capture the "Check End" event from the drag action to retrieve the new coordinates for the updated complaint.
-*   **Mar 26 (Thu):** **Address Sync on Interaction**
-    *   Trigger a reverse-geocoding API call whenever the user manually moves the marker to update the address text field.
-    *   Debounce the API calls to prevent flooding the geocoding service while the user is dragging the pin.
-*   **Mar 27 (Fri):** **Map UI Polish & Controls**
-    *   Style the map container with rounded corners and shadows to fit the app's aesthetic.
-    *   Add custom map controls (Center on Me) using the browser's Geolocation API as a fallback positioning method.
+#### Week 9: Mar 23 (Mon) – Mar 28 (Sat) [NDMC Feature Pack]
+*   **Mar 23 (Mon):** **Complaint Status Audit Trail**
+    *   Add a `status_history` array to each complaint document — log every status change with `{from, to, changed_by, timestamp}`.
+    *   Expose this history in the `/complaints/{id}` response payload.
+*   **Mar 24 (Tue):** **Escalation Timeline UI**
+    *   Build a visual status history timeline in `CitizenDashboard` — citizens can see exactly when their complaint moved from Open → In Progress → Resolved.
+    *   Show the responsible department name alongside each status event.
+*   **Mar 25 (Wed):** **Admin CSV Export**
+    *   Add a `GET /complaints/export/csv` endpoint that streams a CSV download of all complaints (with optional dept/status filters).
+    *   Build an "Export" button in `AdminDashboard` so NDMC officers can extract data for their own reporting systems.
+*   **Mar 26 (Thu):** **Department Analytics Cards**
+    *   Add a `/complaints/stats` endpoint returning per-department counts: Open, In Progress, Resolved, avg_resolution_days.
+    *   Render summary stat cards at the top of `AdminDashboard` and `DeptHeadDashboard` for at-a-glance oversight.
+*   **Mar 27 (Fri):** **Bulk Status Update for Admin**
+    *   Add checkbox selection to the AdminDashboard complaint table; implement a batch `PATCH /complaints/bulk-status` endpoint.
+    *   Essential for NDMC admin officers handling high-volume daily complaint queues efficiently.
 *   **Mar 28 (Sat):** *OFF (4th Saturday)*
 *   **Mar 29 (Sun):** *OFF*
 
-#### Week 10: Mar 30 (Mon) – Apr 04 (Sat)
-*   **Mar 30 (Mon):** **Final Submission Form**
-    *   Aggregate all data (Image, Text, Location, Contact Info) into a final "Review & Submit" form.
-    *   Implement rigorous form validation (required fields, email format) to ensure data completeness before submission.
-*   **Mar 31 (Tue):** **Backend Persistence Implementation**
-    *   Update the backend to accept the final JSON payload and perform the actual INSERT operation into the MongoDB collection.
-    *   Return the new Complaint ID in the response to track the submission.
-*   **Apr 01 (Wed):** **Submission Wiring & State Management**
-    *   Connect the Frontend "Submit" button to the persistence endpoint; manage "Submitting..." states to prevent double-clicks.
-    *   Clear temporary form state upon successful submission to reset the application for the next user.
-*   **Apr 02 (Thu):** **Success & Failure Journeys**
-    *   Design a celebratory "Success" page displaying the Complaint ID and instructions on what happens next.
-    *   Build a user-friendly "Error" modal that explains what went wrong (e.g., "Server Timeout") and offers a "Retry" button.
-*   **Apr 03 (Fri):** **Local Storage Drafts**
-    *   Implement a `localStorage` backup mechanism to save form progress; restore data automatically if the user accidentally refreshes.
-    *   Test persistence across browser restarts to ensure data safety.
-*   **Apr 04 (Sat):** **Phase 2 Code Review**
-    *   Conduct a self-review of the entire Frontend codebase, ensuring component reusability and removing hardcoded strings.
-    *   Refactor large components into smaller sub-components (prop drilling cleanup) to improve maintainability.
+#### Week 10: Mar 30 (Mon) – Apr 04 (Sat) [Notification System & Communication]
+*   **Mar 30 (Mon):** **Wire Notifications to Navbar**
+    *   Connect `Notifications.jsx` (already built) to the Navbar — show a live unread badge count that updates after each status change.
+    *   Add polling (every 30s) or SSE stub to keep the badge count fresh without requiring a page refresh.
+*   **Mar 31 (Tue):** **Auto-Notify on Status Change**
+    *   Trigger an in-app notification automatically when a `dept_head` changes a complaint status via `PATCH /complaints/{id}/status`.
+    *   Citizen receives: "Your complaint #{id} has been updated to In Progress by {department}."
+*   **Apr 01 (Wed):** **Notification Email Stub (NDMC-Ready)**
+    *   Create an `email_service.py` module with a `send_status_update_email()` function — logs to file in dev, ready to wire to NDMC's SMTP server in production.
+    *   Add `SMTP_HOST`, `SMTP_PORT`, `SMTP_FROM` to `.env.example` so NDMC IT can plug in their mail relay.
+*   **Apr 02 (Thu):** **Password Reset Flow**
+    *   Implement `POST /users/forgot-password` and `POST /users/reset-password` endpoints with time-limited token.
+    *   Required for NDMC deployment where officers can't rely on a developer to manually reset credentials.
+*   **Apr 03 (Fri):** **Profile Editing**
+    *   Allow citizens to update their display name and phone number via `PATCH /users/me`.
+    *   Wire `Profile.jsx` (already built) edit form to this endpoint; phone number is critical for NDMC contact follow-ups.
+*   **Apr 04 (Sat):** **Notification Chain End-to-End Test**
+    *   Test the full chain: Citizen submits → dept_head updates status → notification appears in Navbar → email logged.
+    *   Confirm no duplicate notifications and that `mark-all-read` clears the badge correctly.
 *   **Apr 05 (Sun):** *OFF*
 
-#### Week 11: Apr 06 (Mon) – Apr 11 (Sat)
-*   **Apr 06 (Mon):** **Admin Module Architecture**
-    *   Plan the Admin Dashboard structure and route hierarchy (`/admin`, `/admin/dashboard`, `/admin/login`).
-    *   Create the layout skeleton for the Admin panel, distinct from the public-facing citizen UI.
-*   **Apr 07 (Tue):** **Admin Authentication (MVP)**
-    *   Implement a simple login form with a hardcoded credential check (for MVP scope) to gate access to the admin routes.
-    *   Use React Context or Session Storage to persist the "LoggedIn" state across admin pages.
-*   **Apr 08 (Wed):** **Admin Data Fetching**
-    *   Develop the `GET /complaints` endpoint in the backend to return a paginated list of all grievance records.
-    *   Create a data fetching hook in React to load this data when the Admin Dashboard mounts.
-*   **Apr 09 (Thu):** **Dashboard Table Implementation**
-    *   Build a data table component to display grievances with columns for ID, Date, Category, and current Status.
-    *   Implement click-to-view functionality, routing the admin to a detailed view of a specific complaint.
-*   **Apr 10 (Fri):** **Client-Side Filtering**
-    *   Add dropdown filters to the dashboard to allow sorting by Department (Civil vs. VBD) or Status (Open/Closed).
-    *   Implement search functionality to filter the list based on Complaint ID or keywords.
+#### Week 11: Apr 06 (Mon) – Apr 11 (Sat) [Performance & Reliability]
+*   **Apr 06 (Mon):** **Client-Side Image Compression**
+    *   Install `browser-image-compression` and compress images to ≤1 MB before POSTing to `/analyze`.
+    *   Show the compressed file size and dimensions in the upload UI so citizens understand what's being sent.
+*   **Apr 07 (Tue):** **Frontend Bundle Optimisation**
+    *   Run Lighthouse performance audit on production build; target score ≥ 80.
+    *   Implement React `lazy()` + `Suspense` code splitting for heavy pages (AdminDashboard, Result) to reduce initial bundle size.
+*   **Apr 08 (Wed):** **Ollama Failure Graceful Degradation**
+    *   Ensure the `/analyze` endpoint returns a user-friendly `503` JSON error (not a crash) if all 3 vision model tiers fail or Ollama is unreachable.
+    *   Frontend shows: "AI analysis unavailable — please try again in a few minutes" with a retry button.
+*   **Apr 09 (Thu):** **Backend Performance Profiling**
+    *   Profile the `/analyze` request lifecycle using Python's `cProfile`; identify the slowest non-Ollama step.
+    *   Add structured timing logs (`vision_ms`, `rule_engine_ms`, `reasoning_ms`) to every analyze response for NDMC monitoring.
+*   **Apr 10 (Fri):** **Resilience Test**
+    *   Simulate failures: MongoDB down, Ollama unreachable, image upload with corrupted file.
+    *   Verify the app degrades gracefully at each failure point with correct HTTP codes and frontend error messages.
 *   **Apr 11 (Sat):** *OFF (2nd Saturday)*
 *   **Apr 12 (Sun):** *OFF*
 
----
-
-### Phase 3: Finalization & Deployment (Weeks 12-18)
-
-#### Week 12: Apr 13 (Mon) – Apr 18 (Sat)
-*   **Apr 13 (Mon):** **Admin Gallery View**
-    *   Create an alternative "Grid View" for the dashboard that focuses on the images, allowing admins to visually scan problems.
-    *   Implement "Lazy Loading" for images in the grid to maintain performance with large datasets.
-*   **Apr 14 (Tue):** **Status Management Components**
-    *   Detailed view: Add action buttons ("Mark Solved", "Reject Guidelines") that trigger status updates.
-    *   Add modal confirmations ("Are you sure?") to preventing accidental status changes.
-*   **Apr 15 (Wed):** **Status Update Backend Logic**
-    *   Implement the `PATCH /complaint/{id}` endpoint to handle partial updates for status and admin remarks.
-    *   Update the database timestamp for `updated_at` whenever a status change occurs.
-*   **Apr 16 (Thu):** **UI/UX Consistency Audit**
-    *   Review the entire application for font consistency, ensuring the Typography hierarchy (H1 vs H2) makes sense.
-    *   Standardize padding and margins across all pages using Tailwind utility classes.
-*   **Apr 17 (Fri):** **Responsive Web Design (RWD)**
-    *   Test the application on mobile emulators (iPhone/Pixel) to ensure the layout stacks correctly on small screens.
-    *   Fix specific mobile issues like "overflowing tables" or "hidden menus" in the navigation bar.
-*   **Apr 18 (Sat):** **Accessibility (a11y) Check**
-    *   Run LightHouse audits to identify accessibility gaps (missing alt tags, poor contrast ratios).
-    *   Add ARIA labels to form inputs and buttons to support screen reader users.
+#### Week 12: Apr 13 (Mon) – Apr 18 (Sat) [NDMC Production Hardening]
+*   **Apr 13 (Mon):** **Docker Production Config**
+    *   Create `Dockerfile.prod` for the backend — use `gunicorn` with `uvicorn` workers (not `--reload`), set worker count to CPU cores.
+    *   Build a multi-stage frontend `Dockerfile` (Node build → Nginx serve) with gzip compression enabled.
+*   **Apr 14 (Tue):** **Docker Compose Production Profile**
+    *   Add a `docker-compose.prod.yml` with proper healthchecks, `restart: always` policies, named volume mounts, and log rotation.
+    *   Test the full stack via `docker compose -f docker-compose.prod.yml up --build`.
+*   **Apr 15 (Wed):** **NDMC Deployment Environment Config**
+    *   Write a production `.env.template` with every variable NDMC IT needs to set (MongoDB URI, JWT secret, CORS domain, SMTP, Ollama host).
+    *   Document NDMC server requirements: Ubuntu 22.04, NVIDIA GPU with CUDA, Docker 24+, 16 GB RAM.
+*   **Apr 16 (Thu):** **API Versioning**
+    *   Add `/api/v1` prefix to all backend routes using FastAPI's `APIRouter(prefix="/api/v1")`.
+    *   Update frontend API base URL to `/api/v1`; document versioning strategy so future NDMC API consumers are not broken by changes.
+*   **Apr 17 (Fri):** **MongoDB Backup Strategy**
+    *   Write a `backup_db.sh` script using `mongodump` with timestamp-named output directories.
+    *   Document the recommended NDMC backup schedule (daily dumps, 30-day retention) and recovery procedure.
+*   **Apr 18 (Sat):** **UI/UX Audit & NDMC Branding Pass**
+    *   Review the full app for font/colour consistency; replace placeholder logos with NDMC branding placeholders.
+    *   Standardize all Tailwind spacing, heading hierarchy, and button styles for a professional government portal look.
 *   **Apr 19 (Sun):** *OFF*
 
-#### Week 13: Apr 20 (Mon) – Apr 25 (Sat)
-*   **Apr 20 (Mon):** **Backend Unit Testing**
-    *   Write comprehensive `pytest` cases for the critical business logic (Model inference, Database storage).
-    *   Mock external dependencies (Ollama, Geolocation API) to ensure tests run fast and offline.
-*   **Apr 21 (Tue):** **Frontend Integration Testing**
-    *   Perform manual "Black Box" testing of the full user journey: Upload -> Analyze -> Edit -> Map -> Submit.
-    *   Document bugs found during the process (e.g., "Map pin returns to center on reset") in a tracking sheet.
-*   **Apr 22 (Wed):** **Admin Workflow Testing**
-    *   Test the Admin lifecyle: Login -> View specific complaint -> Change Status -> Verify update in DB.
-    *   Check for data consistency (e.g., does the status update reflect immediately without a refresh?).
-*   **Apr 23 (Thu):** **Bug Fixing Sprint**
-    *   Dedicate the entire day to squashing the priority bugs identified during the testing sessions.
-    *   Fix any race conditions in the UI where state updates might conflict.
-*   **Apr 24 (Fri):** **Resource Optimization**
-    *   Implement image compression on the client side (using `browser-image-compression`) to reduce upload bandwidth.
-    *   Audit the final bundle size of the React app and utilize code splitting if necessary.
+#### Week 13: Apr 20 (Mon) – Apr 25 (Sat) [Testing Sprint]
+*   **Apr 20 (Mon):** **Backend Unit Tests (pytest)**
+    *   Write `pytest` cases for: JWT auth, complaint CRUD, classifier (mock Ollama), geotagging, rule engine, rate limiter.
+    *   Use `mongomock` to run tests against an in-memory MongoDB; no real DB required.
+*   **Apr 21 (Tue):** **API Integration Tests**
+    *   Test all REST endpoints with `httpx.AsyncClient` against a seeded test database.
+    *   Assert correct HTTP codes, response schemas, and role-based access control for citizen / dept_head / admin.
+*   **Apr 22 (Wed):** **Security Penetration Test**
+    *   Attempt: JWT token manipulation, auth bypass on protected routes, file upload with malicious MIME, XSS in remarks field.
+    *   Document findings and patch any vulnerabilities before NDMC handover.
+*   **Apr 23 (Thu):** **Load Test**
+    *   Use `locust` to simulate 50 concurrent citizen logins + 20 concurrent `/analyze` uploads.
+    *   Document queue behavior (Ollama serialises via lock), API latency P95, and MongoDB query times under load.
+*   **Apr 24 (Fri):** **Mobile Responsiveness Fixes**
+    *   Test on 375px viewport (iPhone SE) — fix overflowing tables, navbar collapses, map containers.
+    *   Add `viewport` meta tag optimisation; ensure tap targets are ≥ 44px for NDMC field officers on mobile.
 *   **Apr 25 (Sat):** *OFF (4th Saturday)*
 *   **Apr 26 (Sun):** *OFF*
 
-#### Week 14: Apr 27 (Mon) – May 02 (Sat)
-*   **Apr 27 (Mon):** **Security Hardening**
-    *   Scan the codebase for accidentally committed secrets (API keys) and move them to `.env` files.
-    *   Implement input sanitization libraries to protect against XSS (Cross-Site Scripting) in the "Remarks" fields.
-*   **Apr 28 (Tue):** **Performance Audit**
-    *   Run Google Lighthouse performance scores on the final build; address "Render Blocking" resources.
-    *   Optimize backend query speeds by adding indexes to the MongoDB `department` and `status` fields.
-*   **Apr 29 (Wed):** **Frontend Code Cleanup**
-    *   Remove all `console.log` statements, commented-out dead code, and unused imports.
-    *   Run the final formatting pass (Prettier) to ensure every file is identical in style.
-*   **Apr 30 (Thu):** **Backend Code Cleanup**
-    *   Add comprehensive Docstrings to all Python functions following the Google/NumPy style guide.
-    *   Refactor any "God Functions" (complex functions doing too much) into smaller helpers.
-*   **May 01 (Fri):** **Pre-Deployment Freeze**
-    *   Lock the `requirements.txt` and `package.json` versions to prevent unexpected updates breaking the build.
-    *   Create a "Code Freeze" tag in Git; no new features allowed, only critical hotfixes.
-*   **May 02 (Sat):** **Final Code Review**
-    *   Conduct a final line-by-line review of the main logic paths to ensure logic soundness.
-    *   Verify that all "TODO" comments have been addressed or moved to a future backlog.
+#### Week 14 (Partial): Apr 27 (Mon) – Apr 30 (Thu) [Pre-Handover Sprint]
+*   **Apr 27 (Mon):** **NDMC Handover Guide**
+    *   Write `docs/NDMC_DEPLOYMENT.md`: step-by-step guide for NDMC IT (clone repo → configure env → docker compose → seed first admin → verify GPU).
+    *   Include troubleshooting section: Ollama VRAM errors, MongoDB auth, CORS for production domain.
+*   **Apr 28 (Tue):** **Final API Reference Documentation**
+    *   Enhance all OpenAPI endpoint descriptions with request/response examples and error code tables.
+    *   Export Swagger JSON; publish as `docs/API_REFERENCE.md` for NDMC developers integrating with the backend.
+*   **Apr 29 (Wed):** **Repository Cleanup**
+    *   Remove all `console.log` statements, `# TODO`, dead-code branches, and stale comments from every file.
+    *   Run final `isort` + `black` (Python) and `Prettier` (JS) formatting pass; ensure zero lint errors.
+*   **Apr 30 (Thu):** **Release Tag v1.0-rc1**
+    *   Tag `v1.0-rc1` on `main`; write a GitHub Release with a changelog summarising all features.
+    *   Set up a basic GitHub Actions CI workflow: run `pytest` and ESLint on every push to `main`.
+*   **May 01 (Fri):** *Phase 2 Buffer / Spillover*
+*   **May 02 (Sat):** **Code Freeze**
+    *   Lock `requirements.txt` and `package.json` dependency versions; no new packages without explicit approval.
+    *   Final line-by-line review of all critical paths (auth, analyze, status update).
 *   **May 03 (Sun):** *OFF*
 
-#### Week 15: May 04 (Mon) – May 09 (Sat)
-*   **May 04 (Mon):** **Containerization Concepts**
-    *   Study Docker fundamentals (Images, Containers, Volumes, Networks) to prepare for deployment.
-    *   Install Docker Desktop and verify the installation with the "hello-world" container.
-*   **May 05 (Tue):** **Backend Containerization**
-    *   Write the `Dockerfile` for the Python API, selecting a slim base image (`python:3.10-slim`) for efficiency.
-    *   Build and run the container locally, debugging any missing system dependencies (like `gcc` for some libraries).
-*   **May 06 (Wed):** **Frontend Containerization**
-    *   Write the `Dockerfile` for the Frontend, using a multi-stage build (Node build -> Nginx serve) to keep images small.
-    *   Configure basic Nginx routing rules to handle the React Single Page Application (SPA) history mode.
-*   **May 07 (Thu):** **Orchestration (Docker Compose)**
-    *   Create `docker-compose.yml` to define services for Backend, Frontend, and the MongoDB database.
-    *   Configure network links between containers so the API can talk to the Database using service names.
-*   **May 08 (Fri):** **Deployment Simulation**
-    *   Run `docker-compose up --build` to launch the entire stack in isolation, simulating a production server environment.
-    *   Troubleshoot any inter-container connectivity issues (e.g., CORS issues between containers).
+---
+
+### Phase 3: UAT, Report & Final Submission (Weeks 15-18)
+
+#### Week 15: May 04 (Mon) – May 09 (Sat) [Containerization — Already Partially Done]
+*   **May 04 (Mon):** **Docker Production Verification** - [COMPLETED IN WEEK 12]
+    *   Backend `Dockerfile` + `docker-compose.yml` already in place; verify production config (`Dockerfile.prod`, `gunicorn` init) works cleanly on a clean machine.
+    *   Confirm `docker compose up --build` produces a clean production stack with no dev-only dependencies.
+*   **May 05 (Tue):** **Nginx SPA Routing Verification**
+    *   Verify the frontend `Dockerfile` multi-stage build correctly falls back to `index.html` for all React routes (SPA mode).
+    *   Test direct-URL access (e.g., `http://ndmc-server/dashboard`) does not return 404.
+*   **May 06 (Wed):** **NDMC Network Config**
+    *   Configure Ollama to be accessible within the NDMC Docker network (`host.docker.internal` on Linux alternative).
+    *   Test container-to-Ollama connectivity; document the `OLLAMA_BASE_URL` override for NDMC's server topology.
+*   **May 07 (Thu):** **Production Stack Stress Test**
+    *   Run `docker compose -f docker-compose.prod.yml up` and execute the locust load test against the containerised stack.
+    *   Verify MongoDB named volumes persist data across `docker compose down/up` cycles.
+*   **May 08 (Fri):** **Deployment Simulation on Clean Machine**
+    *   Follow the `NDMC_DEPLOYMENT.md` guide on a fresh environment to verify the instructions are accurate and complete.
+    *   Time the full cold-start (clone → running app) and document it in the handover guide.
 *   **May 09 (Sat):** *OFF (2nd Saturday)*
 *   **May 10 (Sun):** *OFF*
 
@@ -345,7 +354,7 @@
 #### Week 17: May 18 (Mon) – May 23 (Sat)
 *   **May 18 (Mon):** **Report: Introduction & Literature**
     *   Draft the "Introduction" and "Literature Review" chapters of the final project report.
-    *   Cite the research papers regarding CLIP and LLaVA usage in civic technology.
+    *   Cite research papers on Vision-Language Models (VLMs), civic AI, and local LLM inference for smart city applications.
 *   **May 19 (Tue):** **Report: System Design & Architecture**
     *   Write the technical chapters detailing the MERN+FastAPI architecture and Microservices approach.
     *   Insert the finalized Architecture Diagrams and Entity Relationship Diagrams (ERD).
