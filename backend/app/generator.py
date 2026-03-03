@@ -76,6 +76,7 @@ def generate_complaint(image_path, classification_result, user_details, location
             response = client.generate(
                 model=settings.reasoning_model,
                 prompt=prompt,
+                options={"temperature": 0.0},
             )
             if response is None:
                 raise RuntimeError("Reasoning model returned no response.")

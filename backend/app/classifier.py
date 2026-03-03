@@ -212,9 +212,9 @@ class CivicClassifier:
                         format="json",
                         prompt=_json_prompt,
                         images=[image_bytes],
-                        options={"num_ctx": 1024},
+                        options={"num_ctx": 1024, "temperature": 0.0},
                     )
-                return dict(model=model_name, prompt=_simple_prompt, images=[image_bytes])
+                return dict(model=model_name, prompt=_simple_prompt, images=[image_bytes], options={"temperature": 0.0})
 
             # Build 3-tier ordered chain starting from the RAM-selected model.
             # Tiers below the selected one are skipped (already known to be too large).
@@ -453,7 +453,7 @@ class CivicClassifier:
                 reasoning_response = client.generate(
                     model=settings.reasoning_model,
                     format="json",
-                    options={"num_ctx": 1024},
+                    options={"num_ctx": 1024, "temperature": 0.0},
                     prompt=(
                         f"You are a civic complaint classifier for Indian municipal authorities.\n\n"
                         f"Image description: \"{description}\"\n"
