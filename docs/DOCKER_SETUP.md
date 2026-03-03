@@ -17,13 +17,13 @@ Docker provides a containerized, consistent environment for running Jan-Sunwai A
 .\scripts\docker-start.bat
 ```
 
-**Option 1 (Linux/macOS):**
+**Option 2: One-Click Start (Linux/macOS)**
 ```bash
 chmod +x scripts/docker-start.sh
 ./scripts/docker-start.sh
 ```
 
-**Option 2: Manual Commands**
+**Option 3: Manual Commands**
 ```bash
 # Start all services (backend + MongoDB)
 docker-compose up -d
@@ -38,8 +38,12 @@ docker-compose down
 ### What Gets Deployed
 
 The `docker-compose.yml` runs:
-- **MongoDB** (Port 27017) - Database with persistent volume
-- **Backend API** (Port 8000) - FastAPI server with hot-reload
+- **MongoDB** (Port 27017) — Database with persistent volume
+- **Backend API** (Port 8000) — FastAPI server with hot-reload
+
+> **Ollama is NOT containerised.** It must be running natively on the host machine (Windows service or `ollama serve`). The backend container reaches it via `http://host.docker.internal:11434`. Set `OLLAMA_BASE_URL=http://host.docker.internal:11434` in `backend/.env` (this is the default when using Docker Compose).
+
+> **Frontend** is run separately with `npm run dev` (not in Docker in development). See `scripts/run_frontend.bat`.
 
 ### Environment Configuration
 

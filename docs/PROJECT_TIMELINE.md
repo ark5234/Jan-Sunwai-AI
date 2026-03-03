@@ -43,12 +43,12 @@
 *   **Feb 08 (Sun):** *OFF*
 
 #### Week 3: Feb 09 (Mon) – Feb 14 (Sat)
-*   **Feb 09 (Mon):** **AI Model Research (CLIP)** - [COMPLETED]
-    *   Conduct deep-dive research into OpenAI's CLIP architecture to understand its Zero-Shot classification capabilities relevant to civic issues.
-    *   Read documentation for `transformers` and `huggingface` libraries to identify the most efficient pre-trained models for local execution.
+*   **Feb 09 (Mon):** **AI Model Research (CLIP → replaced by Ollama pipeline)** - [COMPLETED]
+    *   Conducted research into OpenAI CLIP and Hugging Face `transformers` for Zero-Shot classification.
+    *   *Note: CLIP was ultimately replaced by the Ollama-based hybrid pipeline (qwen2.5vl:3b + rule engine + llama3.2:1b) due to VRAM constraints and lower accuracy on civic images.*
 *   **Feb 10 (Tue):** **AI Environment & Dependency Integration** - [COMPLETED]
-    *   Install heavy AI libraries (`torch`, `transformers`, `Pillow`) and resolve CUDA/CPU version conflicts to ensure consistent model loading.
-    *   Write a standalone script to download and cache the `openai/clip-vit-base-patch32` model to avoid runtime downloads.
+    *   Installed initial AI libraries (`torch`, `transformers`, `Pillow`) for CLIP prototype; resolved CUDA/CPU version conflicts.
+    *   *Note: `torch` and `transformers` were later removed in favour of the Ollama client (`ollama` Python package), significantly reducing memory footprint.*
 *   **Feb 11 (Wed):** **JWT Authentication & Security Implementation** - [COMPLETED]
     *   Implemented full JWT token-based authentication system using python-jose and OAuth2PasswordBearer flow.
     *   Created `auth.py` module with token generation, validation, and user dependency injection.
@@ -60,43 +60,43 @@
     *   Shortened AI complaint generation prompts to max 150 words for better UX.
     *   Added passlib[bcrypt] for secure password hashing.
     *   Updated test suite with dependency overrides for JWT testing.
-*   **Feb 12 (Thu):** **Zero-Shot Classifier Implementation** - [COMPLETED]
-    *   Develop the `classifier.py` module, encapsulating the CLIP model loading and prediction logic into a reusable Class structure.
-    *   Implement image preprocessing pipelines (resizing, normalization) to prepare raw user uploads for the neural network.
+*   **Feb 12 (Thu):** **Zero-Shot Classifier Implementation (CLIP → later replaced)** - [COMPLETED]
+    *   Developed the initial `classifier.py` module using CLIP for Zero-Shot image classification.
+    *   *Note: Replaced with the Ollama-based CivicClassifier (Vision → Rule Engine → Optional Reasoning) for better accuracy and VRAM efficiency.*
 *   **Feb 13 (Fri):** **Classification Accuracy Testing** - [COMPLETED]
-    *   Curate a dataset of 50 diverse test images (various lighting, angles) and run batch predictions to benchmark model accuracy.
-    *   Analyze misclassification cases and tune the label text prompts to improve distinction between similar categories (e.g., "Road" vs "Footpath").
+    *   Benchmarked CLIP model on 50+ test images; identified accuracy issues on Indian civic scenes.
+    *   Findings directly motivated the switch to the qwen2.5vl:3b vision model + deterministic rule engine hybrid.
 *   **Feb 14 (Sat):** *OFF (2nd Saturday)*
 *   **Feb 15 (Sun):** *OFF*
 
 #### Week 4: Feb 16 (Mon) – Feb 21 (Sat)
-*   **Feb 16 (Mon):** **Metadata & EXIF Research**
+*   **Feb 16 (Mon):** **Metadata & EXIF Research** - [COMPLETED]
     *   Study the EXIF standard and `Pillow` library documentation to understand how GPS tags are encoded in image files.
     *   Experiment with different sample images to identify variations in how Android and iOS devices store location data.
-*   **Feb 17 (Tue):** **GPS Coordinate Parsing Logic**
+*   **Feb 17 (Tue):** **GPS Coordinate Parsing Logic** - [COMPLETED]
     *   Write complex mathematical utility functions to convert GPS Degrees/Minutes/Seconds (DMS) tuples into standard Decimal Degrees.
     *   Implement robust error handling for the parser to prevent crashes when dealing with corrupted or partial EXIF headers.
-*   **Feb 18 (Wed):** **Reverse Geocoding Integration**
+*   **Feb 18 (Wed):** **Reverse Geocoding Integration** - [COMPLETED]
     *   Register for OpenStreetMap/Nominatim services and implement the `geopy` client to translate coordinates into human-readable addresses.
     *   Implement request rate limiting and caching strategies for the geocoder to respect API usage policies and improve speed.
-*   **Feb 19 (Thu):** **Geotagging Module Development**
+*   **Feb 19 (Thu):** **Geotagging Module Development** - [COMPLETED]
     *   Integrate the EXIF parser and Geocoder into a unified `extract_location` service function within the backend.
     *   Write unit tests specifically for the location module, verifying it correctly handles images from different hemispheres.
-*   **Feb 20 (Fri):** **Edge Case Management**
+*   **Feb 20 (Fri):** **Edge Case Management** - [COMPLETED]
     *   Develop logic to handle images strictly stripped of metadata (e.g., WhatsApp images) by returning "Location Unknown" without errors.
     *   Implement value sanitization to ensure "None" or invalid coordinates don't corrupt the database or crash the geocoder.
-*   **Feb 21 (Sat):** **AI Pipeline Integration**
+*   **Feb 21 (Sat):** **AI Pipeline Integration** - [COMPLETED]
     *   Merge the Classification and Geotagging modules into the main `/analyze` API endpoint, orchestrating sequential execution.
     *   Conduct end-to-end reliability tests of the `/analyze` endpoint, ensuring it returns both Dept and Location within acceptable time limits.
 *   **Feb 22 (Sun):** *OFF*
 
 #### Week 5: Feb 23 (Mon) – Feb 28 (Sat)
 *   **Feb 23 (Mon):** **Generative AI Environment Setup** - [COMPLETED]
-    *   Install and configure `Ollama` locally; pull the `llava` (Language-and-Vision Assistant) model for multimodal generation.
-    *   Verify hardware resource usage (RAM/VRAM) during model inference to ensure the development machine remains responsive.
+    *   Install and configure `Ollama` locally; pull `qwen2.5vl:3b` (vision), `granite3.2-vision:2b` (mid-tier vision fallback), and `llama3.2:1b` (reasoning + writer) models.
+    *   Verify hardware resource usage (RAM/VRAM); confirmed sequential model loading fits within 4 GB VRAM on RTX 3050. Note: initial approach used `llava` which was later replaced in favour of the qwen2.5vl + rule engine hybrid.
 *   **Feb 24 (Tue):** **GenAI Prompt Engineering** - [COMPLETED]
-    *   Design and iterate on system prompts to guide LLaVA in writing formal, polite, and actionable government complaint letters.
-    *   Test various "personas" in the prompts to ensure the AI adopts the tone of a concerned but professional citizen.
+    *   Design and iterate on system prompts for `qwen2.5vl:3b` (vision JSON extraction) and `llama3.2:1b` (complaint writing).
+    *   Developed the hybrid Vision → Rule Engine → Optional Reasoning pipeline to reduce VRAM usage and improve determinism.
 *   **Feb 25 (Wed):** **Complaint Generator Service** - [COMPLETED]
     *   Develop `generator.py` to wrap the Ollama API calls, handling inputs (Department, Location, Image context) dynamically.
     *   Implement text post-processing to clean up AI artifacts (extra quotes, hallucinations) before sending the draft to the user.
@@ -121,13 +121,13 @@
     *   Connect this component to the `useAnalyze` hook with proper validation and error handling.
 *   **Thu:** **API Integration (Analysis Hook)** - [COMPLETED]
     *   Develop `hooks/useAnalyze.js` to handle the communication with the Python Backend (`/analyze`).
-    *   Display loading states (spinners) while the AI models (CLIP + LLaVA) are processing with JWT authentication.
+    *   Display loading states (spinners) while the Ollama pipeline (Vision + Rule Engine + optional Reasoning) is running with JWT authentication.
 *   **Fri:** **Result Display Page** - [COMPLETED]
     *   Create the "Complaint Preview" page showing: The Image, The Map, The Classification, and the AI-Drafted Letter.
     *   Add "Copy to Clipboard" and "Edit" functionality (textarea) for the generated text.
 *   **Sat:** **End-to-End Test (Frontend -> Backend)** - [COMPLETED]
     *   Manual walkthrough: Upload image -> See AI result -> Verify Letter content.
-    *   Confirmed full integration with JWT authentication, CLIP classification, and LLaVA generation. 
+    *   Confirmed full integration with JWT authentication, Ollama vision classification (qwen2.5vl:3b + rule engine), and llama3.2:1b complaint generation. 
 
 *(Original Backend Security tasks moved to Week 7)*
 *   **Mar 08 (Sun):** *OFF*

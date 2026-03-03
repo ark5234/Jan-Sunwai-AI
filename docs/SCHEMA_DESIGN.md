@@ -12,19 +12,22 @@ erDiagram
         string username
         string email
         string password_hash
-        string role "citizen | admin"
+        string role "citizen | dept_head | admin"
         datetime created_at
     }
     complaint {
         string _id PK
         string user_id FK "Reporter"
-        string assigned_to FK "Admin Handler"
-        string status "Open|InProgress|Resolved"
+        string assigned_to FK "Admin/Dept Head Handler"
+        string authority_id FK "Routed Authority"
+        string status "Open|InProgress|Resolved|Rejected"
         string description
         string department
         object location
+        object ai_metadata
         array status_history "Lifecycle Log"
         datetime created_at
+        datetime updated_at
     }
     user ||--o{ complaint : manages
 ```
@@ -32,26 +35,30 @@ erDiagram
 ## Entity Details
 
 ### 1. User Entity
-*   **role**: `citizen` (Default) or `admin`.
+*   **role**: `citizen` (Default), `dept_head`, or `admin`.
     *   *Citizens* can only create and view their own complaints.
-    *   *Admins* can view all complaints, change status, and be assigned to complaints.
+    *   *Dept Heads* can view and update status for complaints in their department.
+    *   *Admins* can view all complaints, change status, manage triage, and be assigned to complaints.
 
 ### 2. Complaint Entity
 Tracks individual grievances.
-*   **assigned_to**: `ObjectId` reference to an Admin User. Nullable.
-*   **status_history**: Array of objects tracking changes.
-    *   `status`: New status.
-    *   `changed_by`: User ID of who changed it.
-    *   `note`: "Issue verified", "Work started", etc.
-    *   `timestamp`: When it happened.
-    *   **model_used**: "CLIP-ViT-B/32"
-    *   **confidence**: Float.
-    *   **tags**: List[String].
-*   **geo_location**: Embedded Object.
-    *   **latitude**: Float.
-    *   **longitude**: Float.
-    *   **address**: String.
-*   **status_history**: List[Object].
-    *   **status**: String.
-    *   **changed_by**: UserID.
-    *   **timestamp**: DateTime.
+*   **assigned_to**: `ObjectId` reference to an Admin/Dept Head User. Nullable.
+*   **authority_id**: Reference to the routed Authority Organisation (from `authorities.py`).
+*   **routing_confidence**: Float — confidence score from the authority routing logic.
+*   **escalation_parent_authority_id**: Set if the complaint can be escalated to a higher authority.
+*   **status**: `Open` | `In Progress` | `Resolved` | `Rejected`.
+*   **ai_metadata**: Embedded object.
+    *   `model_used`: String. e.g. `"ollama"`.
+    *   `confidence_score`: Float.
+    *   `detected_department`: String.
+    *   `labels`: List of strings.
+*   **location**: Embedded object.
+    *   `lat`: Float.
+    *   `lon`: Float.
+    *   `address`: String.
+    *   `source`: `exif` | `device` | `manual`.
+*   **status_history**: List of objects tracking lifecycle changes.
+    *   `status`: New status value.
+    *   `changed_by_user_id`: ID of the user who made the change.
+    *   `note`: e.g. "Complaint created", "Status updated via API".
+    *   `timestamp`: DateTime.

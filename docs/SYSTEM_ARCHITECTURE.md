@@ -71,35 +71,46 @@ Photo uploaded
  EXIF check ──→ GPS coords found? → address via reverse geocoding (geopy)
       │              No GPS? → "Unknown location" (user pins manually on map)
       ▼
- qwen2.5vl:3b reads image
- e.g. "A large pothole on a concrete road near a footpath.
-       Water has collected in the hole. Risk to vehicles."
+ STEP 1 — Vision (qwen2.5vl:3b, 3-tier cascade)
+   Reads the image and returns structured JSON:
+   { description, visible_objects, primary_issue, hazards, setting }
+   Falls back to granite3.2-vision:2b → moondream if primary model
+   times out or runs out of VRAM.
       │
       ▼
- llama3.2:1b reads description + category list
- → "Municipal - PWD (Roads)"
+ STEP 2 — Rule Engine (Python, zero VRAM)
+   Deterministic keyword scoring across all 10 civic categories.
+   Fast and always runs. Flags result as "ambiguous" if score is low.
+   → "Municipal - PWD (Roads)"  (confident — done here, no LLM needed)
+      │   OR
+      ▼  (ambiguous)
+ STEP 3 — Optional Reasoning (llama3.2:1b)
+   Only invoked when Rule Engine is not confident.
+   Reads the vision JSON and picks the best category.
+   Vision model is unloaded first to free VRAM.
       │
       ▼
- qwen2.5vl:3b writes complaint letter:
- "Subject: Dangerous Pothole on Main Road...
-  To The Municipal Officer, ... Respectfully submitted"
+ STEP 4 — Complaint Writer (llama3.2:1b, text-only)
+   Uses vision description + category + location to draft
+   a 60-90 word formal civic complaint (no image re-read).
       │
       ▼
  Citizen sees: category + location + draft letter
  (can edit the draft before submitting)
       │
       ▼
- Saved to MongoDB → Routed to PWD department head
+ Saved to MongoDB → Routed to the correct authority
 ```
 
-### Why Two Models Instead of One
+### Why the Hybrid Approach
 
-| | Old Method (CLIP / LLaVA 7B) | Current Method (Qwen + Llama) |
+| | Old Method (CLIP / LLaVA 7B) | Current Method (Vision + Rule Engine + Llama) |
 |---|---|---|
-| Accuracy | Low — guesses keywords | High — understands context & actions |
-| VRAM Usage | High — crashed 4 GB cards | Low — perfect for RTX 3050 |
-| Flexibility | Rigid categories | Easy to add new folder rules |
-| Speed | Slow (model swapping) | Fast (models stay in memory) |
+| Accuracy | Low — guesses keywords | High — vision understands scene context |
+| VRAM Usage | High — crashed 4 GB cards | Low — rule engine is zero-VRAM |
+| Determinism | Non-deterministic | Rule engine is fully deterministic; reasoning uses temperature=0 |
+| Speed | Slow (model swapping) | Fast — LLM reasoning skipped for clear cases |
+| Flexibility | Rigid | 10 civic categories, easy to extend rule weights |
 
 ---
 
@@ -138,12 +149,14 @@ The system routes complaints to 10 canonical categories:
 ┌─────────────────────────────────────────────────────────────┐
 │  RTX 3050  —  4 GB VRAM                                     │
 │                                                             │
-│  qwen2.5vl:3b  (3.2 GB)  ← loaded when /analyze is called  │
-│  ─────────────────────── ← unloaded after ~5 min idle       │
-│  llama3.2:1b   (1.3 GB)  ← loaded right after              │
+│  Step 1: qwen2.5vl:3b  (3.2 GB)  ← vision inference        │
+│          unloaded via keep_alive=0 after classify()         │
+│  Step 2: Rule Engine (Python)    ← zero VRAM                │
+│  Step 3: llama3.2:1b   (1.3 GB)  ← only if ambiguous       │
+│  Step 4: llama3.2:1b   (reused)  ← complaint text draft    │
 │                                                             │
-│  Ollama loads ONE at a time — never both simultaneously     │
-│  (sequential pipeline, not parallel)                        │
+│  Ollama loads ONE model at a time (serialised via lock)     │
+│  For clear cases: only qwen + rule engine → no Llama load   │
 └─────────────────────────────────────────────────────────────┘
 
 ┌─────────────────────────────────────────────────────────────┐
@@ -254,9 +267,14 @@ Interactive API docs (all endpoints + built-in test form):
 | Setting | Default | Override via env |
 |---|---|---|
 | `vision_model` | `qwen2.5vl:3b` | `VISION_MODEL` |
+| `mid_vision_model` | `granite3.2-vision:2b` | `MID_VISION_MODEL` |
+| `fallback_vision_model` | `granite3.2-vision:2b` | `FALLBACK_VISION_MODEL` |
 | `reasoning_model` | `llama3.2:1b` | `REASONING_MODEL` |
-| `llm_inline_timeout_seconds` | `8` | `LLM_INLINE_TIMEOUT_SECONDS` |
+| `vision_timeout_seconds` | `240` | `VISION_TIMEOUT_SECONDS` |
+| `llm_inline_timeout_seconds` | `15` | `LLM_INLINE_TIMEOUT_SECONDS` |
 | `llm_queue_workers` | `2` | `LLM_QUEUE_WORKERS` |
+| `rule_engine_only` | `false` | `RULE_ENGINE_ONLY` |
+| `unload_after_reasoning` | `true` | `UNLOAD_AFTER_REASONING` |
 | `mongodb_url` | `mongodb://localhost:27017` | `MONGODB_URL` |
 
 ---
@@ -265,6 +283,7 @@ Interactive API docs (all endpoints + built-in test form):
 
 | Model | Size | Role |
 |---|---|---|
-| `qwen2.5vl:3b` | 3.2 GB | Vision — image narration + complaint writing |
-| `llama3.2:1b` | 1.3 GB | Reasoning — category selection |
-| `llava:latest` | 4.7 GB | Legacy (kept, no longer used by API) |
+| `qwen2.5vl:3b` | 3.2 GB | Primary vision — structured JSON image analysis |
+| `granite3.2-vision:2b` | ~2.4 GB | Mid/fallback vision — used when qwen2.5vl times out or OOMs |
+| `llama3.2:1b` | 1.3 GB | Reasoning (ambiguous cases) + complaint text writer |
+| `llava:latest` | 4.7 GB | Legacy (no longer used by API) |
