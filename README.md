@@ -40,35 +40,50 @@ Jan-Sunwai AI is a full-stack civic complaint platform that lets citizens photog
 
 ## AI Pipeline
 
-The system uses a **two-step Vision-to-Reasoning pipeline**, both running locally via Ollama:
+The system uses a **4-step hybrid Vision → Rule Engine → Optional Reasoning → Writer pipeline**, running locally via Ollama with a Python rule engine (zero VRAM):
 
 ```
 Image File
     |
     v
-+-----------------------------------+
-|  Step 1 -- Vision (Eyes)          |
-|  Model: qwen2.5vl:3b  (3.2 GB)   |
-|  Describes what's wrong in the    |
-|  image in 2-3 factual sentences   |
-+----------------+------------------+
-                 |  text description
-                 v
-+-----------------------------------+
-|  Step 2 -- Reasoning (Brain)      |
-|  Model: llama3.2:1b   (1.3 GB)   |
-|  Maps description to one of 11    |
-|  canonical civic categories       |
-+----------------+------------------+
-                 |  category + confidence
-                 v
-         Department routed OK
++---------------------------------------------+
+|  Step 1 -- Vision Cascade                   |
+|  Primary:   qwen2.5vl:3b      (3.2 GB)      |
+|  Mid-tier:  granite3.2-vision:2b            |
+|  Reads the image -> structured JSON:        |
+|  { description, primary_issue, setting }   |
++--------------------+------------------------+
+                     |  vision JSON
+                     v
++---------------------------------------------+
+|  Step 2 -- Rule Engine  (zero VRAM)          |
+|  Deterministic keyword scoring across        |
+|  10 civic categories.                        |
+|  Confident match -> skip LLM reasoning       |
++--------------------+------------------------+
+                     |  (only if ambiguous)
+                     v
++---------------------------------------------+
+|  Step 3 -- Optional Reasoning               |
+|  Model: llama3.2:1b   (1.3 GB)             |
+|  Only invoked when Rule Engine uncertain.   |
+|  Picks the best civic category.             |
++--------------------+------------------------+
+                     |  category
+                     v
++---------------------------------------------+
+|  Step 4 -- Complaint Writer                  |
+|  Model: llama3.2:1b  (text-only)            |
+|  Drafts a 60-90 word formal complaint.      |
+|  No image re-read.                           |
++---------------------------------------------+
 ```
 
-**Why two models instead of one?**
-- `qwen2.5vl:3b` understands *actions and context* in images (e.g. "overflowing drain near a road"), not just visual similarity
-- `llama3.2:1b` applies *rule-based reasoning* to map descriptions to categories, preventing model confusion
-- Both models fit in 4 GB VRAM and run sequentially -- no simultaneous loading required
+**Why the hybrid approach?**
+- `qwen2.5vl:3b` understands *scene context* in images (e.g. "overflowing drain near a road"), not just visual similarity; falls back to `granite3.2-vision:2b` if primary times out or VRAM is low
+- The **Rule Engine** runs instantly with zero VRAM — skips LLM reasoning entirely for obvious cases (most complaints)
+- `llama3.2:1b` is loaded only for genuinely ambiguous images, saving ~1.2 GB VRAM in the common case
+- All models fit sequentially in 4 GB VRAM — never loaded simultaneously
 
 ---
 
@@ -80,8 +95,10 @@ Image File
 | Frontend | React 18, Vite, Tailwind CSS |
 | Database | MongoDB (via Docker), Motor (async driver) |
 | AI Runtime | Ollama (local GPU inference) |
-| Vision Model | `qwen2.5vl:3b` -- image narration |
-| Reasoning Model | `llama3.2:1b` -- category selection |
+| Vision Model (primary) | `qwen2.5vl:3b` -- image narration, structured JSON output |
+| Vision Model (mid-tier) | `granite3.2-vision:2b` -- fallback if primary times out or VRAM is low |
+| Civic Rule Engine | Python keyword scorer -- zero VRAM category selection |
+| Reasoning Model | `llama3.2:1b` -- ambiguous case classifier + complaint writer |
 | Auth | JWT (OAuth2 password flow) |
 | Containerization | Docker + Docker Compose |
 
@@ -150,7 +167,7 @@ The script automatically:
 - Installs Python 3.13 + creates `.venv` + installs all pip packages
 - Installs Node.js LTS + `npm install` for frontend
 - Installs Docker Desktop + starts MongoDB container
-- Installs Ollama + pulls `qwen2.5vl:3b` and `llama3.2:1b` (~4.5 GB total)
+- Installs Ollama + pulls `qwen2.5vl:3b`, `granite3.2-vision:2b`, and `llama3.2:1b` (~7 GB total)
 
 **Only prerequisite:** NVIDIA drivers (any modern gaming PC already has these).
 
@@ -170,7 +187,7 @@ The script automatically:
 - Installs Python 3.13 + creates `.venv` + installs all pip packages
 - Installs Node.js LTS + `npm install` for frontend
 - Installs Docker + starts MongoDB container
-- Installs Ollama + pulls both models
+- Installs Ollama + pulls all three AI models (`qwen2.5vl:3b`, `granite3.2-vision:2b`, `llama3.2:1b`)
 
 ---
 
@@ -187,6 +204,7 @@ The script automatically:
 **2. Pull AI models**
 ```bash
 ollama pull qwen2.5vl:3b
+ollama pull granite3.2-vision:2b
 ollama pull llama3.2:1b
 ```
 
@@ -313,7 +331,7 @@ python backend/download_models.py
 
 ### Benchmark Results (200-image sample, Kaggle)
 
-Evaluated on 200 civic images (25 sampled per department) using the two-step Vision → Reasoning pipeline (`llama3.2-vision:11b` + `mistral:7b`):
+Evaluated on 200 civic images (25 sampled per department) using the Vision → Rule Engine → Reasoning pipeline:
 
 | Metric | Result |
 |---|---|
@@ -366,10 +384,14 @@ Copy `backend/.env.example` to `backend/.env` and edit as needed:
 |---|---|---|
 | `MONGODB_URL` | `mongodb://localhost:27017` | MongoDB connection string |
 | `JWT_SECRET_KEY` | *(change this)* | Secret for signing JWT tokens |
-| `VISION_MODEL` | `qwen2.5vl:3b` | Ollama model for image narration |
-| `REASONING_MODEL` | `llama3.2:1b` | Ollama model for category selection |
+| `VISION_MODEL` | `qwen2.5vl:3b` | Primary vision model for image narration |
+| `MID_VISION_MODEL` | `granite3.2-vision:2b` | Fallback vision model (used if primary times out) |
+| `REASONING_MODEL` | `llama3.2:1b` | Reasoning model for ambiguous cases + complaint writer |
 | `ALLOWED_ORIGINS` | `http://localhost:5173` | CORS whitelist |
-| `LLM_INLINE_TIMEOUT_SECONDS` | `8` | Timeout for synchronous AI calls |
+| `VISION_TIMEOUT_SECONDS` | `240` | Per-tier vision model timeout (seconds) |
+| `LLM_INLINE_TIMEOUT_SECONDS` | `15` | Timeout for synchronous LLM calls |
+| `RULE_ENGINE_ONLY` | `false` | Set `true` to skip LLM reasoning entirely |
+| `AMBIGUITY_THRESHOLD` | `2.0` | Min rule engine score to skip the reasoning step |
 
 ---
 

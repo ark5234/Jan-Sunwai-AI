@@ -43,21 +43,25 @@ CITIZEN
                │
      ┌─────────┴──────────┐
      ▼                    ▼
-┌──────────┐    ┌──────────────────────────────────────┐
-│ MongoDB  │    │  Ollama  (localhost:11434)            │
-│          │    │                                      │
-│ users    │    │  STEP 1 — qwen2.5vl:3b  (3.2 GB)    │
-│ complaints│   │   "Eyes" — reads the image           │
-│ triage   │    │   → outputs a 2-3 sentence narration │
-│          │    │                                      │
-└──────────┘    │  STEP 2 — llama3.2:1b  (1.3 GB)     │
-                │   "Brain" — reads the narration      │
-                │   → picks one of 10 civic categories │
-                │                                      │
-                │  STEP 3 — qwen2.5vl:3b  (reused)    │
-                │   "Writer" — drafts the formal       │
-                │    grievance letter (80-100 words)   │
-                └──────────────────────────────────────┘
+┌──────────┐    ┌──────────────────────────────────────────┐
+│ MongoDB  │    │  Ollama  (localhost:11434)                │
+│          │    │                                          │
+│ users    │    │  STEP 1 — Vision Cascade                 │
+│ complaints│   │    qwen2.5vl:3b    (primary,  3.2 GB)   │
+│ triage   │    │    granite3.2-vision:2b  (mid-tier)      │
+│          │    │    → structured JSON image description   │
+└──────────┘    │                                          │
+                │  STEP 2 — Rule Engine  (zero VRAM)       │
+                │    deterministic keyword scoring         │
+                │    stops here when result is confident   │
+                │                                          │
+                │  STEP 3 — Reasoning  (llama3.2:1b)      │
+                │    only invoked when ambiguous           │
+                │    → picks best civic category           │
+                │                                          │
+                │  STEP 4 — Complaint Writer               │
+                │    llama3.2:1b  (text-only, 60-90 words) │
+                └──────────────────────────────────────────┘
 ```
 
 ---
