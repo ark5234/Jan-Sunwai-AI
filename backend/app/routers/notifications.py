@@ -1,5 +1,4 @@
 from datetime import datetime
-from typing import List
 
 from bson import ObjectId
 from fastapi import APIRouter, Depends, HTTPException, Body
@@ -50,7 +49,7 @@ async def create_notification(
 # Endpoints
 # ---------------------------------------------------------------------------
 
-@router.get("", response_model=List[NotificationResponse])
+@router.get("", response_model=list[NotificationResponse])
 async def list_notifications(
     skip: int = 0,
     limit: int = 30,

@@ -15,7 +15,7 @@ so the caller can optionally invoke a reasoning model.
 """
 
 from __future__ import annotations
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any
 from app.category_utils import CANONICAL_CATEGORIES
 
 
@@ -25,7 +25,7 @@ from app.category_utils import CANONICAL_CATEGORIES
 # Higher weight = stronger signal. Rules are scored additively.
 # ═══════════════════════════════════════════════════════════════════
 
-_CATEGORY_RULES: Dict[str, List[Tuple[List[str], float]]] = {
+_CATEGORY_RULES: dict[str, list[tuple[list[str], float]]] = {
     "Municipal - PWD (Roads)": [
         (["pothole", "potholes"], 3.0),
         (["pothole-filled"], 3.5),
@@ -147,7 +147,7 @@ _NON_CIVIC_KEYWORDS = [
 ]
 
 
-def _score_text(text: str, rules: List[Tuple[List[str], float]]) -> float:
+def _score_text(text: str, rules: list[tuple[list[str], float]]) -> float:
     """Score text against a set of weighted keyword rules."""
     text_lower = text.lower()
     score = 0.0
@@ -157,7 +157,7 @@ def _score_text(text: str, rules: List[Tuple[List[str], float]]) -> float:
     return score
 
 
-def _first_mention_position(text: str, keywords: List[str]) -> int:
+def _first_mention_position(text: str, keywords: list[str]) -> int:
     """Return the earliest character position of any keyword, or -1 if none found."""
     text_lower = text.lower()
     best = -1
@@ -169,10 +169,10 @@ def _first_mention_position(text: str, keywords: List[str]) -> int:
 
 
 def classify_by_rules(
-    vision_payload: Dict[str, Any],
+    vision_payload: dict[str, Any],
     ambiguity_threshold: float = 2.0,
     confidence_gap_threshold: float = 1.0,
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """
     Deterministic rule-based classification from structured vision output.
 
@@ -219,7 +219,7 @@ def classify_by_rules(
     # - primary_issue + hazards scored at 3× (vision model's direct assertion)
     # This prevents background observations ("road", "street") from drowning
     # out the model's explicit primary classification signal.
-    scores: Dict[str, float] = {}
+    scores: dict[str, float] = {}
     for category, rules in _CATEGORY_RULES.items():
         bg_score = _score_text(background, rules)
         hs_score = _score_text(high_signal, rules)
@@ -233,11 +233,11 @@ def classify_by_rules(
     # Only apply when the gap between top-2 is small (≤ 2.0).
     combined = f"{background} {high_signal}"  # rebuild for first-mention scan
     desc_lower = combined.lower()
-    _ALL_CATEGORY_SIGNALS: Dict[str, List[str]] = {
+    _ALL_CATEGORY_SIGNALS: dict[str, list[str]] = {
         cat: [kw for kws, _w in rules for kw in kws if _w >= 2.0]
         for cat, rules in _CATEGORY_RULES.items()
     }
-    first_positions = {}
+    first_positions: dict[str, int] = {}
     for cat, kws in _ALL_CATEGORY_SIGNALS.items():
         pos = _first_mention_position(desc_lower, kws)
         if pos >= 0:
@@ -290,7 +290,7 @@ def classify_by_rules(
     }
 
 
-def parse_vision_text_to_payload(text: str) -> Dict[str, Any]:
+def parse_vision_text_to_payload(text: str) -> dict[str, Any]:
     """
     Convert a plain-text vision description (non-JSON) into a payload
     dict that the rule engine can process.

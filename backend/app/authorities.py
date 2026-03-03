@@ -1,6 +1,6 @@
 from enum import Enum
 from pydantic import BaseModel, Field
-from typing import List, Optional
+from typing import Optional
 
 class AuthorityLevel(str, Enum):
     LOCAL = "Local Municipal Authority"
@@ -128,7 +128,7 @@ def get_authority_by_id(auth_id: str) -> Optional[Authority]:
             return auth
     return None
 
-def get_authorities_by_level(level: AuthorityLevel) -> List[Authority]:
+def get_authorities_by_level(level: AuthorityLevel) -> list[Authority]:
     return [auth for auth in AUTHORITIES_DB if auth.level == level]
 
 # Mapping from Classifier Output to Authority ID

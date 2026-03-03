@@ -18,10 +18,8 @@ from app.routers.notifications import create_notification
 from app.schemas import NotificationType
 from app.config import settings
 from PIL import Image
-from typing import List, Optional
 from datetime import datetime
 from bson import ObjectId
-import io
 
 router = APIRouter()
 classifier = CivicClassifier()
@@ -49,23 +47,19 @@ async def analyze_complaint(
     file: UploadFile = File(...),
     current_user: dict = Depends(get_current_user)
 ):
-    # Authorization handled by Depends(get_current_user)
     username = current_user["username"]
 
-    # 1. Save File Securely (New: Feb 06 Requirement)
-    # The file pointer is at the start here.
+    # 1. Save file and resolve absolute path
     file_path = await storage_service.save_file(file)
     absolute_file_path = storage_service.resolve_path(file_path)
-    
-    # Read contents for geotagging (EXIF extraction still needs PIL)
-    contents = await file.read()
-    image = Image.open(io.BytesIO(contents))
 
     # 2. Classify — pass the saved file path to the Ollama pipeline
     classification = classifier.classify(absolute_file_path)
 
-    # 3. Extract Location
+    # 3. Extract Location — open from the saved file on disk (avoids re-reading HTTP body)
+    image = Image.open(absolute_file_path)
     location = extract_location(image)
+    image.close()
     
     # 4. Generate Complaint Text (Async queue)
     # Only skip generation for images that are genuinely non-civic (selfie, food,
@@ -195,13 +189,13 @@ async def create_complaint(
     
     return complaint_dict
 
-@router.get("/complaints", response_model=List[ComplaintResponse])
+@router.get("/complaints", response_model=list[ComplaintResponse])
 async def list_complaints(
     current_user: dict = Depends(get_current_user),
-    status: Optional[ComplaintStatus] = None,
-    department: Optional[str] = None,
+    status: ComplaintStatus | None = None,
+    department: str | None = None,
     skip: int = 0,
-    limit: Optional[int] = None,
+    limit: int | None = None,
 ):
     """
     Role-based complaint listing:

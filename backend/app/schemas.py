@@ -55,7 +55,7 @@ class GeoLocation(BaseModel):
     source: LocationSource
 
 class AIMetadata(BaseModel):
-    model_used: str = "CLIP-ViT-B/32"
+    model_used: str = "ollama"
     confidence_score: float = Field(..., ge=0.0, le=1.0)
     detected_department: str
     labels: list[str] = []

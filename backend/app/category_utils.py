@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import re
-from typing import Dict
 
 CANONICAL_CATEGORIES = [
     "Municipal - PWD (Roads)",
@@ -17,7 +16,7 @@ CANONICAL_CATEGORIES = [
     "Uncategorized",
 ]
 
-_ALIAS_TO_CANONICAL: Dict[str, str] = {
+_ALIAS_TO_CANONICAL: dict[str, str] = {
     "municipal - pwd (roads)": "Municipal - PWD (Roads)",
     "municipal - pwd roads": "Municipal - PWD (Roads)",
     "municipal - pwd (bridges)": "Municipal - PWD (Roads)",
@@ -34,7 +33,7 @@ _ALIAS_TO_CANONICAL: Dict[str, str] = {
     "uncategorized": "Uncategorized",
 }
 
-_SAFE_FOLDER_TO_CANONICAL = {
+_SAFE_FOLDER_TO_CANONICAL: dict[str, str] = {
     "Municipal_-_PWD_Roads": "Municipal - PWD (Roads)",
     "Municipal_-_Sanitation": "Municipal - Sanitation",
     "Municipal_-_Horticulture": "Municipal - Horticulture",

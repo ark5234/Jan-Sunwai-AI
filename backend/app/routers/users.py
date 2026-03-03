@@ -6,8 +6,7 @@ from app.auth import create_access_token, get_current_user
 from app.config import settings
 from passlib.context import CryptContext
 from bson import ObjectId
-from datetime import timedelta
-from datetime import datetime
+from datetime import datetime, timedelta
 
 router = APIRouter()
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
