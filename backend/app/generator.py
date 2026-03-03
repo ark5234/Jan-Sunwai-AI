@@ -2,6 +2,7 @@ import ollama
 import os
 import time
 from app.config import settings
+from app.llm_lock import ollama_lock
 
 
 def _wait_for_model_unload(client: ollama.Client, model_name: str, timeout: float = 30.0) -> None:
@@ -56,47 +57,48 @@ def generate_complaint(image_path, classification_result, user_details, location
         f"Complaint description:"
     )
 
-    try:
-        client = ollama.Client(host=settings.ollama_base_url)
+    with ollama_lock:
+        try:
+            client = ollama.Client(host=settings.ollama_base_url)
 
-        # Signal each vision model to unload, then WAIT until Ollama confirms
-        # it is no longer in the running-models list before loading llama3.2:1b.
-        for vision_model in dict.fromkeys(
-            m for m in [settings.vision_model, settings.mid_vision_model] if m
-        ):
+            # Signal each vision model to unload, then WAIT until Ollama confirms
+            # it is no longer in the running-models list before loading llama3.2:1b.
+            for vision_model in dict.fromkeys(
+                m for m in [settings.vision_model, settings.mid_vision_model] if m
+            ):
+                try:
+                    client.generate(model=vision_model, prompt="", keep_alive=0)
+                    _wait_for_model_unload(client, vision_model, timeout=30.0)
+                    print(f"[generator] {vision_model} unloaded, loading {settings.reasoning_model}")
+                except Exception:
+                    pass
+
+            response = client.generate(
+                model=settings.reasoning_model,
+                prompt=prompt,
+            )
+            if response is None:
+                raise RuntimeError("Reasoning model returned no response.")
+            raw = response["response"].strip()
+
+            # Strip meta-commentary the small model sometimes prepends
+            skip_prefixes = ("i'd", "i 'd", "here ", "note:", "sure", "certainly", "of course", "as requested")
+            lines = [
+                line for line in raw.splitlines()
+                if not line.strip().lower().startswith(skip_prefixes)
+            ]
+            clean = "\n".join(lines).strip()
+
+            # Unload reasoning model after use to free RAM for the next request
             try:
-                client.generate(model=vision_model, prompt="", keep_alive=0)
-                _wait_for_model_unload(client, vision_model, timeout=30.0)
-                print(f"[generator] {vision_model} unloaded, loading {settings.reasoning_model}")
+                client.generate(model=settings.reasoning_model, prompt="", keep_alive=0)
             except Exception:
                 pass
 
-        response = client.generate(
-            model=settings.reasoning_model,
-            prompt=prompt,
-        )
-        if response is None:
-            raise RuntimeError("Reasoning model returned no response.")
-        raw = response["response"].strip()
+            return clean if clean else raw
 
-        # Strip meta-commentary the small model sometimes prepends
-        skip_prefixes = ("i'd", "i 'd", "here ", "note:", "sure", "certainly", "of course", "as requested")
-        lines = [
-            line for line in raw.splitlines()
-            if not line.strip().lower().startswith(skip_prefixes)
-        ]
-        clean = "\n".join(lines).strip()
-
-        # Unload reasoning model after use to free RAM for the next request
-        try:
-            client.generate(model=settings.reasoning_model, prompt="", keep_alive=0)
-        except Exception:
-            pass
-
-        return clean if clean else raw
-
-    except Exception as e:
-        return (
-            f"Automated drafting failed ({str(e)}). "
-            f"Please describe the issue manually. Category: {category}."
-        )
+        except Exception as e:
+            return (
+                f"Automated drafting failed ({str(e)}). "
+                f"Please describe the issue manually. Category: {category}."
+            )

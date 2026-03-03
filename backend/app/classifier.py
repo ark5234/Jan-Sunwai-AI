@@ -9,6 +9,7 @@ from app.config import settings
 from app.category_utils import CANONICAL_CATEGORIES, canonicalize_label
 from app.rule_engine import classify_by_rules, parse_vision_text_to_payload
 from app.model_selector import select_vision_model
+from app.llm_lock import ollama_lock
 
 # Use an explicit client so the host URL comes from OLLAMA_BASE_URL config
 # (the module-level ollama.generate() defaults to localhost:11434 which
@@ -52,7 +53,10 @@ _KEYWORD_FALLBACK: list[tuple[list[str], str]] = [
       "pipe leak", "water gushing", "stagnant water", "blocked drain",
       "drainage problem"],
      "Municipal - Water & Sewerage"),
-    (["garbage", "trash", "waste", "litter", "dump", "rubbish", "overflowing bin"],
+    (["garbage", "trash", "waste", "litter", "dump", "rubbish", "overflowing bin",
+      "pile of", "large pile", "heap of", "plastic bottles", "plastic bottle",
+      "glass bottles", "broken glass", "broken bottles", "empty bottles",
+      "scattered", "junk", "filth", "filthy", "open dump", "roadside dump"],
      "Municipal - Sanitation"),
     (["fallen tree", "uprooted tree", "overgrown", "dead plant", "broken branch",
       "tree blocking"],
@@ -139,9 +143,14 @@ class CivicClassifier:
                 "raw_json": "",
             }
 
+        ollama_lock.acquire()
         try:
             image_bytes = _load_image_as_jpeg_bytes(image_path)
             client = _get_ollama_client()
+
+            # Track whether we've already tried a second vision model
+            _retry_used = False
+            _vision_was_garbage = False   # True when primary vision returned empty/garbage
 
             # ------------------------------------------------------------------
             # STEP 1 — Vision: Structured JSON description
@@ -382,6 +391,7 @@ class CivicClassifier:
                     print(f"[classifier] rebuilt description from structured fields: {description[:80]}")
                 else:
                     print(f"[classifier] WARNING: vision model returned uninterpretable output — description left empty")
+                    _vision_was_garbage = True
 
             print(f"[classifier] vision ({active_vision_model}): {description[:120]}")
 
@@ -427,6 +437,10 @@ class CivicClassifier:
             # ------------------------------------------------------------------
             raw_json_str = raw_vision_json  # default audit trail
 
+            if _vision_was_garbage:
+                print(f"[classifier] SKIPPING reasoning — vision was garbage, reasoning will hallucinate")
+                is_ambiguous = False   # prevent reasoning, let retry handle it
+
             if is_ambiguous and settings.reasoning_model and not settings.rule_engine_only:
                 print(f"[classifier] ambiguous → invoking {settings.reasoning_model}")
                 # Unload vision model before loading reasoning model to stay within VRAM budget
@@ -469,11 +483,16 @@ class CivicClassifier:
 
                 reasoning_canonical = canonicalize_label(reasoning_label)
 
+                print(f"[classifier] reasoning returned: label={reasoning_label!r}, "
+                      f"canonical={reasoning_canonical!r}, conf={reasoning_conf}")
+
                 # Use reasoning result if it's more confident than rule engine
                 if reasoning_canonical != "Uncategorized" or canonical == "Uncategorized":
                     canonical = reasoning_canonical
                     model_confidence = reasoning_conf
                     method = "reasoning"
+
+                print(f"[classifier] after reasoning: canonical={canonical!r}")
 
                 # Unload reasoning model to free VRAM after use
                 if settings.unload_after_reasoning:
@@ -487,6 +506,96 @@ class CivicClassifier:
                     method = "keyword_fallback"
                     model_confidence = min(model_confidence, 0.65)
 
+            # ------------------------------------------------------------------
+            # STEP 4 — Vision Retry: If still Uncategorized and there is an
+            #          alternate vision model we haven't tried yet, unload the
+            #          current model and get a second opinion.  A different
+            #          model often describes the same scene differently, which
+            #          lets the rule engine / keyword fallback succeed.
+            # ------------------------------------------------------------------
+            print(f"[classifier] pre-retry check: canonical={canonical!r}, "
+                  f"_retry_used={_retry_used}, active_model={active_vision_model!r}, "
+                  f"chain={_full_chain}")
+            if (canonical == "Uncategorized" or _vision_was_garbage) and not _retry_used:
+                _retry_used = True
+                _alternate_models = [
+                    m for m in _full_chain
+                    if m and m != active_vision_model
+                ]
+                print(f"[classifier] alternate_models={_alternate_models}")
+                if _alternate_models:
+                    alt_model = _alternate_models[0]
+                    print(f"[classifier] still Uncategorized after all steps — "
+                          f"retrying with alternate vision model: {alt_model}")
+                    self._unload_model(active_vision_model)
+
+                    try:
+                        _pool2 = ThreadPoolExecutor(max_workers=1)
+                        try:
+                            future2 = _pool2.submit(
+                                client.generate, **_build_kwargs(alt_model)
+                            )
+                            alt_response = future2.result(timeout=timeout_secs)
+                        except _FuturesTimeout:
+                            _pool2.shutdown(wait=False, cancel_futures=True)
+                            raise
+                        finally:
+                            try:
+                                _pool2.shutdown(wait=False)
+                            except Exception:
+                                pass
+
+                        alt_raw = alt_response["response"].strip()
+                        if alt_raw:
+                            if alt_model in _json_capable:
+                                try:
+                                    alt_payload = json.loads(alt_raw)
+                                except json.JSONDecodeError:
+                                    alt_payload = parse_vision_text_to_payload(alt_raw)
+                            else:
+                                alt_payload = parse_vision_text_to_payload(alt_raw)
+
+                            alt_payload.setdefault("description", "")
+                            alt_payload.setdefault("visible_objects", [])
+                            alt_payload.setdefault("primary_issue", "")
+                            alt_payload.setdefault("secondary_issue", "")
+                            alt_payload.setdefault("hazards", [])
+                            alt_payload.setdefault("setting", "")
+
+                            alt_desc = str(alt_payload.get("description", ""))
+                            print(f"[classifier] alt vision ({alt_model}): {alt_desc[:120]}")
+
+                            # Re-run rule engine on the alternate description
+                            alt_rule = classify_by_rules(alt_payload)
+                            alt_canonical = alt_rule["category"]
+                            print(f"[classifier] alt rule_engine: {alt_canonical} "
+                                  f"(conf={alt_rule['confidence']:.2f})")
+
+                            if alt_canonical != "Uncategorized":
+                                canonical = alt_canonical
+                                model_confidence = alt_rule["confidence"]
+                                method = f"vision_retry_{alt_rule['method']}"
+                                description = alt_desc or description
+                                vision_payload = alt_payload
+                                raw_json_str = alt_raw
+                                active_vision_model = alt_model
+                                rationale = f"retry_top_score={alt_rule['scores'].get(alt_canonical, 0):.1f}"
+                            else:
+                                # Try keyword fallback on the alt description
+                                alt_kw = _keyword_fallback(alt_desc)
+                                if alt_kw != "Uncategorized":
+                                    canonical = alt_kw
+                                    method = "vision_retry_keyword"
+                                    model_confidence = 0.60
+                                    description = alt_desc or description
+                                    vision_payload = alt_payload
+                                    raw_json_str = alt_raw
+                                    active_vision_model = alt_model
+                                    print(f"[classifier] alt keyword fallback: {alt_kw}")
+                    except Exception as retry_err:
+                        print(f"[classifier] vision retry failed ({retry_err}), "
+                              f"keeping Uncategorized")
+
             # Determine validity
             desc_lower = description.lower()
             is_non_civic = any(kw in desc_lower for kw in _NEGATIVE_KEYWORDS)
@@ -497,6 +606,7 @@ class CivicClassifier:
                 "label": description,
                 "confidence": model_confidence if is_valid else max(model_confidence * 0.5, 0.1),
                 "is_valid": is_valid,
+                "is_non_civic": is_non_civic,
                 "vision_description": description,
                 "vision_payload": vision_payload,
                 "raw_category": canonical,
@@ -513,9 +623,11 @@ class CivicClassifier:
                 "label": "Could not classify image",
                 "confidence": 0.0,
                 "is_valid": False,
+                "is_non_civic": False,
                 "error": str(e),
                 "method": "error",
                 "rationale": "",
                 "raw_json": "",
             }
-
+        finally:
+            ollama_lock.release()

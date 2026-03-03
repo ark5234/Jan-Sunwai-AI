@@ -49,6 +49,15 @@ _CATEGORY_RULES: Dict[str, List[Tuple[List[str], float]]] = {
         (["dirty toilet", "filthy toilet", "unclean toilet"], 2.5),
         (["debris", "scattered waste"], 1.5),
         (["stench", "foul smell", "unhygienic"], 1.0),
+        # Extra patterns the vision model produces for unsorted waste scenes
+        (["pile of", "large pile", "heap of"], 2.5),
+        (["plastic bottles", "plastic bottle", "glass bottles", "broken glass",
+          "broken bottles", "empty bottles"], 2.5),
+        (["scattered", "scattered items", "scattered objects", "scattered garbage"], 2.0),
+        (["junk", "clutter", "mess", "filth", "filthy"], 1.5),
+        (["waste on", "waste near", "waste around", "waste along"], 2.0),
+        (["open dump", "roadside dump", "illegal dump"], 3.0),
+        (["waste management", "garbage collection", "garbage clearance"], 1.5),
     ],
     "Municipal - Horticulture": [
         (["fallen tree", "uprooted tree", "collapsed tree"], 3.0),

@@ -68,7 +68,16 @@ async def analyze_complaint(
     location = extract_location(image)
     
     # 4. Generate Complaint Text (Async queue)
-    if classification.get("is_valid", True):
+    # Only skip generation for images that are genuinely non-civic (selfie, food,
+    # animal, train station, etc.) OR when the classifier itself errored out.
+    # An image that the classifier couldn't categorise (Uncategorized) may still
+    # be a real civic issue — generate a draft for it rather than hard-rejecting.
+    is_truly_non_civic = (
+        not classification.get("is_valid", True)
+        and classification.get("is_non_civic", False)
+    ) or classification.get("method") in ("non_civic_guard", "error")
+
+    if not is_truly_non_civic:
         job_id = await llm_queue_service.enqueue(absolute_file_path, classification, {"name": username}, location)
         result = await await_generation(job_id, settings.llm_inline_timeout_seconds)
         if result.get("status") == "completed":
@@ -83,11 +92,17 @@ async def analyze_complaint(
     else:
         job_id = None
         generation_status = "skipped"
-        generated_text = (
-            f"AI Analysis Result: {classification['label']}.\n\n"
-            "This image does not appear to show a valid civic grievance relevant to municipal authorities. "
-            "Please upload a photo of a civic issue (e.g., pothole, garbage, broken light) to generate a formal complaint."
-        )
+        if classification.get("method") == "error":
+            generated_text = (
+                "Image analysis failed — the AI model could not process this photo. "
+                "Please try again or describe the issue manually below."
+            )
+        else:
+            generated_text = (
+                f"AI Analysis Result: {classification['label']}.\n\n"
+                "This image does not appear to show a valid civic grievance relevant to municipal authorities. "
+                "Please upload a photo of a civic issue (e.g., pothole, garbage, broken light) to generate a formal complaint."
+            )
     
     return {
         "classification": classification,

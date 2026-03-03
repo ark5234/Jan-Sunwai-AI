@@ -33,8 +33,10 @@ class Settings:
     reasoning_model: str = os.getenv("REASONING_MODEL", "llama3.2:1b")
     # Per-model wall-clock timeout for the vision generate() call (seconds).
     # If a model exceeds this, it is unloaded and the next tier is tried.
-    vision_timeout_seconds: float = float(os.getenv("VISION_TIMEOUT_SECONDS", "90"))
-    llm_inline_timeout_seconds: float = float(os.getenv("LLM_INLINE_TIMEOUT_SECONDS", "8"))
+    # 240s default accommodates cold-start on low-VRAM GPUs (e.g. RTX 3050 4 GB)
+    # where model loading + inference can take 120-180s.
+    vision_timeout_seconds: float = float(os.getenv("VISION_TIMEOUT_SECONDS", "240"))
+    llm_inline_timeout_seconds: float = float(os.getenv("LLM_INLINE_TIMEOUT_SECONDS", "15"))
     llm_queue_workers: int = int(os.getenv("LLM_QUEUE_WORKERS", "2"))
     default_page_size: int = int(os.getenv("DEFAULT_PAGE_SIZE", "25"))
     max_page_size: int = int(os.getenv("MAX_PAGE_SIZE", "100"))
