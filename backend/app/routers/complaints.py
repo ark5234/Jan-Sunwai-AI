@@ -2,7 +2,7 @@ import asyncio
 import csv
 import io
 
-from fastapi import APIRouter, File, UploadFile, HTTPException, Body, Depends
+from fastapi import APIRouter, File, Form, UploadFile, HTTPException, Body, Depends
 from fastapi.responses import StreamingResponse
 from app.classifier import CivicClassifier
 from app.geotagging import extract_location
