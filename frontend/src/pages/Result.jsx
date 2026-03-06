@@ -5,23 +5,14 @@ import Map, { Marker as MapMarker, NavigationControl } from 'react-map-gl/maplib
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { useAuth } from '../context/AuthContext';
 
-// Official Government of India-compliant map via Ola Maps (free tier).
-// Get a key at https://olamaps.io → add VITE_OLA_MAPS_API_KEY to frontend/.env
-const _OLA_KEY = import.meta.env.VITE_OLA_MAPS_API_KEY;
-const _MAP_STYLE = _OLA_KEY
-  ? `https://api.olamaps.io/tiles/vector/v1/styles/default-light-standard/style.json?api_key=${_OLA_KEY}`
-  : {
-      version: 8,
-      sources: {
-        osm: {
-          type: 'raster',
-          tiles: ['https://tile.openstreetmap.org/{z}/{x}/{y}.png'],
-          tileSize: 256,
-          attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-        },
-      },
-      layers: [{ id: 'osm', type: 'raster', source: 'osm' }],
-    };
+// Map tile source:
+// - Set VITE_MAPPLS_API_KEY in frontend/.env for official GoI-compliant
+//   MapmyIndia/Mappls tiles (free tier at https://developer.mappls.com)
+// - Falls back to OpenFreeMap (free, no key required, good India coverage)
+const _MAPPLS_KEY = import.meta.env.VITE_MAPPLS_API_KEY;
+const _MAP_STYLE = _MAPPLS_KEY
+  ? `https://apis.mappls.com/advancedmaps/v1/${_MAPPLS_KEY}/map_sdk_library/`
+  : 'https://tiles.openfreemap.org/styles/liberty';
 import axios from 'axios';
 
 
