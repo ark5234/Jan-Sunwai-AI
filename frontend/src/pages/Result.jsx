@@ -1,25 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useLocation, Link, useNavigate } from 'react-router-dom';
 import { MapPin, FileText, CheckCircle, AlertTriangle, ArrowLeft, Shield, Copy, Edit3, Navigation, Search, RefreshCw, Map as MapIcon, X } from 'lucide-react';
-import { MapContainer, TileLayer, Marker, useMapEvents } from 'react-leaflet';
-import L from 'leaflet';
-import 'leaflet/dist/leaflet.css';
+import Map, { Marker as MapMarker, NavigationControl } from 'react-map-gl/maplibre';
+import 'maplibre-gl/dist/maplibre-gl.css';
 import { useAuth } from '../context/AuthContext';
 import axios from 'axios';
 
-// Fix Leaflet default marker icon (broken in Vite/webpack builds)
-delete L.Icon.Default.prototype._getIconUrl;
-L.Icon.Default.mergeOptions({
-  iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
-  iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
-  shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
-});
-
-// Leaflet click-handler component (must be inside MapContainer)
-function MapClickHandler({ onPin }) {
-  useMapEvents({ click: (e) => onPin(e.latlng.lat, e.latlng.lng) });
-  return null;
-}
 
 export default function Result() {
   const { state } = useLocation();
@@ -85,6 +71,7 @@ export default function Result() {
   const [showMap, setShowMap] = useState(false);
   const [pinPos, setPinPos] = useState(null); // {lat, lng}
   const [reverseGeocoding, setReverseGeocoding] = useState(false);
+  const mapRef = useRef(null);
 
   const handleMapPin = async (lat, lng) => {
     setPinPos({ lat, lng });
@@ -92,6 +79,7 @@ export default function Result() {
     setManualLon(lng.toFixed(6));
     setLocationSource('manual');
     setReverseGeocoding(true);
+    mapRef.current?.flyTo({ center: [lng, lat], zoom: 15, duration: 900 });
     try {
       const res = await fetch(
         `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json&addressdetails=1`,
@@ -452,19 +440,28 @@ export default function Result() {
                           </span>
                         )}
                       </div>
-                      <MapContainer
-                        center={pinPos ? [pinPos.lat, pinPos.lng] : [20.5937, 78.9629]}
-                        zoom={pinPos ? 15 : 5}
+                      <Map
+                        ref={mapRef}
+                        mapStyle="https://basemaps.cartocdn.com/gl/positron-gl-style/style.json"
+                        initialViewState={{
+                          longitude: 78.9629,
+                          latitude: 20.5937,
+                          zoom: 4,
+                        }}
+                        maxBounds={[[67.0, 6.0], [98.0, 38.0]]}
                         style={{ height: '280px', width: '100%' }}
-                        scrollWheelZoom={true}
+                        cursor="crosshair"
+                        onClick={(e) => handleMapPin(e.lngLat.lat, e.lngLat.lng)}
                       >
-                        <TileLayer
-                          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-                        />
-                        <MapClickHandler onPin={handleMapPin} />
-                        {pinPos && <Marker position={[pinPos.lat, pinPos.lng]} />}
-                      </MapContainer>
+                        <NavigationControl position="top-right" />
+                        {pinPos && (
+                          <MapMarker
+                            latitude={pinPos.lat}
+                            longitude={pinPos.lng}
+                            color="#4f46e5"
+                          />
+                        )}
+                      </Map>
                     </div>
                   )}
 
