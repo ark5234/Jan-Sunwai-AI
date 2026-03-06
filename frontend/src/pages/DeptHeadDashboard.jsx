@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { FileText, MapPin, Calendar, Filter, Search } from 'lucide-react';
+import { FileText, MapPin, Calendar, Filter, ArrowRightLeft, StickyNote, ChevronDown, ChevronUp } from 'lucide-react';
 import axios from 'axios';
+import SLABadge from '../components/SLABadge';
+import ComplaintComments from '../components/ComplaintComments';
 
 const DeptHeadDashboard = () => {
   const { user } = useAuth();
@@ -10,6 +12,24 @@ const DeptHeadDashboard = () => {
   const [error, setError] = useState(null);
   const [statusFilter, setStatusFilter] = useState('all');
   const [updateError, setUpdateError] = useState(null);
+  const [transferPanel, setTransferPanel] = useState({});
+
+  const [notePanel, setNotePanel] = useState({});
+  const [noteText, setNoteText] = useState({});
+
+  const DEPARTMENTS = [
+    'Municipal - PWD (Roads)',
+    'Municipal - Sanitation',
+    'Municipal - Horticulture',
+    'Municipal - Street Lighting',
+    'Municipal - Water & Sewerage',
+    'Utility - Power (DISCOM)',
+    'State Transport',
+    'Pollution Control Board',
+    'Police - Local Law Enforcement',
+    'Police - Traffic',
+    'Uncategorized',
+  ];
 
   useEffect(() => {
     if (user?.access_token) {
@@ -59,12 +79,69 @@ const DeptHeadDashboard = () => {
           }
         }
       );
-      // Refresh the list
       fetchDepartmentComplaints();
     } catch (err) {
       console.error('Error updating status:', err);
       setUpdateError('Failed to update status. Please try again.');
       setTimeout(() => setUpdateError(null), 5000);
+    }
+  };
+
+  const submitNote = async (complaintId) => {
+    const note = noteText[complaintId]?.trim();
+    if (!note) return;
+    try {
+      await axios.post(
+        `http://localhost:8000/complaints/${complaintId}/notes`,
+        { note },
+        { headers: { Authorization: `Bearer ${user.access_token}`, 'Content-Type': 'application/json' } }
+      );
+      setNoteText(prev => ({ ...prev, [complaintId]: '' }));
+      fetchDepartmentComplaints();
+    } catch (err) {
+      setUpdateError(err.response?.data?.detail || 'Failed to save note.');
+      setTimeout(() => setUpdateError(null), 5000);
+    }
+  };
+
+  const openTransferPanel = (complaintId, currentDept) => {
+    const defaultDept = DEPARTMENTS.find(d => d !== currentDept) || DEPARTMENTS[0];
+    setTransferPanel(prev => ({
+      ...prev,
+      [complaintId]: { dept: defaultDept, reason: '' }
+    }));
+  };
+
+  const closeTransferPanel = (complaintId) => {
+    setTransferPanel(prev => {
+      const next = { ...prev };
+      delete next[complaintId];
+      return next;
+    });
+  };
+
+  const transferComplaint = async (complaintId) => {
+    const panel = transferPanel[complaintId];
+    if (!panel?.dept) return;
+    setUpdateError(null);
+    try {
+      await axios.patch(
+        `http://localhost:8000/complaints/${complaintId}/transfer`,
+        { new_department: panel.dept, reason: panel.reason || undefined },
+        {
+          headers: {
+            Authorization: `Bearer ${user.access_token}`,
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+      closeTransferPanel(complaintId);
+      fetchDepartmentComplaints();
+    } catch (err) {
+      console.error('Error transferring complaint:', err);
+      const detail = err.response?.data?.detail || 'Failed to transfer complaint. Please try again.';
+      setUpdateError(detail);
+      setTimeout(() => setUpdateError(null), 6000);
     }
   };
 
@@ -196,9 +273,19 @@ const DeptHeadDashboard = () => {
                         <h3 className="text-base sm:text-lg font-medium text-gray-900 truncate">
                           {complaint.department}
                         </h3>
-                        <span className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(complaint.status)} whitespace-nowrap inline-block self-start sm:self-center`}>
-                          {complaint.status}
-                        </span>
+                        <div className="flex items-center gap-2 flex-wrap self-start sm:self-center">
+                          {complaint.priority && (
+                            <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${
+                              { Critical: 'bg-red-100 text-red-700', High: 'bg-orange-100 text-orange-700',
+                                Medium: 'bg-yellow-100 text-yellow-700', Low: 'bg-green-100 text-green-700' }
+                              [complaint.priority] || 'bg-slate-100 text-slate-600'
+                            }`}>{complaint.priority}</span>
+                          )}
+                          <span className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(complaint.status)} whitespace-nowrap`}>
+                            {complaint.status}
+                          </span>
+                          <SLABadge createdAt={complaint.created_at} department={complaint.department} status={complaint.status} />
+                        </div>
                       </div>
                       <p className="mt-2 text-sm text-gray-600">
                         {complaint.description}
@@ -218,7 +305,46 @@ const DeptHeadDashboard = () => {
                           Confidence: {(complaint.ai_metadata.confidence_score * 100).toFixed(1)}%
                         </div>
                       )}
-                      
+
+                      {/* Dept notes display */}
+                      {complaint.dept_notes?.length > 0 && (
+                        <div className="mt-2 space-y-1">
+                          {complaint.dept_notes.map((n, i) => (
+                            <div key={i} className="text-xs bg-purple-50 border border-purple-100 rounded px-2 py-1">
+                              <span className="font-medium text-purple-700">{n.created_by}: </span>
+                              <span className="text-slate-600">{n.note}</span>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+
+                      {/* Add note toggle */}
+                      <button
+                        onClick={() => setNotePanel(prev => ({ ...prev, [complaint._id]: !prev[complaint._id] }))}
+                        className="mt-2 inline-flex items-center gap-1 text-xs text-purple-600 hover:text-purple-800"
+                      >
+                        <StickyNote size={12} />
+                        {notePanel[complaint._id] ? 'Hide note' : 'Add internal note'}
+                        {notePanel[complaint._id] ? <ChevronUp size={11} /> : <ChevronDown size={11} />}
+                      </button>
+                      {notePanel[complaint._id] && (
+                        <div className="mt-1 flex gap-2">
+                          <input
+                            value={noteText[complaint._id] || ''}
+                            onChange={e => setNoteText(prev => ({ ...prev, [complaint._id]: e.target.value }))}
+                            placeholder="Internal note (not visible to citizen)…"
+                            maxLength={1000}
+                            className="flex-1 text-xs border border-slate-200 rounded px-2 py-1.5 focus:outline-none focus:ring-1 focus:ring-purple-400"
+                          />
+                          <button
+                            onClick={() => submitNote(complaint._id)}
+                            disabled={!noteText[complaint._id]?.trim()}
+                            className="px-3 py-1.5 bg-purple-600 text-white text-xs rounded hover:bg-purple-700 disabled:opacity-50"
+                          >Save</button>
+                        </div>
+                      )}
+                      <ComplaintComments complaintId={complaint._id} currentRole="dept_head" />
+
                       {/* Action Buttons */}
                       <div className="mt-4 flex flex-wrap gap-2">
                         {complaint.status === 'Open' && (
@@ -244,6 +370,59 @@ const DeptHeadDashboard = () => {
                           >
                             Reject
                           </button>
+                        )}
+                        {!transferPanel[complaint._id] ? (
+                          <button
+                            onClick={() => openTransferPanel(complaint._id, complaint.department)}
+                            className="px-3 py-1.5 bg-amber-500 text-white text-sm rounded hover:bg-amber-600 touch-manipulation flex items-center gap-1"
+                          >
+                            <ArrowRightLeft className="h-3.5 w-3.5" />
+                            Transfer
+                          </button>
+                        ) : (
+                          <div className="w-full mt-2 p-3 bg-amber-50 border border-amber-200 rounded-lg">
+                            <p className="text-xs font-medium text-amber-800 mb-2">Transfer to department:</p>
+                            <select
+                              value={transferPanel[complaint._id].dept}
+                              onChange={(e) =>
+                                setTransferPanel(prev => ({
+                                  ...prev,
+                                  [complaint._id]: { ...prev[complaint._id], dept: e.target.value }
+                                }))
+                              }
+                              className="w-full text-sm border-gray-300 rounded-md mb-2"
+                            >
+                              {DEPARTMENTS
+                                .filter(d => d !== complaint.department)
+                                .map(d => <option key={d} value={d}>{d}</option>)}
+                            </select>
+                            <input
+                              type="text"
+                              placeholder="Reason for transfer (optional)"
+                              value={transferPanel[complaint._id].reason}
+                              onChange={(e) =>
+                                setTransferPanel(prev => ({
+                                  ...prev,
+                                  [complaint._id]: { ...prev[complaint._id], reason: e.target.value }
+                                }))
+                              }
+                              className="w-full text-sm border-gray-300 rounded-md px-2 py-1.5 mb-2 border"
+                            />
+                            <div className="flex gap-2">
+                              <button
+                                onClick={() => transferComplaint(complaint._id)}
+                                className="px-3 py-1.5 bg-amber-600 text-white text-sm rounded hover:bg-amber-700"
+                              >
+                                Confirm Transfer
+                              </button>
+                              <button
+                                onClick={() => closeTransferPanel(complaint._id)}
+                                className="px-3 py-1.5 bg-gray-200 text-gray-700 text-sm rounded hover:bg-gray-300"
+                              >
+                                Cancel
+                              </button>
+                            </div>
+                          </div>
                         )}
                       </div>
                     </div>

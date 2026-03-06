@@ -1,8 +1,80 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { Link } from 'react-router-dom';
-import { FileText, MapPin, Calendar, AlertCircle, PlusCircle, Clock, CheckCircle2 } from 'lucide-react';
+import { FileText, MapPin, Calendar, AlertCircle, PlusCircle, Clock, CheckCircle2, Star, AlertTriangle } from 'lucide-react';
 import axios from 'axios';
+import SLABadge from '../components/SLABadge';
+import ComplaintComments from '../components/ComplaintComments';
+
+// Inline star-rating feedback widget
+function FeedbackWidget({ complaintId, token, onSubmitted }) {
+  const [rating, setRating] = useState(0);
+  const [hover, setHover] = useState(0);
+  const [comment, setComment] = useState('');
+  const [submitting, setSubmitting] = useState(false);
+  const [done, setDone] = useState(false);
+
+  const handleSubmit = async () => {
+    if (!rating) return;
+    setSubmitting(true);
+    try {
+      await axios.post(
+        `http://localhost:8000/complaints/${complaintId}/feedback`,
+        { rating, comment: comment.trim() || undefined },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      setDone(true);
+      onSubmitted?.();
+    } catch (e) {
+      alert(e.response?.data?.detail || 'Failed to submit feedback.');
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  if (done)
+    return (
+      <p className="text-xs text-green-600 mt-2 flex items-center gap-1">
+        <CheckCircle2 size={13} /> Thank you for your feedback!
+      </p>
+    );
+
+  return (
+    <div className="mt-3 p-3 bg-green-50 rounded-lg border border-green-200">
+      <p className="text-xs font-semibold text-green-800 mb-2">Rate this resolution</p>
+      <div className="flex gap-1 mb-2">
+        {[1, 2, 3, 4, 5].map((s) => (
+          <button
+            key={s}
+            onMouseEnter={() => setHover(s)}
+            onMouseLeave={() => setHover(0)}
+            onClick={() => setRating(s)}
+            className="focus:outline-none"
+          >
+            <Star
+              size={20}
+              className={s <= (hover || rating) ? 'text-yellow-400 fill-yellow-400' : 'text-slate-300'}
+            />
+          </button>
+        ))}
+      </div>
+      <input
+        value={comment}
+        onChange={(e) => setComment(e.target.value)}
+        placeholder="Optional comment…"
+        maxLength={500}
+        className="w-full text-xs border border-slate-200 rounded px-2 py-1.5 mb-2 focus:outline-none focus:ring-1 focus:ring-green-400"
+      />
+      <button
+        onClick={handleSubmit}
+        disabled={!rating || submitting}
+        className="px-3 py-1.5 bg-green-600 text-white text-xs font-medium rounded hover:bg-green-700 disabled:opacity-50"
+      >
+        {submitting ? 'Submitting…' : 'Submit Feedback'}
+      </button>
+    </div>
+  );
+}
 
 const CitizenDashboard = () => {
   const { user } = useAuth();
@@ -166,9 +238,25 @@ const CitizenDashboard = () => {
                         <h3 className="text-base sm:text-lg font-medium text-gray-900 truncate">
                           {complaint.department}
                         </h3>
-                        <span className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(complaint.status)} whitespace-nowrap inline-block self-start sm:self-center`}>
-                          {complaint.status}
-                        </span>
+                        <div className="flex items-center gap-2 flex-wrap self-start sm:self-center">
+                          {complaint.priority && (
+                            <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${
+                              { Critical: 'bg-red-100 text-red-700', High: 'bg-orange-100 text-orange-700',
+                                Medium: 'bg-yellow-100 text-yellow-700', Low: 'bg-green-100 text-green-700' }
+                              [complaint.priority] || 'bg-slate-100 text-slate-600'
+                            }`}>
+                              {complaint.priority}
+                            </span>
+                          )}
+                          <span className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(complaint.status)} whitespace-nowrap`}>
+                            {complaint.status}
+                          </span>
+                          <SLABadge
+                            createdAt={complaint.created_at}
+                            department={complaint.department}
+                            status={complaint.status}
+                          />
+                        </div>
                       </div>
                       <p className="mt-2 text-sm text-gray-600 line-clamp-3">
                         {complaint.description}
@@ -188,6 +276,33 @@ const CitizenDashboard = () => {
                           Confidence: {(complaint.ai_metadata.confidence_score * 100).toFixed(1)}%
                         </div>
                       )}
+                      {complaint.is_duplicate && (
+                        <div className="mt-2 flex items-center gap-1 text-xs text-amber-600">
+                          <AlertTriangle size={12} />
+                          Possible duplicate of an existing complaint
+                        </div>
+                      )}
+                      {/* Star feedback for resolved complaints */}
+                      {complaint.status === 'Resolved' && !complaint.feedback && (
+                        <FeedbackWidget
+                          complaintId={complaint._id}
+                          token={user.access_token}
+                          onSubmitted={fetchMyComplaints}
+                        />
+                      )}
+                      {complaint.feedback && (
+                        <div className="mt-2 flex items-center gap-1">
+                          {[1,2,3,4,5].map(s => (
+                            <Star key={s} size={14}
+                              className={s <= complaint.feedback.rating ? 'text-yellow-400 fill-yellow-400' : 'text-slate-200'}
+                            />
+                          ))}
+                          {complaint.feedback.comment && (
+                            <span className="text-xs text-slate-500 ml-1">"{complaint.feedback.comment}"</span>
+                          )}
+                        </div>
+                      )}
+                      <ComplaintComments complaintId={complaint._id} currentRole="citizen" />
                     </div>
                     {complaint.image_url && (
                       <div className="sm:ml-4 shrink-0">
