@@ -1,5 +1,5 @@
 from pydantic import BaseModel, EmailStr, Field
-from typing import Optional
+from typing import Optional, List
 from enum import Enum
 from datetime import datetime
 
@@ -43,6 +43,12 @@ class ComplaintStatus(str, Enum):
     RESOLVED = "Resolved"
     REJECTED = "Rejected"
 
+class PriorityLevel(str, Enum):
+    LOW = "Low"
+    MEDIUM = "Medium"
+    HIGH = "High"
+    CRITICAL = "Critical"
+
 class LocationSource(str, Enum):
     EXIF = "exif"           # Extracted from image metadata
     DEVICE = "device"       # Browser/Phone GPS at upload time
@@ -84,10 +90,17 @@ class ComplaintInDB(ComplaintCreate):
     authority_id: Optional[str] = Field(None, description="ID of the Authority Organization")
     routing_confidence: Optional[float] = Field(None, ge=0.0, le=1.0)
     escalation_parent_authority_id: Optional[str] = None
+    priority: Optional[PriorityLevel] = PriorityLevel.MEDIUM
     status: ComplaintStatus = ComplaintStatus.OPEN
     created_at: datetime = Field(default_factory=datetime.utcnow)
     updated_at: datetime = Field(default_factory=datetime.utcnow)
-    status_history: list[StatusHistoryItem] = [] # To track changes
+    status_history: list[StatusHistoryItem] = []
+    feedback: Optional[dict] = None
+    dept_notes: List[dict] = []
+    comments: List[dict] = []
+    escalated: bool = False
+    escalated_at: Optional[datetime] = None
+    language: Optional[str] = "English"
 
     class Config:
         populate_by_name = True
@@ -96,25 +109,61 @@ class ComplaintInDB(ComplaintCreate):
 class ComplaintResponse(ComplaintBase):
     id: Optional[str] = Field(None, alias="_id")
     user_id: str
-    # Make everything from Create optional for legacy support
     image_url: Optional[str] = None
     location: Optional[GeoLocation] = None
     ai_metadata: Optional[AIMetadata] = None
-    
+
     assigned_to: Optional[str] = None
     authority_id: Optional[str] = None
     routing_confidence: Optional[float] = None
     escalation_parent_authority_id: Optional[str] = None
+    priority: Optional[PriorityLevel] = None
     status: ComplaintStatus
     created_at: datetime
     updated_at: Optional[datetime] = None
     status_history: list[StatusHistoryItem] = []
+    feedback: Optional[dict] = None
+    dept_notes: List[dict] = []
+    comments: List[dict] = []
+    escalated: bool = False
+    escalated_at: Optional[datetime] = None
+    language: Optional[str] = "English"
 
     class Config:
         populate_by_name = True
 
 
 # --- Notification Schemas ---
+
+class TransferRequest(BaseModel):
+    new_department: str = Field(..., description="The department to transfer this complaint to")
+    reason: Optional[str] = Field(None, max_length=500, description="Reason for the transfer (optional)")
+
+
+class FeedbackRequest(BaseModel):
+    rating: int = Field(..., ge=1, le=5, description="Rating from 1 to 5 stars")
+    comment: Optional[str] = Field(None, max_length=500)
+
+
+class DeptNoteRequest(BaseModel):
+    note: str = Field(..., min_length=1, max_length=1000)
+
+
+class CommentRequest(BaseModel):
+    text: str = Field(..., min_length=1, max_length=1000)
+
+
+class BulkStatusUpdate(BaseModel):
+    complaint_ids: List[str] = Field(..., min_length=1)
+    status: ComplaintStatus
+    note: Optional[str] = None
+
+
+class BulkTransfer(BaseModel):
+    complaint_ids: List[str] = Field(..., min_length=1)
+    new_department: str
+    reason: Optional[str] = None
+
 
 class NotificationType(str, Enum):
     STATUS_CHANGE = "status_change"
