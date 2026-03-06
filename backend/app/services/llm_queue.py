@@ -14,6 +14,7 @@ class LLMJob:
     classification: dict[str, Any]
     user_details: dict[str, Any]
     location_details: dict[str, Any]
+    language: str = "en"
 
 
 class LLMQueueService:
@@ -45,6 +46,7 @@ class LLMQueueService:
                     job.classification,
                     job.user_details,
                     job.location_details,
+                    job.language,
                 )
                 self.results[job.job_id] = {
                     "status": "completed",
@@ -58,7 +60,7 @@ class LLMQueueService:
             finally:
                 self.queue.task_done()
 
-    async def enqueue(self, image_path: str, classification: dict[str, Any], user_details: dict[str, Any], location_details: dict[str, Any]) -> str:
+    async def enqueue(self, image_path: str, classification: dict[str, Any], user_details: dict[str, Any], location_details: dict[str, Any], language: str = "en") -> str:
         job_id = str(uuid.uuid4())
         self.results[job_id] = {"status": "queued"}
         await self.queue.put(
@@ -68,6 +70,7 @@ class LLMQueueService:
                 classification=classification,
                 user_details=user_details,
                 location_details=location_details,
+                language=language,
             )
         )
         return job_id

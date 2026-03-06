@@ -27,7 +27,7 @@ def _wait_for_model_unload(client: ollama.Client, model_name: str, timeout: floa
         time.sleep(0.5)
 
 
-def generate_complaint(image_path, classification_result, user_details, location_details):
+def generate_complaint(image_path, classification_result, user_details, location_details, language: str = "en"):
     """
     Generates a civic grievance description using the reasoning model (llama3.2:1b).
 
@@ -44,7 +44,26 @@ def generate_complaint(image_path, classification_result, user_details, location
     )
     address = location_details.get("address", "Location not specified")
 
+    # Language instruction injected into the prompt
+    _LANG_NAMES = {
+        "en": None,  # no extra instruction needed for English
+        "hi": "Hindi (हिंदी)",
+        "mr": "Marathi (मराठी)",
+        "ta": "Tamil (தமிழ்)",
+        "te": "Telugu (తెలుగు)",
+        "kn": "Kannada (ಕನ್ನಡ)",
+        "bn": "Bengali (বাংলা)",
+        "gu": "Gujarati (ગુજરાતી)",
+    }
+    lang_name = _LANG_NAMES.get(language)
+    lang_instruction = (
+        f"IMPORTANT: Write the entire complaint description in {lang_name} script only. "
+        f"Do NOT use English. Use natural, formal {lang_name.split(' ')[0]} as used in official government complaints.\n\n"
+        if lang_name else ""
+    )
+
     prompt = (
+        f"{lang_instruction}"
         f"[COMPLAINT FORM FIELD — plain text only, no letter format]\n\n"
         f"Issue observed: {description}\n"
         f"Department: {category}\n"

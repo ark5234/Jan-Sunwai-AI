@@ -1,8 +1,25 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, Link, useNavigate } from 'react-router-dom';
-import { MapPin, FileText, CheckCircle, AlertTriangle, ArrowLeft, Shield, Copy, Edit3, Navigation, Search, RefreshCw } from 'lucide-react';
+import { MapPin, FileText, CheckCircle, AlertTriangle, ArrowLeft, Shield, Copy, Edit3, Navigation, Search, RefreshCw, Map as MapIcon, X } from 'lucide-react';
+import { MapContainer, TileLayer, Marker, useMapEvents } from 'react-leaflet';
+import L from 'leaflet';
+import 'leaflet/dist/leaflet.css';
 import { useAuth } from '../context/AuthContext';
 import axios from 'axios';
+
+// Fix Leaflet default marker icon (broken in Vite/webpack builds)
+delete L.Icon.Default.prototype._getIconUrl;
+L.Icon.Default.mergeOptions({
+  iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
+  iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
+  shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
+});
+
+// Leaflet click-handler component (must be inside MapContainer)
+function MapClickHandler({ onPin }) {
+  useMapEvents({ click: (e) => onPin(e.latlng.lat, e.latlng.lng) });
+  return null;
+}
 
 export default function Result() {
   const { state } = useLocation();
@@ -65,6 +82,30 @@ export default function Result() {
   const [manualLon, setManualLon] = useState('');
   const [locationSource, setLocationSource] = useState(hasExifLocation ? 'exif' : 'manual');
   const [detectingGPS, setDetectingGPS] = useState(false);
+  const [showMap, setShowMap] = useState(false);
+  const [pinPos, setPinPos] = useState(null); // {lat, lng}
+  const [reverseGeocoding, setReverseGeocoding] = useState(false);
+
+  const handleMapPin = async (lat, lng) => {
+    setPinPos({ lat, lng });
+    setManualLat(lat.toFixed(6));
+    setManualLon(lng.toFixed(6));
+    setLocationSource('manual');
+    setReverseGeocoding(true);
+    try {
+      const res = await fetch(
+        `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json&addressdetails=1`,
+        { headers: { 'User-Agent': 'JanSunwaiAI/1.0' } }
+      );
+      if (res.ok) {
+        const data = await res.json();
+        setManualAddress(data.display_name || `${lat.toFixed(4)}, ${lng.toFixed(4)}`);
+      }
+    } catch {
+      setManualAddress(`${lat.toFixed(4)}, ${lng.toFixed(4)}`);
+    }
+    setReverseGeocoding(false);
+  };
 
   // Determine the effective location
   const getEffectiveLocation = () => {
@@ -221,6 +262,7 @@ export default function Result() {
           classification,
           location: result?.location || {},
           image_url,
+          language,
         },
         { headers: { Authorization: `Bearer ${user?.access_token}` } }
       );
@@ -342,35 +384,38 @@ export default function Result() {
             <div className="p-5">
               {hasExifLocation ? (
                 /* EXIF data found — show read-only */
-                <div className="space-y-2">
-                  <div className="flex items-center gap-2 text-xs text-green-700 bg-green-50 p-2 rounded border border-green-200">
-                    <CheckCircle className="w-3.5 h-3.5 shrink-0" />
-                    Location extracted from image GPS data
+                <div className="flex items-start gap-3 p-3.5 bg-green-50 rounded-xl border border-green-200">
+                  <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center shrink-0 mt-0.5">
+                    <CheckCircle className="w-4 h-4 text-green-600" />
                   </div>
-                  <p className="text-sm text-gray-800">{location.address}</p>
-                  <p className="text-xs text-gray-400">
-                    {location.coordinates.lat.toFixed(4)}°N, {location.coordinates.lon.toFixed(4)}°E
-                  </p>
+                  <div className="min-w-0">
+                    <p className="text-xs font-semibold text-green-700 mb-0.5">GPS extracted from photo</p>
+                    <p className="text-sm text-gray-800 leading-snug">{location.address}</p>
+                    <p className="text-xs text-gray-400 font-mono mt-1">
+                      {location.coordinates.lat.toFixed(6)}, {location.coordinates.lon.toFixed(6)}
+                    </p>
+                  </div>
                 </div>
               ) : (
                 /* No EXIF — manual entry */
                 <div className="space-y-4">
-                  <div className="flex items-center gap-2 text-xs text-amber-700 bg-amber-50 p-2.5 rounded border border-amber-200">
-                    <AlertTriangle className="w-3.5 h-3.5 shrink-0" />
-                    No GPS data in image. Please provide the location of the issue.
+                  {/* Warning banner */}
+                  <div className="flex items-center gap-2.5 text-sm text-amber-800 bg-amber-50 px-4 py-3 rounded-xl border border-amber-200">
+                    <AlertTriangle className="w-4 h-4 shrink-0 text-amber-500" />
+                    <span className="text-xs font-medium">No GPS data in photo — please pin the location below.</span>
                   </div>
 
-                  {/* Quick actions */}
+                  {/* GPS button */}
                   <button
                     type="button"
                     onClick={handleDetectLocation}
                     disabled={detectingGPS}
-                    className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded border-2 border-dashed border-primary/30 text-primary text-sm font-medium hover:bg-primary/5 hover:border-primary/50 transition disabled:opacity-50"
+                    className="w-full flex items-center justify-center gap-2.5 px-4 py-3.5 rounded-xl bg-gradient-to-r from-primary to-indigo-600 text-white text-sm font-semibold shadow-sm hover:shadow-md hover:from-indigo-700 hover:to-indigo-700 active:scale-[0.98] transition-all duration-150 disabled:opacity-60 disabled:cursor-not-allowed"
                   >
                     {detectingGPS ? (
                       <>
-                        <Navigation className="w-4 h-4 animate-pulse" />
-                        Detecting location...
+                        <Navigation className="w-4 h-4 animate-spin" />
+                        Detecting your location…
                       </>
                     ) : (
                       <>
@@ -379,62 +424,104 @@ export default function Result() {
                       </>
                     )}
                   </button>
-                  
-                  <div className="relative">
-                    <div className="absolute inset-0 flex items-center">
-                      <div className="w-full border-t border-gray-200"></div>
+
+                  {/* Map toggle button */}
+                  <button
+                    type="button"
+                    onClick={() => setShowMap(v => !v)}
+                    className={`w-full flex items-center justify-center gap-2.5 px-4 py-3 rounded-xl border text-sm font-semibold transition-all duration-150 ${
+                      showMap
+                        ? 'bg-indigo-50 border-indigo-300 text-indigo-700'
+                        : 'bg-white border-gray-200 text-gray-700 hover:border-indigo-300 hover:text-indigo-700 hover:bg-indigo-50'
+                    }`}
+                  >
+                    <MapIcon className="w-4 h-4" />
+                    {showMap ? 'Hide Map' : 'Pin on Map'}
+                  </button>
+
+                  {/* Interactive map */}
+                  {showMap && (
+                    <div className="rounded-xl overflow-hidden border border-indigo-200 shadow-sm">
+                      <div className="bg-indigo-50 px-3 py-2 text-xs text-indigo-700 font-medium flex items-center gap-1.5 border-b border-indigo-200">
+                        <MapPin className="w-3.5 h-3.5" />
+                        Click anywhere on the map to drop a pin
+                        {reverseGeocoding && <span className="ml-auto text-indigo-500 animate-pulse">Fetching address…</span>}
+                        {pinPos && !reverseGeocoding && (
+                          <span className="ml-auto text-green-700 font-mono">
+                            {pinPos.lat.toFixed(4)}, {pinPos.lng.toFixed(4)}
+                          </span>
+                        )}
+                      </div>
+                      <MapContainer
+                        center={pinPos ? [pinPos.lat, pinPos.lng] : [20.5937, 78.9629]}
+                        zoom={pinPos ? 15 : 5}
+                        style={{ height: '280px', width: '100%' }}
+                        scrollWheelZoom={true}
+                      >
+                        <TileLayer
+                          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+                        />
+                        <MapClickHandler onPin={handleMapPin} />
+                        {pinPos && <Marker position={[pinPos.lat, pinPos.lng]} />}
+                      </MapContainer>
                     </div>
-                    <div className="relative flex justify-center text-xs">
-                      <span className="bg-white px-3 text-gray-400">or enter manually</span>
-                    </div>
+                  )}
+
+                  <div className="relative flex items-center gap-3">
+                    <div className="flex-1 border-t border-gray-200" />
+                    <span className="text-xs text-gray-400 shrink-0">or enter manually</span>
+                    <div className="flex-1 border-t border-gray-200" />
                   </div>
 
-                  {/* Manual address */}
+                  {/* Address input */}
                   <div>
-                    <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1.5">
-                      Address / Locality *
+                    <label className="block text-xs font-semibold text-slate-600 mb-1.5">
+                      Address / Locality <span className="text-red-500">*</span>
                     </label>
-                    <input
-                      type="text"
-                      value={manualAddress}
-                      onChange={(e) => { setManualAddress(e.target.value); setLocationSource('manual'); }}
-                      placeholder="e.g. MG Road, near Central Mall, Pune"
-                      className="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:ring-2 focus:ring-primary focus:border-transparent outline-none"
-                    />
+                    <div className="relative">
+                      <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+                      <input
+                        type="text"
+                        value={manualAddress}
+                        onChange={(e) => { setManualAddress(e.target.value); setLocationSource('manual'); }}
+                        placeholder="e.g. MG Road, near Central Mall, Pune"
+                        className="w-full pl-9 pr-3 py-2.5 text-sm border border-gray-200 rounded-xl bg-gray-50 focus:bg-white focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
+                      />
+                    </div>
                   </div>
 
-                  {/* Lat/Lon row */}
+                  {/* Coordinates row */}
                   <div className="grid grid-cols-2 gap-3">
-                    <div>
-                      <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1.5">
-                        Latitude
-                      </label>
-                      <input
-                        type="number"
-                        step="any"
-                        value={manualLat}
-                        onChange={(e) => { setManualLat(e.target.value); setLocationSource('manual'); }}
-                        placeholder="e.g. 18.5204"
-                        className="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:ring-2 focus:ring-primary focus:border-transparent outline-none"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1.5">
-                        Longitude
-                      </label>
-                      <input
-                        type="number"
-                        step="any"
-                        value={manualLon}
-                        onChange={(e) => { setManualLon(e.target.value); setLocationSource('manual'); }}
-                        placeholder="e.g. 73.8567"
-                        className="w-full px-3 py-2.5 text-sm border border-gray-300 rounded focus:ring-2 focus:ring-primary focus:border-transparent outline-none"
-                      />
-                    </div>
+                    {[
+                      { label: 'Latitude', value: manualLat, setter: setManualLat, placeholder: '23.1859' },
+                      { label: 'Longitude', value: manualLon, setter: setManualLon, placeholder: '72.6359' },
+                    ].map(({ label, value, setter, placeholder }) => (
+                      <div key={label}>
+                        <label className="block text-xs font-semibold text-slate-600 mb-1.5">{label}</label>
+                        <input
+                          type="number"
+                          step="any"
+                          value={value}
+                          onChange={(e) => { setter(e.target.value); setLocationSource('manual'); }}
+                          placeholder={placeholder}
+                          className="w-full px-3 py-2.5 text-sm font-mono border border-gray-200 rounded-xl bg-gray-50 focus:bg-white focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
+                        />
+                      </div>
+                    ))}
                   </div>
-                  <p className="text-[10px] text-gray-400">
-                    Tip: You can find coordinates from Google Maps — right-click any point and copy the numbers.
-                  </p>
+
+                  {(manualLat || manualLon) ? (
+                    <div className="flex items-center gap-2 text-xs text-indigo-700 bg-indigo-50 px-3 py-2 rounded-lg border border-indigo-100">
+                      <CheckCircle className="w-3.5 h-3.5 shrink-0" />
+                      Coordinates set — {manualLat || '—'}, {manualLon || '—'}
+                    </div>
+                  ) : (
+                    <p className="text-[11px] text-gray-400 flex items-center gap-1.5">
+                      <span className="inline-block w-3.5 h-3.5 rounded-full bg-gray-200 text-center leading-3.5 shrink-0 font-bold text-gray-500 text-[9px]">?</span>
+                      Tip: right-click any spot in Google Maps → "What's here?" to get coordinates.
+                    </p>
+                  )}
                 </div>
               )}
             </div>

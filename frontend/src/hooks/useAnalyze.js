@@ -33,6 +33,7 @@ export default function useAnalyze() {
 
     const formData = new FormData();
     formData.append('file', file);
+    formData.append('language', language);
     // Username is extracted from Token in backend now
     
     try {

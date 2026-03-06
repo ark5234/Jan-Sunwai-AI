@@ -56,6 +56,7 @@ async def await_generation(job_id: str, timeout_seconds: float) -> dict:
 @router.post("/analyze")
 async def analyze_complaint(
     file: UploadFile = File(...),
+    language: str = Form("en"),
     current_user: dict = Depends(get_current_user)
 ):
     username = current_user["username"]
@@ -83,7 +84,7 @@ async def analyze_complaint(
     ) or classification.get("method") in ("non_civic_guard", "error")
 
     if not is_truly_non_civic:
-        job_id = await llm_queue_service.enqueue(absolute_file_path, classification, {"name": username}, location)
+        job_id = await llm_queue_service.enqueue(absolute_file_path, classification, {"name": username}, location, language)
         result = await await_generation(job_id, settings.llm_inline_timeout_seconds)
         if result.get("status") == "completed":
             generated_text = result.get("generated_complaint", "")
@@ -141,11 +142,12 @@ async def regenerate_complaint(
     classification = payload.get("classification", {})
     location       = payload.get("location", {})
     image_url      = payload.get("image_url", "")
+    language       = payload.get("language", "en")
 
     absolute_file_path = storage_service.resolve_path(image_url)
 
     job_id = await llm_queue_service.enqueue(
-        absolute_file_path, classification, {"name": username}, location
+        absolute_file_path, classification, {"name": username}, location, language
     )
     return {"job_id": job_id, "status": "queued"}
 
