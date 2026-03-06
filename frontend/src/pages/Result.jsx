@@ -4,6 +4,24 @@ import { MapPin, FileText, CheckCircle, AlertTriangle, ArrowLeft, Shield, Copy, 
 import Map, { Marker as MapMarker, NavigationControl } from 'react-map-gl/maplibre';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { useAuth } from '../context/AuthContext';
+
+// Official Government of India-compliant map via Ola Maps (free tier).
+// Get a key at https://olamaps.io → add VITE_OLA_MAPS_API_KEY to frontend/.env
+const _OLA_KEY = import.meta.env.VITE_OLA_MAPS_API_KEY;
+const _MAP_STYLE = _OLA_KEY
+  ? `https://api.olamaps.io/tiles/vector/v1/styles/default-light-standard/style.json?api_key=${_OLA_KEY}`
+  : {
+      version: 8,
+      sources: {
+        osm: {
+          type: 'raster',
+          tiles: ['https://tile.openstreetmap.org/{z}/{x}/{y}.png'],
+          tileSize: 256,
+          attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+        },
+      },
+      layers: [{ id: 'osm', type: 'raster', source: 'osm' }],
+    };
 import axios from 'axios';
 
 
@@ -442,7 +460,7 @@ export default function Result() {
                       </div>
                       <Map
                         ref={mapRef}
-                        mapStyle="https://basemaps.cartocdn.com/gl/positron-gl-style/style.json"
+                        mapStyle={_MAP_STYLE}
                         initialViewState={{
                           longitude: 78.9629,
                           latitude: 20.5937,

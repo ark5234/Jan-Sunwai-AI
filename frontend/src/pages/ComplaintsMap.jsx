@@ -4,6 +4,25 @@ import Map, { Source, Layer, Popup, NavigationControl } from "react-map-gl/mapli
 import "maplibre-gl/dist/maplibre-gl.css";
 import api from "../context/api";
 
+// Official Government of India-compliant map tiles via Ola Maps (MapmyIndia).
+// Get a free API key at https://olamaps.io → add VITE_OLA_MAPS_API_KEY to .env
+// Falls back to OpenStreetMap raster tiles if no key is set.
+const OLA_KEY = import.meta.env.VITE_OLA_MAPS_API_KEY;
+const MAP_STYLE = OLA_KEY
+  ? `https://api.olamaps.io/tiles/vector/v1/styles/default-light-standard/style.json?api_key=${OLA_KEY}`
+  : {
+      version: 8,
+      sources: {
+        osm: {
+          type: 'raster',
+          tiles: ['https://tile.openstreetmap.org/{z}/{x}/{y}.png'],
+          tileSize: 256,
+          attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+        },
+      },
+      layers: [{ id: 'osm', type: 'raster', source: 'osm' }],
+    };
+
 const STATUS_COLOR = {
   Open: "#3b82f6",
   "In Progress": "#f59e0b",
@@ -189,7 +208,7 @@ export default function ComplaintsMap() {
         )}
 
         <Map
-          mapStyle="https://basemaps.cartocdn.com/gl/positron-gl-style/style.json"
+          mapStyle={MAP_STYLE}
           initialViewState={DEFAULT_CENTER}
           maxBounds={[[67.0, 6.0], [98.0, 38.0]]}
           style={{ width: "100%", height: "100%" }}
