@@ -31,8 +31,11 @@ _DEFAULT_RUNTIME_MULTIPLIER = 1.8   # safe middle ground
 _VISION_FAMILIES = {"qwen25vl", "llava", "clip", "phi2", "minicpm", "granite", "moondream"}
 
 # ── Safety margin ───────────────────────────────────────────────────────
-# Keep some RAM free for OS + other processes (in bytes)
-_SAFETY_MARGIN_BYTES = 512 * 1024 * 1024  # 512 MB
+# Keep some RAM free for OS + other processes (in bytes).
+# 256 MB is enough headroom; 512 MB was too conservative and caused models
+# that actually run fine (e.g. granite3.2-vision:2b at 4.3 GB available)
+# to be rejected and then immediately used as the last-resort fallback anyway.
+_SAFETY_MARGIN_BYTES = 256 * 1024 * 1024  # 256 MB
 
 
 def _get_available_ram_bytes() -> Optional[int]:

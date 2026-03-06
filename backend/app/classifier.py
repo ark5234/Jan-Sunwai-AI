@@ -327,13 +327,25 @@ class CivicClassifier:
                 raw_vision_json,  # also scan raw model output for any rail terms
             ]).lower()
 
-            _RAIL_TRANSIT_TERMS = [
-                "train", "railway", "railroad", "locomotive",
+            # Single-word terms require word-boundary matching to avoid false
+            # positives from substrings — e.g. "constrained", "strained",
+            # "restrained" all contain "train" as a substring and would
+            # incorrectly trigger the non-civic guard.
+            _RAIL_WORD_BOUNDARY = [
+                "railway", "railroad", "locomotive",
+            ]
+            _RAIL_COMPOUND = [
                 "railway station", "train station", "railway platform",
                 "train platform", "metro station", "station platform",
                 "rail track", "railway track", "train track",
+                # bare "train" only as a whole word (avoids constrained/strained)
             ]
-            if any(term in _all_payload_text for term in _RAIL_TRANSIT_TERMS):
+            _rail_hit = (
+                any(re.search(rf"\b{re.escape(t)}\b", _all_payload_text) for t in _RAIL_WORD_BOUNDARY)
+                or any(t in _all_payload_text for t in _RAIL_COMPOUND)
+                or bool(re.search(r"\btrain\b", _all_payload_text))   # bare word only
+            )
+            if _rail_hit:
                 print(f"[classifier] non-civic scene detected (rail/transit) in payload — returning Uncategorized")
                 return {
                     "department": "Uncategorized",
