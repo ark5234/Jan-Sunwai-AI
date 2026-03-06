@@ -1,24 +1,35 @@
 import asyncio
+import csv
+import io
 
 from fastapi import APIRouter, File, UploadFile, HTTPException, Body, Depends
+from fastapi.responses import StreamingResponse
 from app.classifier import CivicClassifier
 from app.geotagging import extract_location
 from app.database import get_database
 from app.services.storage import storage_service
 from app.services.llm_queue import llm_queue_service
-from app.auth import get_current_user, get_current_admin_or_dept_head
+from app.auth import get_current_user, get_current_admin, get_current_admin_or_dept_head
 from app.schemas import (
-    ComplaintCreate, 
-    ComplaintResponse, 
+    ComplaintCreate,
+    ComplaintResponse,
     ComplaintStatus,
-    UserRole
+    TransferRequest,
+    UserRole,
+    FeedbackRequest,
+    DeptNoteRequest,
+    CommentRequest,
+    BulkStatusUpdate,
+    BulkTransfer,
+    PriorityLevel,
 )
 from app.authorities import route_authority, get_authority_by_id
 from app.routers.notifications import create_notification
 from app.schemas import NotificationType
 from app.config import settings
+from app.services.priority import compute_priority
 from PIL import Image
-from datetime import datetime
+from datetime import datetime, timedelta
 from bson import ObjectId
 
 router = APIRouter()
@@ -155,6 +166,26 @@ async def create_complaint(
     # Resolve Authority routing metadata
     routing = route_authority(complaint.department)
 
+    # Compute AI-derived priority
+    priority = compute_priority(
+        complaint_dict.get("description", ""),
+        complaint_dict.get("department", ""),
+    )
+
+    # Duplicate detection: same user + same department + similar location within 30 days
+    thirty_days_ago = datetime.utcnow() - timedelta(days=30)
+    dup_query: dict = {
+        "user_id": user_id,
+        "department": complaint.department,
+        "created_at": {"$gte": thirty_days_ago},
+        "status": {"$nin": [ComplaintStatus.REJECTED]},
+    }
+    location_val = complaint_dict.get("location")
+    if location_val:
+        dup_query["location"] = location_val
+    duplicate = await db["complaints"].find_one(dup_query)
+    is_duplicate = bool(duplicate)
+
     complaint_dict.update({
         "user_id": user_id,
         "assigned_to": None,
@@ -162,6 +193,13 @@ async def create_complaint(
         "routing_confidence": routing.get("confidence"),
         "escalation_parent_authority_id": routing.get("escalation_parent_authority_id"),
         "status": ComplaintStatus.OPEN,
+        "priority": priority,
+        "is_duplicate": is_duplicate,
+        "duplicate_of": str(duplicate["_id"]) if is_duplicate else None,
+        "escalated": False,
+        "dept_notes": [],
+        "comments": [],
+        "feedback": None,
         "created_at": datetime.utcnow(),
         "updated_at": datetime.utcnow(),
         "status_history": [{
@@ -171,7 +209,7 @@ async def create_complaint(
             "note": "Complaint created"
         }]
     })
-    
+
     # 3. Insert into DB
     result = await db["complaints"].insert_one(complaint_dict)
     
@@ -375,6 +413,374 @@ async def escalate_complaint(complaint_id: str, current_user: dict = Depends(get
             notification_type=NotificationType.ESCALATION,
             title="Grievance Escalated",
             message=f"Your grievance for {complaint.get('department', 'the department')} has been escalated to a higher authority for faster resolution.",
+            complaint_id=complaint_id,
+        )
+
+    return fix_id(updated)
+
+
+# ---------------------------------------------------------------------------
+# Citizen feedback (star rating + comment) — only once, only after Resolved
+# ---------------------------------------------------------------------------
+
+@router.post("/complaints/{complaint_id}/feedback", response_model=ComplaintResponse)
+async def submit_feedback(
+    complaint_id: str,
+    payload: FeedbackRequest,
+    current_user: dict = Depends(get_current_user),
+):
+    if not ObjectId.is_valid(complaint_id):
+        raise HTTPException(status_code=400, detail="Invalid ID format")
+
+    db = get_database()
+    complaint = await db["complaints"].find_one({"_id": ObjectId(complaint_id)})
+    if not complaint:
+        raise HTTPException(status_code=404, detail="Complaint not found")
+
+    if complaint.get("user_id") != str(current_user["_id"]):
+        raise HTTPException(status_code=403, detail="Not your complaint")
+
+    if complaint.get("status") != ComplaintStatus.RESOLVED:
+        raise HTTPException(status_code=400, detail="Feedback can only be submitted for resolved complaints")
+
+    if complaint.get("feedback"):
+        raise HTTPException(status_code=409, detail="Feedback already submitted")
+
+    feedback_doc = {
+        "rating": payload.rating,
+        "comment": payload.comment,
+        "submitted_at": datetime.utcnow(),
+    }
+    updated = await db["complaints"].find_one_and_update(
+        {"_id": ObjectId(complaint_id)},
+        {"$set": {"feedback": feedback_doc, "updated_at": datetime.utcnow()}},
+        return_document=True,
+    )
+    return fix_id(updated)
+
+
+# ---------------------------------------------------------------------------
+# Internal dept notes (dept_head / admin only, hidden from citizen)
+# ---------------------------------------------------------------------------
+
+@router.post("/complaints/{complaint_id}/notes", response_model=ComplaintResponse)
+async def add_dept_note(
+    complaint_id: str,
+    payload: DeptNoteRequest,
+    current_user: dict = Depends(get_current_admin_or_dept_head),
+):
+    if not ObjectId.is_valid(complaint_id):
+        raise HTTPException(status_code=400, detail="Invalid ID format")
+
+    db = get_database()
+    complaint = await db["complaints"].find_one({"_id": ObjectId(complaint_id)})
+    if not complaint:
+        raise HTTPException(status_code=404, detail="Complaint not found")
+
+    if current_user.get("role") == UserRole.DEPT_HEAD:
+        user_dept = current_user.get("department")
+        if not user_dept or complaint.get("department") != user_dept:
+            raise HTTPException(status_code=403, detail="Cannot add notes to complaints outside your department")
+
+    note_doc = {
+        "note": payload.note,
+        "created_by": current_user.get("username"),
+        "created_at": datetime.utcnow(),
+    }
+    updated = await db["complaints"].find_one_and_update(
+        {"_id": ObjectId(complaint_id)},
+        {"$push": {"dept_notes": note_doc}, "$set": {"updated_at": datetime.utcnow()}},
+        return_document=True,
+    )
+    return fix_id(updated)
+
+
+@router.get("/complaints/{complaint_id}/notes")
+async def get_dept_notes(
+    complaint_id: str,
+    current_user: dict = Depends(get_current_admin_or_dept_head),
+):
+    if not ObjectId.is_valid(complaint_id):
+        raise HTTPException(status_code=400, detail="Invalid ID format")
+
+    db = get_database()
+    complaint = await db["complaints"].find_one(
+        {"_id": ObjectId(complaint_id)},
+        {"dept_notes": 1},
+    )
+    if not complaint:
+        raise HTTPException(status_code=404, detail="Complaint not found")
+
+    return complaint.get("dept_notes", [])
+
+
+# ---------------------------------------------------------------------------
+# Public comments thread (visible to all parties on this complaint)
+# ---------------------------------------------------------------------------
+
+@router.post("/complaints/{complaint_id}/comments")
+async def add_comment(
+    complaint_id: str,
+    payload: CommentRequest,
+    current_user: dict = Depends(get_current_user),
+):
+    if not ObjectId.is_valid(complaint_id):
+        raise HTTPException(status_code=400, detail="Invalid ID format")
+
+    db = get_database()
+    complaint = await db["complaints"].find_one({"_id": ObjectId(complaint_id)})
+    if not complaint:
+        raise HTTPException(status_code=404, detail="Complaint not found")
+
+    role = current_user.get("role")
+    if role == UserRole.CITIZEN and complaint.get("user_id") != str(current_user["_id"]):
+        raise HTTPException(status_code=403, detail="Not your complaint")
+
+    comment_doc = {
+        "text": payload.text,
+        "author_id": str(current_user["_id"]),
+        "author_name": current_user.get("username"),
+        "author_role": role,
+        "created_at": datetime.utcnow(),
+    }
+    await db["complaints"].update_one(
+        {"_id": ObjectId(complaint_id)},
+        {"$push": {"comments": comment_doc}, "$set": {"updated_at": datetime.utcnow()}},
+    )
+    return {"message": "Comment added", "comment": comment_doc}
+
+
+@router.get("/complaints/{complaint_id}/comments")
+async def get_comments(
+    complaint_id: str,
+    current_user: dict = Depends(get_current_user),
+):
+    if not ObjectId.is_valid(complaint_id):
+        raise HTTPException(status_code=400, detail="Invalid ID format")
+
+    db = get_database()
+    complaint = await db["complaints"].find_one(
+        {"_id": ObjectId(complaint_id)},
+        {"comments": 1, "user_id": 1},
+    )
+    if not complaint:
+        raise HTTPException(status_code=404, detail="Complaint not found")
+
+    role = current_user.get("role")
+    if role == UserRole.CITIZEN and complaint.get("user_id") != str(current_user["_id"]):
+        raise HTTPException(status_code=403, detail="Not your complaint")
+
+    return complaint.get("comments", [])
+
+
+# ---------------------------------------------------------------------------
+# CSV export (admin only)
+# ---------------------------------------------------------------------------
+
+@router.get("/complaints/export/csv")
+async def export_complaints_csv(
+    current_user: dict = Depends(get_current_admin),
+    status: ComplaintStatus | None = None,
+    department: str | None = None,
+):
+    db = get_database()
+    query: dict = {}
+    if status:
+        query["status"] = status.value
+    if department:
+        query["department"] = department
+
+    cursor = db["complaints"].find(query).sort("created_at", -1)
+
+    output = io.StringIO()
+    writer = csv.DictWriter(
+        output,
+        fieldnames=[
+            "id", "department", "status", "priority", "description",
+            "location", "created_at", "updated_at", "escalated", "user_id",
+        ],
+        extrasaction="ignore",
+    )
+    writer.writeheader()
+
+    async for doc in cursor:
+        writer.writerow({
+            "id": str(doc["_id"]),
+            "department": doc.get("department", ""),
+            "status": doc.get("status", ""),
+            "priority": doc.get("priority", ""),
+            "description": doc.get("description", ""),
+            "location": doc.get("location", ""),
+            "created_at": doc.get("created_at", ""),
+            "updated_at": doc.get("updated_at", ""),
+            "escalated": doc.get("escalated", False),
+            "user_id": doc.get("user_id", ""),
+        })
+
+    output.seek(0)
+    return StreamingResponse(
+        iter([output.read()]),
+        media_type="text/csv",
+        headers={"Content-Disposition": "attachment; filename=complaints_export.csv"},
+    )
+
+
+# ---------------------------------------------------------------------------
+# Bulk operations (admin only)
+# ---------------------------------------------------------------------------
+
+@router.post("/complaints/bulk/status")
+async def bulk_update_status(
+    payload: BulkStatusUpdate,
+    current_user: dict = Depends(get_current_admin),
+):
+    db = get_database()
+    valid_ids = [ObjectId(cid) for cid in payload.complaint_ids if ObjectId.is_valid(cid)]
+    if not valid_ids:
+        raise HTTPException(status_code=400, detail="No valid complaint IDs provided")
+
+    history_entry = {
+        "status": payload.status,
+        "timestamp": datetime.utcnow(),
+        "changed_by_user_id": str(current_user["_id"]),
+        "note": payload.note or "Bulk status update",
+    }
+    result = await db["complaints"].update_many(
+        {"_id": {"$in": valid_ids}},
+        {
+            "$set": {"status": payload.status, "updated_at": datetime.utcnow()},
+            "$push": {"status_history": history_entry},
+        },
+    )
+    return {"updated": result.modified_count}
+
+
+@router.post("/complaints/bulk/transfer")
+async def bulk_transfer(
+    payload: BulkTransfer,
+    current_user: dict = Depends(get_current_admin),
+):
+    from app.category_utils import CANONICAL_CATEGORIES
+
+    if payload.new_department not in CANONICAL_CATEGORIES:
+        raise HTTPException(status_code=400, detail=f"Invalid department: {payload.new_department}")
+
+    db = get_database()
+    valid_ids = [ObjectId(cid) for cid in payload.complaint_ids if ObjectId.is_valid(cid)]
+    if not valid_ids:
+        raise HTTPException(status_code=400, detail="No valid complaint IDs provided")
+
+    routing = route_authority(payload.new_department)
+    note = f"Bulk transferred to '{payload.new_department}'"
+    if payload.reason:
+        note += f". Reason: {payload.reason}"
+
+    result = await db["complaints"].update_many(
+        {"_id": {"$in": valid_ids}},
+        {
+            "$set": {
+                "department": payload.new_department,
+                "authority_id": routing.get("authority_id"),
+                "routing_confidence": routing.get("confidence"),
+                "escalation_parent_authority_id": routing.get("escalation_parent_authority_id"),
+                "updated_at": datetime.utcnow(),
+            },
+            "$push": {
+                "status_history": {
+                    "status": ComplaintStatus.OPEN,
+                    "timestamp": datetime.utcnow(),
+                    "changed_by_user_id": str(current_user["_id"]),
+                    "note": note,
+                }
+            },
+        },
+    )
+    return {"updated": result.modified_count}
+
+@router.patch("/complaints/{complaint_id}/transfer", response_model=ComplaintResponse)
+async def transfer_complaint(
+    complaint_id: str,
+    payload: TransferRequest,
+    current_user: dict = Depends(get_current_admin_or_dept_head),
+):
+    """
+    Transfer a grievance to a different department.
+    - ADMIN: can transfer any complaint.
+    - DEPT_HEAD: can only transfer complaints currently in their own department.
+    The AI confidence score is irrelevant — this override is always allowed for authorised roles.
+    """
+    from app.category_utils import CANONICAL_CATEGORIES
+
+    if not ObjectId.is_valid(complaint_id):
+        raise HTTPException(status_code=400, detail="Invalid ID format")
+
+    if payload.new_department not in CANONICAL_CATEGORIES:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Invalid department '{payload.new_department}'. Must be one of: {', '.join(CANONICAL_CATEGORIES)}",
+        )
+
+    db = get_database()
+    complaint = await db["complaints"].find_one({"_id": ObjectId(complaint_id)})
+    if not complaint:
+        raise HTTPException(status_code=404, detail="Complaint not found")
+
+    # Dept heads can only transfer from their own department
+    if current_user.get("role") == UserRole.DEPT_HEAD:
+        user_dept = current_user.get("department")
+        if not user_dept or complaint.get("department") != user_dept:
+            raise HTTPException(status_code=403, detail="Cannot transfer complaints outside your department")
+
+    old_dept = complaint.get("department", "Unknown")
+    new_dept = payload.new_department
+
+    if old_dept == new_dept:
+        raise HTTPException(status_code=400, detail="Complaint is already assigned to this department")
+
+    # Re-derive authority routing for the new department
+    routing = route_authority(new_dept)
+
+    transfer_note = f"Transferred from '{old_dept}' to '{new_dept}'"
+    if payload.reason:
+        transfer_note += f". Reason: {payload.reason}"
+
+    update_data = {
+        "$set": {
+            "department": new_dept,
+            "authority_id": routing.get("authority_id"),
+            "routing_confidence": routing.get("confidence"),
+            "escalation_parent_authority_id": routing.get("escalation_parent_authority_id"),
+            "updated_at": datetime.utcnow(),
+        },
+        "$push": {
+            "status_history": {
+                "status": complaint.get("status", ComplaintStatus.OPEN),
+                "timestamp": datetime.utcnow(),
+                "changed_by_user_id": str(current_user.get("_id")),
+                "note": transfer_note,
+            }
+        },
+    }
+
+    updated = await db["complaints"].find_one_and_update(
+        {"_id": ObjectId(complaint_id)},
+        update_data,
+        return_document=True,
+    )
+
+    # Notify the citizen
+    citizen_id = complaint.get("user_id")
+    if citizen_id:
+        citizen_msg = (
+            f"Your grievance has been transferred from {old_dept} to {new_dept}."
+        )
+        if payload.reason:
+            citizen_msg += f" Reason: {payload.reason}"
+        await create_notification(
+            user_id=citizen_id,
+            notification_type=NotificationType.ASSIGNMENT,
+            title="Grievance Transferred to New Department",
+            message=citizen_msg,
             complaint_id=complaint_id,
         )
 

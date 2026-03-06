@@ -3,9 +3,11 @@ from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-from app.routers import complaints, users, health, triage, notifications
+import asyncio
+from app.routers import complaints, users, health, triage, notifications, analytics, public
 from app.database import connect_to_mongo, close_mongo_connection
 from app.services.llm_queue import llm_queue_service
+from app.services.escalation import escalation_loop
 from app.config import settings
 import os
 import time
@@ -36,6 +38,8 @@ async def lifespan(app: FastAPI):
     logger.info("Starting up application...")
     await connect_to_mongo()
     await llm_queue_service.start()
+    asyncio.create_task(escalation_loop())
+    logger.info("Escalation background loop started.")
     yield
     # Shutdown: Close DB connection
     logger.info("Shutting down application...")
@@ -97,6 +101,8 @@ app.include_router(users.router, prefix="/users", tags=["Users"])
 app.include_router(health.router)
 app.include_router(triage.router)
 app.include_router(notifications.router)
+app.include_router(analytics.router, tags=["Analytics"])
+app.include_router(public.router, tags=["Public"])
 
 @app.get("/")
 def read_root():
