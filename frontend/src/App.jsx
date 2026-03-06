@@ -13,6 +13,9 @@ import AdminDashboard from './pages/AdminDashboard';
 import TriageReview from './pages/TriageReview';
 import Profile from './pages/Profile';
 import Notifications from './pages/Notifications';
+import AnalyticsDashboard from './pages/AnalyticsDashboard';
+import ComplaintsMap from './pages/ComplaintsMap';
+import PublicStatus from './pages/PublicStatus';
 
 // Protected Route Component
 function ProtectedRoute({ children, allowedRoles }) {
@@ -26,6 +29,15 @@ function ProtectedRoute({ children, allowedRoles }) {
     return <Navigate to="/dashboard" replace />;
   }
   
+  return children;
+}
+
+// Guest-only Route — logged-in users are sent straight to their dashboard
+function GuestRoute({ children }) {
+  const { user } = useAuth();
+  if (user) {
+    return <Navigate to="/dashboard" replace />;
+  }
   return children;
 }
 
@@ -56,9 +68,9 @@ function App() {
           <Navbar />
           <main>
             <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/register" element={<Register />} />
-              <Route path="/login" element={<Login />} />
+              <Route path="/" element={<GuestRoute><Home /></GuestRoute>} />
+              <Route path="/register" element={<GuestRoute><Register /></GuestRoute>} />
+              <Route path="/login" element={<GuestRoute><Login /></GuestRoute>} />
               
               {/* Protected Routes */}
               <Route 
@@ -119,22 +131,17 @@ function App() {
                   </ProtectedRoute>
                 } 
               />
-              <Route 
-                path="/dept-head" 
-                element={
-                  <ProtectedRoute allowedRoles={['dept_head']}>
-                    <DeptHeadDashboard />
-                  </ProtectedRoute>
-                } 
-              />
-              <Route 
-                path="/citizen" 
-                element={
-                  <ProtectedRoute allowedRoles={['citizen']}>
-                    <CitizenDashboard />
-                  </ProtectedRoute>
-                } 
-              />
+              <Route path="/dept-head" element={<ProtectedRoute allowedRoles={['dept_head']}><DeptHeadDashboard /></ProtectedRoute>} />
+              <Route path="/citizen" element={<ProtectedRoute allowedRoles={['citizen']}><CitizenDashboard /></ProtectedRoute>} />
+
+              {/* Analytics (admin only) */}
+              <Route path="/analytics" element={<ProtectedRoute allowedRoles={['admin']}><AnalyticsDashboard /></ProtectedRoute>} />
+
+              {/* Map (admin + dept_head) */}
+              <Route path="/map" element={<ProtectedRoute allowedRoles={['admin', 'dept_head']}><ComplaintsMap /></ProtectedRoute>} />
+
+              {/* Public transparency board — no auth needed */}
+              <Route path="/public" element={<PublicStatus />} />
             </Routes>
           </main>
         </div>

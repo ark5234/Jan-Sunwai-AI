@@ -9,6 +9,7 @@ export default function Result() {
   const { user } = useAuth();
   const navigate = useNavigate();
   const result = state?.result;
+  const language = state?.language || 'en';
   
   const [complaintText, setComplaintText] = useState(result?.generated_complaint || '');
   const [generationStatus, setGenerationStatus] = useState(result?.generation_status || 'completed');
@@ -176,7 +177,8 @@ export default function Result() {
           detected_department: classification.department,
           detected_issue: classification.label,
           labels: classification.all_scores?.map(s => s.label) || [classification.label]
-        }
+        },
+        language: language,
       };
       
       const response = await axios.post(

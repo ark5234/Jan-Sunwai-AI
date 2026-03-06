@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Home, Menu, X, LogOut, User, LayoutDashboard, PlusCircle, UserCircle, Bell, CheckCircle2, ArrowUpRight, Clock, AlertCircle } from 'lucide-react';
+import { Home, Menu, X, LogOut, User, LayoutDashboard, PlusCircle, UserCircle, Bell, CheckCircle2, ArrowUpRight, Clock, AlertCircle, BarChart2, Map, Globe } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
 const API = import.meta.env.VITE_API_URL || 'http://localhost:8000';
@@ -137,7 +137,7 @@ export default function Navbar() {
           <div className="flex justify-between h-16">
             {/* Brand / Emblem */}
             <div className="flex items-center">
-              <Link to="/" className="flex items-center gap-3">
+              <Link to={user ? "/dashboard" : "/"} className="flex items-center gap-3">
                 {/* National Emblem */}
                 <img 
                   src="/emblem.svg" 
@@ -160,10 +160,12 @@ export default function Navbar() {
             
             {/* Desktop Nav Links */}
             <div className="hidden md:flex md:items-center md:space-x-1">
-              <Link to="/" className={`px-3 py-[18px] text-sm font-medium transition-colors ${isActive('/')}`}>
-                <Home className="inline-block w-4 h-4 mr-1 -mt-0.5" />
-                Home
-              </Link>
+              {!user && (
+                <Link to="/" className={`px-3 py-[18px] text-sm font-medium transition-colors ${isActive('/')}`}>
+                  <Home className="inline-block w-4 h-4 mr-1 -mt-0.5" />
+                  Home
+                </Link>
+              )}
               {user && (
                 <>
                   <Link to="/dashboard" className={`px-3 py-[18px] text-sm font-medium transition-colors ${isActive('/dashboard')}`}>
@@ -173,6 +175,28 @@ export default function Navbar() {
                   <Link to="/analyze" className={`px-3 py-[18px] text-sm font-medium transition-colors ${isActive('/analyze')}`}>
                     <PlusCircle className="inline-block w-4 h-4 mr-1 -mt-0.5" />
                     File Complaint
+                  </Link>
+                  {user.role === 'admin' && (
+                    <>
+                      <Link to="/analytics" className={`px-3 py-[18px] text-sm font-medium transition-colors ${isActive('/analytics')}`}>
+                        <BarChart2 className="inline-block w-4 h-4 mr-1 -mt-0.5" />
+                        Analytics
+                      </Link>
+                      <Link to="/map" className={`px-3 py-[18px] text-sm font-medium transition-colors ${isActive('/map')}`}>
+                        <Map className="inline-block w-4 h-4 mr-1 -mt-0.5" />
+                        Map
+                      </Link>
+                    </>
+                  )}
+                  {user.role === 'dept_head' && (
+                    <Link to="/map" className={`px-3 py-[18px] text-sm font-medium transition-colors ${isActive('/map')}`}>
+                      <Map className="inline-block w-4 h-4 mr-1 -mt-0.5" />
+                      Map
+                    </Link>
+                  )}
+                  <Link to="/public" className={`px-3 py-[18px] text-sm font-medium transition-colors ${isActive('/public')}`}>
+                    <Globe className="inline-block w-4 h-4 mr-1 -mt-0.5" />
+                    Public Board
                   </Link>
                 </>
               )}
@@ -325,13 +349,15 @@ export default function Navbar() {
       {isOpen && (
         <div className="md:hidden bg-primary border-t border-white/10">
           <div className="px-4 pt-2 pb-3 space-y-1">
-            <Link 
-              to="/" 
-              onClick={() => setIsOpen(false)}
-              className="block px-3 py-2.5 rounded text-base font-medium text-blue-100 hover:text-white hover:bg-white/10"
-            >
-              Home
-            </Link>
+            {!user && (
+              <Link 
+                to="/" 
+                onClick={() => setIsOpen(false)}
+                className="block px-3 py-2.5 rounded text-base font-medium text-blue-100 hover:text-white hover:bg-white/10"
+              >
+                Home
+              </Link>
+            )}
             {user && (
               <>
                 <Link 
@@ -347,6 +373,34 @@ export default function Navbar() {
                   className="block px-3 py-2.5 rounded text-base font-medium text-blue-100 hover:text-white hover:bg-white/10"
                 >
                   File Complaint
+                </Link>
+                {user.role === 'admin' && (
+                  <Link 
+                    to="/analytics" 
+                    onClick={() => setIsOpen(false)}
+                    className="flex items-center gap-2 px-3 py-2.5 rounded text-base font-medium text-blue-100 hover:text-white hover:bg-white/10"
+                  >
+                    <BarChart2 className="w-4 h-4" />
+                    Analytics
+                  </Link>
+                )}
+                {(user.role === 'admin' || user.role === 'dept_head') && (
+                  <Link 
+                    to="/map" 
+                    onClick={() => setIsOpen(false)}
+                    className="flex items-center gap-2 px-3 py-2.5 rounded text-base font-medium text-blue-100 hover:text-white hover:bg-white/10"
+                  >
+                    <Map className="w-4 h-4" />
+                    Complaints Map
+                  </Link>
+                )}
+                <Link 
+                  to="/public" 
+                  onClick={() => setIsOpen(false)}
+                  className="flex items-center gap-2 px-3 py-2.5 rounded text-base font-medium text-blue-100 hover:text-white hover:bg-white/10"
+                >
+                  <Globe className="w-4 h-4" />
+                  Public Board
                 </Link>
               </>
             )}

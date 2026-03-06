@@ -1,23 +1,31 @@
 import React, { useState } from 'react';
 import ImageUpload from '../components/ImageUpload';
-import { ArrowRight, Loader2, AlertCircle, Shield, Info } from 'lucide-react';
+import { ArrowRight, Loader2, AlertCircle, Shield, Info, Globe } from 'lucide-react';
 import useAnalyze from '../hooks/useAnalyze';
 import { useAuth } from '../context/AuthContext';
 import { Link } from 'react-router-dom';
 
+const LANGUAGES = [
+  { code: 'en', label: 'English' },
+  { code: 'hi', label: 'हिंदी (Hindi)' },
+  { code: 'mr', label: 'मराठी (Marathi)' },
+  { code: 'ta', label: 'தமிழ் (Tamil)' },
+  { code: 'te', label: 'తెలుగు (Telugu)' },
+  { code: 'kn', label: 'ಕನ್ನಡ (Kannada)' },
+  { code: 'bn', label: 'বাংলা (Bengali)' },
+  { code: 'gu', label: 'ગુજરાતી (Gujarati)' },
+];
+
 export default function Analyze() {
   const [selectedImage, setSelectedImage] = useState(null);
+  const [language, setLanguage] = useState('en');
   const { analyzeImage, loading, error } = useAnalyze();
   const { user } = useAuth();
 
   const handleAnalysis = async () => {
     if (!selectedImage) return;
-    
-    if (!user) {
-        return;
-    }
-
-    await analyzeImage(selectedImage, user.username);
+    if (!user) return;
+    await analyzeImage(selectedImage, user.username, language);
   };
 
   if (!user || !user.access_token) {
@@ -62,10 +70,20 @@ export default function Analyze() {
             </div>
           )}
 
+          {/* Language selector + analyze button row */}
           <div className="mt-6 flex flex-col sm:flex-row justify-between items-center gap-4">
-            <div className="text-xs text-gray-500 flex items-center gap-1.5">
-              <Info className="w-3.5 h-3.5" />
-              <span>Ensure the image clearly shows the issue</span>
+            <div className="flex items-center gap-2">
+              <Globe className="w-4 h-4 text-slate-400" />
+              <label className="text-xs text-gray-500 font-medium">Complaint language:</label>
+              <select
+                value={language}
+                onChange={e => setLanguage(e.target.value)}
+                className="text-xs border border-gray-200 rounded-md px-2 py-1.5 focus:outline-none focus:ring-1 focus:ring-blue-400"
+              >
+                {LANGUAGES.map(l => (
+                  <option key={l.code} value={l.code}>{l.label}</option>
+                ))}
+              </select>
             </div>
             <button
               onClick={handleAnalysis}

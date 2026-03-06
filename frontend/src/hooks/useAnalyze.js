@@ -9,7 +9,7 @@ export default function useAnalyze() {
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
-  const analyzeImage = async (file, username = "Concerned Citizen") => {
+  const analyzeImage = async (file, username = "Concerned Citizen", language = "en") => {
     setLoading(true);
     setError(null);
 
@@ -44,7 +44,7 @@ export default function useAnalyze() {
       });
       
       // Success! Navigate to results page with data
-      navigate('/result', { state: { result: response.data } });
+      navigate('/result', { state: { result: response.data, language } });
       
     } catch (err) {
         console.error("Analysis failed:", err);
