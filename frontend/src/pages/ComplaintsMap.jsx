@@ -1,7 +1,7 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { MapPin, Filter, RefreshCw } from "lucide-react";
-import { MapContainer, TileLayer, CircleMarker, Popup } from "react-leaflet";
-import "leaflet/dist/leaflet.css";
+import Map, { Source, Layer, Popup, NavigationControl } from "react-map-gl/maplibre";
+import "maplibre-gl/dist/maplibre-gl.css";
 import api from "../context/api";
 
 const STATUS_COLOR = {
@@ -18,7 +18,7 @@ const PRIORITY_COLOR = {
   Low: "#16a34a",
 };
 
-const DEFAULT_CENTER = [20.5937, 78.9629]; // centre of India
+const DEFAULT_CENTER = { longitude: 78.9629, latitude: 20.5937, zoom: 4.5 };
 
 function parseLatLng(location) {
   if (!location) return null;
@@ -42,6 +42,8 @@ export default function ComplaintsMap() {
   const [error, setError] = useState("");
   const [colorBy, setColorBy] = useState("status"); // "status" | "priority"
   const [statusFilter, setStatusFilter] = useState("All");
+  const [popupInfo, setPopupInfo] = useState(null); // {longitude, latitude, ...props}
+  const [cursor, setCursor] = useState("grab");
 
   const fetchComplaints = () => {
     setLoading(true);
@@ -62,6 +64,54 @@ export default function ComplaintsMap() {
     if (statusFilter !== "All" && c.status !== statusFilter) return false;
     return true;
   });
+
+  const geojson = {
+    type: "FeatureCollection",
+    features: visible.map((c) => {
+      const ll = parseLatLng(c.location);
+      return {
+        type: "Feature",
+        geometry: { type: "Point", coordinates: [ll[1], ll[0]] },
+        properties: {
+          id: c._id,
+          status: c.status,
+          priority: c.priority,
+          department: c.department,
+          created_at: c.created_at,
+          colour:
+            colorBy === "priority"
+              ? PRIORITY_COLOR[c.priority] || "#64748b"
+              : STATUS_COLOR[c.status] || "#64748b",
+        },
+      };
+    }),
+  };
+
+  const circleLayer = {
+    id: "complaints-circles",
+    type: "circle",
+    paint: {
+      "circle-radius": 7,
+      "circle-color": ["get", "colour"],
+      "circle-stroke-color": "#ffffff",
+      "circle-stroke-width": 1.5,
+      "circle-opacity": 0.88,
+    },
+  };
+
+  const handleMapClick = useCallback((e) => {
+    const features = e.features;
+    if (features && features.length > 0) {
+      const f = features[0];
+      setPopupInfo({
+        longitude: e.lngLat.lng,
+        latitude: e.lngLat.lat,
+        ...f.properties,
+      });
+    } else {
+      setPopupInfo(null);
+    }
+  }, []);
 
   const mapped = visible.length;
   const total = complaints.length;
@@ -133,64 +183,49 @@ export default function ComplaintsMap() {
       {/* Map */}
       <div className="flex-1 relative">
         {loading && (
-          <div className="absolute inset-0 bg-white/60 flex items-center justify-center z-[1000]">
+          <div className="absolute inset-0 bg-white/60 flex items-center justify-center z-10">
             <div className="animate-spin h-8 w-8 rounded-full border-b-2 border-blue-600" />
           </div>
         )}
 
-        <MapContainer
-          center={DEFAULT_CENTER}
-          zoom={5}
-          className="h-full w-full"
-          style={{ zIndex: 0 }}
+        <Map
+          mapStyle="https://basemaps.cartocdn.com/gl/positron-gl-style/style.json"
+          initialViewState={DEFAULT_CENTER}
+          maxBounds={[[67.0, 6.0], [98.0, 38.0]]}
+          style={{ width: "100%", height: "100%" }}
+          interactiveLayerIds={["complaints-circles"]}
+          cursor={cursor}
+          onClick={handleMapClick}
+          onMouseEnter={() => setCursor("pointer")}
+          onMouseLeave={() => setCursor("grab")}
         >
-          <TileLayer
-            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          />
+          <NavigationControl position="top-right" />
 
-          {visible.map((c) => {
-            const latlng = parseLatLng(c.location);
-            if (!latlng) return null;
-            const colour =
-              colorBy === "priority"
-                ? PRIORITY_COLOR[c.priority] || "#64748b"
-                : STATUS_COLOR[c.status] || "#64748b";
+          <Source id="complaints" type="geojson" data={geojson}>
+            <Layer {...circleLayer} />
+          </Source>
 
-            return (
-              <CircleMarker
-                key={c._id}
-                center={latlng}
-                radius={7}
-                pathOptions={{
-                  color: "#fff",
-                  weight: 1.5,
-                  fillColor: colour,
-                  fillOpacity: 0.85,
-                }}
-              >
-                <Popup>
-                  <div className="text-xs space-y-0.5 min-w-[160px]">
-                    <p className="font-semibold text-sm">{c.department}</p>
-                    <p>
-                      Status:{" "}
-                      <span className="font-medium">{c.status}</span>
-                    </p>
-                    {c.priority && (
-                      <p>
-                        Priority:{" "}
-                        <span className="font-medium">{c.priority}</span>
-                      </p>
-                    )}
-                    <p className="text-slate-400">
-                      {new Date(c.created_at).toLocaleDateString()}
-                    </p>
-                  </div>
-                </Popup>
-              </CircleMarker>
-            );
-          })}
-        </MapContainer>
+          {popupInfo && (
+            <Popup
+              longitude={popupInfo.longitude}
+              latitude={popupInfo.latitude}
+              onClose={() => setPopupInfo(null)}
+              closeOnClick={false}
+              offset={12}
+            >
+              <div className="text-xs space-y-0.5 min-w-[160px] p-1">
+                <p className="font-semibold text-sm">{popupInfo.department}</p>
+                <p>Status: <span className="font-medium">{popupInfo.status}</span></p>
+                {popupInfo.priority && (
+                  <p>Priority: <span className="font-medium">{popupInfo.priority}</span></p>
+                )}
+                <p className="text-slate-400">
+                  {new Date(popupInfo.created_at).toLocaleDateString()}
+                </p>
+              </div>
+            </Popup>
+          )}
+        </Map>
       </div>
 
       {/* Legend */}
