@@ -72,6 +72,7 @@ export default function ComplaintsMap() {
   const [statusFilter, setStatusFilter] = useState("All");
   const [popupInfo, setPopupInfo] = useState(null); // {longitude, latitude, ...props}
   const [cursor, setCursor] = useState("grab");
+  const [satellite, setSatellite] = useState(false);
 
   const fetchComplaints = () => {
     setLoading(true);
@@ -186,6 +187,20 @@ export default function ComplaintsMap() {
             </select>
           </div>
 
+          {/* Satellite toggle */}
+          <button
+            onClick={() => setSatellite((s) => !s)}
+            title={satellite ? "Switch to Street view" : "Switch to Satellite view"}
+            className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg border text-xs transition-colors ${
+              satellite
+                ? "bg-slate-800 border-slate-700 text-white"
+                : "border-slate-200 text-slate-600 hover:bg-slate-100"
+            }`}
+          >
+            <Layers size={13} />
+            {satellite ? "Satellite" : "Street"}
+          </button>
+
           <button
             onClick={fetchComplaints}
             className="p-1.5 rounded-lg border border-slate-200 hover:bg-slate-100 text-slate-500"
@@ -217,7 +232,7 @@ export default function ComplaintsMap() {
         )}
 
         <Map
-          mapStyle={MAP_STYLE}
+          mapStyle={satellite ? SATELLITE_STYLE : STREET_STYLE}
           initialViewState={DEFAULT_CENTER}
           maxBounds={[[67.0, 6.0], [98.0, 38.0]]}
           style={{ width: "100%", height: "100%" }}

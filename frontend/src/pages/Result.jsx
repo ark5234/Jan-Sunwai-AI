@@ -1,17 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useLocation, Link, useNavigate } from 'react-router-dom';
-import { MapPin, FileText, CheckCircle, AlertTriangle, ArrowLeft, Shield, Copy, Edit3, Navigation, Search, RefreshCw, Map as MapIcon, X } from 'lucide-react';
+import { MapPin, FileText, CheckCircle, AlertTriangle, ArrowLeft, Shield, Copy, Edit3, Navigation, Search, RefreshCw, Map as MapIcon, X, Layers } from 'lucide-react';
 import Map, { Marker as MapMarker, NavigationControl } from 'react-map-gl/maplibre';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { useAuth } from '../context/AuthContext';
 
-// Map tile source:
-// - Set VITE_MAPPLS_API_KEY in frontend/.env for official GoI-compliant
-//   MapmyIndia/Mappls tiles (free tier at https://developer.mappls.com)
-//   → shows official Survey of India boundaries for J&K, Ladakh, etc.
-// - Falls back to CARTO Voyager (English labels, full India coverage, no key needed)
+// Map tile sources. Set VITE_MAPPLS_API_KEY for official GoI-compliant tiles.
 const _MAPPLS_KEY = import.meta.env.VITE_MAPPLS_API_KEY;
-const _MAP_STYLE = _MAPPLS_KEY
+
+const _STREET_STYLE = _MAPPLS_KEY
   ? `https://apis.mappls.com/advancedmaps/v1/${_MAPPLS_KEY}/map_sdk_library/`
   : {
       version: 8,
@@ -32,6 +29,23 @@ const _MAP_STYLE = _MAPPLS_KEY
       },
       layers: [{ id: 'carto', type: 'raster', source: 'carto' }],
     };
+
+const _SATELLITE_STYLE = {
+  version: 8,
+  sources: {
+    satellite: {
+      type: 'raster',
+      tiles: [
+        'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+      ],
+      tileSize: 256,
+      maxzoom: 19,
+      attribution:
+        'Tiles \u00a9 Esri \u2014 Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, GIS User Community',
+    },
+  },
+  layers: [{ id: 'satellite', type: 'raster', source: 'satellite' }],
+};
 import axios from 'axios';
 
 
@@ -97,6 +111,7 @@ export default function Result() {
   const [locationSource, setLocationSource] = useState(hasExifLocation ? 'exif' : 'manual');
   const [detectingGPS, setDetectingGPS] = useState(false);
   const [showMap, setShowMap] = useState(false);
+  const [mapSatellite, setMapSatellite] = useState(false);
   const [pinPos, setPinPos] = useState(null); // {lat, lng}
   const [reverseGeocoding, setReverseGeocoding] = useState(false);
   const mapRef = useRef(null);
@@ -467,10 +482,23 @@ export default function Result() {
                             {pinPos.lat.toFixed(4)}, {pinPos.lng.toFixed(4)}
                           </span>
                         )}
+                        <button
+                          type="button"
+                          onClick={() => setMapSatellite((s) => !s)}
+                          title={mapSatellite ? "Switch to Street view" : "Switch to Satellite view"}
+                          className={`ml-auto flex items-center gap-1 px-2 py-0.5 rounded border text-xs transition-colors ${
+                            mapSatellite
+                              ? "bg-slate-800 border-slate-700 text-white"
+                              : "bg-white border-indigo-200 text-indigo-600 hover:bg-indigo-100"
+                          }`}
+                        >
+                          <Layers className="w-3 h-3" />
+                          {mapSatellite ? "Satellite" : "Street"}
+                        </button>
                       </div>
                       <Map
                         ref={mapRef}
-                        mapStyle={_MAP_STYLE}
+                        mapStyle={mapSatellite ? _SATELLITE_STYLE : _STREET_STYLE}
                         initialViewState={{
                           longitude: 78.9629,
                           latitude: 20.5937,
