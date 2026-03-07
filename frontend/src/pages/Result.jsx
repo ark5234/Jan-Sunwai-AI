@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useLocation, Link, useNavigate } from 'react-router-dom';
 import { MapPin, FileText, CheckCircle, AlertTriangle, ArrowLeft, Shield, Copy, Edit3, Navigation, Search, RefreshCw, Map as MapIcon, X, Layers } from 'lucide-react';
 import Map, { Marker as MapMarker, NavigationControl } from 'react-map-gl/maplibre';
@@ -65,6 +65,20 @@ export default function Result() {
   const [copied, setCopied] = useState(false);
   const [regenerating, setRegenerating] = useState(false);
   const [regenerateError, setRegenerateError] = useState(null);
+  const [regenLang, setRegenLang] = useState(language);
+  const [showRegenLang, setShowRegenLang] = useState(false);
+  const regenLangRef = useRef(null);
+
+  // Close regen-lang dropdown when clicking outside
+  useEffect(() => {
+    const handler = (e) => {
+      if (regenLangRef.current && !regenLangRef.current.contains(e.target)) {
+        setShowRegenLang(false);
+      }
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, []);
 
   // Poll the backend for the complaint generation result when the job is still running.
   useEffect(() => {
@@ -115,6 +129,64 @@ export default function Result() {
   const [pinPos, setPinPos] = useState(null); // {lat, lng}
   const [reverseGeocoding, setReverseGeocoding] = useState(false);
   const mapRef = useRef(null);
+
+  // Address autocomplete state
+  const [addressSuggestions, setAddressSuggestions] = useState([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const [fetchingSuggestions, setFetchingSuggestions] = useState(false);
+  const suggestionRef = useRef(null);
+  const debounceTimer = useRef(null);
+
+  // Close suggestions when clicking outside
+  useEffect(() => {
+    const handler = (e) => {
+      if (suggestionRef.current && !suggestionRef.current.contains(e.target)) {
+        setShowSuggestions(false);
+      }
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, []);
+
+  const fetchAddressSuggestions = useCallback((query) => {
+    if (debounceTimer.current) clearTimeout(debounceTimer.current);
+    if (!query || query.length < 3) {
+      setAddressSuggestions([]);
+      setShowSuggestions(false);
+      return;
+    }
+    debounceTimer.current = setTimeout(async () => {
+      setFetchingSuggestions(true);
+      try {
+        const res = await fetch(
+          `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&limit=6&countrycodes=in&addressdetails=1`,
+          { headers: { 'User-Agent': 'JanSunwaiAI/1.0' } }
+        );
+        if (res.ok) {
+          const data = await res.json();
+          setAddressSuggestions(data);
+          setShowSuggestions(data.length > 0);
+        }
+      } catch {
+        setAddressSuggestions([]);
+      } finally {
+        setFetchingSuggestions(false);
+      }
+    }, 350);
+  }, []);
+
+  const handleSelectSuggestion = (item) => {
+    setManualAddress(item.display_name);
+    setManualLat(parseFloat(item.lat).toFixed(6));
+    setManualLon(parseFloat(item.lon).toFixed(6));
+    setPinPos({ lat: parseFloat(item.lat), lng: parseFloat(item.lon) });
+    setLocationSource('manual');
+    setShowSuggestions(false);
+    setAddressSuggestions([]);
+    if (mapRef.current) {
+      mapRef.current.flyTo({ center: [parseFloat(item.lon), parseFloat(item.lat)], zoom: 15, duration: 900 });
+    }
+  };
 
   const handleMapPin = async (lat, lng) => {
     setPinPos({ lat, lng });
@@ -286,6 +358,7 @@ export default function Result() {
   const handleRegenerate = async () => {
     setRegenerateError(null);
     setRegenerating(true);
+    setShowRegenLang(false);
     try {
       const res = await axios.post(
         'http://localhost:8000/analyze/regenerate',
@@ -293,7 +366,7 @@ export default function Result() {
           classification,
           location: result?.location || {},
           image_url,
-          language,
+          language: regenLang,
         },
         { headers: { Authorization: `Bearer ${user?.access_token}` } }
       );
@@ -532,15 +605,38 @@ export default function Result() {
                     <label className="block text-xs font-semibold text-slate-600 mb-1.5">
                       Address / Locality <span className="text-red-500">*</span>
                     </label>
-                    <div className="relative">
+                    <div className="relative" ref={suggestionRef}>
                       <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+                      {fetchingSuggestions && (
+                        <span className="absolute right-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+                      )}
                       <input
                         type="text"
                         value={manualAddress}
-                        onChange={(e) => { setManualAddress(e.target.value); setLocationSource('manual'); }}
+                        onChange={(e) => {
+                          setManualAddress(e.target.value);
+                          setLocationSource('manual');
+                          fetchAddressSuggestions(e.target.value);
+                        }}
+                        onFocus={() => addressSuggestions.length > 0 && setShowSuggestions(true)}
                         placeholder="e.g. MG Road, near Central Mall, Pune"
-                        className="w-full pl-9 pr-3 py-2.5 text-sm border border-gray-200 rounded-xl bg-gray-50 focus:bg-white focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
+                        className="w-full pl-9 pr-8 py-2.5 text-sm border border-gray-200 rounded-xl bg-gray-50 focus:bg-white focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
+                        autoComplete="off"
                       />
+                      {showSuggestions && addressSuggestions.length > 0 && (
+                        <ul className="absolute z-50 left-0 right-0 mt-1 bg-white border border-gray-200 rounded-xl shadow-lg overflow-hidden max-h-56 overflow-y-auto">
+                          {addressSuggestions.map((item) => (
+                            <li
+                              key={item.place_id}
+                              onMouseDown={(e) => { e.preventDefault(); handleSelectSuggestion(item); }}
+                              className="flex items-start gap-2 px-3 py-2.5 hover:bg-primary/5 cursor-pointer border-b border-gray-50 last:border-0 transition-colors"
+                            >
+                              <MapPin className="w-3.5 h-3.5 text-primary shrink-0 mt-0.5" />
+                              <span className="text-xs text-gray-700 leading-snug line-clamp-2">{item.display_name}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      )}
                     </div>
                   </div>
 
@@ -588,15 +684,69 @@ export default function Result() {
                 <h3 className="font-bold text-gray-800 text-sm">Grievance Description</h3>
               </div>
               <div className="flex items-center gap-2">
-                <button
-                  onClick={handleRegenerate}
-                  disabled={isGenerating || regenerating}
-                  title="Regenerate grievance description using AI"
-                  className="text-xs font-medium text-gray-500 hover:text-primary flex items-center gap-1 transition disabled:opacity-40 disabled:cursor-not-allowed"
-                >
-                  <RefreshCw className={`w-3.5 h-3.5 ${(isGenerating || regenerating) ? 'animate-spin' : ''}`} />
-                  {regenerating ? 'Starting…' : isGenerating ? 'Generating…' : 'Regenerate'}
-                </button>
+                {/* Regenerate with language picker */}
+                <div className="relative flex items-center" ref={regenLangRef}>
+                  <button
+                    onClick={handleRegenerate}
+                    disabled={isGenerating || regenerating}
+                    title="Regenerate grievance description using AI"
+                    className="text-xs font-medium text-gray-500 hover:text-primary flex items-center gap-1 transition disabled:opacity-40 disabled:cursor-not-allowed"
+                  >
+                    <RefreshCw className={`w-3.5 h-3.5 ${(isGenerating || regenerating) ? 'animate-spin' : ''}`} />
+                    {regenerating ? 'Starting…' : isGenerating ? 'Generating…' : 'Regenerate'}
+                  </button>
+                  <button
+                    onClick={() => !isGenerating && !regenerating && setShowRegenLang(v => !v)}
+                    disabled={isGenerating || regenerating}
+                    title="Choose language for regeneration"
+                    className="ml-0.5 px-1 py-0.5 text-gray-400 hover:text-primary rounded transition disabled:opacity-40 disabled:cursor-not-allowed text-[10px] leading-none"
+                  >
+                    ▾ {regenLang !== language && <span className="ml-0.5 text-primary font-semibold">{regenLang.toUpperCase()}</span>}
+                  </button>
+                  {showRegenLang && (
+                    className="absolute right-0 top-full mt-1.5 z-50 bg-white border border-gray-200 rounded-xl shadow-lg overflow-hidden min-w-32.5">
+                      <div className="px-3 py-1.5 text-[10px] font-semibold text-gray-400 uppercase tracking-wide border-b border-gray-100">Regenerate in…</div>
+                      {[
+                        { code: 'en', label: 'English' },
+                        { code: 'hi', label: 'हिन्दी' },
+                        { code: 'ta', label: 'தமிழ்' },
+                        { code: 'te', label: 'తెలుగు' },
+                        { code: 'bn', label: 'বাংলা' },
+                        { code: 'mr', label: 'मराठी' },
+                        { code: 'gu', label: 'ગુજરાતી' },
+                      ].map(({ code, label }) => (
+                        <button
+                          key={code}
+                          onMouseDown={(e) => {
+                            e.preventDefault();
+                            setRegenLang(code);
+                            setShowRegenLang(false);
+                            // Immediately trigger regeneration with chosen language
+                            setRegenerateError(null);
+                            setRegenerating(true);
+                            axios.post(
+                              'http://localhost:8000/analyze/regenerate',
+                              { classification, location: result?.location || {}, image_url, language: code },
+                              { headers: { Authorization: `Bearer ${user?.access_token}` } }
+                            ).then(res => {
+                              setComplaintText('');
+                              setGenerationJobId(res.data.job_id);
+                              setGenerationStatus('queued');
+                            }).catch(() => {
+                              setRegenerateError('Failed to start regeneration. Please try again.');
+                            }).finally(() => setRegenerating(false));
+                          }}
+                          className={`w-full text-left px-3 py-2 text-xs hover:bg-primary/5 transition flex justify-between items-center ${
+                            regenLang === code ? 'text-primary font-semibold bg-primary/5' : 'text-gray-700'
+                          }`}
+                        >
+                          <span>{label}</span>
+                          {regenLang === code && <span className="text-[9px] text-primary">✓</span>}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
                 <span className="text-gray-300">|</span>
                 <button 
                   onClick={handleCopy}
