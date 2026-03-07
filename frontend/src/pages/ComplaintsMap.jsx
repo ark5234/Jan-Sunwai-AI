@@ -7,25 +7,23 @@ import api from "../context/api";
 // Map tile source:
 // - Set VITE_MAPPLS_API_KEY in frontend/.env for official GoI-compliant
 //   MapmyIndia/Mappls tiles (free tier at https://developer.mappls.com)
-// - Falls back to ESRI World Imagery satellite tiles (free, no API key)
+// - Falls back to OpenStreetMap tiles (100% global coverage, no API key needed)
 const MAPPLS_KEY = import.meta.env.VITE_MAPPLS_API_KEY;
 const MAP_STYLE = MAPPLS_KEY
   ? `https://apis.mappls.com/advancedmaps/v1/${MAPPLS_KEY}/map_sdk_library/`
   : {
       version: 8,
       sources: {
-        satellite: {
+        osm: {
           type: 'raster',
-          tiles: [
-            'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
-          ],
+          tiles: ['https://tile.openstreetmap.org/{z}/{x}/{y}.png'],
           tileSize: 256,
           maxzoom: 19,
           attribution:
-            'Tiles © Esri — Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, GIS User Community',
+            '\u00a9 <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
         },
       },
-      layers: [{ id: 'satellite', type: 'raster', source: 'satellite' }],
+      layers: [{ id: 'osm', type: 'raster', source: 'osm' }],
     };
 
 const STATUS_COLOR = {
