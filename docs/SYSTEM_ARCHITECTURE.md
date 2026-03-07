@@ -10,12 +10,15 @@ CITIZEN
   │  Opens browser → http://localhost:5173
   ▼
 ┌────────────────────────────────────┐
-│   FRONTEND  (React + Vite)        │
+│   FRONTEND  (React 18 + Vite 4)   │
 │                                    │
 │  • Login / Register page          │
-│  • Upload photo + pin location    │
+│  • Upload photo + language select │
+│  • Pin location on MapLibre map   │
 │  • Shows AI-generated complaint   │
+│  • Street / Satellite map toggle  │
 │  • Submit → tracks status         │
+│  • SLA badge + resolution date    │
 └──────────────┬─────────────────────┘
                │  REST API calls (JSON)
                ▼  http://localhost:8000
@@ -32,7 +35,7 @@ CITIZEN
 │   3. GEOTAGGING — PIL reads EXIF GPS from the photo       │
 │   4. CLASSIFY   — CivicClassifier (Ollama pipeline)       │
 │   5. ENQUEUE    — LLM queue picks up the job              │
-│   6. GENERATE   — complaint letter drafted                │
+│   6. GENERATE   — complaint letter drafted (+ language)   │
 │   7. RETURN     — classification + location + draft       │
 │                                                            │
 │  After user edits & submits /complaints:                   │
@@ -48,8 +51,8 @@ CITIZEN
 │          │    │                                          │
 │ users    │    │  STEP 1 — Vision Cascade                 │
 │ complaints│   │    qwen2.5vl:3b    (primary,  3.2 GB)   │
-│ triage   │    │    granite3.2-vision:2b  (mid-tier)      │
-│          │    │    → structured JSON image description   │
+│           │   │    granite3.2-vision:2b  (mid-tier)      │
+│           │   │    → structured JSON image description   │
 └──────────┘    │                                          │
                 │  STEP 2 — Rule Engine  (zero VRAM)       │
                 │    deterministic keyword scoring         │
@@ -97,6 +100,8 @@ Photo uploaded
  STEP 4 — Complaint Writer (llama3.2:1b, text-only)
    Uses vision description + category + location to draft
    a 60-90 word formal civic complaint (no image re-read).
+   Supports multilingual output via `language` parameter
+   (e.g. Hindi, Tamil, Telugu, Bengali, Marathi, Gujarati).
       │
       ▼
  Citizen sees: category + location + draft letter
@@ -141,9 +146,9 @@ The system routes complaints to 10 canonical categories:
 
 | Role | Permissions |
 |---|---|
-| **Citizen** | Upload photo, get AI analysis, submit complaint, track own complaints |
+| **Citizen** | Upload photo, select language, get AI analysis, submit complaint, track own complaints |
 | **Dept Head** | See all complaints assigned to their department, update status |
-| **Admin** | See everything, manage triage queue, review uncertain classifications |
+| **Admin** | See everything, manage live triage queue, review uncertain classifications |
 
 ---
 
@@ -192,6 +197,18 @@ each model fits on its own. GPU is always preferred over CPU.
 | Uploaded images | `backend/uploads/` | served at `/uploads/` |
 | Logs | `backend/logs/app.log` | rotates at 5 MB |
 | AI models | `C:\Users\<user>\.ollama\models\` | ~4.5 GB on disk |
+
+### Frontend Map Library
+
+The frontend uses **react-map-gl v7 + MapLibre GL v3** for all maps (complaint submission pin-drop + admin complaints map).
+
+| Feature | Detail |
+|---|---|
+| Default tiles | CARTO Voyager — English labels, full India coverage, no API key needed |
+| Satellite tiles | ESRI World Imagery — switchable via Street/Satellite toggle button |
+| Official GoI tiles | Set `VITE_MAPPLS_API_KEY` in `frontend/.env` to use MapmyIndia/Mappls survey tiles (correct J&K/Ladakh borders) |
+| India bounds | Map locked to `[[67,6],[98,38]]` — cannot pan outside India |
+| Vite compat | maplibre-gl v3 (CJS build) required for Vite 4 — v5 dropped default export |
 
 ---
 
@@ -289,5 +306,62 @@ Interactive API docs (all endpoints + built-in test form):
 |---|---|---|
 | `qwen2.5vl:3b` | 3.2 GB | Primary vision — structured JSON image analysis |
 | `granite3.2-vision:2b` | ~2.4 GB | Mid/fallback vision — used when qwen2.5vl times out or OOMs |
-| `llama3.2:1b` | 1.3 GB | Reasoning (ambiguous cases) + complaint text writer |
+| `llama3.2:1b` | 1.3 GB | Reasoning (ambiguous cases) + complaint text writer (multilingual) |
 | `llava:latest` | 4.7 GB | Legacy (no longer used by API) |
+
+---
+
+## 11. Triage Queue
+
+The Human Review (Triage) queue surfaces complaints where the AI classification is uncertain.
+
+```
+Complaint submitted
+      │
+      ▼
+ai_metadata.confidence_score < 0.65 ?
+      │ YES                  │ NO
+      ▼                      ▼
+Appears in              Routed directly
+Triage Queue            to dept_head
+(GET /triage/review-queue)
+      │
+      ▼
+Admin reviews — Approve / Reject
+(POST /triage/review-queue/decision)
+      │
+      ├─ Optional: override department assignment
+      ├─ Stamps triage_decision on MongoDB complaint doc
+      └─ CSV audit trail in triage_output/
+```
+
+- The queue queries **MongoDB live** — not a static CSV file
+- Filter: `ai_metadata.confidence_score < 0.65` AND `triage_decision: {$exists: false}`
+- Once a decision is made the complaint leaves the queue automatically
+
+---
+
+## 12. Language Pipeline
+
+Citizens can select the output language of the AI-generated complaint letter:
+
+```
+POST /complaints/analyze
+  └── language: "hi" | "ta" | "te" | "bn" | "mr" | "gu" | "en" (default)
+                        │
+                        ▼
+              LLMJob.language stored in job queue
+                        │
+                        ▼
+              generator.generate_complaint(language=...)
+                        │
+              _LANG_NAMES dict maps code → language name
+                        │
+              lang_instruction prepended to prompt:
+              "Write the complaint in Hindi."
+                        │
+                        ▼
+              Draft returned to frontend in selected language
+```
+
+Regenerate endpoint (`POST /complaints/analyze/regenerate`) also accepts `language` in the JSON body.

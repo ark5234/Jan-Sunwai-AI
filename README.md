@@ -92,13 +92,14 @@ Image File
 | Layer | Technology |
 |---|---|
 | Backend | Python 3.13, FastAPI, Uvicorn |
-| Frontend | React 18, Vite, Tailwind CSS |
+| Frontend | React 18, Vite 4, Tailwind CSS v4 |
+| Map | react-map-gl v7 + MapLibre GL v3 (street + satellite toggle) |
 | Database | MongoDB (via Docker), Motor (async driver) |
 | AI Runtime | Ollama (local GPU inference) |
-| Vision Model (primary) | `qwen2.5vl:3b` -- image narration, structured JSON output |
-| Vision Model (mid-tier) | `granite3.2-vision:2b` -- fallback if primary times out or VRAM is low |
-| Civic Rule Engine | Python keyword scorer -- zero VRAM category selection |
-| Reasoning Model | `llama3.2:1b` -- ambiguous case classifier + complaint writer |
+| Vision Model (primary) | `qwen2.5vl:3b` — image narration, structured JSON output |
+| Vision Model (mid-tier) | `granite3.2-vision:2b` — fallback if primary times out or VRAM is low |
+| Civic Rule Engine | Python keyword scorer — zero VRAM category selection |
+| Reasoning Model | `llama3.2:1b` — ambiguous case classifier + complaint writer |
 | Auth | JWT (OAuth2 password flow) |
 | Containerization | Docker + Docker Compose |
 
@@ -121,8 +122,11 @@ Jan-Sunwai-AI/
 |   |   +-- routers/
 |   |       +-- complaints.py    # /complaints -- main submission flow
 |   |       +-- users.py         # /users -- auth + profile
-|   |       +-- triage.py        # /triage -- offline batch triage
+|   |       +-- triage.py        # /triage -- live MongoDB triage queue
+|   |       +-- notifications.py # /notifications -- in-app alerts
 |   |       +-- health.py        # /health + /health/gpu
+|   |   +-- services/
+|   |       +-- llm_queue.py     # Async LLM job queue (2 worker threads)
 |   +-- automated_triage.py      # CLI: batch-sort images via Ollama
 |   +-- evaluate_sorted_dataset.py  # CLI: evaluate sorting quality
 |   +-- download_models.py       # CLI: pull Ollama models
@@ -303,9 +307,15 @@ Open **http://localhost:5173** in your browser.
 
 | Method | Endpoint | Description |
 |---|---|---|
-| `POST` | `/complaints/analyze` | Submit image -- classify + generate complaint |
+| `POST` | `/complaints/analyze` | Submit image — classify + generate complaint (supports `language` param) |
+| `POST` | `/complaints/analyze/regenerate` | Regenerate complaint draft (with language selection) |
 | `GET` | `/complaints/` | List complaints (filtered by role) |
+| `GET` | `/complaints/{id}` | Get single complaint |
 | `PATCH` | `/complaints/{id}/status` | Update complaint status |
+| `GET` | `/triage/review-queue` | Live queue of low-confidence complaints (confidence < 0.65) |
+| `POST` | `/triage/review-queue/decision` | Approve / reject a triage item, optional dept override |
+| `GET` | `/notifications/` | List in-app notifications for current user |
+| `PATCH` | `/notifications/{id}/read` | Mark notification as read |
 | `POST` | `/users/register` | Register new user |
 | `POST` | `/users/login` | Get JWT token |
 | `GET` | `/health` | Backend + DB health check |
@@ -392,6 +402,12 @@ Copy `backend/.env.example` to `backend/.env` and edit as needed:
 | `LLM_INLINE_TIMEOUT_SECONDS` | `15` | Timeout for synchronous LLM calls |
 | `RULE_ENGINE_ONLY` | `false` | Set `true` to skip LLM reasoning entirely |
 | `AMBIGUITY_THRESHOLD` | `2.0` | Min rule engine score to skip the reasoning step |
+
+Frontend environment variables (`frontend/.env`):
+
+| Variable | Default | Description |
+|---|---|---|
+| `VITE_MAPPLS_API_KEY` | *(unset)* | Optional — MapmyIndia/Mappls API key for official GoI survey map tiles. Get a free key at [developer.mappls.com](https://developer.mappls.com). Without it, CARTO Voyager tiles are used (English labels, full India coverage). |
 
 ---
 
