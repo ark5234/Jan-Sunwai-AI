@@ -8,23 +8,29 @@ import { useAuth } from '../context/AuthContext';
 // Map tile source:
 // - Set VITE_MAPPLS_API_KEY in frontend/.env for official GoI-compliant
 //   MapmyIndia/Mappls tiles (free tier at https://developer.mappls.com)
-// - Falls back to OpenStreetMap tiles (100% global coverage, no API key needed)
+//   → shows official Survey of India boundaries for J&K, Ladakh, etc.
+// - Falls back to CARTO Voyager (English labels, full India coverage, no key needed)
 const _MAPPLS_KEY = import.meta.env.VITE_MAPPLS_API_KEY;
 const _MAP_STYLE = _MAPPLS_KEY
   ? `https://apis.mappls.com/advancedmaps/v1/${_MAPPLS_KEY}/map_sdk_library/`
   : {
       version: 8,
       sources: {
-        osm: {
+        carto: {
           type: 'raster',
-          tiles: ['https://tile.openstreetmap.org/{z}/{x}/{y}.png'],
+          tiles: [
+            'https://a.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png',
+            'https://b.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png',
+            'https://c.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png',
+            'https://d.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png',
+          ],
           tileSize: 256,
           maxzoom: 19,
           attribution:
-            '\u00a9 <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+            '\u00a9 <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors \u00a9 <a href="https://carto.com/attributions">CARTO</a>',
         },
       },
-      layers: [{ id: 'osm', type: 'raster', source: 'osm' }],
+      layers: [{ id: 'carto', type: 'raster', source: 'carto' }],
     };
 import axios from 'axios';
 
