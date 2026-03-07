@@ -4,13 +4,10 @@ import Map, { Source, Layer, Popup, NavigationControl } from "react-map-gl/mapli
 import "maplibre-gl/dist/maplibre-gl.css";
 import api from "../context/api";
 
-// Map tile source:
-// - Set VITE_MAPPLS_API_KEY in frontend/.env for official GoI-compliant
-//   MapmyIndia/Mappls tiles (free tier at https://developer.mappls.com)
-//   → shows official Survey of India boundaries for J&K, Ladakh, etc.
-// - Falls back to CARTO Voyager (English labels, full India coverage, no key needed)
+// Set VITE_MAPPLS_API_KEY in frontend/.env for official GoI-compliant tiles.
 const MAPPLS_KEY = import.meta.env.VITE_MAPPLS_API_KEY;
-const MAP_STYLE = MAPPLS_KEY
+
+const STREET_STYLE = MAPPLS_KEY
   ? `https://apis.mappls.com/advancedmaps/v1/${MAPPLS_KEY}/map_sdk_library/`
   : {
       version: 8,
@@ -31,6 +28,23 @@ const MAP_STYLE = MAPPLS_KEY
       },
       layers: [{ id: 'carto', type: 'raster', source: 'carto' }],
     };
+
+const SATELLITE_STYLE = {
+  version: 8,
+  sources: {
+    satellite: {
+      type: 'raster',
+      tiles: [
+        'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+      ],
+      tileSize: 256,
+      maxzoom: 19,
+      attribution:
+        'Tiles \u00a9 Esri \u2014 Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, GIS User Community',
+    },
+  },
+  layers: [{ id: 'satellite', type: 'raster', source: 'satellite' }],
+};
 
 const STATUS_COLOR = {
   Open: "#3b82f6",
