@@ -4,6 +4,54 @@ import time
 from app.config import settings
 from app.llm_lock import ollama_lock
 
+# deep-translator language codes for Indian languages
+# GoogleTranslator uses BCP-47 / ISO 639-1 codes matching what we already store.
+_GOOGLE_LANG_MAP = {
+    "hi": "hi",  # Hindi
+    "mr": "mr",  # Marathi
+    "ta": "ta",  # Tamil
+    "te": "te",  # Telugu
+    "kn": "kn",  # Kannada
+    "bn": "bn",  # Bengali
+    "gu": "gu",  # Gujarati
+}
+
+
+def _translate(text: str, target_lang: str) -> str:
+    """
+    Translate `text` from English to `target_lang` using deep-translator.
+    Falls back to the original English text if translation fails so the
+    complaint is never lost.
+
+    Primary:  GoogleTranslator (free, no API key, via unofficial API)
+    Fallback: MyMemoryTranslator (free, 10K chars/day, no key)
+    """
+    google_code = _GOOGLE_LANG_MAP.get(target_lang)
+    if not google_code:
+        return text  # unsupported language — return as-is
+
+    # Primary: Google Translate
+    try:
+        from deep_translator import GoogleTranslator
+        translated = GoogleTranslator(source="en", target=google_code).translate(text)
+        if translated and translated.strip():
+            print(f"[generator] Translated to {target_lang} via GoogleTranslator")
+            return translated.strip()
+    except Exception as e:
+        print(f"[generator] GoogleTranslator failed ({e}), trying MyMemory...")
+
+    # Fallback: MyMemory
+    try:
+        from deep_translator import MyMemoryTranslator
+        translated = MyMemoryTranslator(source="en", target=google_code).translate(text)
+        if translated and translated.strip():
+            print(f"[generator] Translated to {target_lang} via MyMemoryTranslator")
+            return translated.strip()
+    except Exception as e:
+        print(f"[generator] MyMemoryTranslator also failed ({e}), returning English text")
+
+    return text  # both failed — return original English
+
 
 def _wait_for_model_unload(client: ollama.Client, model_name: str, timeout: float = 30.0) -> None:
     """
@@ -44,55 +92,24 @@ def generate_complaint(image_path, classification_result, user_details, location
     )
     address = location_details.get("address", "Location not specified")
 
-    # Language metadata — english name, native name, and a seed phrase in that language
-    # The seed phrase primes the model to start generating in the right script.
-    _LANG_META = {
-        "en": None,
-        "hi": ("Hindi",    "हिंदी",    "शिकायत विवरण:"),
-        "mr": ("Marathi",  "मराठी",    "तक्रार तपशील:"),
-        "ta": ("Tamil",    "தமிழ்",    "புகார் விவரம்:"),
-        "te": ("Telugu",   "తెలుగు",   "ఫిర్యాదు వివరాలు:"),
-        "kn": ("Kannada",  "ಕನ್ನಡ",    "ದೂರಿನ ವಿವರ:"),
-        "bn": ("Bengali",  "বাংলা",    "অভিযোগের বিবরণ:"),
-        "gu": ("Gujarati", "ગુજરાતી",  "ફરિયાદ વિગત:"),
-    }
-    lang_meta = _LANG_META.get(language)
-
-    if lang_meta:
-        eng_name, native_name, seed_phrase = lang_meta
-        system_prompt = (
-            f"You are a civic complaint drafting assistant for Indian government portals. "
-            f"You MUST write ONLY in {eng_name} ({native_name}) script. "
-            f"Every single word of your response must be in {eng_name}. "
-            f"Do NOT use English, Hindi, or any other language. "
-            f"Do NOT transliterate. Use proper {eng_name} script characters."
-        )
-        lang_instruction = (
-            f"[LANGUAGE: {eng_name} — {native_name}]\n"
-            f"YOU MUST RESPOND ENTIRELY IN {eng_name.upper()} ({native_name}). NO ENGLISH ALLOWED.\n\n"
-        )
-        # Seed the completion with the native-script label so the model
-        # starts in the right script from token 1.
-        completion_seed = seed_phrase
-    else:
-        system_prompt = (
-            "You are a civic complaint drafting assistant for Indian government portals. "
-            "Write formal, concise complaint descriptions in plain English."
-        )
-        lang_instruction = ""
-        completion_seed = "Complaint description:"
+    # ── Step 1: Always generate in English ───────────────────────────────────
+    # Small models (1B) cannot reliably generate in Indian scripts.
+    # We generate a quality English complaint, then post-translate it.
+    system_prompt = (
+        "You are a civic complaint drafting assistant for Indian government portals. "
+        "Write formal, concise complaint descriptions in plain English."
+    )
 
     prompt = (
-        f"{lang_instruction}"
         f"Issue observed: {description}\n"
         f"Department: {category}\n"
         f"Location: {address}\n\n"
-        f"Write a 60-90 word civic complaint description.\n"
+        f"Write a 60-90 word civic complaint description in formal English.\n"
         f"Rules: no salutations, no sign-offs, no 'Dear Sir', no 'Subject:' line, "
         f"no meta-commentary, no letter format. "
         f"Start directly with the issue. Describe what the problem is, "
         f"why it is dangerous or inconvenient, and what action is needed.\n\n"
-        f"{completion_seed}"
+        f"Complaint description:"
     )
 
     with ollama_lock:
@@ -135,7 +152,13 @@ def generate_complaint(image_path, classification_result, user_details, location
             except Exception:
                 pass
 
-            return clean if clean else raw
+            english_text = clean if clean else raw
+
+            # ── Step 2: Post-translate if a non-English language was requested ──
+            if language and language != "en":
+                english_text = _translate(english_text, target_lang=language)
+
+            return english_text
 
         except Exception as e:
             return (

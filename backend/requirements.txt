@@ -15,6 +15,7 @@ bcrypt==4.0.1
 pandas          # triage CSV endpoints
 tqdm
 python-dotenv
+deep-translator # post-generation translation for Indian languages
 
 # ── Dev / Testing ──────────────────────────────────────────────────────────
 pytest
