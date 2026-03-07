@@ -8,11 +8,26 @@ import { useAuth } from '../context/AuthContext';
 // Map tile source:
 // - Set VITE_MAPPLS_API_KEY in frontend/.env for official GoI-compliant
 //   MapmyIndia/Mappls tiles (free tier at https://developer.mappls.com)
-// - Falls back to OpenFreeMap (free, no key required, good India coverage)
+// - Falls back to ESRI World Imagery satellite tiles (free, no API key)
 const _MAPPLS_KEY = import.meta.env.VITE_MAPPLS_API_KEY;
 const _MAP_STYLE = _MAPPLS_KEY
   ? `https://apis.mappls.com/advancedmaps/v1/${_MAPPLS_KEY}/map_sdk_library/`
-  : 'https://tiles.openfreemap.org/styles/liberty';
+  : {
+      version: 8,
+      sources: {
+        satellite: {
+          type: 'raster',
+          tiles: [
+            'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+          ],
+          tileSize: 256,
+          maxzoom: 19,
+          attribution:
+            'Tiles © Esri — Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, GIS User Community',
+        },
+      },
+      layers: [{ id: 'satellite', type: 'raster', source: 'satellite' }],
+    };
 import axios from 'axios';
 
 
