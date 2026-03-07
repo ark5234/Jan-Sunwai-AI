@@ -44,36 +44,55 @@ def generate_complaint(image_path, classification_result, user_details, location
     )
     address = location_details.get("address", "Location not specified")
 
-    # Language instruction injected into the prompt
-    _LANG_NAMES = {
-        "en": None,  # no extra instruction needed for English
-        "hi": "Hindi (हिंदी)",
-        "mr": "Marathi (मराठी)",
-        "ta": "Tamil (தமிழ்)",
-        "te": "Telugu (తెలుగు)",
-        "kn": "Kannada (ಕನ್ನಡ)",
-        "bn": "Bengali (বাংলা)",
-        "gu": "Gujarati (ગુજરાતી)",
+    # Language metadata — english name, native name, and a seed phrase in that language
+    # The seed phrase primes the model to start generating in the right script.
+    _LANG_META = {
+        "en": None,
+        "hi": ("Hindi",    "हिंदी",    "शिकायत विवरण:"),
+        "mr": ("Marathi",  "मराठी",    "तक्रार तपशील:"),
+        "ta": ("Tamil",    "தமிழ்",    "புகார் விவரம்:"),
+        "te": ("Telugu",   "తెలుగు",   "ఫిర్యాదు వివరాలు:"),
+        "kn": ("Kannada",  "ಕನ್ನಡ",    "ದೂರಿನ ವಿವರ:"),
+        "bn": ("Bengali",  "বাংলা",    "অভিযোগের বিবরণ:"),
+        "gu": ("Gujarati", "ગુજરાતી",  "ફરિયાદ વિગત:"),
     }
-    lang_name = _LANG_NAMES.get(language)
-    lang_instruction = (
-        f"IMPORTANT: Write the entire complaint description in {lang_name} script only. "
-        f"Do NOT use English. Use natural, formal {lang_name.split(' ')[0]} as used in official government complaints.\n\n"
-        if lang_name else ""
-    )
+    lang_meta = _LANG_META.get(language)
+
+    if lang_meta:
+        eng_name, native_name, seed_phrase = lang_meta
+        system_prompt = (
+            f"You are a civic complaint drafting assistant for Indian government portals. "
+            f"You MUST write ONLY in {eng_name} ({native_name}) script. "
+            f"Every single word of your response must be in {eng_name}. "
+            f"Do NOT use English, Hindi, or any other language. "
+            f"Do NOT transliterate. Use proper {eng_name} script characters."
+        )
+        lang_instruction = (
+            f"[LANGUAGE: {eng_name} — {native_name}]\n"
+            f"YOU MUST RESPOND ENTIRELY IN {eng_name.upper()} ({native_name}). NO ENGLISH ALLOWED.\n\n"
+        )
+        # Seed the completion with the native-script label so the model
+        # starts in the right script from token 1.
+        completion_seed = seed_phrase
+    else:
+        system_prompt = (
+            "You are a civic complaint drafting assistant for Indian government portals. "
+            "Write formal, concise complaint descriptions in plain English."
+        )
+        lang_instruction = ""
+        completion_seed = "Complaint description:"
 
     prompt = (
         f"{lang_instruction}"
-        f"[COMPLAINT FORM FIELD — plain text only, no letter format]\n\n"
         f"Issue observed: {description}\n"
         f"Department: {category}\n"
         f"Location: {address}\n\n"
-        f"Fill in the complaint description field below (60-90 words).\n"
+        f"Write a 60-90 word civic complaint description.\n"
         f"Rules: no salutations, no sign-offs, no 'Dear Sir', no 'Subject:' line, "
-        f"no meta-commentary. "
+        f"no meta-commentary, no letter format. "
         f"Start directly with the issue. Describe what the problem is, "
         f"why it is dangerous or inconvenient, and what action is needed.\n\n"
-        f"Complaint description:"
+        f"{completion_seed}"
     )
 
     with ollama_lock:
@@ -95,7 +114,8 @@ def generate_complaint(image_path, classification_result, user_details, location
             response = client.generate(
                 model=settings.reasoning_model,
                 prompt=prompt,
-                options={"temperature": 0.0},
+                system=system_prompt,
+                options={"temperature": 0.3},
             )
             if response is None:
                 raise RuntimeError("Reasoning model returned no response.")
