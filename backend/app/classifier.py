@@ -106,14 +106,19 @@ def _keyword_fallback(description: str) -> str:
 def _is_screen_capture(image_path: str) -> bool:
     """
     Heuristic PIL-based check: returns True if the image looks like a
-    screenshot, UI screen capture, or scanned document rather than an
-    outdoor photograph.
+    screenshot, UI screen capture, payment receipt, or scanned document
+    rather than an outdoor photograph.
 
-    Signals used:
-      1. sRGB / P-mode palette (screenshots are always sRGB, RAW/JPEG photos vary)
-      2. Very low unique-colour count in a sampled strip (digital UI text has few colours)
-      3. Large solid-colour regions (status bars, white/dark backgrounds)
-      4. High pixel uniformity in top/bottom strips (phone chrome / document margins)
+    Key insight from real-world data:
+    - Outdoor photos:  all_colors > 15000, center_bright ≈ 0, center_colors > 4000
+    - Phone screenshots / receipts: all_colors ≈ 2000 (JPEG), center_bright > 0.80,
+      center_colors < 400, high grayscale fraction (mostly black text on white)
+
+    Four independent signals — any two firing together = screenshot:
+      S1. Center-region brightness > 0.75  (white document/receipt background)
+      S2. Center-region unique-colour count < 400  (few colours in content area)
+      S3. Global grayscale fraction > 0.82  (mostly black/white/gray = text doc)
+      S4. Global unique-colour count < 3500  (far fewer than real outdoor JPEG)
     """
     try:
         with Image.open(image_path) as img:
@@ -121,45 +126,45 @@ def _is_screen_capture(image_path: str) -> bool:
             thumb = img.convert("RGB").resize((200, 200), Image.NEAREST)
             width, height = thumb.size
 
-            # ── Signal 1: count unique colours in the top strip (status bar / header)
-            top_strip = thumb.crop((0, 0, width, max(1, height // 8)))
-            top_colors = len(set(top_strip.getdata()))
+            # ── Center 50% region (avoids phone border / dark status bar noise)
+            cx1, cy1 = width // 4, height // 4
+            cx2, cy2 = width - width // 4, height - height // 4
+            center = thumb.crop((cx1, cy1, cx2, cy2))
+            center_px = list(center.getpixels()) if hasattr(center, "getpixels") else list(center.getdata())
 
-            # ── Signal 2: count unique colours in the bottom strip
-            bot_strip = thumb.crop((0, height - max(1, height // 8), width, height))
-            bot_colors = len(set(bot_strip.getdata()))
+            center_colors = len(set(center_px))
+            center_total = len(center_px)
+            center_bright = sum(1 for r, g, b in center_px if r > 230 and g > 230 and b > 230) / center_total
 
-            # ── Signal 3: overall unique colours (photos are rich; UIs are sparse)
-            all_colors = len(set(thumb.getdata()))
+            # ── Global pixel sample
+            all_px = list(thumb.getpixels()) if hasattr(thumb, "getpixels") else list(thumb.getdata())
+            all_colors = len(set(all_px))
+            total = len(all_px)
 
-            # ── Signal 4: check for large near-white or near-black solid regions
-            pixels = list(thumb.getdata())
-            total = len(pixels)
-            bright_count = sum(1 for r, g, b in pixels if r > 240 and g > 240 and b > 240)
-            dark_count = sum(1 for r, g, b in pixels if r < 15 and g < 15 and b < 15)
-            bright_frac = bright_count / total
-            dark_frac = dark_count / total
-
-            # Heuristic thresholds (tuned empirically)
-            # A real outdoor photograph has thousands of unique colours even when
-            # downscaled to 200×200.  Screenshots and receipts have much fewer.
-            very_few_colors = all_colors < 800
-            sparse_strip = top_colors < 120 or bot_colors < 120
-            mostly_white = bright_frac > 0.55  # document / receipt background
-            mostly_black = dark_frac > 0.55    # dark-mode UI
-
-            is_screenshot = (
-                (very_few_colors and sparse_strip)
-                or (mostly_white and sparse_strip)
-                or (mostly_black and sparse_strip)
-                or (very_few_colors and mostly_white)
-                or (very_few_colors and mostly_black)
+            # Grayscale: pixels where R≈G≈B (within 25 of each other)
+            gray_count = sum(
+                1 for r, g, b in all_px
+                if abs(int(r) - int(g)) < 25 and abs(int(g) - int(b)) < 25
             )
+            gray_frac = gray_count / total
+
+            # ── Individual signals
+            s1_bright_center = center_bright > 0.75     # white doc/receipt interior
+            s2_few_center    = center_colors < 400      # sparse content area
+            s3_grayscale     = gray_frac > 0.82         # mostly black+white text doc
+            s4_few_global    = all_colors < 3500        # sparse palette overall
+
+            # Require at least 2 signals to fire (reduces false-positives on
+            # foggy/overcast outdoor photos which can look slightly washed out)
+            score = sum([s1_bright_center, s2_few_center, s3_grayscale, s4_few_global])
+            is_screenshot = score >= 2
 
             if is_screenshot:
-                print(f"[classifier] screenshot heuristic triggered: "
-                      f"all_colors={all_colors}, top_colors={top_colors}, "
-                      f"bright_frac={bright_frac:.2f}, dark_frac={dark_frac:.2f}")
+                print(
+                    f"[classifier] screenshot heuristic TRIGGERED (score={score}/4): "
+                    f"center_bright={center_bright:.2f}, center_colors={center_colors}, "
+                    f"gray_frac={gray_frac:.2f}, all_colors={all_colors}"
+                )
             return is_screenshot
     except Exception as e:
         print(f"[classifier] _is_screen_capture check failed ({e}) — skipping")
