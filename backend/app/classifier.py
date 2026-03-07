@@ -33,6 +33,21 @@ CATEGORY_DEFINITIONS: dict[str, str] = {
     "Uncategorized":                   "does not clearly match any of the above civic categories",
 }
 
+# Keywords that strongly indicate a non-civic / irrelevant _vision description_
+# (checked after the vision model has run against its full text output)
+_NON_CIVIC_VISION_PHRASES: list[str] = [
+    # Payment / financial
+    "payment receipt", "transaction", "upi", "bank statement", "invoice",
+    "receipt", "bill payment", "debit", "credit card", "bank transfer",
+    "amount paid", "transaction id", "debited", "credited",
+    # UI / digital
+    "mobile screen", "phone screen", "app screenshot", "computer screen",
+    "monitor screen", "website screenshot", "chat screenshot", "text message",
+    "digital receipt", "qr code", "barcode",
+    # Documents
+    "document", "certificate", "id card", "aadhar", "passport", "form filled",
+]
+
 # Keywords that indicate a non-civic / irrelevant photo
 _NEGATIVE_KEYWORDS = [
     "selfie", "portrait", "food", "meal", "restaurant", "cartoon", "anime",
@@ -86,6 +101,69 @@ def _keyword_fallback(description: str) -> str:
         if any(kw in desc for kw in keywords):
             return category
     return "Uncategorized"
+
+
+def _is_screen_capture(image_path: str) -> bool:
+    """
+    Heuristic PIL-based check: returns True if the image looks like a
+    screenshot, UI screen capture, or scanned document rather than an
+    outdoor photograph.
+
+    Signals used:
+      1. sRGB / P-mode palette (screenshots are always sRGB, RAW/JPEG photos vary)
+      2. Very low unique-colour count in a sampled strip (digital UI text has few colours)
+      3. Large solid-colour regions (status bars, white/dark backgrounds)
+      4. High pixel uniformity in top/bottom strips (phone chrome / document margins)
+    """
+    try:
+        with Image.open(image_path) as img:
+            # Downscale for fast sampling
+            thumb = img.convert("RGB").resize((200, 200), Image.NEAREST)
+            width, height = thumb.size
+
+            # ── Signal 1: count unique colours in the top strip (status bar / header)
+            top_strip = thumb.crop((0, 0, width, max(1, height // 8)))
+            top_colors = len(set(top_strip.getdata()))
+
+            # ── Signal 2: count unique colours in the bottom strip
+            bot_strip = thumb.crop((0, height - max(1, height // 8), width, height))
+            bot_colors = len(set(bot_strip.getdata()))
+
+            # ── Signal 3: overall unique colours (photos are rich; UIs are sparse)
+            all_colors = len(set(thumb.getdata()))
+
+            # ── Signal 4: check for large near-white or near-black solid regions
+            pixels = list(thumb.getdata())
+            total = len(pixels)
+            bright_count = sum(1 for r, g, b in pixels if r > 240 and g > 240 and b > 240)
+            dark_count = sum(1 for r, g, b in pixels if r < 15 and g < 15 and b < 15)
+            bright_frac = bright_count / total
+            dark_frac = dark_count / total
+
+            # Heuristic thresholds (tuned empirically)
+            # A real outdoor photograph has thousands of unique colours even when
+            # downscaled to 200×200.  Screenshots and receipts have much fewer.
+            very_few_colors = all_colors < 800
+            sparse_strip = top_colors < 120 or bot_colors < 120
+            mostly_white = bright_frac > 0.55  # document / receipt background
+            mostly_black = dark_frac > 0.55    # dark-mode UI
+
+            is_screenshot = (
+                (very_few_colors and sparse_strip)
+                or (mostly_white and sparse_strip)
+                or (mostly_black and sparse_strip)
+                or (very_few_colors and mostly_white)
+                or (very_few_colors and mostly_black)
+            )
+
+            if is_screenshot:
+                print(f"[classifier] screenshot heuristic triggered: "
+                      f"all_colors={all_colors}, top_colors={top_colors}, "
+                      f"bright_frac={bright_frac:.2f}, dark_frac={dark_frac:.2f}")
+            return is_screenshot
+    except Exception as e:
+        print(f"[classifier] _is_screen_capture check failed ({e}) — skipping")
+        return False
 
 
 def _load_image_as_jpeg_bytes(image_path: str) -> bytes:
@@ -143,6 +221,24 @@ class CivicClassifier:
                 "raw_json": "",
             }
 
+        # ── Pre-check: PIL-based screenshot / document detector ──────────────
+        # Run BEFORE acquiring the ollama_lock so we don't block the GPU thread.
+        if _is_screen_capture(image_path):
+            return {
+                "department": "Invalid Content",
+                "label": "Screenshot or digital document — not a civic photo",
+                "confidence": 0.9,
+                "is_valid": False,
+                "is_non_civic": True,
+                "vision_description": "Image appears to be a screenshot, payment receipt, or digital document rather than an outdoor civic issue photograph.",
+                "vision_payload": {},
+                "raw_category": "Invalid Content",
+                "rationale": "PIL heuristic: low unique-colour count / solid background indicates screen capture or document scan",
+                "method": "non_civic_guard",
+                "model_used": "pil_heuristic",
+                "raw_json": "",
+            }
+
         ollama_lock.acquire()
         try:
             image_bytes = _load_image_as_jpeg_bytes(image_path)
@@ -194,6 +290,9 @@ class CivicClassifier:
                 "- Be specific: 'traffic congestion' / 'pothole' / 'waterlogging' / "
                 "'broken street light' / 'fallen tree' / 'garbage dump' / 'dangling wire' / "
                 "'railway platform' / 'train station'\n"
+                "- If the image is a phone screenshot, payment receipt, bank transaction, "
+                "UPI screen, chat message, or any digital/scanned document, set "
+                "primary_issue to 'non_civic_document' and description to describe it as such.\n"
                 "- Keep description under 40 words\n"
                 "- No markdown, no explanation outside JSON"
             )
@@ -356,6 +455,33 @@ class CivicClassifier:
                     "vision_payload": vision_payload,
                     "raw_category": "Uncategorized",
                     "rationale": "railway/transit scene — not in civic portal scope",
+                    "method": "non_civic_guard",
+                    "model_used": active_vision_model,
+                    "raw_json": raw_vision_json,
+                }
+
+            # ── Non-civic document / screenshot detected by vision model output ──
+            _NON_CIVIC_VISION_TRIGGERS = [
+                "non_civic_document", "payment receipt", "transaction id",
+                "upi", "bank statement", "invoice", "digital receipt",
+                "mobile screen", "phone screen", "app screenshot", "chat message",
+                "scanned document", "id card", "aadhar",
+            ]
+            _vision_non_civic_hit = any(
+                t in _all_payload_text for t in _NON_CIVIC_VISION_TRIGGERS
+            )
+            if _vision_non_civic_hit:
+                print(f"[classifier] non-civic document/screenshot detected via vision output")
+                return {
+                    "department": "Invalid Content",
+                    "label": str(vision_payload.get("description", "Non-civic digital document or screenshot")),
+                    "confidence": 0.9,
+                    "is_valid": False,
+                    "is_non_civic": True,
+                    "vision_description": str(vision_payload.get("description", "")),
+                    "vision_payload": vision_payload,
+                    "raw_category": "Invalid Content",
+                    "rationale": "vision model detected a payment receipt, screenshot, or digital document",
                     "method": "non_civic_guard",
                     "model_used": active_vision_model,
                     "raw_json": raw_vision_json,
