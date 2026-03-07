@@ -704,7 +704,7 @@ export default function Result() {
                     ▾ {regenLang !== language && <span className="ml-0.5 text-primary font-semibold">{regenLang.toUpperCase()}</span>}
                   </button>
                   {showRegenLang && (
-                    className="absolute right-0 top-full mt-1.5 z-50 bg-white border border-gray-200 rounded-xl shadow-lg overflow-hidden min-w-32.5">
+                    <div className="absolute right-0 top-full mt-1.5 z-50 bg-white border border-gray-200 rounded-xl shadow-lg overflow-hidden min-w-32.5">
                       <div className="px-3 py-1.5 text-[10px] font-semibold text-gray-400 uppercase tracking-wide border-b border-gray-100">Regenerate in…</div>
                       {[
                         { code: 'en', label: 'English' },
