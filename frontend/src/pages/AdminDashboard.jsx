@@ -393,7 +393,7 @@ const AdminDashboard = () => {
                             <span className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(complaint.status)} whitespace-nowrap`}>
                               {complaint.status}
                             </span>
-                            <SLABadge createdAt={complaint.created_at} department={complaint.department} status={complaint.status} />
+                            <SLABadge createdAt={complaint.created_at} department={complaint.department} status={complaint.status} updatedAt={complaint.updated_at} />
                           </div>
                         </div>
                       </div>

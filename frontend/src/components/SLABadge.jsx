@@ -23,18 +23,20 @@ const DEFAULT_SLA = 14;
  *   createdAt  {string|Date}  — complaint creation timestamp
  *   department {string}       — canonical department name
  *   status     {string}       — current complaint status
+ *   updatedAt  {string|Date}  — last updated timestamp (used for resolved date)
  */
-export default function SLABadge({ createdAt, department, status }) {
+export default function SLABadge({ createdAt, department, status, updatedAt }) {
   if (!createdAt) return null;
 
-  // Resolved / Rejected complaints don't have an active SLA
+  // Resolved / Rejected: show resolution date instead of duplicating the status badge
   if (status === "Resolved" || status === "Rejected") {
-    return (
+    const resolvedDate = updatedAt ? new Date(updatedAt).toLocaleDateString() : null;
+    return resolvedDate ? (
       <span className="inline-flex items-center gap-1 text-xs font-medium px-2 py-0.5 rounded-full bg-green-100 text-green-700">
         <CheckCircle size={11} />
-        {status}
+        {resolvedDate}
       </span>
-    );
+    ) : null;
   }
 
   const sladays = SLA_DAYS[department] ?? DEFAULT_SLA;

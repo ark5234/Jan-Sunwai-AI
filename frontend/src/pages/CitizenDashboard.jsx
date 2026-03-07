@@ -255,6 +255,7 @@ const CitizenDashboard = () => {
                             createdAt={complaint.created_at}
                             department={complaint.department}
                             status={complaint.status}
+                            updatedAt={complaint.updated_at}
                           />
                         </div>
                       </div>
