@@ -36,7 +36,7 @@ const TriageReview = () => {
       await axios.post(
         `${API_BASE}/triage/review-queue/decision`,
         {
-          image: item.image,
+          image: item.id || item.image,
           decision,
           corrected_label: item.final_label,
           note: 'Reviewed in admin panel'
@@ -47,7 +47,7 @@ const TriageReview = () => {
           }
         }
       );
-      setItems(prev => prev.filter(row => row.image !== item.image));
+      setItems(prev => prev.filter(row => (row.id || row.image) !== (item.id || item.image)));
     } catch (err) {
       setError('Failed to save review decision');
     }

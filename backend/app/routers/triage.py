@@ -10,6 +10,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
 
 from app.auth import get_current_admin
+from app.database import get_database
 
 
 router = APIRouter(prefix="/triage", tags=["Triage"])
@@ -17,6 +18,8 @@ router = APIRouter(prefix="/triage", tags=["Triage"])
 TRIAGE_ROOT = Path("triage_output")
 REVIEW_QUEUE_CSV = TRIAGE_ROOT / "review_queue.csv"
 REVIEW_DECISIONS_CSV = TRIAGE_ROOT / "review_decisions.csv"
+
+CONFIDENCE_THRESHOLD = 0.65  # complaints below this appear in the review queue
 
 
 class ReviewDecision(BaseModel):
@@ -36,40 +39,77 @@ def _require_pandas():
 
 @router.get("/review-queue")
 async def get_review_queue(skip: int = 0, limit: int = 50, _: dict = Depends(get_current_admin)):
-    _require_pandas()
-    if not REVIEW_QUEUE_CSV.exists():
-        return {"items": [], "total": 0}
+    """Return complaints whose AI confidence is below the threshold,
+    queried live from MongoDB so newly submitted complaints appear immediately."""
+    db = get_database()
+    query = {
+        "ai_metadata.confidence_score": {"$lt": CONFIDENCE_THRESHOLD},
+        "status": {"$nin": ["Rejected"]},
+        "triage_decision": {"$exists": False},  # hide already-reviewed ones
+    }
+    total = await db["complaints"].count_documents(query)
+    cursor = db["complaints"].find(query).sort("created_at", -1).skip(skip).limit(limit)
+    docs = await cursor.to_list(length=limit)
 
-    try:
-        df = pd.read_csv(REVIEW_QUEUE_CSV)
-    except pd.errors.EmptyDataError:
-        # CSV exists but has no rows/headers yet
-        return {"items": [], "total": 0}
+    items = []
+    for doc in docs:
+        ai = doc.get("ai_metadata") or {}
+        loc = doc.get("location") or {}
+        items.append({
+            "id": str(doc["_id"]),
+            "image": doc.get("image_url", ""),
+            "final_label": doc.get("department", "—"),
+            "confidence": ai.get("confidence_score"),
+            "rationale": doc.get("description", ""),
+            "model_used": ai.get("model_used", ""),
+            "location": loc.get("address", ""),
+            "created_at": doc.get("created_at", "").isoformat() if doc.get("created_at") else "",
+        })
 
-    total = len(df)
-    rows = df.iloc[skip : skip + limit].fillna("").to_dict(orient="records")
-    return {"items": rows, "total": total}
+    return {"items": items, "total": total}
 
 
 @router.post("/review-queue/decision")
 async def submit_review_decision(payload: ReviewDecision, current_user: dict = Depends(get_current_admin)):
-    _require_pandas()
-    TRIAGE_ROOT.mkdir(parents=True, exist_ok=True)
+    """Record a triage decision and stamp the complaint so it leaves the queue."""
+    db = get_database()
+    from bson import ObjectId
 
-    row = {
-        "image": payload.image,
-        "decision": payload.decision,
-        "corrected_label": payload.corrected_label,
-        "note": payload.note,
-        "reviewed_by": current_user.get("username"),
-        "reviewed_at": datetime.utcnow().isoformat(),
+    update = {
+        "triage_decision": payload.decision,
+        "triage_reviewed_by": current_user.get("username"),
+        "triage_reviewed_at": datetime.utcnow(),
     }
+    if payload.corrected_label:
+        update["department"] = payload.corrected_label
 
-    if REVIEW_DECISIONS_CSV.exists():
-        existing = pd.read_csv(REVIEW_DECISIONS_CSV)
-        updated = pd.concat([existing, pd.DataFrame([row])], ignore_index=True)
-        updated.to_csv(REVIEW_DECISIONS_CSV, index=False)
-    else:
-        pd.DataFrame([row]).to_csv(REVIEW_DECISIONS_CSV, index=False)
+    try:
+        await db["complaints"].update_one(
+            {"$or": [
+                {"_id": ObjectId(payload.image)},
+                {"image_url": payload.image},
+            ]},
+            {"$set": update},
+        )
+    except Exception:
+        # fallback: image field might be a path string not an ObjectId
+        pass
+
+    # Also persist to CSV for audit trail
+    if pd is not None:
+        TRIAGE_ROOT.mkdir(parents=True, exist_ok=True)
+        row = {
+            "image": payload.image,
+            "decision": payload.decision,
+            "corrected_label": payload.corrected_label,
+            "note": payload.note,
+            "reviewed_by": current_user.get("username"),
+            "reviewed_at": datetime.utcnow().isoformat(),
+        }
+        if REVIEW_DECISIONS_CSV.exists():
+            existing = pd.read_csv(REVIEW_DECISIONS_CSV)
+            pd.concat([existing, pd.DataFrame([row])], ignore_index=True).to_csv(REVIEW_DECISIONS_CSV, index=False)
+        else:
+            pd.DataFrame([row]).to_csv(REVIEW_DECISIONS_CSV, index=False)
 
     return {"message": "Decision saved"}
