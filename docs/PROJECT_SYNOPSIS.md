@@ -107,40 +107,43 @@ The project follows an iterative and incremental development methodology. Each m
 
 ```mermaid
 gantt
-    title Jan-Sunwai AI - Project Development Plan
+   title Jan-Sunwai AI - Project Development Plan (Timeline Based)
     dateFormat  YYYY-MM-DD
+   axisFormat  %d-%b
 
-    section Analysis and Design
-    Requirement Analysis        :a1, 2026-01-06, 5d
-    Architecture and Planning   :a2, 2026-01-11, 5d
-    Database and Category Design:a3, 2026-01-16, 4d
+   section Phase 1 - Foundation and Core Backend
+   Inception and Environment Setup     :done, p1a, 2026-01-28, 2026-01-29
+   Architecture and Backend Skeleton   :done, p1b, 2026-01-30, 2026-01-31
+   Database, Schemas and CRUD APIs     :done, p1c, 2026-02-02, 2026-02-07
+   Auth and AI Research                :done, p1d, 2026-02-09, 2026-02-13
+   Geotagging and Analyze Integration  :done, p1e, 2026-02-16, 2026-02-21
+   Ollama Pipeline and Draft Generator :done, p1f, 2026-02-23, 2026-02-27
+   Frontend Core Implementation        :done, p1g, 2026-03-02, 2026-03-07
 
-    section Core Development
-    Backend API Development     :b1, 2026-01-20, 10d
-    AI Pipeline Integration     :b2, 2026-01-25, 10d
-    Frontend Development        :b3, 2026-01-30, 12d
+   section Phase 2 - Security, NDMC Features and Production Readiness
+   Remaining Gaps and End-to-End Flow  :done, p2a, 2026-03-09, 2026-03-14
+   Security Layer                      :p2b, 2026-03-16, 2026-03-21
+   NDMC Feature Pack                   :p2c, 2026-03-23, 2026-03-27
+   Notifications and Communication     :p2d, 2026-03-30, 2026-04-04
+   Performance and Reliability         :p2e, 2026-04-06, 2026-04-10
+   Production Hardening                :p2f, 2026-04-13, 2026-04-18
+   Testing Sprint                      :p2g, 2026-04-20, 2026-04-24
+   Pre-Handover Sprint                 :p2h, 2026-04-27, 2026-05-02
 
-    section Feature Completion
-    Map and Geotagging Module   :c1, 2026-02-07, 5d
-    Role Dashboards and Routing :c2, 2026-02-10, 7d
-    Triage and Notifications    :c3, 2026-02-15, 5d
-
-    section Testing and Documentation
-    Testing and Evaluation      :d1, 2026-02-20, 7d
-    Documentation               :d2, 2026-02-27, 5d
-    Final Review                :d3, 2026-03-04, 3d
+   section Phase 3 - UAT, Report and Final Submission
+   Container and Deployment Verification :p3a, 2026-05-04, 2026-05-08
+   User Acceptance Testing               :p3b, 2026-05-11, 2026-05-16
+   Report and Presentation Preparation   :p3c, 2026-05-18, 2026-05-22
+   Final Repository Update and Submission :p3d, 2026-05-25, 2026-05-27
 ```
 
 #### Work Plan Summary
 
 | Phase | Main Work |
 |---|---|
-| Phase 1 | Requirement analysis, literature review, system planning |
-| Phase 2 | Architecture design, database design, category mapping |
-| Phase 3 | Backend API and AI pipeline development |
-| Phase 4 | Frontend development and map integration |
-| Phase 5 | Routing, dashboards, triage, and notifications |
-| Phase 6 | Testing, evaluation, documentation, and final submission |
+| Phase 1: Foundation and Core Backend | Project setup, requirement study, architecture planning, database design, backend API development, authentication, AI pipeline integration, geotagging, and core frontend implementation |
+| Phase 2: Security, NDMC Features and Production Readiness | Security enhancement, advanced complaint features, notifications, performance optimization, production hardening, testing sprint, and pre-handover preparation |
+| Phase 3: UAT, Report and Final Submission | Container and deployment verification, user acceptance testing, report writing, presentation preparation, repository finalization, and final project submission |
 
 ---
 
