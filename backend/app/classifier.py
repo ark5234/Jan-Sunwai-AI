@@ -123,21 +123,21 @@ def _is_screen_capture(image_path: str) -> bool:
     try:
         with Image.open(image_path) as img:
             # Downscale for fast sampling
-            thumb = img.convert("RGB").resize((200, 200), Image.NEAREST)
+            thumb = img.convert("RGB").resize((200, 200), Image.Resampling.NEAREST)
             width, height = thumb.size
 
             # ── Center 50% region (avoids phone border / dark status bar noise)
             cx1, cy1 = width // 4, height // 4
             cx2, cy2 = width - width // 4, height - height // 4
             center = thumb.crop((cx1, cy1, cx2, cy2))
-            center_px = list(center.getpixels()) if hasattr(center, "getpixels") else list(center.getdata())
+            center_px = list(center.getdata())  # type: ignore
 
             center_colors = len(set(center_px))
             center_total = len(center_px)
             center_bright = sum(1 for r, g, b in center_px if r > 230 and g > 230 and b > 230) / center_total
 
             # ── Global pixel sample
-            all_px = list(thumb.getpixels()) if hasattr(thumb, "getpixels") else list(thumb.getdata())
+            all_px = list(thumb.getdata())  # type: ignore
             all_colors = len(set(all_px))
             total = len(all_px)
 
