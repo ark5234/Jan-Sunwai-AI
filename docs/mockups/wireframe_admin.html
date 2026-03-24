@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Dashboard Wireframe</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { font-family: "Times New Roman", Times, serif; background-color: #f8fafc; padding: 40px; }
+        .window { background: white; border: 3px solid #334155; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); overflow: hidden; }
+        .header { background: #334155; color: white; padding: 12px 20px; font-weight: bold; font-size: 1.25rem; }
+        .stat-box { border: 2px solid #cbd5e1; background: #f1f5f9; border-radius: 8px; padding: 16px; flex: 1; text-align: center; }
+        .stat-value { font-size: 2rem; font-weight: bold; color: #1e293b; }
+        .stat-label { font-size: 0.875rem; color: #64748b; font-weight: bold; text-transform: uppercase; }
+        table { width: 100%; border-collapse: collapse; margin-top: 16px; }
+        th { background: #e2e8f0; text-align: left; padding: 12px; border-bottom: 2px solid #cbd5e1; font-size: 0.875rem; color: #475569; }
+        td { padding: 12px; border-bottom: 1px solid #e2e8f0; font-size: 0.875rem; color: #1e293b; }
+        .badge { padding: 4px 8px; border-radius: 999px; font-size: 0.75rem; font-weight: bold; border: 2px solid; display: inline-block; text-align: center; }
+        .btn-action { border: 2px solid #334155; padding: 4px 12px; border-radius: 6px; font-weight: bold; background: white; font-size: 0.75rem; }
+        .btn-action-fill { background: #334155; color: white; border: 2px solid #334155; padding: 4px 12px; border-radius: 6px; font-weight: bold; font-size: 0.75rem; }
+    </style>
+</head>
+<body>
+    <h1 class="text-4xl font-bold mb-8 text-center text-slate-800 border-b-4 border-slate-300 pb-4 inline-block">Admin Dashboard — Screen Flow</h1>
+    
+    <div class="grid grid-cols-2 gap-8">
+        <!-- View 1: Complaints -->
+        <div class="col-span-2 window">
+            <div class="header">View 1 "Complaints Tab"</div>
+            <div class="p-6">
+                <div class="flex gap-4 mb-6">
+                    <div class="stat-box bg-blue-50 border-blue-200"><div class="stat-label">Total</div><div class="stat-value text-blue-700">1,204</div></div>
+                    <div class="stat-box"><div class="stat-label">Open</div><div class="stat-value">42</div></div>
+                    <div class="stat-box"><div class="stat-label">In Progress</div><div class="stat-value">18</div></div>
+                    <div class="stat-box"><div class="stat-label">Resolved</div><div class="stat-value">1,144</div></div>
+                </div>
+                
+                <div class="flex gap-4 mb-4">
+                    <select class="border-2 border-slate-300 p-2 rounded"><option>Status: All</option></select>
+                    <select class="border-2 border-slate-300 p-2 rounded"><option>Department: All</option></select>
+                    <button class="btn-action-fill ml-auto">Bulk Action Toolbar</button>
+                </div>
+                
+                <table>
+                    <tr><th>☑</th><th>ID</th><th>Department</th><th>Status</th><th>Assigned To</th><th>SLA</th><th>Action</th></tr>
+                    <tr><td>☐</td><td>#C-101</td><td>Sanitation</td><td><span class="badge border-red-500 text-red-500 bg-red-50">Open</span></td><td>--</td><td><span class="text-red-500 font-bold">2h overdue</span></td><td><button class="btn-action">View</button> <button class="btn-action">Transfer</button></td></tr>
+                    <tr><td>☑</td><td>#C-102</td><td>Roads</td><td><span class="badge border-yellow-500 text-yellow-600 bg-yellow-50">In Progress</span></td><td>S. Kumar (FW)</td><td>4h remaining</td><td><button class="btn-action">View</button> <button class="btn-action">Transfer</button></td></tr>
+                    <tr><td>☑</td><td>#C-103</td><td>Electrical</td><td><span class="badge border-green-500 text-green-600 bg-green-50">Resolved</span></td><td>R. Singh (FW)</td><td>Completed</td><td><button class="btn-action">View</button> <button class="btn-action">Transfer</button></td></tr>
+                </table>
+            </div>
+        </div>
+
+        <!-- View 2: Workers -->
+        <div class="window">
+            <div class="header">View 2 "Workers Tab"</div>
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-6">
+                    <div class="font-bold text-lg">Pending Approvals (2)</div>
+                    <button class="btn-action-fill">Auto-Assign Unassigned</button>
+                </div>
+                
+                <div class="border-2 border-slate-200 rounded-lg p-4 flex justify-between items-center mb-4 bg-slate-50">
+                    <div><b>A. Patel</b> requested Field Worker role<br><span class="text-sm text-slate-500">Dept: Sanitation • Area: Sector 4</span></div>
+                    <div class="flex gap-2"><button class="btn-action-fill">Approve</button><button class="btn-action">Reject</button></div>
+                </div>
+
+                <div class="font-bold text-lg mb-4 mt-8">Active Workers</div>
+                <table>
+                    <tr><th>Name</th><th>Dept</th><th>Status</th><th>Tasks</th></tr>
+                    <tr><td>S. Kumar</td><td>Roads</td><td><span class="badge border-green-500 text-green-600 bg-green-50">Active</span></td><td><b class="text-blue-600">3</b></td></tr>
+                    <tr><td>R. Singh</td><td>Electric</td><td><span class="badge border-slate-400 text-slate-600 bg-slate-100">Offline</span></td><td>0</td></tr>
+                </table>
+            </div>
+        </div>
+
+        <!-- View 3: Triage Queue -->
+        <div class="window">
+            <div class="header">View 3 "Triage Review Queue"</div>
+            <div class="p-6">
+                <div class="p-4 bg-red-50 border-2 border-red-200 rounded-lg mb-6">
+                    <div class="font-bold text-red-700 mb-2">⚠ AI Confidence Warning</div>
+                    <p class="text-sm text-red-600">3 complaints routed with low confidence (&lt;65%). Admin override requested.</p>
+                </div>
+
+                <div class="border-2 border-slate-200 rounded-lg p-4 mb-4 flex gap-4">
+                    <div class="w-24 h-24 bg-slate-200 flex items-center justify-center text-slate-400 rounded">Image</div>
+                    <div class="flex-1">
+                        <div class="font-bold">#C-108: Broken Signage</div>
+                        <div class="text-sm text-slate-600 mt-1">AI Prediction: Roads (45% confidence)</div>
+                        <div class="w-full bg-slate-200 h-2 rounded my-2"><div class="bg-red-400 w-5/12 h-2 rounded"></div></div>
+                        <div class="flex gap-2 mt-4">
+                            <button class="btn-action-fill">✔ Approve Route</button>
+                            <button class="btn-action">Override Dept ▼</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
