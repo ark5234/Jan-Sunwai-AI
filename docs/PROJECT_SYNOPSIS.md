@@ -49,12 +49,15 @@ The problem addressed in this project is:
 ### Objectives
 
 1. To develop a web-based platform for civic grievance submission and tracking.
-2. To classify civic issues automatically from uploaded images.
+2. To classify civic issues automatically from uploaded images using a local AI pipeline.
 3. To route complaints to the correct civic authority with minimum manual effort.
 4. To generate a formal complaint letter automatically in user-friendly language.
 5. To extract or assist with geolocation for better complaint accuracy.
-6. To provide dashboards for citizens, department heads, and administrators.
-7. To design a privacy-aware solution using local AI inference instead of cloud-only services.
+6. To provide role-based dashboards for citizens, field workers, department heads, and administrators.
+7. To implement a geo-aware auto-assignment engine that distributes complaints to field workers.
+8. To provide SLA tracking with visual deadline badges per department.
+9. To support a grievance heatmap and analytics dashboard for systemic issue monitoring.
+10. To design a privacy-aware solution using local AI inference instead of cloud-only services.
 
 ### Existing Methods
 

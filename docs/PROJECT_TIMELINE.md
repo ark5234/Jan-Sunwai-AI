@@ -1,5 +1,10 @@
 # Jan-Sunwai AI - Daily Project Report & Plan
-**Project Duration:** January 28, 2026 – May 27, 2026  
+
+> **Font:** Times New Roman throughout all printed / PDF versions of this document.
+> **Last Updated:** 24 March 2026
+> **Current Status:** Week 9 tasks ~70% complete. Worker Panel, auto-assignment engine, heatmap, bulk admin ops, and SLA badges all implemented ahead of schedule.
+
+**Project Duration:** January 28, 2026 – May 27, 2026
 **Schedule Logic:** Monday to Saturday work weeks. Sundays are always OFF. 2nd & 4th Saturdays are OFF.
 
 ---
@@ -168,43 +173,46 @@
 *   **Mar 15 (Sun):** *OFF*
 
 #### Week 8: Mar 16 (Mon) – Mar 21 (Sat) [Security Layer]
-*   **Mar 16 (Mon):** **File Magic Number Validation**
-    *   Implement server-side binary content-type check using file magic bytes — reject files that claim to be JPEG/PNG but contain malicious content.
-    *   Enforce strict 5 MB file size limit at the FastAPI layer (independent of client-side check) to prevent DoS via large uploads.
-*   **Mar 17 (Tue):** **Rate Limiting on Critical Endpoints**
-    *   Add `slowapi` rate limiter to `/complaints/analyze` (max 5 requests/min per IP) and `/users/login` (max 10 attempts/min) to prevent abuse.
-    *   Return HTTP 429 with a `Retry-After` header so the frontend can display a meaningful "Too many requests" message.
-*   **Mar 18 (Wed):** **Input Sanitization & XSS Prevention**
-    *   Sanitize all user-provided text fields (complaint title, remarks) on the backend to strip HTML tags and script injection.
-    *   Add `bleach` (Python) for server-side sanitization; document what is and isn't allowed in free-text fields.
-*   **Mar 19 (Thu):** **CORS Lockdown & Security Headers**
-    *   Replace the broad CORS origins list with an explicit NDMC production domain whitelist (configurable via env).
-    *   Add security headers via FastAPI middleware: `X-Content-Type-Options`, `X-Frame-Options`, `Referrer-Policy`.
-*   **Mar 20 (Fri):** **JWT Security Review**
-    *   Reduce access token expiry from 24 hours to 8 hours (shift-length session for NDMC officers).
-    *   Document refresh token strategy for NDMC production (current MVP uses single token; note what needs upgrading).
-    *   Ensure `JWT_SECRET_KEY` is flagged as a required env var with no insecure default in production config.
-*   **Mar 21 (Sat):** **MongoDB Indexing for Production Queries**
-    *   Add compound MongoDB indexes on `(department, status)`, `(created_at)`, and `(submitted_by)` to ensure dashboard queries stay under 50ms at scale.
-    *   Write a `create_indexes.py` migration script so NDMC's MongoDB is correctly indexed on first deploy.
+*   **Mar 16 (Mon):** **File Magic Number Validation** - [PARTIAL — size limit done, magic byte check pending]
+    *   5 MB file size limit enforced at FastAPI layer.
+    *   Magic byte content-type verification still pending.
+*   **Mar 17 (Tue):** **Rate Limiting on Critical Endpoints** - [PENDING]
+    *   `slowapi` limiter not yet added. Scheduled for completion.
+*   **Mar 18 (Wed):** **Input Sanitization & XSS Prevention** - [PENDING]
+*   **Mar 19 (Thu):** **CORS Lockdown & Security Headers** - [PARTIAL — CORS configured]
+    *   CORS origins list configured. Security header middleware pending.
+*   **Mar 20 (Fri):** **JWT Security Review** - [PARTIAL]
+    *   JWT tokens are in use with 24h expiry. Reduction to 8h for NDMC production is documented but not yet applied.
+*   **Mar 21 (Sat):** **MongoDB Indexing for Production Queries** - [PENDING]
+    *   `create_indexes.py` migration script not yet written.
 *   **Mar 22 (Sun):** *OFF*
 
 #### Week 9: Mar 23 (Mon) – Mar 28 (Sat) [NDMC Feature Pack]
-*   **Mar 23 (Mon):** **Complaint Status Audit Trail**
-    *   Add a `status_history` array to each complaint document — log every status change with `{from, to, changed_by, timestamp}`.
-    *   Expose this history in the `/complaints/{id}` response payload.
-*   **Mar 24 (Tue):** **Escalation Timeline UI**
-    *   Build a visual status history timeline in `CitizenDashboard` — citizens can see exactly when their complaint moved from Open → In Progress → Resolved.
-    *   Show the responsible department name alongside each status event.
-*   **Mar 25 (Wed):** **Admin CSV Export**
-    *   Add a `GET /complaints/export/csv` endpoint that streams a CSV download of all complaints (with optional dept/status filters).
-    *   Build an "Export" button in `AdminDashboard` so NDMC officers can extract data for their own reporting systems.
-*   **Mar 26 (Thu):** **Department Analytics Cards**
-    *   Add a `/complaints/stats` endpoint returning per-department counts: Open, In Progress, Resolved, avg_resolution_days.
-    *   Render summary stat cards at the top of `AdminDashboard` and `DeptHeadDashboard` for at-a-glance oversight.
-*   **Mar 27 (Fri):** **Bulk Status Update for Admin**
-    *   Add checkbox selection to the AdminDashboard complaint table; implement a batch `PATCH /complaints/bulk-status` endpoint.
-    *   Essential for NDMC admin officers handling high-volume daily complaint queues efficiently.
+
+> **Acceleration Note:** Several Week 9+ features were completed ahead of schedule during weeks 7-9 alongside the Worker Panel implementation.
+
+*   **Mar 23 (Mon):** **Complaint Status Audit Trail** - [COMPLETED]
+    *   `status_history` array added to every complaint document: `{status, from, to, changed_by_user_id, timestamp, note}`.
+    *   History exposed in `/complaints/{id}` GET response.
+    *   `_do_assign()` in `assignment.py` now appends a status_history entry on every worker assignment.
+*   **Mar 24 (Tue):** **Worker Panel & Assignment System** - [COMPLETED — ahead of schedule]
+    *   Built full Field Worker Panel: `WorkerDashboard.jsx`, `WorkerRegister.jsx` (now collects department + service area).
+    *   Implemented `assignment.py` auto-assignment service with Haversine geo-filter and load balancing.
+    *   Added `GET /workers/assignment-debug` and `POST /workers/reassign-unassigned` admin endpoints.
+    *   Admin Dashboard: Re-assign All button, manual per-worker assignment dropdown, pending approvals UI, service area warnings.
+    *   `create_test_users.py` update logic now patches all worker-specific fields (is_approved, worker_status, service_area).
+*   **Mar 24 (Tue):** **Escalation Timeline UI** - [IN PROGRESS]
+    *   Status history data is available from API. Visual timeline component for CitizenDashboard pending.
+*   **Mar 25 (Wed):** **Analytics & Heatmap** - [COMPLETED — ahead of schedule]
+    *   `/analytics/complaints` and `/analytics/heatmap` endpoints implemented.
+    *   AdminDashboard heatmap tab renders complaint density on map using heat circles.
+    *   Per-department stats cards (Open / In Progress / Resolved / Avg Duration) in AdminDashboard and DeptHeadDashboard.
+*   **Mar 26 (Thu):** **SLA Badges** - [COMPLETED — ahead of schedule]
+    *   `SLABadge.jsx` component shows per-department SLA countdowns; overdue complaints show red badge.
+    *   Complaint cards across all dashboards include SLA badge.
+*   **Mar 27 (Fri):** **Bulk Status Update & CSV Export** - [PARTIAL]
+    *   Bulk status update (`PATCH /complaints/bulk-status`) and CSV export (`GET /complaints/export/csv`) endpoint implemented in backend.
+    *   Admin Dashboard bulk checkbox UI still pending.
 *   **Mar 28 (Sat):** *OFF (4th Saturday)*
 *   **Mar 29 (Sun):** *OFF*
 

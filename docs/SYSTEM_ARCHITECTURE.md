@@ -1,5 +1,8 @@
 # Jan-Sunwai AI — System Architecture
 
+> **Font:** Times New Roman throughout all printed / PDF versions of this document.
+> **Last Updated:** 24 March 2026 — Worker Panel and Assignment System added.
+
 ---
 
 ## 1. Full System Overview
@@ -142,15 +145,59 @@ The system routes complaints to 10 canonical categories:
 
 ---
 
-## 4. The 3 User Roles
+## 4. The 4 User Roles
 
 | Role | Permissions |
 |---|---|
-| **Citizen** | Upload photo, select language, get AI analysis, submit complaint, track own complaints |
-| **Dept Head** | See all complaints assigned to their department, update status |
-| **Admin** | See everything, manage live triage queue, review uncertain classifications |
+| **Citizen** | Upload photo, select language, get AI analysis, submit complaint, track own complaints, rate resolved complaints |
+| **Field Worker** | Receive auto-assigned tasks, view task detail, mark task done, toggle availability (available/offline) |
+| **Dept Head** | See all complaints in their department, update status, add dept notes, transfer complaints, view analytics |
+| **Admin** | See everything, manage live triage queue, bulk operations, approve/reject workers, manage manual assignment, export CSV |
 
 ---
+
+## 4a. Worker Panel — Field Worker Assignment System
+
+The Worker Panel added in March 2026 enables field workers to receive, manage, and resolve civic complaints assigned to them.
+
+```
+Worker Registration
+  └── WorkerRegister.jsx → POST /users/register
+       { username, email, password, role:"worker",
+         department: "Municipal - PWD (Roads)",
+         service_area: { lat, lon, radius_km, locality } }
+       └── is_approved = False (pending admin)
+
+Admin Approval
+  └── AdminDashboard → PATCH /workers/{id}/approve
+       Sets is_approved=True, worker_status="available"
+
+Auto-Assignment (fires on every new complaint)
+  └── auto_assign(complaint_id, department, location)
+       Filters: role=worker, is_approved=True,
+                department=<exact match>,
+                worker_status != "offline"
+       Geo: Haversine distance ≤ service_area.radius_km
+       Pick: worker with fewest active_complaint_ids
+       Result: complaint.assigned_to = worker_id
+               complaint.status = "In Progress"
+               worker.worker_status = "busy"
+
+Admin Bulk Re-assign (for legacy unassigned complaints)
+  └── POST /workers/reassign-unassigned
+       Queries Open + In-Progress + assigned_to is null
+       Runs auto_assign on each
+
+Admin Manual Assign
+  └── POST /workers/{worker_id}/assign/{complaint_id}
+       Force-assigns any complaint to any approved worker
+
+Worker Dashboard
+  └── GET /workers/me → Active Tasks + Resolved History
+       PATCH /workers/me/status → toggle available/offline
+       PATCH /workers/me/complaints/{id}/done → mark resolved
+```
+
 
 ## 5. Hardware Utilisation
 
