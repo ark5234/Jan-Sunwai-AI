@@ -43,6 +43,7 @@ CITIZEN
 │                                                            │
 │  After user edits & submits /complaints:                   │
 │   • Saved to MongoDB with status = "Open"                 │
+│   • Auto-assigned to best field worker (auto_assign)      │
 │   • Routed to the correct authority (dept_head)           │
 │   • Status tracked: Open → In Progress → Resolved        │
 └──────────────┬─────────────────────────────────────────────┘
@@ -111,7 +112,11 @@ Photo uploaded
  (can edit the draft before submitting)
       │
       ▼
- Saved to MongoDB → Routed to the correct authority
+ Saved to MongoDB → Routed to dept_head
+      │
+      ▼
+ geo_aware auto_assign() runs → Assigned to Field Worker 
+ (Status automatically set to "In Progress")
 ```
 
 ### Why the Hybrid Approach

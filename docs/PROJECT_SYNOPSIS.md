@@ -79,7 +79,7 @@ Common existing methods include paper-based complaint submission, city-specific 
 
 ### Proposed Solution
 
-Jan-Sunwai AI introduces an AI-assisted complaint workflow in which a citizen uploads a photo, the system performs visual understanding of the issue, applies deterministic rule-based civic category mapping, invokes lightweight reasoning only for ambiguous cases, generates a formal complaint draft, and routes the complaint to the appropriate authority. The system also supports geolocation assistance, user roles, complaint tracking, and administrative triage for uncertain classifications. This hybrid approach improves usability, reduces routing errors, and remains practical for deployment on local infrastructure with limited hardware resources.
+Jan-Sunwai AI introduces an AI-assisted complaint workflow in which a citizen uploads a photo, the system performs visual understanding of the issue, applies deterministic rule-based civic category mapping, invokes lightweight reasoning only for ambiguous cases, generates a formal complaint draft, and routes the complaint to the appropriate authority. A geo-aware rules engine then automatically assigns the complaint to an available field worker. The system also supports geolocation assistance, user roles, complaint tracking, and administrative triage for uncertain classifications. This hybrid approach improves usability, reduces routing errors, and remains practical for deployment on local infrastructure with limited hardware resources.
 
 ---
 
@@ -104,7 +104,7 @@ The methodology also reflects the practical nature of the project. Some componen
    Build the hybrid pipeline consisting of image understanding, rule-based classification, optional reasoning for ambiguous cases, and complaint text generation. The focus is on balancing accuracy, low hardware usage, determinism, and practical deployment.
 
 5. **Backend Development**
-   Implement FastAPI services for authentication, complaint submission, AI analysis, notifications, analytics, and triage. The backend acts as the core orchestration layer between the frontend, database, file storage, and AI runtime.
+   Implement FastAPI services for authentication, complaint submission, AI analysis, field worker auto-assignment, notifications, analytics, and triage. The backend acts as the core orchestration layer between the frontend, database, file storage, and AI runtime.
 
 6. **Frontend Development**
    Create React-based pages for login, complaint upload, map-based location support, status tracking, dashboards, and administration. The frontend is designed to be simple, role-aware, and suitable for users with varying levels of technical familiarity.

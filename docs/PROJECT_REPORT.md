@@ -283,6 +283,7 @@ Current civic grievance mechanisms in India:
 |---|---|---|---|---|
 | Citizen (urban) | Medium | Smartphone + Desktop | English / Regional | 1–5 complaints per year |
 | Citizen (semi-urban/rural) | Low | Smartphone only | Regional language | Occasional |
+| Field Worker | Low to Medium | Smartphone only | Regional language | Daily, resolving assigned tasks |
 | Department Head | Medium | Desktop/Laptop | English | Daily, queue management |
 | Administrator | High | Desktop/Laptop | English | Daily, triage + oversight |
 
@@ -434,6 +435,7 @@ The AI pipeline runs entirely on the local machine using Ollama. No complaint da
 | **Image Analysis** | `app/classifier.py`, `app/geotagging.py` | EXIF GPS extraction; 4-step AI pipeline (Vision → Rule Engine → Reasoning → Writer) |
 | **LLM Queue** | `app/services/llm_queue.py` | Async job queue with configurable workers; decouples HTTP response from slow LLM inference; job polling |
 | **Complaint Management** | `routers/complaints.py`, `app/schemas.py` | CRUD; status lifecycle; status history log; role-filtered list views |
+| **Worker Assignment** | `app/services/assignment.py`, `routers/workers.py` | Geo-aware auto-assignment engine; worker approval; bulk re-assignment |
 | **Authority Routing** | `app/authorities.py`, `app/category_utils.py` | Maps AI category → authority record; sets `authority_id` and `routing_confidence` |
 | **Triage** | `routers/triage.py` | Live MongoDB queue (confidence < 0.65); admin decision stamping; CSV audit trail |
 | **Notifications** | `routers/notifications.py` | In-app alerts on status changes; mark-read endpoint |
@@ -449,6 +451,7 @@ The AI pipeline runs entirely on the local machine using Ollama. No complaint da
 1. **AI-Powered Classification**: Vision model reads scene context; rule engine confirms clear cases instantly (zero VRAM); LLM reasoning invoked only when ambiguous
 2. **Multilingual Complaint Drafting**: Formal 60–90 word letters in 7 languages; editable before submission; regeneration with different language
 3. **Automatic GPS Extraction**: EXIF coordinates parsed from uploaded photo; Nominatim reverse geocoding to street address; map pin-drop as fallback
+4. **Geo-Aware Field Worker Assignment**: Complaints are automatically distributed to field workers based on department match, minimal task load, and Haversine geo-distance to the worker's service area.
 4. **Real-time Status Tracking**: Complaint lifecycle (Open → In Progress → Resolved/Rejected); SLA countdown badge; resolution date on closed complaints
 5. **Human-in-the-Loop Triage**: Low-confidence complaints (< 0.65) surface to admin review queue; admin can approve, reject, or override department; decisions stamped on MongoDB document + CSV audit
 6. **Interactive Map**: Street and satellite view toggle; complaint density via GeoJSON layer; click-to-popup with department and status; filtered by status or priority; India bounds enforced
@@ -544,15 +547,19 @@ erDiagram
         string username
         string email
         string password_hash
-        string role "citizen|dept_head|admin"
+        string role "citizen|dept_head|admin|worker"
         string department "nullable"
+        boolean is_approved
+        string worker_status
+        object service_area
+        array active_complaint_ids
         datetime created_at
     }
 
     COMPLAINT {
         string _id PK
         string user_id FK
-        string assigned_to FK "nullable"
+        string assigned_to FK "nullable (worker/dept_head)"
         string authority_id FK
         string status "Open|In Progress|Resolved|Rejected"
         string department
@@ -603,6 +610,7 @@ erDiagram
 graph LR
     subgraph Actors
         C[👤 Citizen]
+        F[👤 Field Worker]
         D[👤 Dept Head]
         A[👤 Admin]
     end
@@ -622,6 +630,8 @@ graph LR
         UC12[View Complaints Map]
         UC13[Manage Triage Queue]
         UC14[Override Department Assignment]
+        UC15[View Assigned Tasks]
+        UC16[Mark Task as Done]
     end
 
     C --> UC1
@@ -632,6 +642,11 @@ graph LR
     C --> UC6
     C --> UC7
     C --> UC8
+
+    F --> UC1
+    F --> UC15
+    F --> UC16
+    F --> UC8
 
     D --> UC1
     D --> UC9
@@ -659,6 +674,10 @@ classDiagram
         +String passwordHash
         +String role
         +String department
+        +Boolean isApproved
+        +String workerStatus
+        +Location serviceArea
+        +List~String~ activeComplaintIds
         +DateTime createdAt
         +register()
         +login() String
@@ -740,6 +759,12 @@ classDiagram
         -AMBIGUITY_THRESHOLD float
     }
 
+    class AssignmentService {
+        +auto_assign(complaintId) String
+        +free_worker_slot(workerId)
+        -_do_assign(worker, complaintId)
+    }
+
     User "1" --> "0..*" Complaint : submits
     User "1" --> "0..*" Notification : receives
     Complaint "1" *-- "1" AIMetadata
@@ -748,6 +773,7 @@ classDiagram
     LLMQueue --> CivicClassifier : invokes
     LLMQueue --> ComplaintGenerator : invokes
     CivicClassifier --> RuleEngine : uses
+    Complaint --> AssignmentService : assigned_by
 ```
 
 ---
@@ -801,7 +827,9 @@ sequenceDiagram
     Citizen->>FE: Edit draft + Submit
     FE->>API: POST /complaints (complaint data)
     API->>DB: Insert complaint (status=Open)
-    API->>DB: Insert notification for dept_head
+    API->>API: auto_assign(complaint_id)
+    API->>DB: Update complaint assigned_to + status=In_Progress
+    API->>DB: Insert notification for worker + dept_head
     API-->>FE: { id, status: "Open" }
     FE-->>Citizen: Confirmation + tracking view
 ```
@@ -883,6 +911,9 @@ flowchart TD
   Dept Head ────────►│  Login + Status Update Actions        │
             ◄───────│  Assigned Complaint Queue              │
                     │                                        │
+ Field Worker ──────►│  Login + View Active Tasks            │
+              ◄─────│  Geo-assigned Complaints               │
+                    │                                        │
   Admin ────────────►│  Login + Triage Decisions             │
          ◄──────────│  All Complaints + Triage Queue         │
                     │                                        │
@@ -912,12 +943,17 @@ flowchart TD
                                            └──────────────────────┘
 
   Dept Head ──[login + status update]──► ┌──────────────────────┐
-  Dept Head ◄──[assigned complaints]────  │  Process 3           │ ──[query/update]──► MongoDB
+  Dept Head ◄──[department queue]───────  │  Process 3           │ ──[query/update]──► MongoDB
                                            │  Review & Update     │
                                            └──────────────────────┘
 
+  Worker ─────[mark task done]─────────► ┌──────────────────────┐
+  Worker ◄────[assigned tasks]──────────  │  Process 4           │ ──[query/update]──► MongoDB
+                                           │  Worker Assignment   │
+                                           └──────────────────────┘
+
   Admin ──[login + triage decision]──►   ┌──────────────────────┐
-  Admin ◄──[low-confidence queue]──────   │  Process 4           │ ──[query/stamp]──► MongoDB
+  Admin ◄──[low-confidence queue]──────   │  Process 5           │ ──[query/stamp]──► MongoDB
                                            │  Triage Queue        │
                                            └──────────────────────┘
 ```
@@ -977,8 +1013,12 @@ graph TB
 | `username` | String | Unique, required | Display name |
 | `email` | String | Unique, required, lowercase | Login credential |
 | `password_hash` | String | Required | bcrypt hash (never stored plaintext) |
-| `role` | String | Enum: `citizen` / `dept_head` / `admin` | Access level |
-| `department` | String | Nullable | Set for `dept_head` users |
+| `role` | String | Enum | `citizen` / `dept_head` / `admin` / `worker` |
+| `department` | String | Nullable | Set for `dept_head` and `worker` users |
+| `is_approved` | Boolean | Default: `true` | Admins must approve new workers manually (`false` until approved) |
+| `worker_status` | String | Nullable | Enum: `available` / `busy` / `offline` |
+| `service_area` | Object | Nullable | Geo boundary for assignment: `{ lat, lon, radius_km, locality }` |
+| `active_complaint_ids` | Array | Default: `[]` | List of complaint IDs currently handled by worker |
 | `created_at` | DateTime | Auto, UTC | Registration timestamp |
 
 ---
@@ -1233,8 +1273,9 @@ Test accounts available in `docs/TEST_ACCOUNTS_CREDENTIALS.txt`.
 | Role | Scenarios Tested | Result |
 |---|---|---|
 | Citizen | Register, log in, upload photo, view AI draft, edit draft, submit, track status, view map, change to satellite, view notifications | ✅ Pass |
+| Field Worker | Register with service bounds, await admin approval, log in, view auto-assigned dashboard tasks, mark task as resolved | ✅ Pass |
 | Dept Head | Log in, view department queue, update status to In Progress, update to Resolved, view own notifications | ✅ Pass |
-| Admin | Log in, view all complaints, open triage queue, approve item, reject item, override department, view complaints map, toggle satellite view | ✅ Pass |
+| Admin | Log in, view all complaints, open triage queue, approve item, override department, trigger bulk worker re-assignment, view AI heatmap | ✅ Pass |
 
 ---
 
