@@ -78,7 +78,7 @@ graph TB
     end
 
     subgraph "AI / Worker Tier (Asynchronous)"
-        API1 --> Redis>["Redis Message Queue"]
+        API1 --> Redis[("Redis Message Queue")]
         API2 --> Redis
         Redis --> GPU1["GPU Node 1\n(Celery/ARQ + Ollama)"]
         Redis --> GPU2["GPU Node n\n(Auto-scaled)"]
@@ -148,6 +148,56 @@ Workers/Admins ──►│  Access via Role-Based Load Balanced Gateways       
                       ▼                  ▼        ▼                 ▼
                   Cloudflare          AWS S3     Redis          MongoDB Atlas
                     (WAF)            (Media)    (Queue)         (Managed DB)
+```
+
+### 3.4. Production System Architecture Diagram
+A high-level view of how the decoupled modules interact.
+
+```mermaid
+flowchart TD
+    subgraph Client 
+        Browser[Citizen Browser]
+        Worker[Field Worker App]
+    end
+
+    subgraph Security Layer
+        WAF[Cloudflare WAF / CDN]
+    end
+
+    subgraph Cloud Infrastructure VPC
+        ALB[Application Load Balancer]
+        
+        subgraph Compute Tier
+            API[FastAPI Server Cluster]
+        end
+        
+        subgraph Queue Tier
+            Queue[(Redis Message Broker)]
+        end
+        
+        subgraph AI Inference Tier
+            AIWorker[AI Worker Service]
+            vLLM[Dedicated vLLM / Ollama]
+        end
+    end
+
+    subgraph Managed Data Services
+        S3[(Cloud Object Storage)]
+        Atlas[(MongoDB Atlas)]
+    end
+
+    Browser -->|HTTPS| WAF
+    Worker -->|HTTPS| WAF
+    WAF -->|API Calls| ALB
+    ALB --> API
+    API -->|Read/Write| Atlas
+    Browser -.->|Direct Upload via Presigned URL| S3
+    Worker -.->|Direct Upload via Presigned URL| S3
+    API -->|Submit Job| Queue
+    AIWorker -->|Consume Job| Queue
+    AIWorker -->|Fetch Image| S3
+    AIWorker -->|Vision + Language Inference| vLLM
+    AIWorker -->|Save Generated Draft & Labels| Atlas
 ```
 
 ## 4. Summary
