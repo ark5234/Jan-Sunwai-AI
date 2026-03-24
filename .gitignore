@@ -60,6 +60,9 @@ backend/ai_resort_report.csv
 *.tiff
 *.gif
 
+# Except documentation wireframes
+!docs/*.png
+
 # Evaluation output (generated files, not source)
 backend/evaluation_report_v2.csv
 backend/evaluation_mismatch_breakdown.csv
