@@ -16,6 +16,9 @@ import Notifications from './pages/Notifications';
 import AnalyticsDashboard from './pages/AnalyticsDashboard';
 import ComplaintsMap from './pages/ComplaintsMap';
 import PublicStatus from './pages/PublicStatus';
+import WorkerDashboard from './pages/WorkerDashboard';
+import WorkerRegister from './pages/WorkerRegister';
+import GrievanceHeatmap from './pages/GrievanceHeatmap';
 
 // Protected Route Component
 function ProtectedRoute({ children, allowedRoles }) {
@@ -54,6 +57,8 @@ function DashboardRouter() {
       return <AdminDashboard />;
     case 'dept_head':
       return <DeptHeadDashboard />;
+    case 'worker':
+      return <WorkerDashboard />;
     case 'citizen':
     default:
       return <CitizenDashboard />;
@@ -142,6 +147,29 @@ function App() {
 
               {/* Public transparency board — no auth needed */}
               <Route path="/public" element={<PublicStatus />} />
+
+              {/* Worker self-registration — unauthenticated */}
+              <Route path="/worker/register" element={<GuestRoute><WorkerRegister /></GuestRoute>} />
+
+              {/* Worker dashboard */}
+              <Route
+                path="/worker"
+                element={
+                  <ProtectedRoute allowedRoles={['worker']}>
+                    <WorkerDashboard />
+                  </ProtectedRoute>
+                }
+              />
+
+              {/* Grievance heatmap — admin and dept_head only */}
+              <Route
+                path="/heatmap"
+                element={
+                  <ProtectedRoute allowedRoles={['admin', 'dept_head']}>
+                    <GrievanceHeatmap />
+                  </ProtectedRoute>
+                }
+              />
             </Routes>
           </main>
         </div>

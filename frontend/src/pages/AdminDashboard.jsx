@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { Link } from 'react-router-dom';
-import { FileText, MapPin, Calendar, Filter, Users, Building, ArrowRightLeft, Download, BarChart2, Map } from 'lucide-react';
+import { FileText, MapPin, Calendar, Filter, Users, Building, ArrowRightLeft, Download, BarChart2, Map, UserCheck, Flame } from 'lucide-react';
 import axios from 'axios';
 import SLABadge from '../components/SLABadge';
 import ComplaintComments from '../components/ComplaintComments';
@@ -14,12 +14,20 @@ const AdminDashboard = () => {
   const [statusFilter, setStatusFilter] = useState('all');
   const [departmentFilter, setDepartmentFilter] = useState('all');
   const [updateError, setUpdateError] = useState(null);
+  const [activeTab, setActiveTab] = useState('complaints'); // 'complaints' | 'workers'
+  const [workers, setWorkers] = useState([]);
+  const [workersLoading, setWorkersLoading] = useState(false);
+  const [workerActionMsg, setWorkerActionMsg] = useState('');
   const [transferPanel, setTransferPanel] = useState({}); // { [complaintId]: { dept: '', reason: '' } }
   const [selected, setSelected] = useState(new Set()); // bulk selection
   const [bulkModal, setBulkModal] = useState(null); // 'status' | 'transfer' | null
   const [bulkStatus, setBulkStatus] = useState('Resolved');
   const [bulkDept, setBulkDept] = useState('');
   const [bulkReason, setBulkReason] = useState('');
+  const [reassignLoading, setReassignLoading] = useState(false);
+  const [reassignResult, setReassignResult] = useState(null);
+  const [assignPanel, setAssignPanel] = useState({}); // { [workerId]: complaintId }
+  const [unassignedComplaints, setUnassignedComplaints] = useState([]);
 
   // Full canonical department list — always show all 11 departments regardless of
   // how many complaints exist, so the filter is useful from day one.
@@ -40,6 +48,8 @@ const AdminDashboard = () => {
   useEffect(() => {
     if (user?.access_token) {
       fetchAllComplaints();
+      fetchWorkers();
+      fetchUnassigned();
     }
   }, [statusFilter, departmentFilter, user]);
 
@@ -72,6 +82,99 @@ const AdminDashboard = () => {
       }
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchWorkers = async () => {
+    if (!user?.access_token) return;
+    setWorkersLoading(true);
+    try {
+      const res = await axios.get('http://localhost:8000/workers', {
+        headers: { Authorization: `Bearer ${user.access_token}` },
+      });
+      setWorkers(res.data);
+    } catch (err) {
+      console.error('Error fetching workers:', err);
+    } finally {
+      setWorkersLoading(false);
+    }
+  };
+
+  const fetchUnassigned = async () => {
+    if (!user?.access_token) return;
+    try {
+      const res = await axios.get('http://localhost:8000/complaints', {
+        headers: { Authorization: `Bearer ${user.access_token}` },
+        params: { status: 'Open', limit: 200 },
+      });
+      setUnassignedComplaints(res.data.filter(c => !c.assigned_to));
+    } catch {}
+  };
+
+  const handleReassignAll = async () => {
+    setReassignLoading(true);
+    setReassignResult(null);
+    try {
+      const res = await axios.post(
+        'http://localhost:8000/workers/reassign-unassigned',
+        {},
+        { headers: { Authorization: `Bearer ${user.access_token}` } }
+      );
+      setReassignResult(res.data);
+      fetchWorkers();
+      fetchAllComplaints();
+      fetchUnassigned();
+    } catch (err) {
+      setReassignResult({ message: err.response?.data?.detail || 'Re-assignment failed.' });
+    } finally {
+      setReassignLoading(false);
+    }
+  };
+
+  const handleManualAssign = async (workerId, complaintId) => {
+    if (!complaintId) return;
+    try {
+      await axios.post(
+        `http://localhost:8000/workers/${workerId}/assign/${complaintId}`,
+        {},
+        { headers: { Authorization: `Bearer ${user.access_token}` } }
+      );
+      setWorkerActionMsg('Complaint assigned successfully!');
+      setTimeout(() => setWorkerActionMsg(''), 3000);
+      setAssignPanel(prev => { const n = { ...prev }; delete n[workerId]; return n; });
+      fetchWorkers();
+      fetchAllComplaints();
+      fetchUnassigned();
+    } catch (err) {
+      setWorkerActionMsg(err.response?.data?.detail || 'Assignment failed.');
+    }
+  };
+
+  const handleApproveWorker = async (workerId) => {
+    try {
+      await axios.patch(`http://localhost:8000/workers/${workerId}/approve`, {},
+        { headers: { Authorization: `Bearer ${user.access_token}` } }
+      );
+      setWorkerActionMsg('Worker approved!');
+      setTimeout(() => setWorkerActionMsg(''), 3000);
+      fetchWorkers();
+    } catch (err) {
+      setWorkerActionMsg(err.response?.data?.detail || 'Approval failed.');
+    }
+  };
+
+  const handleRejectWorker = async (workerId) => {
+    if (!window.confirm('Permanently reject and delete this worker registration?')) return;
+    try {
+      await axios.delete(`http://localhost:8000/workers/${workerId}/reject`, {
+        headers: { Authorization: `Bearer ${user.access_token}` },
+        data: { reason: 'Rejected by admin' },
+      });
+      setWorkerActionMsg('Registration rejected.');
+      setTimeout(() => setWorkerActionMsg(''), 3000);
+      fetchWorkers();
+    } catch (err) {
+      setWorkerActionMsg(err.response?.data?.detail || 'Rejection failed.');
     }
   };
 
@@ -230,13 +333,199 @@ const AdminDashboard = () => {
           <Link to="/map" className="inline-flex items-center gap-1.5 px-4 py-2 bg-teal-600 text-white text-sm rounded-md hover:bg-teal-700">
             <Map size={14} /> Map View
           </Link>
+          <Link to="/heatmap" className="inline-flex items-center gap-1.5 px-4 py-2 bg-orange-500 text-white text-sm rounded-md hover:bg-orange-600">
+            <Flame size={14} /> Heatmap
+          </Link>
           <button onClick={handleExportCSV} className="inline-flex items-center gap-1.5 px-4 py-2 bg-slate-600 text-white text-sm rounded-md hover:bg-slate-700">
             <Download size={14} /> Export CSV
           </button>
         </div>
       </div>
 
-      {/* Stats Cards */}
+      {/* Tab switcher */}
+      <div className="flex gap-2 mb-6">
+        <button
+          onClick={() => setActiveTab('complaints')}
+          className={`flex items-center gap-1.5 px-4 py-2 rounded-md text-sm font-medium ${
+            activeTab === 'complaints' ? 'bg-indigo-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-200'
+          }`}
+        >
+          <FileText size={14} /> Complaints
+        </button>
+        <button
+          onClick={() => setActiveTab('workers')}
+          className={`flex items-center gap-1.5 px-4 py-2 rounded-md text-sm font-medium ${
+            activeTab === 'workers' ? 'bg-indigo-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-200'
+          }`}
+        >
+          <UserCheck size={14} /> Workers
+          {workers.filter(w => !w.is_approved).length > 0 && (
+            <span className="ml-1 bg-red-500 text-white text-xs rounded-full px-1.5 py-0.5">
+              {workers.filter(w => !w.is_approved).length}
+            </span>
+          )}
+        </button>
+      </div>
+
+      {/* Workers Tab */}
+      {activeTab === 'workers' && (
+        <div className="space-y-6">
+          {workerActionMsg && (
+            <div className="bg-green-50 border border-green-200 rounded-lg p-3 text-green-800 text-sm">{workerActionMsg}</div>
+          )}
+
+          {/* Re-assign toolbar */}
+          <div className="flex flex-wrap items-center gap-3">
+            <button
+              onClick={handleReassignAll}
+              disabled={reassignLoading}
+              className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white text-sm rounded-md hover:bg-indigo-700 disabled:opacity-50"
+            >
+              <UserCheck size={14} />
+              {reassignLoading ? 'Running…' : 'Re-assign All Unassigned Complaints'}
+            </button>
+            {reassignResult && (
+              <span className="text-sm text-gray-700 bg-gray-100 px-3 py-1.5 rounded-md">
+                ✅ Assigned: <strong>{reassignResult.assigned}</strong> &nbsp;·&nbsp;
+                ⏭ Skipped: <strong>{reassignResult.skipped}</strong>
+              </span>
+            )}
+          </div>
+
+          {/* Pending Approvals */}
+          <div className="bg-white rounded-lg shadow">
+            <div className="px-6 py-4 bg-red-50 border-b border-red-100">
+              <h2 className="text-base font-semibold text-red-800 flex items-center gap-2">
+                <UserCheck size={16} /> Pending Approvals ({workers.filter(w => !w.is_approved).length})
+              </h2>
+            </div>
+            {workers.filter(w => !w.is_approved).length === 0 ? (
+              <p className="p-6 text-gray-500 text-sm">No pending worker registrations.</p>
+            ) : (
+              <ul className="divide-y divide-gray-100">
+                {workers.filter(w => !w.is_approved).map(w => (
+                  <li key={w._id} className="px-6 py-4 flex items-center justify-between gap-4">
+                    <div>
+                      <p className="font-medium text-gray-900">{w.username}</p>
+                      <p className="text-sm text-gray-500">{w.email} · {w.department}</p>
+                      {w.service_area && (
+                        <p className="text-xs text-gray-400 mt-1">
+                          📍 {w.service_area.locality || `${w.service_area.lat?.toFixed(3)}, ${w.service_area.lon?.toFixed(3)}`} · {w.service_area.radius_km}km radius
+                        </p>
+                      )}
+                    </div>
+                    <div className="flex gap-2 shrink-0">
+                      <button onClick={() => handleApproveWorker(w._id)}
+                        className="px-3 py-1.5 bg-green-600 text-white text-sm rounded hover:bg-green-700">
+                        Approve
+                      </button>
+                      <button onClick={() => handleRejectWorker(w._id)}
+                        className="px-3 py-1.5 bg-red-500 text-white text-sm rounded hover:bg-red-600">
+                        Reject
+                      </button>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+
+          {/* Active Workers */}
+          <div className="bg-white rounded-lg shadow">
+            <div className="px-6 py-4 bg-gray-50 border-b border-gray-200">
+              <h2 className="text-base font-semibold text-gray-900">Active Workers ({workers.filter(w => w.is_approved).length})</h2>
+            </div>
+            {workers.filter(w => w.is_approved).length === 0 ? (
+              <p className="p-6 text-gray-500 text-sm">No approved workers yet.</p>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="min-w-full divide-y divide-gray-200">
+                  <thead className="bg-gray-50">
+                    <tr>
+                      {['Name', 'Department', 'Service Area', 'Status', 'Active Tasks', 'Actions'].map(h => (
+                        <th key={h} className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{h}</th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-100">
+                    {workers.filter(w => w.is_approved).map(w => {
+                      const statusColor = { available: 'bg-green-100 text-green-800', busy: 'bg-yellow-100 text-yellow-800', offline: 'bg-gray-100 text-gray-600' };
+                      const workerUnassigned = unassignedComplaints.filter(c => c.department === w.department);
+                      return (
+                        <tr key={w._id} className="hover:bg-gray-50 align-top">
+                          <td className="px-4 py-3">
+                            <p className="text-sm font-medium text-gray-900">{w.username}</p>
+                            <p className="text-xs text-gray-500">{w.email}</p>
+                          </td>
+                          <td className="px-4 py-3 text-sm text-gray-700">{w.department}</td>
+                          <td className="px-4 py-3 text-xs text-gray-500">
+                            {w.service_area ? (
+                              <>{w.service_area.locality || '—'}<br />{w.service_area.radius_km}km radius</>
+                            ) : <span className="text-amber-600">⚠ No area set — matches all</span>}
+                          </td>
+                          <td className="px-4 py-3">
+                            <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${statusColor[w.worker_status] || 'bg-gray-100 text-gray-600'}`}>
+                              {w.worker_status || 'offline'}
+                            </span>
+                          </td>
+                          <td className="px-4 py-3 text-sm font-semibold text-indigo-700">{w.active_task_count || 0}</td>
+                          <td className="px-4 py-3">
+                            {w.worker_status === 'offline' ? (
+                              <span className="text-xs text-gray-400">Worker offline</span>
+                            ) : assignPanel[w._id] !== undefined ? (
+                              <div className="flex flex-col gap-1.5 min-w-[200px]">
+                                <select
+                                  value={assignPanel[w._id]}
+                                  onChange={e => setAssignPanel(prev => ({ ...prev, [w._id]: e.target.value }))}
+                                  className="text-xs border border-gray-300 rounded px-2 py-1"
+                                >
+                                  <option value="">— pick complaint —</option>
+                                  {workerUnassigned.map(c => (
+                                    <option key={c._id} value={c._id}>
+                                      [{c.priority}] {c.description?.slice(0, 50)}…
+                                    </option>
+                                  ))}
+                                </select>
+                                <div className="flex gap-1">
+                                  <button
+                                    onClick={() => handleManualAssign(w._id, assignPanel[w._id])}
+                                    disabled={!assignPanel[w._id]}
+                                    className="px-2 py-1 bg-indigo-600 text-white text-xs rounded hover:bg-indigo-700 disabled:opacity-40"
+                                  >
+                                    Confirm
+                                  </button>
+                                  <button
+                                    onClick={() => setAssignPanel(prev => { const n = { ...prev }; delete n[w._id]; return n; })}
+                                    className="px-2 py-1 bg-gray-200 text-gray-700 text-xs rounded hover:bg-gray-300"
+                                  >
+                                    Cancel
+                                  </button>
+                                </div>
+                              </div>
+                            ) : (
+                              <button
+                                onClick={() => setAssignPanel(prev => ({ ...prev, [w._id]: '' }))}
+                                disabled={workerUnassigned.length === 0}
+                                className="px-3 py-1.5 bg-indigo-50 text-indigo-700 text-xs rounded border border-indigo-200 hover:bg-indigo-100 disabled:opacity-40 disabled:cursor-not-allowed whitespace-nowrap"
+                              >
+                                Assign Task {workerUnassigned.length > 0 ? `(${workerUnassigned.length} available)` : '(none)'}
+                              </button>
+                            )}
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Complaints Tab */}
+      {activeTab === 'complaints' && (
+      <>
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 sm:gap-4 mb-6 sm:mb-8">
         <div className="bg-white rounded-lg shadow p-4 sm:p-6">
           <div className="flex items-center">
@@ -420,6 +709,16 @@ const AdminDashboard = () => {
                           Confidence: {(complaint.ai_metadata.confidence_score * 100).toFixed(1)}%
                         </div>
                       )}
+                      {/* Assigned worker */}
+                      {complaint.assigned_to && (() => {
+                        const w = workers.find(x => x._id === complaint.assigned_to);
+                        return (
+                          <div className="mt-1 text-xs text-indigo-700 font-medium flex items-center gap-1">
+                            <UserCheck size={12} />
+                            Assigned to: {w ? w.username : complaint.assigned_to.slice(0, 8) + '…'}
+                          </div>
+                        );
+                      })()}
                       <ComplaintComments complaintId={complaint._id} currentRole="admin" />
 
                       {/* Admin Action Buttons */}
@@ -575,6 +874,8 @@ const AdminDashboard = () => {
             </div>
           </div>
         </div>
+      )}
+      </>
       )}
     </div>
   );

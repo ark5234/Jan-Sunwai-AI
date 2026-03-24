@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { FileText, MapPin, Calendar, Filter, ArrowRightLeft, StickyNote, ChevronDown, ChevronUp } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { FileText, MapPin, Calendar, Filter, ArrowRightLeft, StickyNote, ChevronDown, ChevronUp, Flame } from 'lucide-react';
 import axios from 'axios';
 import SLABadge from '../components/SLABadge';
 import ComplaintComments from '../components/ComplaintComments';
@@ -16,6 +17,7 @@ const DeptHeadDashboard = () => {
 
   const [notePanel, setNotePanel] = useState({});
   const [noteText, setNoteText] = useState({});
+  const [deptWorkers, setDeptWorkers] = useState([]);
 
   const DEPARTMENTS = [
     'Municipal - PWD (Roads)',
@@ -34,6 +36,7 @@ const DeptHeadDashboard = () => {
   useEffect(() => {
     if (user?.access_token) {
       fetchDepartmentComplaints();
+      fetchDeptWorkers();
     }
   }, [statusFilter, user]);
 
@@ -64,6 +67,16 @@ const DeptHeadDashboard = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const fetchDeptWorkers = async () => {
+    try {
+      const res = await axios.get('http://localhost:8000/workers', {
+        headers: { Authorization: `Bearer ${user.access_token}` },
+      });
+      const myDept = user.department;
+      setDeptWorkers(res.data.filter(w => w.is_approved && (!myDept || w.department === myDept)));
+    } catch { /* silent — dept head may not have admin perms, ignore */ }
   };
 
   const updateComplaintStatus = async (complaintId, newStatus) => {
@@ -176,6 +189,14 @@ const DeptHeadDashboard = () => {
         <p className="mt-2 text-sm sm:text-base text-gray-600">
           Managing complaints for: <span className="font-semibold">{user.department || 'All Departments'}</span>
         </p>
+        <div className="mt-4 flex flex-wrap gap-3">
+          <Link to="/map" className="inline-flex items-center gap-1.5 px-4 py-2 bg-teal-600 text-white text-sm rounded-md hover:bg-teal-700">
+            🗺️ Map View
+          </Link>
+          <Link to="/heatmap" className="inline-flex items-center gap-1.5 px-4 py-2 bg-orange-500 text-white text-sm rounded-md hover:bg-orange-600">
+            <Flame size={14} /> Heatmap
+          </Link>
+        </div>
       </div>
 
       {/* Stats Cards */}
@@ -223,6 +244,36 @@ const DeptHeadDashboard = () => {
           </div>
         </div>
       </div>
+
+      {/* Workers in this department (read-only) */}
+      {deptWorkers.length > 0 && (
+        <div className="bg-white rounded-lg shadow p-4 mb-6">
+          <h3 className="text-sm font-semibold text-gray-700 mb-3 flex items-center gap-2">
+            👷 Field Workers — {user.department || 'Your Department'} ({deptWorkers.length})
+          </h3>
+          <div className="flex flex-wrap gap-3">
+            {deptWorkers.map(w => {
+              const colorMap = { available: 'bg-green-100 text-green-800', busy: 'bg-yellow-100 text-yellow-800', offline: 'bg-gray-100 text-gray-500' };
+              return (
+                <div key={w._id} className="flex items-center gap-2 border border-gray-100 rounded-lg px-3 py-2 bg-gray-50">
+                  <div className="w-7 h-7 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center text-xs font-bold">
+                    {w.username?.[0]?.toUpperCase()}
+                  </div>
+                  <div>
+                    <p className="text-xs font-medium text-gray-800">{w.username}</p>
+                    <div className="flex items-center gap-1 mt-0.5">
+                      <span className={`text-xs px-1.5 py-0.5 rounded-full ${colorMap[w.worker_status] || 'bg-gray-100 text-gray-500'}`}>
+                        {w.worker_status || 'offline'}
+                      </span>
+                      <span className="text-xs text-gray-400">{w.active_task_count || 0} task{w.active_task_count !== 1 ? 's' : ''}</span>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
 
       {/* Filters */}
       <div className="bg-white rounded-lg shadow p-4 mb-6">
