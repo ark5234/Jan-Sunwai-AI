@@ -21,8 +21,8 @@ def verify_password(plain_password, hashed_password):
 async def register_user(user: UserCreate = Body(...)):
     db = get_database()
 
-    if user.role != UserRole.CITIZEN:
-        raise HTTPException(status_code=403, detail="Self-registration is allowed only for citizen role")
+    if user.role not in [UserRole.CITIZEN, UserRole.WORKER]:
+        raise HTTPException(status_code=403, detail="Self-registration is allowed only for citizen or worker roles")
     
     # 1. Check if user already exists
     existing_user = await db["users"].find_one({"username": user.username})
@@ -38,25 +38,42 @@ async def register_user(user: UserCreate = Body(...)):
     
     # 3. Create User Document
     user_doc = user.model_dump()
-    user_doc["role"] = UserRole.CITIZEN
     user_doc["password"] = hashed_password
-    user_doc["created_at"] = datetime.utcnow() # Add creation timestamp
-    
+    user_doc["created_at"] = datetime.utcnow()
+
+    # Worker-specific setup
+    if user.role == UserRole.WORKER:
+        user_doc["is_approved"] = False
+        user_doc["worker_status"] = "offline"
+        user_doc["active_complaint_ids"] = []
+        # Persist service_area if provided
+        if user.service_area:
+            user_doc["service_area"] = user.service_area.model_dump()
+    else:
+        user_doc["role"] = UserRole.CITIZEN
+        user_doc["is_approved"] = True
+
     # Insert
     new_user = await db["users"].insert_one(user_doc)
     created_user = await db["users"].find_one({"_id": new_user.inserted_id})
-    
-    # Fix ObjectId and ensure response matches schema
     created_user["_id"] = str(created_user["_id"])
-    
-    # 4. Generate access token for auto-login
+
+    # Workers are NOT auto-logged-in — they must wait for admin approval
+    if user.role == UserRole.WORKER:
+        return {
+            "message": "Worker registration submitted. Your account is pending admin approval.",
+            "username": created_user["username"],
+            "role": "worker",
+            "is_approved": False,
+        }
+
+    # 4. Generate access token for auto-login (citizen only)
     access_token_expires = timedelta(minutes=settings.access_token_expire_minutes)
     access_token = create_access_token(
         data={"sub": created_user["username"], "role": created_user.get("role", "citizen")},
         expires_delta=access_token_expires
     )
-    
-    # Return token along with user info (similar to login)
+
     return {
         "access_token": access_token,
         "token_type": "bearer",

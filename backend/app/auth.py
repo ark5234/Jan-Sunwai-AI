@@ -74,3 +74,32 @@ async def get_current_admin_or_dept_head(current_user: dict = Depends(get_curren
             detail="Admin or Department Head access required"
         )
     return current_user
+
+async def get_current_worker(current_user: dict = Depends(get_current_user)):
+    """Require WORKER role. Blocks login if not yet approved by admin."""
+    if current_user.get("role") != UserRole.WORKER:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Worker access required"
+        )
+    if not current_user.get("is_approved", False):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Your worker account is pending admin approval. Please wait for approval before logging in."
+        )
+    return current_user
+
+async def get_current_admin_or_worker(current_user: dict = Depends(get_current_user)):
+    """Require ADMIN or approved WORKER role"""
+    role = current_user.get("role")
+    if role == UserRole.WORKER and not current_user.get("is_approved", False):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Your worker account is pending admin approval."
+        )
+    if role not in [UserRole.ADMIN, UserRole.WORKER]:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Admin or Worker access required"
+        )
+    return current_user

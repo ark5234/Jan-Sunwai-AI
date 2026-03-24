@@ -7,21 +7,41 @@ class UserRole(str, Enum):
     CITIZEN = "citizen"
     DEPT_HEAD = "dept_head"
     ADMIN = "admin"
+    WORKER = "worker"
+
+class WorkerStatus(str, Enum):
+    AVAILABLE = "available"
+    BUSY = "busy"
+    OFFLINE = "offline"
+
+class ServiceArea(BaseModel):
+    """Geographic service area for a worker"""
+    lat: float = Field(..., ge=-90, le=90, description="Center latitude")
+    lon: float = Field(..., ge=-180, le=180, description="Center longitude")
+    radius_km: float = Field(default=5.0, ge=0.5, le=100.0, description="Radius in kilometres")
+    locality: Optional[str] = Field(None, description="Human-readable area label")
 
 class UserBase(BaseModel):
     username: str = Field(..., min_length=3, max_length=50)
     email: EmailStr
-    department: Optional[str] = Field(None, description="Department for DEPT_HEAD users")
+    department: Optional[str] = Field(None, description="Department for DEPT_HEAD / WORKER users")
 
 class UserCreate(UserBase):
     password: str = Field(..., min_length=6, description="Password must be at least 6 characters")
     role: UserRole = UserRole.CITIZEN
+    # Worker-only registration extras (ignored for other roles)
+    service_area: Optional[ServiceArea] = None
 
 class UserInDB(UserBase):
     id: Optional[str] = Field(None, alias="_id")
     role: UserRole
     created_at: datetime = Field(default_factory=datetime.utcnow)
-    
+    # Worker-only fields
+    worker_status: Optional[WorkerStatus] = None
+    active_complaint_ids: List[str] = Field(default_factory=list)
+    service_area: Optional[ServiceArea] = None
+    is_approved: bool = True  # False for pending worker registrations
+
     class Config:
         populate_by_name = True
         json_encoders = {datetime: lambda v: v.isoformat()}
@@ -31,9 +51,22 @@ class UserResponse(UserBase):
     role: UserRole
     created_at: datetime
     department: Optional[str] = None
+    # Worker-only fields
+    worker_status: Optional[WorkerStatus] = None
+    active_complaint_ids: List[str] = Field(default_factory=list)
+    service_area: Optional[ServiceArea] = None
+    is_approved: bool = True
 
     class Config:
         populate_by_name = True
+
+class WorkerApproval(BaseModel):
+    """Admin approval/rejection payload"""
+    approved: bool
+    note: Optional[str] = Field(None, max_length=500)
+
+class ServiceAreaUpdate(BaseModel):
+    service_area: ServiceArea
 
 # --- Complaint Schemas ---
 

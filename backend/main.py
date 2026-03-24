@@ -4,7 +4,7 @@ from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 import asyncio
-from app.routers import complaints, users, health, triage, notifications, analytics, public
+from app.routers import complaints, users, health, triage, notifications, analytics, public, workers
 from app.database import connect_to_mongo, close_mongo_connection
 from app.services.llm_queue import llm_queue_service
 from app.services.escalation import escalation_loop
@@ -103,6 +103,7 @@ app.include_router(triage.router)
 app.include_router(notifications.router)
 app.include_router(analytics.router, tags=["Analytics"])
 app.include_router(public.router, tags=["Public"])
+app.include_router(workers.router, tags=["Workers"])
 
 @app.get("/")
 def read_root():

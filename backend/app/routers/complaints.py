@@ -28,6 +28,7 @@ from app.routers.notifications import create_notification
 from app.schemas import NotificationType
 from app.config import settings
 from app.services.priority import compute_priority
+from app.services.assignment import auto_assign, free_worker_slot
 from PIL import Image
 from datetime import datetime, timedelta
 from bson import ObjectId
@@ -226,6 +227,15 @@ async def create_complaint(
         status_from=None,
         status_to=ComplaintStatus.OPEN.value,
     )
+
+    # 5. Auto-assign to an available field worker
+    location_data = complaint_dict.get("location")
+    await auto_assign(
+        complaint_id=complaint_dict["_id"],
+        department=complaint.department,
+        complaint_location=location_data,
+        db=db,
+    )
     
     return complaint_dict
 
@@ -338,6 +348,12 @@ async def update_complaint_status(
     if not result:
         raise HTTPException(status_code=404, detail="Complaint not found")
     
+    # When resolved, free the assigned worker's slot
+    if status == ComplaintStatus.RESOLVED:
+        assigned_worker_id = existing.get("assigned_to")
+        if assigned_worker_id:
+            await free_worker_slot(assigned_worker_id, complaint_id, db)
+
     # Notify the citizen who filed the complaint
     old_status = existing.get("status", ComplaintStatus.OPEN)
     citizen_id = existing.get("user_id")

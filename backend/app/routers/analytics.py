@@ -6,7 +6,7 @@ from datetime import datetime, timedelta
 
 from fastapi import APIRouter, Depends
 
-from app.auth import get_current_admin
+from app.auth import get_current_admin, get_current_admin_or_dept_head
 from app.database import get_database
 
 router = APIRouter(prefix="/analytics", tags=["Analytics"])
@@ -103,3 +103,55 @@ async def analytics_overview(current_user: dict = Depends(get_current_admin)):
         "resolution_time_by_dept": resolution_time,
         "by_priority": by_priority,
     }
+
+
+@router.get("/heatmap")
+async def grievance_heatmap(
+    department: str | None = None,
+    status: str | None = None,
+    current_user: dict = Depends(get_current_admin_or_dept_head),
+):
+    """
+    Returns geo-aggregated complaint data for the heatmap.
+    Each point: {lat, lon, department, count}
+    Accessible by admin and dept_head.
+    """
+    from app.auth import get_current_user as _gcu  # noqa: avoid circular
+    db = get_database()
+
+    match: dict = {
+        "location.lat": {"$ne": None},
+        "location.lon": {"$ne": None}
+    }
+    if department:
+        match["department"] = department
+    if status:
+        match["status"] = status
+
+    # Round to ~1km grid (2 decimal places) for aggregation
+    pipeline = [
+        {"$match": match},
+        {"$project": {
+            "department": 1,
+            "lat": {"$round": [{"$toDouble": "$location.lat"}, 2]},
+            "lon": {"$round": [{"$toDouble": "$location.lon"}, 2]},
+        }},
+        {"$group": {
+            "_id": {"lat": "$lat", "lon": "$lon", "department": "$department"},
+            "count": {"$sum": 1},
+        }},
+        {"$project": {
+            "_id": 0,
+            "lat": "$_id.lat",
+            "lon": "$_id.lon",
+            "department": "$_id.department",
+            "count": 1,
+        }},
+        {"$sort": {"count": -1}},
+    ]
+
+    points = []
+    async for doc in db["complaints"].aggregate(pipeline):
+        points.append(doc)
+
+    return {"points": points, "total": len(points)}
