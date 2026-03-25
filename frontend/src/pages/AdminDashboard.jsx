@@ -32,16 +32,16 @@ const AdminDashboard = () => {
   // Full canonical department list — always show all 11 departments regardless of
   // how many complaints exist, so the filter is useful from day one.
   const departments = [
-    'Municipal - PWD (Roads)',
-    'Municipal - Sanitation',
-    'Municipal - Horticulture',
-    'Municipal - Street Lighting',
-    'Municipal - Water & Sewerage',
-    'Utility - Power (DISCOM)',
-    'State Transport',
-    'Pollution Control Board',
-    'Police - Local Law Enforcement',
-    'Police - Traffic',
+    'Health Department',
+    'Civil Department',
+    'Horticulture',
+    'Electrical Department',
+    'IT Department',
+    'Commercial',
+    'Enforcement',
+    'VBD Department',
+    'EBR Department',
+    'Fire Department',
     'Uncategorized',
   ];
 

@@ -25,6 +25,7 @@ class UserBase(BaseModel):
     username: str = Field(..., min_length=3, max_length=50)
     email: EmailStr
     department: Optional[str] = Field(None, description="Department for DEPT_HEAD / WORKER users")
+    job_title: Optional[str] = Field(None, description="Official job title (e.g., 'Chief engineer', 'Sanitary inspector')")
 
 class UserCreate(UserBase):
     password: str = Field(..., min_length=6, description="Password must be at least 6 characters")

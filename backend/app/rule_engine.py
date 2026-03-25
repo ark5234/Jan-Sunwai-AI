@@ -26,114 +26,79 @@ from app.category_utils import CANONICAL_CATEGORIES
 # ═══════════════════════════════════════════════════════════════════
 
 _CATEGORY_RULES: dict[str, list[tuple[list[str], float]]] = {
-    "Municipal - PWD (Roads)": [
-        (["pothole", "potholes"], 3.0),
-        (["pothole-filled"], 3.5),
-        (["road damage", "damaged road", "broken road", "cracked road"], 3.0),
-        (["damaged pavement", "broken pavement", "cracked pavement"], 2.5),
-        (["footpath damage", "broken footpath", "damaged footpath"], 2.5),
-        (["manhole", "manhole cover"], 2.0),
-        (["road crack", "road surface"], 2.0),
-        (["bridge damage", "damaged bridge"], 2.0),
-        (["puddle", "puddles", "water on road", "water on the road"], 1.5),
-        (["asphalt", "tar road", "concrete road"], 1.0),
-        # NOTE: generic terms like 'road'/'street'/'lane' intentionally removed —
-        # they fire on every road photo and unfairly inflate PWD Roads score.
-    ],
-    "Municipal - Sanitation": [
+    "Health Department": [
         (["garbage", "trash", "rubbish", "refuse"], 3.0),
-        (["waste pile", "waste dump", "waste heap"], 3.0),
+        (["waste pile", "waste dump", "waste heap", "open dump"], 3.0),
         (["overflowing bin", "overflowing trash", "overflowing garbage"], 3.0),
         (["litter", "littered", "littering"], 2.5),
-        (["dump", "dumped", "dumping"], 2.0),
-        (["dirty toilet", "filthy toilet", "unclean toilet"], 2.5),
-        (["debris", "scattered waste"], 1.5),
-        (["stench", "foul smell", "unhygienic"], 1.0),
-        # Extra patterns the vision model produces for unsorted waste scenes
-        (["pile of", "large pile", "heap of"], 2.5),
-        (["plastic bottles", "plastic bottle", "glass bottles", "broken glass",
-          "broken bottles", "empty bottles"], 2.5),
-        (["scattered", "scattered items", "scattered objects", "scattered garbage"], 2.0),
-        (["junk", "clutter", "mess", "filth", "filthy"], 1.5),
-        (["waste on", "waste near", "waste around", "waste along"], 2.0),
-        (["open dump", "roadside dump", "illegal dump"], 3.0),
-        (["waste management", "garbage collection", "garbage clearance"], 1.5),
+        (["filthy toilet", "unclean toilet"], 2.5),
+        (["stench", "foul smell", "unhygienic"], 1.5),
+        (["dead animal", "carcass", "dead dog"], 3.0),
+        (["medical waste", "hospital waste"], 3.0),
+        (["pollution", "chemical dump", "toxic waste"], 2.5),
     ],
-    "Municipal - Horticulture": [
-        (["fallen tree", "uprooted tree", "collapsed tree"], 3.0),
-        (["overgrown", "unmaintained park", "neglected park"], 2.5),
-        (["dead plant", "dead plants", "dry plants", "withered"], 2.5),
-        (["broken branch", "tree branch", "branches blocking"], 2.0),
-        (["tree blocking road", "tree fell", "tree on road"], 3.0),
-        (["garden", "park", "greenery", "vegetation"], 0.5),
-    ],
-    "Municipal - Street Lighting": [
-        (["street light", "streetlight", "street lamp"], 3.0),
-        (["lamp post", "lamppost", "light pole"], 3.0),
-        (["broken light", "non-functional light", "damaged light"], 2.5),
-        (["unlit road", "dark road", "dark street", "no lighting"], 2.5),
-        (["bulb", "illumination"], 0.5),
-    ],
-    "Municipal - Water & Sewerage": [
+    "Civil Department": [
+        (["pothole", "potholes", "pothole-filled", "crater"], 3.0),
+        (["road damage", "damaged road", "broken road", "cracked road", "uneven road"], 3.0),
+        (["damaged pavement", "broken pavement", "cracked pavement"], 2.5),
+        (["footpath damage", "broken footpath", "damaged footpath"], 2.5),
         (["waterlogging", "waterlogged", "water logging"], 3.0),
         (["flooded", "flooding", "flood"], 3.0),
         (["drain overflow", "overflowing drain", "blocked drain"], 3.0),
         (["sewer overflow", "sewer leak", "sewage"], 3.0),
         (["pipe leak", "water leak", "leaking pipe", "burst pipe"], 2.5),
-        (["stagnant water", "standing water", "water pooling"], 2.5),
-        (["drainage problem", "drainage issue", "clogged drain"], 2.0),
-        (["water gushing", "water spraying"], 2.0),
+        (["manhole", "manhole cover", "missing cover", "caved in", "sinkhole"], 2.0),
+        (["bridge damage", "damaged bridge", "crack in bridge"], 2.0),
     ],
-    "Utility - Power (DISCOM)": [
+    "Horticulture": [
+        (["fallen tree", "uprooted tree", "collapsed tree"], 3.0),
+        (["overgrown", "unmaintained park", "neglected park"], 2.5),
+        (["dead plant", "dead plants", "dry plants", "withered"], 2.5),
+        (["broken branch", "tree branch", "branches blocking"], 2.0),
+        (["tree blocking road", "tree fell", "tree on road"], 3.0),
+        (["garden", "park", "greenery", "vegetation", "weed"], 0.5),
+    ],
+    "Electrical Department": [
+        (["street light", "streetlight", "street lamp", "lamp post", "lamppost"], 3.0),
+        (["broken light", "non-functional light", "damaged light"], 2.5),
+        (["unlit road", "dark road", "dark street", "no lighting"], 2.5),
         (["dangling wire", "hanging wire", "loose wire", "fallen wire"], 3.0),
         (["open transformer", "damaged transformer", "leaking transformer"], 3.0),
         (["fallen electric pole", "tilted pole", "broken pole"], 3.0),
-        (["exposed wire", "bare wire", "naked cable"], 2.5),
-        (["power cable", "electric cable", "power line"], 2.0),
-        (["sparking", "electrical hazard", "electrocution risk"], 2.5),
+        (["exposed wire", "bare wire", "naked cable", "sparking", "live wire", "high voltage"], 2.5),
         (["transformer", "electric pole", "utility pole"], 1.5),
     ],
-    "Pollution Control Board": [
-        (["air pollution", "smoke emission", "thick smoke"], 3.0),
-        (["industrial waste", "factory waste", "effluent"], 3.0),
-        (["open burning", "burning garbage", "burning waste"], 3.0),
-        (["chemical dump", "toxic waste", "hazardous waste"], 3.0),
-        (["pollution", "polluted", "contaminated"], 2.0),
-        (["smoke", "smog", "haze"], 1.5),
+    "IT Department": [
+        (["app bug", "portal bug", "website down", "app down"], 3.0),
+        (["login issue", "server error", "database error", "portal crash", "login failed"], 3.0),
     ],
-    "Police - Traffic": [
-        (["traffic signal", "signal failure", "broken signal", "failed signal"], 3.5),
-        (["traffic deadlock", "deadlock", "standstill", "bumper to bumper", "bumper-to-bumper"], 3.5),
-        (["traffic jam"], 3.0),
-        # 'traffic congestion' alone is insufficient — a packed platform or crowded
-        # market is also 'congested'. Score is low; rises only when vehicle keywords appear.
-        (["traffic congestion", "heavily congested", "severe congestion"], 1.5),
-        (["congestion"], 0.8),
-        (["gridlock", "chaotic traffic", "traffic chaos", "disorganized traffic", "mismanagement"], 3.0),
-        (["road blockage", "road blocked", "road obstruction"], 2.5),
-        (["peak hour", "peak office", "rush hour", "office hour", "rush-hour"], 2.5),
-        (["no lane", "lane violation", "wrong side driving", "no traffic lane", "no proper lane"], 2.5),
-        (["vehicles blocking", "vehicles crowding", "crowded road", "crowded street"], 2.5),
-        (["uncontrolled traffic", "no signal", "traffic police", "traffic management"], 2.0),
-        (["marketplace congestion", "market area", "congested market"], 1.5),
-        # Vehicle corroboration: without at least one of these, 'congestion' alone is ambiguous
-        (["car", "cars", "vehicle", "vehicles", "bus", "buses", "truck", "trucks",
-          "motorcycle", "motorcycles", "auto", "autorickshaw", "rickshaw", "two-wheeler",
-          "scooter", "cab", "taxi"], 2.0),
-        (["multiple vehicles", "many vehicles", "heavy vehicles"], 0.5),
+    "Commercial": [
+        (["faulty meter", "broken meter", "meter reading"], 3.0),
+        (["billing issue", "wrong bill", "excessive bill", "property tax", "license renewal"], 3.0),
     ],
-    "Police - Local Law Enforcement": [
+    "Enforcement": [
         (["illegal parking", "wrong parking", "no parking zone"], 3.0),
-        (["encroachment", "footpath encroachment", "pavement encroachment"], 3.0),
-        (["public nuisance", "disturbance", "rowdy"], 2.5),
-        (["footpath blocked", "path blocked", "walkway blocked"], 2.0),
-        (["unauthorized", "illegal occupation", "hawker"], 1.5),
+        (["encroachment", "footpath encroachment", "pavement encroachment", "commercial encroachment"], 3.0),
+        (["illegal occupation", "hawker", "unauthorized vendor", "squatter"], 2.5),
+        (["traffic deadlock", "deadlock", "standstill"], 3.5),
+        (["traffic jam", "gridlock", "chaotic traffic", "severe accident"], 3.0),
+        (["road blockage", "road blocked", "road obstruction"], 2.5),
+        (["lane violation", "wrong side driving"], 2.5),
+        (["unauthorized", "public nuisance", "illegal hoarding"], 2.0),
     ],
-    "State Transport": [
-        (["bus shelter", "bus stop", "damaged bus stop"], 3.0),
-        (["state bus", "broken bus", "damaged bus"], 3.0),
-        (["transport terminal", "bus terminal", "bus depot"], 2.5),
+    "VBD Department": [
+        (["mosquitoes", "mosquito breeding", "mosquito larvae", "larvae"], 3.0),
+        (["stagnant water", "standing water", "water pooling"], 2.5),
+        (["dengue", "malaria", "fogging required", "fumigation", "mosquito net"], 3.0),
     ],
+    "EBR Department": [
+        (["illegal construction", "unauthorized construction", "building violation"], 3.0),
+        (["building collapse", "unsafe building", "dangerous structure"], 3.0),
+    ],
+    "Fire Department": [
+        (["fire", "burning", "flames", "smoke emission", "thick smoke", "smoke billow"], 3.0),
+        (["fire hazard", "flammable", "explosive", "gas leak"], 3.0),
+    ]
 }
 
 # Negative signals: if these appear, suppress civic categories

@@ -133,28 +133,16 @@ def get_authorities_by_level(level: AuthorityLevel) -> list[Authority]:
 
 # Mapping from Classifier Output to Authority ID
 CLASSIFIER_TO_AUTHORITY_MAP = {
-    # 1. Local Municipal Authorities
-    "Municipal - PWD (Roads)": "MUNI_PWD",
-    "Municipal - PWD (Bridges)": "MUNI_PWD",
-    
-    "Municipal - Sanitation": "MUNI_SANITATION",
-    
-    "Municipal - Horticulture": "MUNI_HORTICULTURE",
-    
-    "Municipal - Street Lighting": "MUNI_LIGHTING",
-    
-    "Municipal - Water & Sewerage": "MUNI_WATER",
-    
-    # 2. Specialized Utility
-    "Utility - Power (DISCOM)": "UTIL_DISCOM",
-    
-    "State Transport": "UTIL_TRANSPORT",
-    
-    "Pollution Control Board": "UTIL_PCB",
-    
-    # 3. Safety & Law Enforcement
-    "Police - Local Law Enforcement": "POLICE_LOCAL",
-    "Police - Traffic": "POLICE_TRAFFIC",
+    "Civil Department": "MUNI_PWD",
+    "Health Department": "MUNI_SANITATION",
+    "Horticulture": "MUNI_HORTICULTURE",
+    "Electrical Department": "UTIL_DISCOM",
+    "Commercial": "STATE_CMO",
+    "Enforcement": "POLICE_TRAFFIC",
+    "VBD Department": "MUNI_SANITATION",
+    "EBR Department": "MUNI_PWD",
+    "Fire Department": "POLICE_LOCAL",
+    "IT Department": "STATE_CMO",
     
     # Fallbacks/Generic
     "Civil Engineering Dept": "MUNI_PWD",

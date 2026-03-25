@@ -10,6 +10,7 @@ _CRITICAL = [
     "explosion", "gas leak", "sewage overflow", "raw sewage", "injury",
     "injured", "accident", "death", "dead body", "road block", "road blocked",
     "fallen tree", "landslide", "building collapse", "wall collapse",
+    "bridge collapse", "severe accident", "electrocution", "heavy bleeding", "trapped"
 ]
 
 _HIGH = [
@@ -17,19 +18,20 @@ _HIGH = [
     "blackout", "broken signal", "signal not working", "street light out",
     "broken pipe", "water leakage", "major leak", "dangerous", "hazard",
     "urgent", "overflowing drain", "blocked drain", "sewage smell",
-    "garbage pile", "large pothole", "deep pothole",
+    "garbage pile", "large pothole", "deep pothole", "stagnant water", "mosquito breeding",
+    "dengue", "malaria", "illegal construction"
 ]
 
 _MEDIUM = [
     "damaged", "broken", "non-functional", "not working", "cracks", "cracked",
     "dirty", "garbage", "waste", "stray", "complaint", "issue", "problem",
-    "repair needed", "maintenance", "pothole",
+    "repair needed", "maintenance", "pothole", "pavement", "overgrown", "unmaintained"
 ]
 
 _EMERGENCY_DEPTS = {
-    "Police - Local Law Enforcement",
-    "Police - Traffic",
-    "Utility - Power (DISCOM)",
+    "Enforcement",
+    "Electrical Department",
+    "Fire Department",
 }
 
 

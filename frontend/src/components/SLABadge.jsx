@@ -2,17 +2,17 @@ import { Clock, AlertTriangle, CheckCircle } from "lucide-react";
 
 // SLA deadlines in days, keyed by canonical department name
 const SLA_DAYS = {
-  "Municipal - PWD (Roads)": 21,
-  "Municipal - Sanitation": 7,
-  "Municipal - Horticulture": 14,
-  "Municipal - Street Lighting": 7,
-  "Municipal - Water & Sewerage": 10,
-  "Utility - Power (DISCOM)": 3,
-  "State Transport": 14,
-  "Pollution Control Board": 14,
-  "Police - Local Law Enforcement": 3,
-  "Police - Traffic": 3,
-  Uncategorized: 30,
+  "Health Department": 7,
+  "Civil Department": 21,
+  "Horticulture": 14,
+  "Electrical Department": 5,
+  "IT Department": 7,
+  "Commercial": 14,
+  "Enforcement": 3,
+  "VBD Department": 3,
+  "EBR Department": 30,
+  "Fire Department": 1,
+  "Uncategorized": 30,
 };
 
 const DEFAULT_SLA = 14;

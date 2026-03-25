@@ -12,30 +12,32 @@ const API = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
 const DEPARTMENTS = [
   'All',
-  'Municipal - PWD (Roads)',
-  'Municipal - Sanitation',
-  'Municipal - Horticulture',
-  'Municipal - Street Lighting',
-  'Municipal - Water & Sewerage',
-  'Utility - Power (DISCOM)',
-  'State Transport',
-  'Pollution Control Board',
-  'Police - Local Law Enforcement',
-  'Police - Traffic',
+  'Health Department',
+  'Civil Department',
+  'Horticulture',
+  'Electrical Department',
+  'IT Department',
+  'Commercial',
+  'Enforcement',
+  'VBD Department',
+  'EBR Department',
+  'Fire Department',
   'Uncategorized',
 ];
 const STATUSES = ['All', 'Open', 'In Progress', 'Resolved'];
 
 const DEPT_COLORS = {
-  'Roads & Transport': '#ef4444',
-  'Water Supply': '#3b82f6',
-  'Electricity': '#f59e0b',
-  'Sanitation': '#10b981',
-  'Public Health': '#ec4899',
-  'Education': '#8b5cf6',
-  'Housing': '#f97316',
-  'Public Safety': '#14b8a6',
-  'Other': '#6b7280',
+  'Civil Department': '#ef4444',
+  'Health Department': '#10b981',
+  'Electrical Department': '#f59e0b',
+  'Horticulture': '#14b8a6',
+  'IT Department': '#3b82f6',
+  'Commercial': '#8b5cf6',
+  'Enforcement': '#374151',
+  'VBD Department': '#ec4899',
+  'EBR Department': '#f97316',
+  'Fire Department': '#dc2626',
+  'Uncategorized': '#6b7280',
 };
 
 // Leaflet heatmap layer component

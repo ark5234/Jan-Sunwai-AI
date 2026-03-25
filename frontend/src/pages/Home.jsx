@@ -3,16 +3,16 @@ import { Link } from 'react-router-dom';
 import { Upload, MapPin, FileCheck, Shield, Clock, Building2, ArrowRight, CheckCircle2 } from 'lucide-react';
 
 const CATEGORIES = [
-  { name: 'Roads & Potholes', dept: 'Municipal - PWD Roads' },
-  { name: 'Street Lighting', dept: 'Municipal - Street Lighting' },
-  { name: 'Sanitation & Waste', dept: 'Municipal - Sanitation' },
-  { name: 'Water & Sewerage', dept: 'Municipal - Water and Sewerage' },
-  { name: 'Power Supply', dept: 'Utility - Power DISCOM' },
-  { name: 'Traffic & Safety', dept: 'Police - Traffic' },
-  { name: 'Law & Order', dept: 'Police - Local Law Enforcement' },
-  { name: 'Pollution', dept: 'Pollution Control Board' },
-  { name: 'Public Transport', dept: 'State Transport' },
-  { name: 'Parks & Trees', dept: 'Municipal - Horticulture' },
+  { name: 'Roads & Works', dept: 'Civil Department' },
+  { name: 'Health & Sanitation', dept: 'Health Department' },
+  { name: 'Power & Lights', dept: 'Electrical Department' },
+  { name: 'Parks & Trees', dept: 'Horticulture' },
+  { name: 'Information Tech', dept: 'IT Department' },
+  { name: 'Taxes & Revenue', dept: 'Commercial' },
+  { name: 'Law & Safety', dept: 'Enforcement' },
+  { name: 'Disease Control', dept: 'VBD Department' },
+  { name: 'Building Regulations', dept: 'EBR Department' },
+  { name: 'Fire & Rescue', dept: 'Fire Department' },
 ];
 
 export default function Home() {

@@ -6,16 +6,16 @@ import { User, Mail, Lock, CheckCircle, Info, MapPin, Briefcase } from 'lucide-r
 const API_BASE_URL = 'http://localhost:8000';
 
 const DEPARTMENTS = [
-  'Municipal - PWD (Roads)',
-  'Municipal - Sanitation',
-  'Municipal - Horticulture',
-  'Municipal - Street Lighting',
-  'Municipal - Water & Sewerage',
-  'Utility - Power (DISCOM)',
-  'State Transport',
-  'Pollution Control Board',
-  'Police - Local Law Enforcement',
-  'Police - Traffic',
+  'Health Department',
+  'Civil Department',
+  'Horticulture',
+  'Electrical Department',
+  'IT Department',
+  'Commercial',
+  'Enforcement',
+  'VBD Department',
+  'EBR Department',
+  'Fire Department',
 ];
 
 export default function WorkerRegister() {
