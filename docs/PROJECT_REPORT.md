@@ -6,6 +6,12 @@
 
 ## Table of Contents
 
+- [List of Figures](#list-of-figures)
+- [List of Tables](#list-of-tables)
+- [List of Abbreviations](#list-of-abbreviations)
+- [List of Definitions](#list-of-definitions)
+- [List of Screenshots](#list-of-screenshots)
+- [Introduction](#introduction)
 1. [Project Details](#1-project-details)
 2. [Project Management](#2-project-management)
 3. [System Requirement Study](#3-system-requirement-study)
@@ -16,7 +22,91 @@
 8. [Testing](#8-testing)
 9. [Limitations and Future Scope](#9-limitations-and-future-scope)
 10. [Conclusion and References](#10-conclusion-and-references)
-11. [Report Verification Procedure](#11-report-verification-procedure)
+11. [Appendices](#11-appendices)
+12. [Report Verification Procedure](#12-report-verification-procedure)
+
+---
+
+## List of Figures
+- Figure 1: Jan-Sunwai AI — Development Schedule (Gantt Chart)
+- Figure 2: System Architecture Design
+- Figure 3: E-R Diagram
+- Figure 4: Use Case Diagram
+- Figure 5: Class Diagram
+- Figure 6: Sequence Diagram — Complaint Submission
+- Figure 7: Sequence Diagram — Admin Triage Decision
+- Figure 8: Activity Diagram — AI Classification Pipeline
+- Figure 9: DFD — Level 0 (Context Diagram)
+- Figure 10: DFD — Level 1
+- Figure 11: Deployment Diagram
+
+## List of Tables
+- Table 1: Objectives
+- Table 2: Technology Stack Used
+- Table 3: Existing Civic Grievance Systems in India
+- Table 4: Technical Feasibility
+- Table 5: Time Schedule Feasibility
+- Table 6: Milestones & Deliverables
+- Table 7: Roles & Responsibilities
+- Table 8: Existing System Overview
+- Table 9: User Characteristics
+- Table 10: Functional Requirements
+- Table 11: Non-Functional Requirements
+- Table 12: Hardware & Software Requirements
+- Table 13: Constraints
+- Table 14: System Features mapping
+- Table 15: Application Database Schema
+- Table 16: Users Collection Data Dictionary
+- Table 17: Complaints Collection Data Dictionary
+- Table 18: Implementation Environment
+- Table 19: Tools & Technologies Used
+- Table 20: Unit Testing Coverage
+- Table 21: Integration Testing Cases
+- Table 22: System Testing Cases
+- Table 23: User Acceptance Testing (UAT)
+- Table 24: Defect Logging
+
+## List of Abbreviations
+- **AI**: Artificial Intelligence
+- **API**: Application Programming Interface
+- **CPGRAMS**: Centralized Public Grievance Redress and Monitoring System
+- **DFD**: Data Flow Diagram
+- **EXIF**: Exchangeable Image File Format
+- **GPS**: Global Positioning System
+- **GUI**: Graphical User Interface
+- **JWT**: JSON Web Token
+- **LLM**: Large Language Model
+- **MoHUA**: Ministry of Housing and Urban Affairs
+- **PII**: Personally Identifiable Information
+- **SLA**: Service Level Agreement
+- **UAT**: User Acceptance Testing
+- **UI**: User Interface
+- **ULB**: Urban Local Body
+- **VLM**: Vision-Language Model
+
+## List of Definitions
+- **Civic Grievance**: A formal complaint raised by a citizen concerning public infrastructure or services.
+- **Geotagging**: The process of adding geographical identification metadata to a photograph.
+- **Triage Queue**: A system feature where complaints with borderline or low-confidence AI classifications are sent for manual human review and assignment.
+- **Self-Hosted Deployment**: Hosting the application and AI models entirely on private or local infrastructure rather than relying on third-party cloud APIs.
+
+## List of Screenshots
+*(See GUI Design section (#64) or `docs/GUI_WIREFRAMES.md` for full references)*
+- Screenshot 1: Citizen Upload & Result Interface
+- Screenshot 2: Interactive Geolocation Map View
+- Screenshot 3: Department Head Dashboard
+- Screenshot 4: Administrator Triage Queue
+- Screenshot 5: Multilingual Complaint Draft
+
+## Introduction
+
+Jan-Sunwai AI is a full-stack civic grievance management platform designed to simplify the reporting of public infrastructure and civic service problems such as potholes, garbage accumulation, waterlogging, broken street lights, unsafe electrical wiring, drainage blockage, traffic obstructions, and other public safety issues.
+
+Traditional grievance systems are generally form-driven. They depend heavily on manual input from the citizen and assume that the user understands administrative boundaries such as whether the issue belongs to municipal sanitation, road maintenance, electricity distribution, transport authorities, or law enforcement. Because of this, many complaints are either incomplete or routed to the wrong authority. Such delays reduce the effectiveness of grievance redressal and discourage public participation in civic reporting.
+
+The proposed system addresses this challenge by allowing a citizen to upload a photograph of the civic issue through a web-based interface. The uploaded image is analyzed using locally running vision-language models that generate a structured understanding of the scene. The system then applies rule-based category mapping to identify the most appropriate civic department. After classification, the platform extracts geolocation details, generates a formal complaint draft in the selected language, stores the complaint in the database, and routes it to the appropriate authority for review and action.
+
+An important characteristic of the project is that the complete AI pipeline is designed to run locally through Ollama rather than relying on remote cloud APIs. This reduces operational cost, improves privacy, and keeps citizen data under local administrative control. By converting an image into a structured civic complaint workflow, the system reduces user effort while also improving the quality of information received by officials.
 
 ---
 
@@ -215,35 +305,29 @@ NVIDIA GPU + drivers               ──► GPU-accelerated inference (CPU fall
 gantt
     title Jan-Sunwai AI — Development Schedule
     dateFormat  YYYY-MM-DD
+    axisFormat  %m-%d
 
-    section Research & Architecture
-    Architecture Design         :done, des1, 2026-01-06, 7d
-    AI Model Benchmarking       :done, des2, 2026-01-08, 5d
-    MongoDB Schema Design       :done, des3, 2026-01-11, 3d
+    section Phase 1: Foundation & Core
+    Inception & Arch Setup      :done, ph1a, 2026-01-28, 2026-01-31
+    DB, Auth & CRUD APIs        :done, ph1b, 2026-02-02, 2026-02-13
+    Geotagging & Analyze API    :done, ph1c, 2026-02-16, 2026-02-21
+    GenAI Pipeline Integration  :done, ph1d, 2026-02-23, 2026-02-27
+    Frontend UI & Core Dash     :done, ph1e, 2026-03-02, 2026-03-07
 
-    section Backend
-    FastAPI + Auth + JWT        :done, be1, 2026-01-13, 5d
-    Complaint CRUD + Routing    :done, be2, 2026-01-17, 6d
-    AI Pipeline Integration     :done, be3, 2026-01-21, 7d
-    Language Pipeline           :done, be4, 2026-01-28, 3d
-    Triage Queue (MongoDB)      :done, be5, 2026-02-03, 4d
-    Notifications Router        :done, be6, 2026-02-06, 3d
+    section Phase 2: NDMC Features & Security
+    Map & End-to-End Closure    :done, ph2a, 2026-03-09, 2026-03-14
+    Security Hardening          :active, ph2b, 2026-03-16, 2026-03-21
+    Worker Panel, Heatmap & SLAs:active, ph2c, 2026-03-23, 2026-03-28
+    Notifications & Comm Module :ph2d, 2026-03-30, 2026-04-04
+    Performance & Resilience    :ph2e, 2026-04-06, 2026-04-11
+    Production Docker & Config  :ph2f, 2026-04-13, 2026-04-18
+    Testing & Pre-Handover      :ph2g, 2026-04-20, 2026-04-30
 
-    section Frontend
-    Auth Pages (Login/Register) :done, fe1, 2026-01-20, 4d
-    Upload + Result Page        :done, fe2, 2026-01-23, 6d
-    Map Integration (MapLibre)  :done, fe3, 2026-01-27, 5d
-    Citizen Dashboard           :done, fe4, 2026-02-01, 4d
-    Dept Head Dashboard         :done, fe5, 2026-02-04, 4d
-    Admin Dashboard + Map       :done, fe6, 2026-02-06, 5d
-    SLA Badges                  :done, fe7, 2026-02-09, 3d
-    Satellite/Street Toggle     :done, fe8, 2026-03-07, 1d
-
-    section Testing & Docs
-    Integration Tests           :done, tst1, 2026-02-10, 5d
-    Dataset Evaluation (200 img):done, tst2, 2026-02-12, 4d
-    README + Architecture Docs  :done, doc1, 2026-02-16, 5d
-    Project Report              :done, doc2, 2026-03-07, 1d
+    section Phase 3: UAT & Submission
+    Container Verification      :ph3a, 2026-05-04, 2026-05-09
+    User Acceptance Testing     :ph3b, 2026-05-11, 2026-05-16
+    Report & Documentation      :ph3c, 2026-05-18, 2026-05-23
+    Final Submission            :ph3d, 2026-05-25, 2026-05-27
 ```
 
 ---
@@ -1396,7 +1480,46 @@ The system is designed for extensibility — AI models, map tile providers, and 
 
 ---
 
-## 11. Report Verification Procedure
+## 11. Appendices
+
+### Appendix A: Dataset Categories
+
+The model was evaluated against 7 top-level civic domains covering the following specific labels:
+- **Municipal - Sanitation**: Garbage dump, overflowing dustbin
+- **Municipal - PWD Roads**: Pothole, broken footpath, damaged road
+- **Municipal - Street Lighting**: Broken street light, unlit pole
+- **Utility - Power DISCOM**: Hanging wires, open transformer box, pole sparks
+- **Police - Traffic**: Abandoned vehicle, broken signal, parking violation
+- **State Transport**: Damaged bus shelter, broken state bus
+- **Uncategorized**: Vague issues requiring manual triage
+
+### Appendix B: Exif extraction code sample
+
+```python
+from PIL import Image
+from PIL.ExifTags import TAGS, GPSTAGS
+
+def get_exif_data(image):
+    exif_data = {}
+    if hasattr(image, '_getexif'):
+        exif_info = image._getexif()
+        if exif_info is not None:
+            for tag, value in exif_info.items():
+                decoded = TAGS.get(tag, tag)
+                if decoded == "GPSInfo":
+                    gps_data = {}
+                    for t in value:
+                        sub_decoded = GPSTAGS.get(t, t)
+                        gps_data[sub_decoded] = value[t]
+                    exif_data[decoded] = gps_data
+                else:
+                    exif_data[decoded] = value
+    return exif_data
+```
+
+---
+
+## 12. Report Verification Procedure
 
 All claims made in this report can be independently verified as follows:
 

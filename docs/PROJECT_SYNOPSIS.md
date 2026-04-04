@@ -128,34 +128,31 @@ The schedule also includes user acceptance testing, report preparation, document
 
 ```mermaid
 gantt
-   title Jan-Sunwai AI - Project Development Plan (Timeline Based)
+    title Jan-Sunwai AI - Project Development Plan (Timeline Based)
     dateFormat  YYYY-MM-DD
-   axisFormat  %d-%b
+    axisFormat  %m-%d
 
-   section Phase 1 - Foundation and Core Backend
-   Inception and Environment Setup     :done, p1a, 2026-01-28, 2026-01-29
-   Architecture and Backend Skeleton   :done, p1b, 2026-01-30, 2026-01-31
-   Database, Schemas and CRUD APIs     :done, p1c, 2026-02-02, 2026-02-07
-   Auth and AI Research                :done, p1d, 2026-02-09, 2026-02-13
-   Geotagging and Analyze Integration  :done, p1e, 2026-02-16, 2026-02-21
-   Ollama Pipeline and Draft Generator :done, p1f, 2026-02-23, 2026-02-27
-   Frontend Core Implementation        :done, p1g, 2026-03-02, 2026-03-07
+    section Phase 1: Foundation & Core
+    Inception & Arch Setup      :done, ph1a, 2026-01-28, 2026-01-31
+    DB, Auth & CRUD APIs        :done, ph1b, 2026-02-02, 2026-02-13
+    Geotagging & Analyze API    :done, ph1c, 2026-02-16, 2026-02-21
+    GenAI Pipeline Integration  :done, ph1d, 2026-02-23, 2026-02-27
+    Frontend UI & Core Dash     :done, ph1e, 2026-03-02, 2026-03-07
 
-   section Phase 2 - Security, NDMC Features and Production Readiness
-   Remaining Gaps and End-to-End Flow  :done, p2a, 2026-03-09, 2026-03-14
-   Security Layer                      :p2b, 2026-03-16, 2026-03-21
-   NDMC Feature Pack                   :p2c, 2026-03-23, 2026-03-27
-   Notifications and Communication     :p2d, 2026-03-30, 2026-04-04
-   Performance and Reliability         :p2e, 2026-04-06, 2026-04-10
-   Production Hardening                :p2f, 2026-04-13, 2026-04-18
-   Testing Sprint                      :p2g, 2026-04-20, 2026-04-24
-   Pre-Handover Sprint                 :p2h, 2026-04-27, 2026-05-02
+    section Phase 2: NDMC Features & Security
+    Map & End-to-End Closure    :done, ph2a, 2026-03-09, 2026-03-14
+    Security Hardening          :active, ph2b, 2026-03-16, 2026-03-21
+    Worker Panel, Heatmap & SLAs:active, ph2c, 2026-03-23, 2026-03-28
+    Notifications & Comm Module :ph2d, 2026-03-30, 2026-04-04
+    Performance & Resilience    :ph2e, 2026-04-06, 2026-04-11
+    Production Docker & Config  :ph2f, 2026-04-13, 2026-04-18
+    Testing & Pre-Handover      :ph2g, 2026-04-20, 2026-04-30
 
-   section Phase 3 - UAT, Report and Final Submission
-   Container and Deployment Verification :p3a, 2026-05-04, 2026-05-08
-   User Acceptance Testing               :p3b, 2026-05-11, 2026-05-16
-   Report and Presentation Preparation   :p3c, 2026-05-18, 2026-05-22
-   Final Repository Update and Submission :p3d, 2026-05-25, 2026-05-27
+    section Phase 3: UAT & Submission
+    Container Verification      :ph3a, 2026-05-04, 2026-05-09
+    User Acceptance Testing     :ph3b, 2026-05-11, 2026-05-16
+    Report & Documentation      :ph3c, 2026-05-18, 2026-05-23
+    Final Submission            :ph3d, 2026-05-25, 2026-05-27
 ```
 
 #### Work Plan Summary

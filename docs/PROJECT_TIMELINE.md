@@ -202,7 +202,7 @@
     *   Admin Dashboard: Re-assign All button, manual per-worker assignment dropdown, pending approvals UI, service area warnings.
     *   `create_test_users.py` update logic now patches all worker-specific fields (is_approved, worker_status, service_area).
 *   **Mar 24 (Tue):** **Escalation Timeline UI** - [IN PROGRESS]
-    *   Status history data is available from API. Visual timeline component for CitizenDashboard pending.
+    *  0 Status history data is available from API. Visual timeline component for CitizenDashboard pending.
 *   **Mar 25 (Wed):** **Analytics & Heatmap** - [COMPLETED — ahead of schedule]
     *   `/analytics/complaints` and `/analytics/heatmap` endpoints implemented.
     *   AdminDashboard heatmap tab renders complaint density on map using heat circles.
