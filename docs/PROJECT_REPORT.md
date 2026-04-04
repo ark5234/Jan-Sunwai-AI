@@ -316,18 +316,18 @@ gantt
 
     section Phase 2: NDMC Features & Security
     Map & End-to-End Closure    :done, ph2a, 2026-03-09, 2026-03-14
-    Security Hardening          :active, ph2b, 2026-03-16, 2026-03-21
-    Worker Panel, Heatmap & SLAs:active, ph2c, 2026-03-23, 2026-03-28
-    Notifications & Comm Module :ph2d, 2026-03-30, 2026-04-04
-    Performance & Resilience    :ph2e, 2026-04-06, 2026-04-11
-    Production Docker & Config  :ph2f, 2026-04-13, 2026-04-18
-    Testing & Pre-Handover      :ph2g, 2026-04-20, 2026-04-30
+    Security Hardening          :done, ph2b, 2026-03-16, 2026-03-21
+    Worker Panel, Heatmap & SLAs:done, ph2c, 2026-03-23, 2026-03-28
+    Notifications & Comm Module :done, ph2d, 2026-03-30, 2026-04-04
+    Performance & Resilience    :done, ph2e, 2026-04-06, 2026-04-11
+    Production Docker & Config  :done, ph2f, 2026-04-13, 2026-04-18
+    Testing & Pre-Handover      :done, ph2g, 2026-04-20, 2026-04-30
 
     section Phase 3: UAT & Submission
-    Container Verification      :ph3a, 2026-05-04, 2026-05-09
-    User Acceptance Testing     :ph3b, 2026-05-11, 2026-05-16
-    Report & Documentation      :ph3c, 2026-05-18, 2026-05-23
-    Final Submission            :ph3d, 2026-05-25, 2026-05-27
+    Container Verification      :done, ph3a, 2026-05-04, 2026-05-09
+    User Acceptance Testing     :done, ph3b, 2026-05-11, 2026-05-16
+    Report & Documentation      :done, ph3c, 2026-05-18, 2026-05-23
+    Final Submission            :done, ph3d, 2026-05-25, 2026-05-27
 ```
 
 ---
@@ -1049,29 +1049,29 @@ flowchart TD
 ```mermaid
 graph TB
     subgraph Client ["Client Machine"]
-        Browser["Web Browser\nChrome / Firefox / Edge"]
+        Browser["Web Browser<br/>Chrome / Firefox / Edge"]
     end
 
     subgraph Host ["Host Machine (Windows 11 / Ubuntu 22.04)"]
         subgraph DockerNet ["Docker Network"]
-            MongoDB[("MongoDB\n:27017")]
+            MongoDB[("MongoDB<br/>:27017")]
         end
 
         subgraph PythonEnv ["Python Virtual Environment (.venv)"]
-            Backend["FastAPI + Uvicorn\n:8000"]
+            Backend["FastAPI + Uvicorn<br/>:8000"]
         end
 
         subgraph NodeEnv ["Node.js"]
-            Frontend["Vite Dev Server\n:5173"]
+            Frontend["Vite Dev Server<br/>:5173"]
         end
 
-        Ollama["Ollama Daemon\n:11434"]
-        GPU["NVIDIA GPU\n≥4 GB VRAM"]
+        Ollama["Ollama Daemon<br/>:11434"]
+        GPU["NVIDIA GPU<br/>>= 4 GB VRAM"]
     end
 
     subgraph CDN ["External CDNs (internet)"]
-        CARTO["CARTO Tile CDN\n(street tiles)"]
-        ESRI["ESRI ArcGIS CDN\n(satellite tiles)"]
+        CARTO["CARTO Tile CDN<br/>(street tiles)"]
+        ESRI["ESRI ArcGIS CDN<br/>(satellite tiles)"]
     end
 
     Browser -->|"HTTP :5173"| Frontend
