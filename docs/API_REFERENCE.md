@@ -21,53 +21,91 @@ Every major router is exposed both unversioned and under `/api/v1`.
 ## Route Map
 
 ```mermaid
-flowchart TD
-    U[Users] --> U1[/users/register]
-    U --> U2[/users/login]
-    U --> U3[/users/me]
-    U --> U4[/users/forgot-password]
-    U --> U5[/users/reset-password]
+flowchart LR
+  Client["Frontend or API Consumer"]
 
-    A[Analyze] --> A1[/analyze]
-    A --> A2[/analyze/regenerate]
-    A --> A3[/complaints/generation/{job_id}]
+  Client --> U
+  Client --> A
+  Client --> C
+  Client --> W
+  Client --> N
+  Client --> T
+  Client --> X
 
-    C[Complaints] --> C1[/complaints]
-    C --> C2[/complaints/{id}]
-    C --> C3[/complaints/{id}/status]
-    C --> C4[/complaints/{id}/transfer]
-    C --> C5[/complaints/{id}/escalate]
-    C --> C6[/complaints/{id}/feedback]
-    C --> C7[/complaints/{id}/notes]
-    C --> C8[/complaints/{id}/comments]
-    C --> C9[/complaints/bulk/status]
-    C --> C10[/complaints/bulk/transfer]
-    C --> C11[/complaints/export/csv]
+  subgraph Users
+    direction TB
+    U["/users"] --> U1["POST /users/register"]
+    U --> U2["POST /users/login"]
+    U --> U3["GET /users/me"]
+    U --> U4["PATCH /users/me"]
+    U --> U5["POST /users/forgot-password"]
+    U --> U6["POST /users/reset-password"]
+  end
 
-    W[Workers] --> W1[/workers/me]
-    W --> W2[/workers/me/status]
-    W --> W3[/workers/me/complaints/{id}/done]
-    W --> W4[/workers]
-    W --> W5[/workers/{id}/approve]
-    W --> W6[/workers/{id}/reject]
-    W --> W7[/workers/{id}/assign/{complaint_id}]
-    W --> W8[/workers/reassign-unassigned]
+  subgraph Analyze
+    direction TB
+    A["/analyze"] --> A1["POST /analyze"]
+    A --> A2["POST /analyze/regenerate"]
+    A --> A3["GET /complaints/generation/{job_id}"]
+  end
 
-    N[Notifications] --> N1[/notifications]
-    N --> N2[/notifications/unread-count]
-    N --> N3[/notifications/{id}/read]
-    N --> N4[/notifications/read-all]
+  subgraph Complaints
+    direction TB
+    C["/complaints"] --> C1["POST /complaints"]
+    C --> C2["GET /complaints"]
+    C --> C3["GET /complaints/{complaint_id}"]
+    C --> C4["PATCH /complaints/{complaint_id}/status"]
+    C --> C5["PATCH /complaints/{complaint_id}/transfer"]
+    C --> C6["POST /complaints/{complaint_id}/escalate"]
+    C --> C7["POST /complaints/{complaint_id}/feedback"]
+    C --> C8["POST /complaints/{complaint_id}/notes"]
+    C --> C9["GET /complaints/{complaint_id}/notes"]
+    C --> C10["POST /complaints/{complaint_id}/comments"]
+    C --> C11["GET /complaints/{complaint_id}/comments"]
+    C --> C12["POST /complaints/bulk/status"]
+    C --> C13["POST /complaints/bulk/transfer"]
+    C --> C14["GET /complaints/export/csv"]
+  end
 
-    T[Triage] --> T1[/triage/review-queue]
-    T --> T2[/triage/review-queue/decision]
+  subgraph Workers
+    direction TB
+    W["/workers"] --> W1["GET /workers/me"]
+    W --> W2["PATCH /workers/me/status"]
+    W --> W3["PATCH /workers/me/complaints/{complaint_id}/done"]
+    W --> W4["GET /workers"]
+    W --> W5["GET /workers/my-department"]
+    W --> W6["PATCH /workers/{worker_id}/approve"]
+    W --> W7["DELETE /workers/{worker_id}/reject"]
+    W --> W8["POST /workers/{worker_id}/assign/{complaint_id}"]
+    W --> W9["PATCH /workers/{worker_id}/area"]
+    W --> W10["GET /workers/assignment-debug"]
+    W --> W11["POST /workers/reassign-unassigned"]
+  end
 
-    X[Analytics/Public/Health] --> X1[/analytics/overview]
-    X --> X2[/analytics/heatmap]
-    X --> X3[/public/complaints]
-    X --> X4[/health/live]
-    X --> X5[/health/ready]
-    X --> X6[/health/models]
-    X --> X7[/health/gpu]
+  subgraph Notifications
+    direction TB
+    N["/notifications"] --> N1["GET /notifications"]
+    N --> N2["GET /notifications/unread-count"]
+    N --> N3["PATCH /notifications/{notification_id}/read"]
+    N --> N4["PATCH /notifications/read-all"]
+  end
+
+  subgraph Triage
+    direction TB
+    T["/triage"] --> T1["GET /triage/review-queue"]
+    T --> T2["POST /triage/review-queue/decision"]
+  end
+
+  subgraph AnalyticsPublicHealth
+    direction TB
+    X["/analytics, /public, /health"] --> X1["GET /analytics/overview"]
+    X --> X2["GET /analytics/heatmap"]
+    X --> X3["GET /public/complaints"]
+    X --> X4["GET /health/live"]
+    X --> X5["GET /health/ready"]
+    X --> X6["GET /health/models"]
+    X --> X7["GET /health/gpu"]
+  end
 ```
 
 ## Endpoint Reference

@@ -83,33 +83,33 @@ sequenceDiagram
 
 ```text
 Jan-Sunwai-AI/
-â”œâ”€â”€ backend/
-â”‚   â”œâ”€â”€ app/
-â”‚   â”‚   â”œâ”€â”€ routers/            # complaints, users, workers, triage, analytics, health, notifications, public
-â”‚   â”‚   â”œâ”€â”€ services/           # assignment, llm_queue, escalation, storage, sanitization, email
-â”‚   â”‚   â”œâ”€â”€ classifier.py       # Vision + rule engine + reasoning orchestration
-â”‚   â”‚   â”œâ”€â”€ generator.py        # complaint drafting + translation fallback
-â”‚   â”‚   â”œâ”€â”€ schemas.py
-â”‚   â”‚   â”œâ”€â”€ auth.py
-â”‚   â”‚   â””â”€â”€ config.py
-â”‚   â”œâ”€â”€ tests/
-â”‚   â”œâ”€â”€ env.local
-â”‚   â”œâ”€â”€ env.production
-â”‚   â””â”€â”€ main.py
-â”œâ”€â”€ frontend/
-â”‚   â”œâ”€â”€ src/
-â”‚   â”‚   â”œâ”€â”€ pages/
-â”‚   â”‚   â”œâ”€â”€ components/
-â”‚   â”‚   â”œâ”€â”€ layouts/
-â”‚   â”‚   â”œâ”€â”€ context/
-â”‚   â”‚   â””â”€â”€ hooks/
-â”‚   â””â”€â”€ package.json
-â”œâ”€â”€ docs/
-â”œâ”€â”€ scripts/
-â”œâ”€â”€ docker-compose.yml
-â”œâ”€â”€ docker-compose.prod.yml
-â”œâ”€â”€ setup.ps1
-â””â”€â”€ setup.sh
+|-- backend/
+|   |-- app/
+|   |   |-- routers/            # complaints, users, workers, triage, analytics, health, notifications, public
+|   |   |-- services/           # assignment, llm_queue, escalation, storage, sanitization, email
+|   |   |-- classifier.py       # vision + rule engine + reasoning orchestration
+|   |   |-- generator.py        # complaint drafting + translation fallback
+|   |   |-- schemas.py
+|   |   |-- auth.py
+|   |   `-- config.py
+|   |-- tests/
+|   |-- env.local
+|   |-- env.production
+|   `-- main.py
+|-- frontend/
+|   |-- src/
+|   |   |-- pages/
+|   |   |-- components/
+|   |   |-- layouts/
+|   |   |-- context/
+|   |   `-- hooks/
+|   `-- package.json
+|-- docs/
+|-- scripts/
+|-- docker-compose.yml
+|-- docker-compose.prod.yml
+|-- setup.ps1
+`-- setup.sh
 ```
 
 ## Quick Start
@@ -288,41 +288,62 @@ All primary APIs are mirrored under `/api/v1`.
 10. Fire Department
 11. Uncategorized
 
-## Configuration
+## Environment Variables
 
-Copy `backend/env.local` to `backend/.env` and adjust as needed.
+Use one of the following templates, then edit values as needed:
 
-| Variable | Purpose |
-| --- | --- |
-| `APP_ENV` | `development` or `production` |
-| `RATE_LIMIT_ENABLED` | Enable/disable slowapi rate limiting |
-| `MONGODB_URL`, `MONGO_URL` | MongoDB connection string |
-| `DB_NAME` | Database name |
-| `JWT_SECRET_KEY`, `JWT_ALGORITHM` | Auth signing config |
-| `ACCESS_TOKEN_EXPIRE_MINUTES` | Token TTL |
-| `OLLAMA_BASE_URL` | Ollama host URL |
-| `VISION_MODEL`, `MID_VISION_MODEL`, `FALLBACK_VISION_MODEL` | Vision model cascade |
-| `REASONING_MODEL` | Reasoning/writer model |
-| `VISION_TIMEOUT_SECONDS` | Per-tier vision timeout |
-| `LLM_INLINE_TIMEOUT_SECONDS` | Sync wait timeout before queued response |
-| `LLM_QUEUE_WORKERS` | Queue worker count |
-| `RULE_ENGINE_ONLY` | Skip reasoning model when true |
-| `AMBIGUITY_THRESHOLD` | Rule-engine ambiguity threshold |
-| `UNLOAD_AFTER_REASONING` | Unload reasoning model after draft generation |
-| `MODEL_UNLOAD_TIMEOUT_SECONDS` | Wait timeout for unload |
-| `MODEL_UNLOAD_POLL_INTERVAL_SECONDS` | Poll interval for unload checks |
-| `KEEP_REASONING_MODEL_WARM` | Keep reasoning model loaded |
-| `COMPLAINT_OUTPUT_MODE` | `email` or `paragraph` drafting style |
-| `SMTP_HOST`, `SMTP_PORT`, `SMTP_FROM` | Notification email relay settings |
-| `ALLOWED_ORIGINS` | CORS allowlist |
-| `DEFAULT_PAGE_SIZE`, `MAX_PAGE_SIZE` | Pagination config |
+- Preferred in this repository: copy `backend/env.local` to `backend/.env`.
+- Optional team pattern: copy `backend/.env.example` to `backend/.env` if your branch includes it.
 
-Frontend:
+| Variable | Default | Description |
+| --- | --- | --- |
+| `APP_ENV` | `development` | Runtime mode (`development` or `production`) |
+| `RATE_LIMIT_ENABLED` | `false` (dev), auto-`true` in production if unset | Enable request rate limiting |
+| `MONGODB_URL` | `mongodb://localhost:27017` | MongoDB connection string |
+| `MONGO_URL` | `mongodb://localhost:27017` | Legacy MongoDB URL alias fallback |
+| `DB_NAME` | `jan_sunwai_db` | MongoDB database name |
+| `JWT_SECRET_KEY` | `change-me-in-production` | Secret used to sign JWTs |
+| `JWT_ALGORITHM` | `HS256` | JWT signing algorithm |
+| `ACCESS_TOKEN_EXPIRE_MINUTES` | `1440` in dev, `480` in prod if unset | Access token TTL in minutes |
+| `VISION_MODEL` | `qwen2.5vl:3b` | Primary vision model |
+| `MID_VISION_MODEL` | `granite3.2-vision:2b` | Mid-tier vision fallback if primary times out |
+| `FALLBACK_VISION_MODEL` | `granite3.2-vision:2b` | Final fallback for vision step |
+| `REASONING_MODEL` | `llama3.2:1b` | Reasoning model for ambiguous classification and drafting |
+| `ALLOWED_ORIGINS` | `http://localhost:5173,http://127.0.0.1:5173` | CORS allowlist |
+| `OLLAMA_BASE_URL` | `http://localhost:11434` | Ollama API endpoint |
+| `VISION_TIMEOUT_SECONDS` | `240` | Per-tier vision timeout (seconds) |
+| `LLM_INLINE_TIMEOUT_SECONDS` | `15` | Timeout for synchronous LLM calls before queue fallback |
+| `LLM_QUEUE_WORKERS` | `2` | Background LLM worker count |
+| `RULE_ENGINE_ONLY` | `false` | Set `true` to skip reasoning model |
+| `AMBIGUITY_THRESHOLD` | `2.0` | Rule engine confidence threshold |
+| `UNLOAD_AFTER_REASONING` | `true` | Unload reasoning model after use |
+| `COMPLAINT_OUTPUT_MODE` | `email` | Draft format (`email` or `paragraph`) |
+| `MODEL_UNLOAD_TIMEOUT_SECONDS` | `30` | Max wait before model unload timeout |
+| `MODEL_UNLOAD_POLL_INTERVAL_SECONDS` | `0.1` | Poll interval during unload checks |
+| `KEEP_REASONING_MODEL_WARM` | `false` | Keep reasoning model loaded between requests |
+| `SMTP_HOST` | *(empty)* | SMTP relay host |
+| `SMTP_PORT` | `587` | SMTP relay port |
+| `SMTP_FROM` | `noreply@jan-sunwai.local` | Sender email for notification relay |
+| `DEFAULT_PAGE_SIZE` | `25` | Default pagination size |
+| `MAX_PAGE_SIZE` | `100` | Maximum pagination size |
 
-| Variable | Purpose |
-| --- | --- |
-| `VITE_API_URL` | API base URL (default `http://localhost:8000`) |
-| `VITE_MAPPLS_API_KEY` | Optional Mappls key for official India map tiles |
+Frontend environment variables (`frontend/.env`):
+
+| Variable | Default | Description |
+| --- | --- | --- |
+| `VITE_API_URL` | `http://localhost:8000` | Backend API base URL (use `/api/v1` behind reverse proxy in production) |
+| `VITE_MAPPLS_API_KEY` | *(unset)* | Optional Mappls key for official India map tiles. Without it, CARTO Voyager tiles are used |
+
+## Hardware Requirements
+
+| Component | Minimum | Recommended |
+| --- | --- | --- |
+| GPU VRAM | 4 GB (models run sequentially) | 6+ GB |
+| System RAM | 12 GB free | 16 GB |
+| Storage | 10 GB free (models + images) | 20 GB |
+| OS | Windows 10+ or Ubuntu 20.04+ | Windows 11 or Ubuntu 22.04 |
+
+Models run sequentially, never simultaneously, so each model fits within 4 GB VRAM on its own.
 
 ## Testing and QA
 
