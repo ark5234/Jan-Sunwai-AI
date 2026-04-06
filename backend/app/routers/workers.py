@@ -16,7 +16,7 @@ Endpoints:
 """
 
 from fastapi import APIRouter, HTTPException, Depends, Body
-from app.auth import get_current_worker, get_current_admin, get_current_user
+from app.auth import get_current_worker, get_current_admin, get_current_admin_or_dept_head
 from app.database import get_database
 from app.schemas import WorkerStatus, ServiceAreaUpdate, UserRole
 from app.services.assignment import free_worker_slot, _do_assign, auto_assign
@@ -253,6 +253,34 @@ async def list_workers(
         # Attach active complaint count
         w["active_task_count"] = len(w.get("active_complaint_ids", []))
         w.pop("password", None)  # Never leak passwords
+        workers.append(w)
+    return workers
+
+
+@router.get("/workers/my-department")
+async def list_workers_for_my_department(
+    current_user: dict = Depends(get_current_admin_or_dept_head),
+):
+    """
+    Return approved workers scoped to the caller's department.
+
+    - DEPT_HEAD: only workers in their department.
+    - ADMIN: all approved workers.
+    """
+    db = get_database()
+    query: dict = {"role": UserRole.WORKER, "is_approved": True}
+
+    if current_user.get("role") == UserRole.DEPT_HEAD:
+        user_dept = current_user.get("department")
+        if not user_dept:
+            return []
+        query["department"] = user_dept
+
+    workers = []
+    async for worker in db["users"].find(query).sort("created_at", -1):
+        w = _fix(worker)
+        w["active_task_count"] = len(w.get("active_complaint_ids", []))
+        w.pop("password", None)
         workers.append(w)
     return workers
 

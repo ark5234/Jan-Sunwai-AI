@@ -1,7 +1,7 @@
 services:
   # MongoDB Database
   mongodb:
-    image: mongo:latest
+    image: mongo:7.0
     container_name: jan-sunwai-mongodb
     restart: unless-stopped
     ports:
@@ -41,9 +41,13 @@ services:
       - REASONING_MODEL=${REASONING_MODEL:-llama3.2:1b}
       - VISION_TIMEOUT_SECONDS=${VISION_TIMEOUT_SECONDS:-240}
       - LLM_INLINE_TIMEOUT_SECONDS=${LLM_INLINE_TIMEOUT_SECONDS:-15}
+      - COMPLAINT_OUTPUT_MODE=${COMPLAINT_OUTPUT_MODE:-email}
+      - MODEL_UNLOAD_TIMEOUT_SECONDS=${MODEL_UNLOAD_TIMEOUT_SECONDS:-30}
+      - MODEL_UNLOAD_POLL_INTERVAL_SECONDS=${MODEL_UNLOAD_POLL_INTERVAL_SECONDS:-0.1}
+      - KEEP_REASONING_MODEL_WARM=${KEEP_REASONING_MODEL_WARM:-false}
     depends_on:
       - mongodb
-    command: ["python", "-m", "uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+    command: ["python", "-m", "uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "2"]
     networks:
       - jan-sunwai-network
 

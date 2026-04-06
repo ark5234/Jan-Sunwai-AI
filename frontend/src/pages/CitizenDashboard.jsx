@@ -6,6 +6,8 @@ import axios from 'axios';
 import SLABadge from '../components/SLABadge';
 import ComplaintComments from '../components/ComplaintComments';
 
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+
 // Inline star-rating feedback widget
 function FeedbackWidget({ complaintId, token, onSubmitted }) {
   const [rating, setRating] = useState(0);
@@ -19,7 +21,7 @@ function FeedbackWidget({ complaintId, token, onSubmitted }) {
     setSubmitting(true);
     try {
       await axios.post(
-        `http://localhost:8000/complaints/${complaintId}/feedback`,
+        `${API_BASE_URL}/complaints/${complaintId}/feedback`,
         { rating, comment: comment.trim() || undefined },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -92,7 +94,7 @@ const CitizenDashboard = () => {
     if (!user?.access_token) return;
     try {
       setLoading(true);
-      const response = await axios.get('http://localhost:8000/complaints', {
+      const response = await axios.get(`${API_BASE_URL}/complaints`, {
         headers: {
           Authorization: `Bearer ${user.access_token}`
         }
@@ -308,7 +310,7 @@ const CitizenDashboard = () => {
                     {complaint.image_url && (
                       <div className="sm:ml-4 shrink-0">
                         <img
-                          src={`http://localhost:8000/${complaint.image_url}`}
+                          src={`${API_BASE_URL}/${complaint.image_url}`}
                           alt="Complaint"
                           className="h-24 w-24 sm:h-20 sm:w-20 object-cover rounded"
                         />

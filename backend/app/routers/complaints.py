@@ -66,8 +66,8 @@ async def analyze_complaint(
     file_path = await storage_service.save_file(file)
     absolute_file_path = storage_service.resolve_path(file_path)
 
-    # 2. Classify — pass the saved file path to the Ollama pipeline
-    classification = classifier.classify(absolute_file_path)
+    # 2. Classify — offload sync model inference so the event loop stays responsive
+    classification = await asyncio.to_thread(classifier.classify, absolute_file_path)
 
     # 3. Extract Location — open from the saved file on disk (avoids re-reading HTTP body)
     image = Image.open(absolute_file_path)
@@ -289,6 +289,58 @@ async def list_complaints(
         complaints.append(fix_id(doc))
         
     return complaints
+
+
+# ---------------------------------------------------------------------------
+# CSV export (admin only)
+# ---------------------------------------------------------------------------
+
+@router.get("/complaints/export/csv")
+async def export_complaints_csv(
+    current_user: dict = Depends(get_current_admin),
+    status: ComplaintStatus | None = None,
+    department: str | None = None,
+):
+    db = get_database()
+    query: dict = {}
+    if status:
+        query["status"] = status.value
+    if department:
+        query["department"] = department
+
+    cursor = db["complaints"].find(query).sort("created_at", -1)
+
+    output = io.StringIO()
+    writer = csv.DictWriter(
+        output,
+        fieldnames=[
+            "id", "department", "status", "priority", "description",
+            "location", "created_at", "updated_at", "escalated", "user_id",
+        ],
+        extrasaction="ignore",
+    )
+    writer.writeheader()
+
+    async for doc in cursor:
+        writer.writerow({
+            "id": str(doc["_id"]),
+            "department": doc.get("department", ""),
+            "status": doc.get("status", ""),
+            "priority": doc.get("priority", ""),
+            "description": doc.get("description", ""),
+            "location": doc.get("location", ""),
+            "created_at": doc.get("created_at", ""),
+            "updated_at": doc.get("updated_at", ""),
+            "escalated": doc.get("escalated", False),
+            "user_id": doc.get("user_id", ""),
+        })
+
+    output.seek(0)
+    return StreamingResponse(
+        iter([output.read()]),
+        media_type="text/csv",
+        headers={"Content-Disposition": "attachment; filename=complaints_export.csv"},
+    )
 
 @router.get("/complaints/{complaint_id}", response_model=ComplaintResponse)
 async def get_complaint(complaint_id: str):
@@ -589,58 +641,6 @@ async def get_comments(
         raise HTTPException(status_code=403, detail="Not your complaint")
 
     return complaint.get("comments", [])
-
-
-# ---------------------------------------------------------------------------
-# CSV export (admin only)
-# ---------------------------------------------------------------------------
-
-@router.get("/complaints/export/csv")
-async def export_complaints_csv(
-    current_user: dict = Depends(get_current_admin),
-    status: ComplaintStatus | None = None,
-    department: str | None = None,
-):
-    db = get_database()
-    query: dict = {}
-    if status:
-        query["status"] = status.value
-    if department:
-        query["department"] = department
-
-    cursor = db["complaints"].find(query).sort("created_at", -1)
-
-    output = io.StringIO()
-    writer = csv.DictWriter(
-        output,
-        fieldnames=[
-            "id", "department", "status", "priority", "description",
-            "location", "created_at", "updated_at", "escalated", "user_id",
-        ],
-        extrasaction="ignore",
-    )
-    writer.writeheader()
-
-    async for doc in cursor:
-        writer.writerow({
-            "id": str(doc["_id"]),
-            "department": doc.get("department", ""),
-            "status": doc.get("status", ""),
-            "priority": doc.get("priority", ""),
-            "description": doc.get("description", ""),
-            "location": doc.get("location", ""),
-            "created_at": doc.get("created_at", ""),
-            "updated_at": doc.get("updated_at", ""),
-            "escalated": doc.get("escalated", False),
-            "user_id": doc.get("user_id", ""),
-        })
-
-    output.seek(0)
-    return StreamingResponse(
-        iter([output.read()]),
-        media_type="text/csv",
-        headers={"Content-Disposition": "attachment; filename=complaints_export.csv"},
-    )
 
 
 # ---------------------------------------------------------------------------

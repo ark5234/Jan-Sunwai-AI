@@ -36,6 +36,8 @@ logger.addHandler(file_handler)
 async def lifespan(app: FastAPI):
     # Startup: Connect to DB
     logger.info("Starting up application...")
+    if settings.is_production and settings.jwt_secret_key == "change-me-in-production":
+        raise RuntimeError("JWT_SECRET_KEY must be set to a non-default value in production.")
     await connect_to_mongo()
     await llm_queue_service.start()
     asyncio.create_task(escalation_loop())

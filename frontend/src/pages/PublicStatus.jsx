@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { Search, Filter, Globe } from "lucide-react";
 import axios from "axios";
 
+const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
+
 const STATUS_BADGE = {
   Open: "bg-blue-100 text-blue-700",
   "In Progress": "bg-yellow-100 text-yellow-700",
@@ -35,7 +37,7 @@ export default function PublicStatus() {
 
   useEffect(() => {
     axios
-      .get("http://localhost:8000/public/complaints")
+      .get(`${API_BASE_URL}/public/complaints`)
       .then((r) => setComplaints(r.data))
       .catch(() => setError("Failed to load public complaints."))
       .finally(() => setLoading(false));
@@ -57,6 +59,25 @@ export default function PublicStatus() {
       return false;
     return true;
   });
+
+  const statsScoped = complaints.filter((c) => {
+    if (deptFilter !== "All" && c.department !== deptFilter) return false;
+    if (
+      search &&
+      !c.department?.toLowerCase().includes(search.toLowerCase()) &&
+      !c._id?.includes(search)
+    )
+      return false;
+    return true;
+  });
+
+  const statsTotal = statsScoped.length;
+  const openCount = statsScoped.filter((c) => c.status === "Open").length;
+  const inProgressCount = statsScoped.filter((c) => c.status === "In Progress").length;
+
+  const percentage = (count, total) => (total ? Math.round((count / total) * 1000) / 10 : 0);
+  const openPct = percentage(openCount, statsTotal);
+  const inProgressPct = percentage(inProgressCount, statsTotal);
 
   return (
     <div className="max-w-5xl mx-auto px-4 py-10 space-y-6">
@@ -116,6 +137,37 @@ export default function PublicStatus() {
       {/* Error */}
       {error && (
         <p className="text-center text-red-500 text-sm">{error}</p>
+      )}
+
+      {/* Status Percentage Snapshot */}
+      {!loading && !error && (
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div className="bg-white rounded-xl border border-slate-200 p-4">
+            <div className="flex items-center justify-between">
+              <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Open</p>
+              <p className="text-sm font-semibold text-blue-700">{openPct}%</p>
+            </div>
+            <div className="mt-2 h-2 w-full rounded-full bg-slate-100 overflow-hidden">
+              <div className="h-full bg-blue-500" style={{ width: `${openPct}%` }} />
+            </div>
+            <p className="mt-2 text-xs text-slate-500">
+              {openCount} of {statsTotal} grievance{statsTotal !== 1 ? "s" : ""}
+            </p>
+          </div>
+
+          <div className="bg-white rounded-xl border border-slate-200 p-4">
+            <div className="flex items-center justify-between">
+              <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">In Progress</p>
+              <p className="text-sm font-semibold text-yellow-700">{inProgressPct}%</p>
+            </div>
+            <div className="mt-2 h-2 w-full rounded-full bg-slate-100 overflow-hidden">
+              <div className="h-full bg-yellow-500" style={{ width: `${inProgressPct}%` }} />
+            </div>
+            <p className="mt-2 text-xs text-slate-500">
+              {inProgressCount} of {statsTotal} grievance{statsTotal !== 1 ? "s" : ""}
+            </p>
+          </div>
+        </div>
       )}
 
       {/* Loading */}

@@ -6,6 +6,8 @@ import axios from 'axios';
 import SLABadge from '../components/SLABadge';
 import ComplaintComments from '../components/ComplaintComments';
 
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+
 const AdminDashboard = () => {
   const { user } = useAuth();
   const [complaints, setComplaints] = useState([]);
@@ -65,7 +67,7 @@ const AdminDashboard = () => {
         params.department = departmentFilter;
       }
       
-      const response = await axios.get('http://localhost:8000/complaints', {
+      const response = await axios.get(`${API_BASE_URL}/complaints`, {
         headers: {
           Authorization: `Bearer ${user.access_token}`
         },
@@ -89,7 +91,7 @@ const AdminDashboard = () => {
     if (!user?.access_token) return;
     setWorkersLoading(true);
     try {
-      const res = await axios.get('http://localhost:8000/workers', {
+      const res = await axios.get(`${API_BASE_URL}/workers`, {
         headers: { Authorization: `Bearer ${user.access_token}` },
       });
       setWorkers(res.data);
@@ -103,7 +105,7 @@ const AdminDashboard = () => {
   const fetchUnassigned = async () => {
     if (!user?.access_token) return;
     try {
-      const res = await axios.get('http://localhost:8000/complaints', {
+      const res = await axios.get(`${API_BASE_URL}/complaints`, {
         headers: { Authorization: `Bearer ${user.access_token}` },
         params: { status: 'Open', limit: 200 },
       });
@@ -116,7 +118,7 @@ const AdminDashboard = () => {
     setReassignResult(null);
     try {
       const res = await axios.post(
-        'http://localhost:8000/workers/reassign-unassigned',
+        `${API_BASE_URL}/workers/reassign-unassigned`,
         {},
         { headers: { Authorization: `Bearer ${user.access_token}` } }
       );
@@ -135,7 +137,7 @@ const AdminDashboard = () => {
     if (!complaintId) return;
     try {
       await axios.post(
-        `http://localhost:8000/workers/${workerId}/assign/${complaintId}`,
+        `${API_BASE_URL}/workers/${workerId}/assign/${complaintId}`,
         {},
         { headers: { Authorization: `Bearer ${user.access_token}` } }
       );
@@ -152,7 +154,7 @@ const AdminDashboard = () => {
 
   const handleApproveWorker = async (workerId) => {
     try {
-      await axios.patch(`http://localhost:8000/workers/${workerId}/approve`, {},
+      await axios.patch(`${API_BASE_URL}/workers/${workerId}/approve`, {},
         { headers: { Authorization: `Bearer ${user.access_token}` } }
       );
       setWorkerActionMsg('Worker approved!');
@@ -166,7 +168,7 @@ const AdminDashboard = () => {
   const handleRejectWorker = async (workerId) => {
     if (!window.confirm('Permanently reject and delete this worker registration?')) return;
     try {
-      await axios.delete(`http://localhost:8000/workers/${workerId}/reject`, {
+      await axios.delete(`${API_BASE_URL}/workers/${workerId}/reject`, {
         headers: { Authorization: `Bearer ${user.access_token}` },
         data: { reason: 'Rejected by admin' },
       });
@@ -182,7 +184,7 @@ const AdminDashboard = () => {
     setUpdateError(null);
     try {
       await axios.patch(
-        `http://localhost:8000/complaints/${complaintId}/status`,
+        `${API_BASE_URL}/complaints/${complaintId}/status`,
         { status: newStatus },
         {
           headers: {
@@ -212,7 +214,7 @@ const AdminDashboard = () => {
   const handleBulkStatus = async () => {
     if (!selected.size) return;
     try {
-      await axios.post('http://localhost:8000/complaints/bulk/status',
+      await axios.post(`${API_BASE_URL}/complaints/bulk/status`,
         { complaint_ids: [...selected], status: bulkStatus },
         { headers: { Authorization: `Bearer ${user.access_token}`, 'Content-Type': 'application/json' } }
       );
@@ -226,7 +228,7 @@ const AdminDashboard = () => {
   const handleBulkTransfer = async () => {
     if (!selected.size || !bulkDept) return;
     try {
-      await axios.post('http://localhost:8000/complaints/bulk/transfer',
+      await axios.post(`${API_BASE_URL}/complaints/bulk/transfer`,
         { complaint_ids: [...selected], new_department: bulkDept, reason: bulkReason || undefined },
         { headers: { Authorization: `Bearer ${user.access_token}`, 'Content-Type': 'application/json' } }
       );
@@ -242,7 +244,7 @@ const AdminDashboard = () => {
       const params = {};
       if (statusFilter !== 'all') params.status = statusFilter;
       if (departmentFilter !== 'all') params.department = departmentFilter;
-      const r = await axios.get('http://localhost:8000/complaints/export/csv', {
+      const r = await axios.get(`${API_BASE_URL}/complaints/export/csv`, {
         headers: { Authorization: `Bearer ${user.access_token}` },
         params,
         responseType: 'blob',
@@ -275,7 +277,7 @@ const AdminDashboard = () => {
     setUpdateError(null);
     try {
       await axios.patch(
-        `http://localhost:8000/complaints/${complaintId}/transfer`,
+        `${API_BASE_URL}/complaints/${complaintId}/transfer`,
         { new_department: panel.dept, reason: panel.reason || undefined },
         {
           headers: {
@@ -813,10 +815,10 @@ const AdminDashboard = () => {
                     {complaint.image_url && (
                       <div className="ml-4">
                         <img
-                          src={`http://localhost:8000/${complaint.image_url}`}
+                          src={`${API_BASE_URL}/${complaint.image_url}`}
                           alt="Complaint"
                           className="h-32 w-32 object-cover rounded cursor-pointer hover:opacity-75"
-                          onClick={() => window.open(`http://localhost:8000/${complaint.image_url}`, '_blank')}
+                          onClick={() => window.open(`${API_BASE_URL}/${complaint.image_url}`, '_blank')}
                         />
                       </div>
                     )}

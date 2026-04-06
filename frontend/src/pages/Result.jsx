@@ -48,6 +48,8 @@ const _SATELLITE_STYLE = {
 };
 import axios from 'axios';
 
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+
 
 export default function Result() {
   const { state } = useLocation();
@@ -92,7 +94,7 @@ export default function Result() {
       attempts += 1;
       try {
         const res = await axios.get(
-          `http://localhost:8000/complaints/generation/${generationJobId}`,
+          `${API_BASE_URL}/complaints/generation/${generationJobId}`,
           { headers: { Authorization: `Bearer ${user?.access_token}` } }
         );
         const data = res.data;
@@ -326,7 +328,7 @@ export default function Result() {
       };
       
       const response = await axios.post(
-        'http://localhost:8000/complaints',
+        `${API_BASE_URL}/complaints`,
         complaintData,
         {
           headers: {
@@ -361,7 +363,7 @@ export default function Result() {
     setShowRegenLang(false);
     try {
       const res = await axios.post(
-        'http://localhost:8000/analyze/regenerate',
+        `${API_BASE_URL}/analyze/regenerate`,
         {
           classification,
           location: result?.location || {},
@@ -383,7 +385,7 @@ export default function Result() {
   };
 
   const cleanPath = image_url.replace(/\\/g, '/');
-  const fullImageUrl = `http://localhost:8000/${cleanPath}`;
+  const fullImageUrl = `${API_BASE_URL}/${cleanPath}`;
 
   const confidence = (classification.confidence * 100).toFixed(1);
   const isHighConfidence = classification.confidence > 0.8;
@@ -725,7 +727,7 @@ export default function Result() {
                             setRegenerateError(null);
                             setRegenerating(true);
                             axios.post(
-                              'http://localhost:8000/analyze/regenerate',
+                              `${API_BASE_URL}/analyze/regenerate`,
                               { classification, location: result?.location || {}, image_url, language: code },
                               { headers: { Authorization: `Bearer ${user?.access_token}` } }
                             ).then(res => {

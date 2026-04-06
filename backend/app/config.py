@@ -48,6 +48,16 @@ class Settings:
     ambiguity_threshold: float = float(os.getenv("AMBIGUITY_THRESHOLD", "2.0"))
     # unload_after_reasoning: free VRAM by unloading reasoning model after each use
     unload_after_reasoning: bool = os.getenv("UNLOAD_AFTER_REASONING", "true").lower() in ("true", "1", "yes")
+    # Generator model handoff tuning
+    model_unload_timeout_seconds: float = float(os.getenv("MODEL_UNLOAD_TIMEOUT_SECONDS", "30"))
+    model_unload_poll_interval_seconds: float = float(os.getenv("MODEL_UNLOAD_POLL_INTERVAL_SECONDS", "0.1"))
+    # Keep reasoning model resident between requests for lower latency
+    # (enable only on systems with enough free RAM/VRAM)
+    keep_reasoning_model_warm: bool = os.getenv("KEEP_REASONING_MODEL_WARM", "false").lower() in ("true", "1", "yes")
+    # Complaint output style:
+    # - paragraph: single-paragraph official note
+    # - email: structured email with Subject, salutation, body, and sign-off
+    complaint_output_mode: str = os.getenv("COMPLAINT_OUTPUT_MODE", "email").strip().lower()
 
     @property
     def allowed_origins(self) -> list[str]:

@@ -58,59 +58,175 @@ _NEGATIVE_KEYWORDS = [
     "railway track", "train track", "metro station",
 ]
 
+_TRAFFIC_TERMS: list[str] = [
+    "traffic congestion", "traffic jam", "gridlock", "traffic deadlock",
+    "road congestion", "heavy traffic", "vehicle congestion", "chaotic traffic",
+]
+
+_VEHICLE_TERMS: list[str] = [
+    "car", "cars", "vehicle", "vehicles", "bus", "buses", "truck", "trucks",
+    "motorcycle", "motorcycles", "auto", "autorickshaw", "rickshaw",
+    "two-wheeler", "scooter", "cab", "taxi", "van", "jeep", "lorry", "minibus",
+]
+
+_ELECTRICAL_TERMS: list[str] = [
+    "electrical", "electric", "wire", "wires", "cable", "cables", "transformer",
+    "meter box", "fuse box", "junction box", "electrical box", "distribution panel",
+    "panel board", "switchboard", "circuit breaker", "short circuit", "overload",
+    "high voltage", "live wire", "sparking",
+]
+
+_FIRE_TERMS: list[str] = [
+    "fire", "flame", "flames", "burning", "smoke", "spark", "sparks", "blaze",
+    "ignition", "scorch",
+]
+
 # Keyword fallback: if reasoning model fails, map description keywords → category
 # Ordered from most-specific to least-specific
-_KEYWORD_FALLBACK: list[tuple[list[str], str]] = [
-    (["pothole", "road damage", "cracked road", "broken road", "damaged road",
-      "damaged pavement", "broken pavement", "footpath damage", "manhole",
-      "caved in", "uneven road", "missing cover", "crater"],
-     "Civil Department"),
-    (["waterlog", "flooded", "flood", "drain overflow", "sewer overflow",
-      "pipe leak", "water gushing", "stagnant water", "blocked drain",
-      "drainage problem", "water supply", "sewage leak", "drain"],
-     "Civil Department"),
-    (["garbage", "trash", "waste", "litter", "dump", "rubbish", "overflowing bin",
-      "pile of", "large pile", "heap of", "plastic bottles", "plastic bottle",
-      "glass bottles", "broken glass", "broken bottles", "empty bottles",
-      "scattered", "junk", "filth", "filthy", "open dump", "roadside dump",
-      "dead animal", "stench", "medical waste"],
-     "Health Department"),
-    (["fallen tree", "uprooted tree", "overgrown", "dead plant", "broken branch",
-      "tree blocking", "overgrown bush", "dry leaves", "park unmaintained", "weed"],
-     "Horticulture"),
-    (["street light", "lamp post", "unlit road", "broken light", "dark road", "pole light"],
-     "Electrical Department"),
-    (["dangling wire", "hanging wire", "open transformer", "fallen electric pole",
-      "exposed wire", "power cable", "sparking", "live wire", "high voltage"],
-     "Electrical Department"),
-    (["smoke", "burning", "industrial waste", "air pollution", "open burning",
-      "chemical dump", "toxic"],
-     "Fire Department"),
-    (["traffic signal", "signal failure", "traffic jam", "road blockage",
-      "traffic congestion", "gridlock", "traffic deadlock",
-      "standstill", "peak hour", "rush hour", "no lane", "chaotic traffic", "accident"],
-     "Enforcement"),
-    (["illegal parking", "encroachment", "footpath blocked", "public nuisance",
-      "hawker", "unauthorized", "illegal occupation"],
-     "Enforcement"),
-    (["mosquito", "dengue", "malaria", "fogging", "larvae"],
-     "VBD Department"),
-    (["illegal construction", "unauthorized construction", "building collapse", "unsafe building"],
-     "EBR Department"),
-    (["faulty meter", "property tax", "billing", "license"],
-     "Commercial"),
-    (["portal bug", "app bug", "login failed", "server error"],
-     "IT Department"),
+_KEYWORD_FALLBACK_BY_DEPARTMENT: dict[str, list[str]] = {
+    # Keep Electrical first so electrical-fire scenes don't get swallowed by generic smoke words.
+    "Electrical Department": [
+        "electrical fire", "panel fire", "meter fire", "transformer fire",
+        "short circuit", "electrical overload", "burning wire", "burning cable",
+        "sparking wire", "smoke from panel", "distribution panel", "junction box",
+        "fuse box", "electrical box", "circuit breaker", "street light", "lamp post",
+        "unlit road", "broken light", "dark road", "pole light", "dangling wire",
+        "hanging wire", "open transformer", "fallen electric pole", "exposed wire",
+        "power cable", "sparking", "live wire", "high voltage",
+    ],
+    "Civil Department": [
+        "pothole", "road damage", "cracked road", "broken road", "damaged road",
+        "damaged pavement", "broken pavement", "footpath damage", "manhole",
+        "caved in", "uneven road", "missing cover", "crater", "waterlog",
+        "flooded", "flood", "drain overflow", "sewer overflow", "pipe leak",
+        "water gushing", "stagnant water", "blocked drain", "drainage problem",
+        "water supply", "sewage leak", "drain",
+    ],
+    "Health Department": [
+        "garbage", "trash", "waste", "litter", "dump", "rubbish", "overflowing bin",
+        "pile of", "large pile", "heap of", "plastic bottles", "plastic bottle",
+        "glass bottles", "broken glass", "broken bottles", "empty bottles", "scattered",
+        "junk", "filth", "filthy", "open dump", "roadside dump", "dead animal",
+        "stench", "medical waste",
+    ],
+    "Horticulture": [
+        "fallen tree", "uprooted tree", "overgrown", "dead plant", "broken branch",
+        "tree blocking", "overgrown bush", "dry leaves", "park unmaintained", "weed",
+    ],
+    "Enforcement": [
+        "traffic signal", "signal failure", "traffic jam", "road blockage",
+        "traffic congestion", "gridlock", "traffic deadlock", "standstill",
+        "peak hour", "rush hour", "no lane", "chaotic traffic", "accident",
+        "illegal parking", "encroachment", "footpath blocked", "public nuisance",
+        "hawker", "unauthorized", "illegal occupation",
+    ],
+    "VBD Department": ["mosquito", "dengue", "malaria", "fogging", "larvae"],
+    "EBR Department": ["illegal construction", "unauthorized construction", "building collapse", "unsafe building"],
+    "Commercial": ["faulty meter", "property tax", "billing", "license"],
+    "IT Department": ["portal bug", "app bug", "login failed", "server error"],
+    "Fire Department": ["smoke", "burning", "industrial waste", "air pollution", "open burning", "chemical dump", "toxic"],
+}
+
+_RAIL_STRONG_TERMS: list[str] = [
+    "railway station", "train station", "railway platform", "train platform",
+    "metro station", "station platform", "railway track", "train track", "rail track",
+]
+
+_RAIL_WEAK_WHOLE_WORD_TERMS: list[str] = [
+    "railway", "railroad", "locomotive", "train", "metro",
+]
+
+_TEMPLATE_PLACEHOLDER_SNIPPETS: list[str] = [
+    "single phrase",
+    "dominant problem visible",
+    "2-3 sentence factual description",
+    "road/park/drain/building/railway station/train platform/etc",
+    "object1",
+    "object2",
+    "hazard1",
+    "hazard2",
+    "low/medium/high",
 ]
 
 
 def _keyword_fallback(description: str) -> str:
     """Scan the vision description for civic keywords and return best category."""
     desc = description.lower()
-    for keywords, category in _KEYWORD_FALLBACK:
+    for category, keywords in _KEYWORD_FALLBACK_BY_DEPARTMENT.items():
         if any(kw in desc for kw in keywords):
             return category
     return "Uncategorized"
+
+
+def _contains_whole_word(text: str, term: str) -> bool:
+    return bool(re.search(rf"\b{re.escape(term)}\b", text))
+
+
+def _looks_like_template_placeholder(value: str) -> bool:
+    v = value.strip().lower()
+    if not v:
+        return False
+    return any(snippet in v for snippet in _TEMPLATE_PLACEHOLDER_SNIPPETS)
+
+
+def _clean_vision_payload(vision_payload: dict) -> dict:
+    """Remove schema-placeholder artifacts occasionally echoed by vision models."""
+    for key in ("description", "primary_issue", "secondary_issue", "setting"):
+        raw = str(vision_payload.get(key, ""))
+        if _looks_like_template_placeholder(raw):
+            vision_payload[key] = ""
+
+    cleaned_objects = []
+    for item in vision_payload.get("visible_objects", []):
+        text = str(item).strip()
+        if not text:
+            continue
+        if _looks_like_template_placeholder(text):
+            continue
+        cleaned_objects.append(text)
+    vision_payload["visible_objects"] = cleaned_objects
+
+    cleaned_hazards = []
+    for item in vision_payload.get("hazards", []):
+        text = str(item).strip()
+        if not text:
+            continue
+        if _looks_like_template_placeholder(text):
+            continue
+        cleaned_hazards.append(text)
+    vision_payload["hazards"] = cleaned_hazards
+
+    return vision_payload
+
+
+def _rail_signal_score(
+    description: str,
+    primary_issue: str,
+    setting: str,
+    visible_objects_text: str,
+) -> int:
+    """
+    Compute rail-scene confidence from multiple signals.
+
+    We require multiple signals to avoid false positives from one hallucinated term.
+    """
+    desc = description.lower()
+    high_signal = f"{primary_issue} {setting} {visible_objects_text}".lower()
+
+    score = 0
+    # Strong rail phrases in high-signal fields carry more weight.
+    if any(term in high_signal for term in _RAIL_STRONG_TERMS):
+        score += 2
+    # Strong phrases in description alone are weaker evidence.
+    if any(term in desc for term in _RAIL_STRONG_TERMS):
+        score += 1
+    # Weak single-word hints require whole-word matching.
+    if any(_contains_whole_word(high_signal, term) for term in _RAIL_WEAK_WHOLE_WORD_TERMS):
+        score += 1
+    if any(_contains_whole_word(desc, term) for term in _RAIL_WEAK_WHOLE_WORD_TERMS):
+        score += 1
+
+    return score
 
 
 def _is_screen_capture(image_path: str) -> bool:
@@ -295,16 +411,18 @@ class CivicClassifier:
                 "}\n\n"
                 "STRICT RULES:\n"
                 "- ONLY describe what you can CLEARLY and DIRECTLY see. Do NOT infer or guess.\n"
+                "- Do NOT mention trains/railways/metro unless tracks, train coaches, or platform signage are clearly visible.\n"
+                "- If you see flames/smoke/sparks near wires, a transformer, meter box, or electrical panel, "
+                "set primary_issue to 'electrical fire hazard' (NOT traffic congestion).\n"
                 "- If you see a train, railway platform, or railway station, say so EXPLICITLY "
                 "in the description — do NOT describe a railway platform as a 'sidewalk' or 'road'.\n"
                 "- If the dominant scene is heavy vehicle traffic, crowded roads, traffic jam, "
                 "or congestion with NO clear infrastructure damage, set primary_issue to "
                 "'traffic congestion' and description should reflect that.\n"
-                "- Do NOT mention potholes unless you can clearly see road surface damage.\n"
-                "- Do NOT mention garbage/fallen trees unless clearly visible.\n"
-                "- Be specific: 'traffic congestion' / 'pothole' / 'waterlogging' / "
+                "- Never use 'traffic congestion' unless vehicles are clearly visible and dominant in the scene.\n"
+                "- Be specific: 'traffic congestion' / 'road damage' / 'waterlogging' / "
                 "'broken street light' / 'fallen tree' / 'garbage dump' / 'dangling wire' / "
-                "'railway platform' / 'train station'\n"
+                "'electrical box' / 'railway platform' / 'train station'\n"
                 "- If the image is a phone screenshot, payment receipt, bank transaction, "
                 "UPI screen, chat message, or any digital/scanned document, set "
                 "primary_issue to 'non_civic_document' and description to describe it as such.\n"
@@ -424,6 +542,7 @@ class CivicClassifier:
             vision_payload.setdefault("secondary_issue", "")
             vision_payload.setdefault("hazards", [])
             vision_payload.setdefault("setting", "")
+            vision_payload = _clean_vision_payload(vision_payload)
 
             # ------------------------------------------------------------------
             # EARLY-EXIT: Non-civic scene detection across ALL vision fields.
@@ -441,26 +560,25 @@ class CivicClassifier:
                 raw_vision_json,  # also scan raw model output for any rail terms
             ]).lower()
 
-            # Single-word terms require word-boundary matching to avoid false
-            # positives from substrings — e.g. "constrained", "strained",
-            # "restrained" all contain "train" as a substring and would
-            # incorrectly trigger the non-civic guard.
-            _RAIL_WORD_BOUNDARY = [
-                "railway", "railroad", "locomotive",
-            ]
-            _RAIL_COMPOUND = [
-                "railway station", "train station", "railway platform",
-                "train platform", "metro station", "station platform",
-                "rail track", "railway track", "train track",
-                # bare "train" only as a whole word (avoids constrained/strained)
-            ]
-            _rail_hit = (
-                any(re.search(rf"\b{re.escape(t)}\b", _all_payload_text) for t in _RAIL_WORD_BOUNDARY)
-                or any(t in _all_payload_text for t in _RAIL_COMPOUND)
-                or bool(re.search(r"\btrain\b", _all_payload_text))   # bare word only
+            _pre_has_electrical = any(e in _all_payload_text for e in _ELECTRICAL_TERMS)
+            _pre_has_fire = any(f in _all_payload_text for f in _FIRE_TERMS)
+            _pre_has_electrical_fire_hazard = _pre_has_electrical and _pre_has_fire
+
+            _visible_objects_text = " ".join(str(o) for o in vision_payload.get("visible_objects", []))
+            _rail_score = _rail_signal_score(
+                description=str(vision_payload.get("description", "")),
+                primary_issue=str(vision_payload.get("primary_issue", "")),
+                setting=str(vision_payload.get("setting", "")),
+                visible_objects_text=_visible_objects_text,
             )
-            if _rail_hit:
-                print(f"[classifier] non-civic scene detected (rail/transit) in payload — returning Uncategorized")
+
+            # Require at least 2 rail signals and suppress this guard when
+            # electrical-fire hazard cues are present.
+            if _rail_score >= 2 and not _pre_has_electrical_fire_hazard:
+                print(
+                    "[classifier] non-civic scene detected (rail/transit) in payload "
+                    f"(score={_rail_score}) — returning Uncategorized"
+                )
                 return {
                     "department": "Uncategorized",
                     "label": str(vision_payload.get("description", "Railway/transit scene")),
@@ -474,6 +592,11 @@ class CivicClassifier:
                     "model_used": active_vision_model,
                     "raw_json": raw_vision_json,
                 }
+            if _rail_score >= 2 and _pre_has_electrical_fire_hazard:
+                print(
+                    "[classifier] rail/transit signals ignored because electrical-fire cues are present "
+                    f"(rail_score={_rail_score})"
+                )
 
             # ── Non-civic document / screenshot detected by vision model output ──
             _NON_CIVIC_VISION_TRIGGERS = [
@@ -561,25 +684,41 @@ class CivicClassifier:
             print(f"[classifier] rule_engine: {canonical} "
                   f"(conf={model_confidence:.2f}, ambiguous={is_ambiguous})")
 
+            has_traffic_terms = any(t in _all_payload_text for t in _TRAFFIC_TERMS)
+            has_vehicle_terms = any(v in _all_payload_text for v in _VEHICLE_TERMS)
+            has_electrical_terms = any(e in _all_payload_text for e in _ELECTRICAL_TERMS)
+            has_fire_terms = any(f in _all_payload_text for f in _FIRE_TERMS)
+            has_electrical_fire_hazard = has_electrical_terms and has_fire_terms
+
+            if has_electrical_fire_hazard and canonical in ("Enforcement", "Uncategorized", "Civil Department"):
+                print(
+                    "[classifier] ELECTRICAL-FIRE override: electrical + fire cues present "
+                    f"— overriding {canonical} -> Electrical Department"
+                )
+                canonical = "Electrical Department"
+                method = "electrical_fire_guard"
+                model_confidence = max(model_confidence, 0.9)
+                rationale = "electrical and fire hazard cues detected in vision payload"
+                is_ambiguous = False
+
             # ------------------------------------------------------------------
-            # POLICE-TRAFFIC VETO: "traffic congestion" (or similar congestion
+            # TRAFFIC VETO: "traffic congestion" (or similar congestion
             # phrases) alone is not sufficient evidence — a crowded railway
             # platform, festival crowd, or busy market also "looks congested".
             # Require at least ONE vehicle term anywhere in the combined payload.
             # If absent, override to Uncategorized so the reasoning model (or
             # the keyword fallback) gets a chance to re-evaluate.
             # ------------------------------------------------------------------
-            if canonical == "Police - Traffic":
-                _VEHICLE_TERMS = [
-                    "car", "cars", "vehicle", "vehicles", "bus", "buses",
-                    "truck", "trucks", "motorcycle", "motorcycles", "auto",
-                    "autorickshaw", "rickshaw", "two-wheeler", "scooter",
-                    "cab", "taxi", "van", "jeep", "lorry", "minibus",
-                ]
-                has_vehicle = any(v in _all_payload_text for v in _VEHICLE_TERMS)
-                if not has_vehicle:
-                    print(f"[classifier] Police-Traffic VETO: no vehicle terms in payload "
-                          f"— overriding to Uncategorized (was conf={model_confidence:.2f})")
+            if canonical == "Enforcement" and has_traffic_terms and not has_vehicle_terms:
+                print(f"[classifier] Traffic VETO: congestion terms found but no vehicle terms "
+                      f"— overriding to Uncategorized (was conf={model_confidence:.2f})")
+                if has_electrical_fire_hazard:
+                    canonical = "Electrical Department"
+                    method = "electrical_fire_guard"
+                    model_confidence = max(model_confidence, 0.9)
+                    rationale = "traffic mention suppressed: no vehicles, electrical fire hazard present"
+                    is_ambiguous = False
+                else:
                     canonical = "Uncategorized"
                     is_ambiguous = True          # allow reasoning model to re-classify
                     model_confidence = 0.3
@@ -714,6 +853,7 @@ class CivicClassifier:
                             alt_payload.setdefault("secondary_issue", "")
                             alt_payload.setdefault("hazards", [])
                             alt_payload.setdefault("setting", "")
+                            alt_payload = _clean_vision_payload(alt_payload)
 
                             alt_desc = str(alt_payload.get("description", ""))
                             print(f"[classifier] alt vision ({alt_model}): {alt_desc[:120]}")

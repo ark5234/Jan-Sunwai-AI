@@ -6,6 +6,8 @@ import axios from 'axios';
 import SLABadge from '../components/SLABadge';
 import ComplaintComments from '../components/ComplaintComments';
 
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+
 const DeptHeadDashboard = () => {
   const { user } = useAuth();
   const [complaints, setComplaints] = useState([]);
@@ -49,7 +51,7 @@ const DeptHeadDashboard = () => {
         params.status = statusFilter;
       }
       
-      const response = await axios.get('http://localhost:8000/complaints', {
+      const response = await axios.get(`${API_BASE_URL}/complaints`, {
         headers: {
           Authorization: `Bearer ${user.access_token}`
         },
@@ -71,19 +73,21 @@ const DeptHeadDashboard = () => {
 
   const fetchDeptWorkers = async () => {
     try {
-      const res = await axios.get('http://localhost:8000/workers', {
+      const res = await axios.get(`${API_BASE_URL}/workers/my-department`, {
         headers: { Authorization: `Bearer ${user.access_token}` },
       });
       const myDept = user.department;
       setDeptWorkers(res.data.filter(w => w.is_approved && (!myDept || w.department === myDept)));
-    } catch { /* silent — dept head may not have admin perms, ignore */ }
+    } catch {
+      setDeptWorkers([]);
+    }
   };
 
   const updateComplaintStatus = async (complaintId, newStatus) => {
     setUpdateError(null);
     try {
       await axios.patch(
-        `http://localhost:8000/complaints/${complaintId}/status`,
+        `${API_BASE_URL}/complaints/${complaintId}/status`,
         { status: newStatus },
         {
           headers: {
@@ -105,7 +109,7 @@ const DeptHeadDashboard = () => {
     if (!note) return;
     try {
       await axios.post(
-        `http://localhost:8000/complaints/${complaintId}/notes`,
+        `${API_BASE_URL}/complaints/${complaintId}/notes`,
         { note },
         { headers: { Authorization: `Bearer ${user.access_token}`, 'Content-Type': 'application/json' } }
       );
@@ -139,7 +143,7 @@ const DeptHeadDashboard = () => {
     setUpdateError(null);
     try {
       await axios.patch(
-        `http://localhost:8000/complaints/${complaintId}/transfer`,
+        `${API_BASE_URL}/complaints/${complaintId}/transfer`,
         { new_department: panel.dept, reason: panel.reason || undefined },
         {
           headers: {
@@ -480,7 +484,7 @@ const DeptHeadDashboard = () => {
                     {complaint.image_url && (
                       <div className="sm:ml-4 flex-shrink-0">
                         <img
-                          src={`http://localhost:8000/${complaint.image_url}`}
+                          src={`${API_BASE_URL}/${complaint.image_url}`}
                           alt="Complaint"
                           className="h-32 w-32 sm:h-32 sm:w-32 object-cover rounded"
                         />

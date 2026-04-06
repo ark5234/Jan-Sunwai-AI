@@ -19,11 +19,8 @@ from app.config import settings
 
 # ── Runtime memory multipliers ──────────────────────────────────────────
 # On-disk (quantised GGUF) size × multiplier ≈ runtime RAM needed.
-# qwen2.5vl:3b is ~2.0 GB on disk; at 1.8× that's ~3.6 GB estimated runtime
-# which fits comfortably on a 15 GB RAM machine while leaving headroom.
-# The previous 2.6× value was too aggressive and caused moondream (a poor
-# captioning model that hallucinates civic problems) to be selected instead.
-_VISION_RUNTIME_MULTIPLIER  = 1.8   # e.g. 2.0 GB on disk → ~3.6 GB runtime
+# We keep a conservative baseline and then override by model family/name.
+_VISION_RUNTIME_MULTIPLIER  = 2.1
 _TEXT_RUNTIME_MULTIPLIER    = 1.5   # e.g. 1.3 GB on disk → ~2.0 GB runtime
 _DEFAULT_RUNTIME_MULTIPLIER = 1.8   # safe middle ground
 
@@ -31,11 +28,25 @@ _DEFAULT_RUNTIME_MULTIPLIER = 1.8   # safe middle ground
 _VISION_FAMILIES = {"qwen25vl", "llava", "clip", "phi2", "minicpm", "granite", "moondream"}
 
 # ── Safety margin ───────────────────────────────────────────────────────
-# Keep some RAM free for OS + other processes (in bytes).
-# 256 MB is enough headroom; 512 MB was too conservative and caused models
-# that actually run fine (e.g. granite3.2-vision:2b at 4.3 GB available)
-# to be rejected and then immediately used as the last-resort fallback anyway.
-_SAFETY_MARGIN_BYTES = 256 * 1024 * 1024  # 256 MB
+# Keep enough RAM free for OS + container overhead.
+# This prevents borderline fits from triggering Ollama 500 OOM errors.
+_SAFETY_MARGIN_BYTES = 1024 * 1024 * 1024  # 1 GB
+
+
+def _runtime_multiplier_for_model(model_name: str, is_vision: bool) -> float:
+    lower = model_name.lower()
+
+    # qwen2.5vl commonly needs significantly more runtime memory than static size estimates.
+    if "qwen" in lower and "vl" in lower:
+        return 2.8
+
+    # Granite vision is usually lighter and more stable on low-memory systems.
+    if "granite" in lower and "vision" in lower:
+        return 2.0
+
+    if is_vision:
+        return _VISION_RUNTIME_MULTIPLIER
+    return _TEXT_RUNTIME_MULTIPLIER
 
 
 def _get_available_ram_bytes() -> Optional[int]:
@@ -95,7 +106,7 @@ def _get_model_info(client: ollama.Client) -> dict[str, dict]:
             families: set[str] = set(f.lower() for f in (families_raw or []))
 
             is_vision = bool(families & _VISION_FAMILIES)
-            multiplier = _VISION_RUNTIME_MULTIPLIER if is_vision else _TEXT_RUNTIME_MULTIPLIER
+            multiplier = _runtime_multiplier_for_model(name, is_vision)
 
             info[name] = {
                 "size_bytes": size,
