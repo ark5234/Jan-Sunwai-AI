@@ -1,419 +1,167 @@
-# Jan-Sunwai AI — System Architecture
+﻿# Jan-Sunwai AI System Architecture
 
-> **Font:** Times New Roman throughout all printed / PDF versions of this document.
-> **Last Updated:** 24 March 2026 — Worker Panel and Assignment System added.
+Last updated: 2026-04-06
 
----
+## 1. System Context
 
-## 1. Full System Overview
+Jan-Sunwai AI is a role-based civic grievance platform where image-first complaint submission is transformed into structured, routed grievance records with lifecycle tracking.
 
-```
-CITIZEN
-  │
-  │  Opens browser → http://localhost:5173
-  ▼
-┌────────────────────────────────────┐
-│   FRONTEND  (React 18 + Vite 4)   │
-│                                    │
-│  • Login / Register page          │
-│  • Upload photo + language select │
-│  • Pin location on MapLibre map   │
-│  • Shows AI-generated complaint   │
-│  • Street / Satellite map toggle  │
-│  • Submit → tracks status         │
-│  • SLA badge + resolution date    │
-└──────────────┬─────────────────────┘
-               │  REST API calls (JSON)
-               ▼  http://localhost:8000
-┌────────────────────────────────────────────────────────────┐
-│   BACKEND  (FastAPI + Python)                              │
-│                                                            │
-│  On startup:                                               │
-│   • Connects to MongoDB                                    │
-│   • Starts LLM queue (2 async worker threads)             │
-│                                                            │
-│  Every /analyze request:                                   │
-│   1. AUTH       — JWT token verified                       │
-│   2. SAVE       — image saved to backend/uploads/         │
-│   3. GEOTAGGING — PIL reads EXIF GPS from the photo       │
-│   4. CLASSIFY   — CivicClassifier (Ollama pipeline)       │
-│   5. ENQUEUE    — LLM queue picks up the job              │
-│   6. GENERATE   — complaint letter drafted (+ language)   │
-│   7. RETURN     — classification + location + draft       │
-│                                                            │
-│  After user edits & submits /complaints:                   │
-│   • Saved to MongoDB with status = "Open"                 │
-│   • Auto-assigned to best field worker (auto_assign)      │
-│   • Routed to the correct authority (dept_head)           │
-│   • Status tracked: Open → In Progress → Resolved        │
-└──────────────┬─────────────────────────────────────────────┘
-               │
-     ┌─────────┴──────────┐
-     ▼                    ▼
-┌──────────┐    ┌──────────────────────────────────────────┐
-│ MongoDB  │    │  Ollama  (localhost:11434)                │
-│          │    │                                          │
-│ users    │    │  STEP 1 — Vision Cascade                 │
-│ complaints│   │    qwen2.5vl:3b    (primary,  3.2 GB)   │
-│           │   │    granite3.2-vision:2b  (mid-tier)      │
-│           │   │    → structured JSON image description   │
-└──────────┘    │                                          │
-                │  STEP 2 — Rule Engine  (zero VRAM)       │
-                │    deterministic keyword scoring         │
-                │    stops here when result is confident   │
-                │                                          │
-                │  STEP 3 — Reasoning  (llama3.2:1b)      │
-                │    only invoked when ambiguous           │
-                │    → picks best civic category           │
-                │                                          │
-                │  STEP 4 — Complaint Writer               │
-                │    llama3.2:1b  (text-only, 60-90 words) │
-                └──────────────────────────────────────────┘
+```mermaid
+flowchart LR
+    Citizen[Citizen] --> Portal[Jan-Sunwai Frontend]
+    Worker[Field Worker] --> Portal
+    DeptHead[Department Head] --> Portal
+    Admin[Administrator] --> Portal
+
+    Portal --> API[FastAPI Backend]
+    API --> Mongo[(MongoDB)]
+    API --> Files[(uploads/)]
+    API --> Ollama[Ollama Models]
+
+    API --> Notify[Notification Service]
+    API --> Escalate[Escalation Loop]
+    API --> Analytics[Analytics Aggregations]
 ```
 
----
+## 2. Runtime Components
 
-## 2. The AI Pipeline — Step by Step
+```mermaid
+flowchart TB
+    subgraph Frontend
+        FE1[React App]
+        FE2[Role Dashboards]
+        FE3[Map Views]
+    end
 
-```
-Photo uploaded
-      │
-      ▼
- EXIF check ──→ GPS coords found? → address via reverse geocoding (geopy)
-      │              No GPS? → "Unknown location" (user pins manually on map)
-      ▼
- STEP 1 — Vision (qwen2.5vl:3b, 3-tier cascade)
-   Reads the image and returns structured JSON:
-   { description, visible_objects, primary_issue, hazards, setting }
-   Falls back to granite3.2-vision:2b → moondream if primary model
-   times out or runs out of VRAM.
-      │
-      ▼
- STEP 2 — Rule Engine (Python, zero VRAM)
-   Deterministic keyword scoring across all 10 civic categories.
-   Fast and always runs. Flags result as "ambiguous" if score is low.
-   → "Municipal - PWD (Roads)"  (confident — done here, no LLM needed)
-      │   OR
-      ▼  (ambiguous)
- STEP 3 — Optional Reasoning (llama3.2:1b)
-   Only invoked when Rule Engine is not confident.
-   Reads the vision JSON and picks the best category.
-   Vision model is unloaded first to free VRAM.
-      │
-      ▼
- STEP 4 — Complaint Writer (llama3.2:1b, text-only)
-   Uses vision description + category + location to draft
-   a 60-90 word formal civic complaint (no image re-read).
-   Supports multilingual output via `language` parameter
-   (e.g. Hindi, Tamil, Telugu, Bengali, Marathi, Gujarati).
-      │
-      ▼
- Citizen sees: category + location + draft letter
- (can edit the draft before submitting)
-      │
-      ▼
- Saved to MongoDB → Routed to dept_head
-      │
-      ▼
- geo_aware auto_assign() runs → Assigned to Field Worker 
- (Status automatically set to "In Progress")
-```
+    subgraph Backend
+        BE1[Auth and Users Router]
+        BE2[Analyze and Complaints Router]
+        BE3[Workers Router]
+        BE4[Triage Router]
+        BE5[Notifications Router]
+        BE6[Analytics and Public Routers]
+        BE7[Health Router]
+        BE8[LLM Queue Service]
+        BE9[Assignment Service]
+        BE10[Escalation Service]
+    end
 
-### Why the Hybrid Approach
+    subgraph Persistence
+        DB[(MongoDB)]
+        UP[(uploads/)]
+    end
 
-| | Old Method (CLIP / LLaVA 7B) | Current Method (Vision + Rule Engine + Llama) |
-|---|---|---|
-| Accuracy | Low — guesses keywords | High — vision understands scene context |
-| VRAM Usage | High — crashed 4 GB cards | Low — rule engine is zero-VRAM |
-| Determinism | Non-deterministic | Rule engine is fully deterministic; reasoning uses temperature=0 |
-| Speed | Slow (model swapping) | Fast — LLM reasoning skipped for clear cases |
-| Flexibility | Rigid | 10 civic categories, easy to extend rule weights |
+    subgraph Inference
+        OLLAMA[Vision + Reasoning Models]
+    end
 
----
+    FE1 --> BE1
+    FE1 --> BE2
+    FE2 --> BE3
+    FE2 --> BE4
+    FE2 --> BE5
+    FE3 --> BE6
 
-## 3. Civic Categories
+    BE1 --> DB
+    BE2 --> DB
+    BE3 --> DB
+    BE4 --> DB
+    BE5 --> DB
+    BE6 --> DB
+    BE7 --> DB
 
-The system routes complaints to 10 canonical categories:
-
-| Category | Example Issues |
-|---|---|
-| Municipal - PWD (Roads) | Potholes, cracked pavement, bridge damage |
-| Municipal - Sanitation | Garbage dumps, overflowing bins, dirty toilets |
-| Municipal - Horticulture | Fallen trees, unmaintained parks |
-| Municipal - Street Lighting | Broken lamp posts, dark roads |
-| Municipal - Water & Sewerage | Waterlogging, blocked drains, pipe leaks |
-| Utility - Power (DISCOM) | Dangling wires, open transformers |
-| State Transport | Damaged bus shelters, broken state buses |
-| Pollution Control Board | Thick smoke, industrial waste dumping |
-| Police - Local Law Enforcement | Illegal parking, encroachment, public nuisance |
-| Police - Traffic | Signal failure, road blockages |
-
----
-
-## 4. The 4 User Roles
-
-| Role | Permissions |
-|---|---|
-| **Citizen** | Upload photo, select language, get AI analysis, submit complaint, track own complaints, rate resolved complaints |
-| **Field Worker** | Receive auto-assigned tasks, view task detail, mark task done, toggle availability (available/offline) |
-| **Dept Head** | See all complaints in their department, update status, add dept notes, transfer complaints, view analytics |
-| **Admin** | See everything, manage live triage queue, bulk operations, approve/reject workers, manage manual assignment, export CSV |
-
----
-
-## 4a. Worker Panel — Field Worker Assignment System
-
-The Worker Panel added in March 2026 enables field workers to receive, manage, and resolve civic complaints assigned to them.
-
-```
-Worker Registration
-  └── WorkerRegister.jsx → POST /users/register
-       { username, email, password, role:"worker",
-         department: "Municipal - PWD (Roads)",
-         service_area: { lat, lon, radius_km, locality } }
-       └── is_approved = False (pending admin)
-
-Admin Approval
-  └── AdminDashboard → PATCH /workers/{id}/approve
-       Sets is_approved=True, worker_status="available"
-
-Auto-Assignment (fires on every new complaint)
-  └── auto_assign(complaint_id, department, location)
-       Filters: role=worker, is_approved=True,
-                department=<exact match>,
-                worker_status != "offline"
-       Geo: Haversine distance ≤ service_area.radius_km
-       Pick: worker with fewest active_complaint_ids
-       Result: complaint.assigned_to = worker_id
-               complaint.status = "In Progress"
-               worker.worker_status = "busy"
-
-Admin Bulk Re-assign (for legacy unassigned complaints)
-  └── POST /workers/reassign-unassigned
-       Queries Open + In-Progress + assigned_to is null
-       Runs auto_assign on each
-
-Admin Manual Assign
-  └── POST /workers/{worker_id}/assign/{complaint_id}
-       Force-assigns any complaint to any approved worker
-
-Worker Dashboard
-  └── GET /workers/me → Active Tasks + Resolved History
-       PATCH /workers/me/status → toggle available/offline
-       PATCH /workers/me/complaints/{id}/done → mark resolved
+    BE2 --> UP
+    BE2 --> BE8
+    BE8 --> OLLAMA
+    BE9 --> DB
+    BE10 --> DB
 ```
 
+## 3. AI Pipeline Architecture
 
-## 5. Hardware Utilisation
-
-```
-┌─────────────────────────────────────────────────────────────┐
-│  RTX 3050  —  4 GB VRAM                                     │
-│                                                             │
-│  Step 1: qwen2.5vl:3b  (3.2 GB)  ← vision inference        │
-│          unloaded via keep_alive=0 after classify()         │
-│  Step 2: Rule Engine (Python)    ← zero VRAM                │
-│  Step 3: llama3.2:1b   (1.3 GB)  ← only if ambiguous       │
-│  Step 4: llama3.2:1b   (reused)  ← complaint text draft    │
-│                                                             │
-│  Ollama loads ONE model at a time (serialised via lock)     │
-│  For clear cases: only qwen + rule engine → no Llama load   │
-└─────────────────────────────────────────────────────────────┘
-
-┌─────────────────────────────────────────────────────────────┐
-│  16 GB RAM                                                  │
-│                                                             │
-│  FastAPI + uvicorn     ~  80 MB                             │
-│  MongoDB (local)       ~ 200 MB                             │
-│  Python venv (lean)    ~ 150 MB  (no torch anymore)         │
-│  Ollama daemon         ~ 500 MB                             │
-│                                                             │
-│  Total system load     < 1 GB — 15 GB stays free            │
-└─────────────────────────────────────────────────────────────┘
+```mermaid
+flowchart TD
+    Input[Uploaded Image] --> Validate[Storage Validation]
+    Validate --> Vision[Vision Model Cascade]
+    Vision --> RuleEngine[Deterministic Rule Engine]
+    RuleEngine --> Ambiguous{Ambiguous score?}
+    Ambiguous -->|No| Category[Department category]
+    Ambiguous -->|Yes| Reasoning[Reasoning model]
+    Reasoning --> Category
+    Category --> QueueDraft[Queue draft generation]
+    QueueDraft --> Draft[Generated grievance draft]
 ```
 
-Ollama automatically offloads a model from VRAM to RAM if memory is
-full, but with 3.2 GB + 1.3 GB running sequentially on 4 GB VRAM,
-each model fits on its own. GPU is always preferred over CPU.
+### Key Design Points
 
----
+- Vision model cascade supports primary/mid/fallback model configuration.
+- Rule engine classifies most clear cases without reasoning model invocation.
+- Reasoning model runs only for ambiguous cases.
+- Draft generation is queued and pollable.
 
-## 6. Where Everything Lives
+## 4. Complaint Lifecycle and Routing
 
-| Component | Location | Port |
-|---|---|---|
-| Frontend | `frontend/src/` | `5173` |
-| Backend API | `backend/main.py` | `8000` |
-| MongoDB | Docker container | `27017` |
-| Ollama | Windows service (native) | `11434` |
-| Uploaded images | `backend/uploads/` | served at `/uploads/` |
-| Logs | `backend/logs/app.log` | rotates at 5 MB |
-| AI models | `C:\Users\<user>\.ollama\models\` | ~4.5 GB on disk |
+```mermaid
+sequenceDiagram
+    actor Citizen
+    participant FE as Frontend
+    participant API as Backend
+    participant DB as MongoDB
+    participant Assign as Assignment Service
 
-### Frontend Map Library
+    Citizen->>FE: Analyze image and review draft
+    FE->>API: POST /complaints
+    API->>DB: Insert complaint (Open)
+    API->>Assign: auto_assign by department and location
 
-The frontend uses **react-map-gl v7 + MapLibre GL v3** for all maps (complaint submission pin-drop + admin complaints map).
+    alt eligible worker found
+        Assign->>DB: assigned_to set and status In Progress
+    else no worker available
+        Assign->>DB: keep status Open
+    end
 
-| Feature | Detail |
-|---|---|
-| Default tiles | CARTO Voyager — English labels, full India coverage, no API key needed |
-| Satellite tiles | ESRI World Imagery — switchable via Street/Satellite toggle button |
-| Official GoI tiles | Set `VITE_MAPPLS_API_KEY` in `frontend/.env` to use MapmyIndia/Mappls survey tiles (correct J&K/Ladakh borders) |
-| India bounds | Map locked to `[[67,6],[98,38]]` — cannot pan outside India |
-| Vite compat | maplibre-gl v3 (CJS build) required for Vite 4 — v5 dropped default export |
-
----
-
-## 7. How to Run (Local Development)
-
-### Step 1 — Start MongoDB
-```powershell
-docker run -d -p 27017:27017 --name mongo mongo:latest
-```
-Skip if already running via Docker Desktop.
-
-### Step 2 — Start Backend
-```powershell
-cd "c:\Users\Vikra\OneDrive\Desktop\Jan-Sunwai AI"
-.\.venv\Scripts\Activate.ps1
-cd backend
-$env:PYTHONPATH = "."
-uvicorn main:app --reload --port 8000
+    API-->>FE: complaint response
 ```
 
-### Step 3 — Start Frontend
-```powershell
-cd "c:\Users\Vikra\OneDrive\Desktop\Jan-Sunwai AI\frontend"
-npm run dev
+## 5. Worker and Department Operational Flow
+
+```mermaid
+flowchart LR
+    NewComplaint[New Complaint] --> WorkerFilter[Eligible worker filter]
+    WorkerFilter --> GeoMatch[Service-area distance check]
+    GeoMatch --> LoadPick[Least active worker]
+    LoadPick --> Assigned[Assigned and In Progress]
+    Assigned --> WorkerDone[Worker marks done]
+    WorkerDone --> Resolved[Status Resolved]
+    Resolved --> SlotFree[Worker slot freed]
+    SlotFree --> Reassign[Reassign queued opens if possible]
 ```
 
-Ollama runs automatically in the background after installation.
+## 6. Triage and Escalation
 
----
+```mermaid
+flowchart TD
+    AnalyzeResult[Analyze result] --> Confidence{confidence < 0.65?}
+    Confidence -->|Yes| TriageQueue[Admin triage queue]
+    Confidence -->|No| DirectRoute[Direct department route]
 
-## 8. Verification Endpoints
+    TriageQueue --> Decision[Approve/Reject/Correct label]
+    Decision --> Routed[Complaint continues in lifecycle]
 
-Once the backend is running, test these in a browser or PowerShell:
-
-```powershell
-# Is the API alive?
-curl http://localhost:8000/health/live
-
-# Is MongoDB connected?
-curl http://localhost:8000/health/ready
-
-# Are Ollama models present?
-curl http://localhost:8000/health/models
-
-# Is GPU being used? (run after uploading one image)
-curl http://localhost:8000/health/gpu
+    Routed --> SLAClock[SLA elapsed check]
+    SLAClock --> Escalate{deadline exceeded?}
+    Escalate -->|Yes| AuthorityEscalation[Move to parent authority]
+    Escalate -->|No| NormalFlow[Normal status handling]
 ```
 
-Interactive API docs (all endpoints + built-in test form):
-**http://localhost:8000/docs**
+## 7. Deployment View
 
-### GPU Health Response Example
-```json
-{
-  "gpu_active": true,
-  "configured_models": {
-    "vision": "qwen2.5vl:3b",
-    "reasoning": "llama3.2:1b"
-  },
-  "running_models": [
-    {
-      "name": "qwen2.5vl:3b",
-      "size_mb": 3200,
-      "vram_mb": 3100,
-      "on_gpu": true
-    }
-  ]
-}
-```
-`vram_mb > 0` → model is on GPU.
-`vram_mb = 0` → model fell back to CPU RAM (happens only if VRAM exhausted).
-
----
-
-## 9. Key Configuration (backend/app/config.py)
-
-| Setting | Default | Override via env |
-|---|---|---|
-| `vision_model` | `qwen2.5vl:3b` | `VISION_MODEL` |
-| `mid_vision_model` | `granite3.2-vision:2b` | `MID_VISION_MODEL` |
-| `fallback_vision_model` | `granite3.2-vision:2b` | `FALLBACK_VISION_MODEL` |
-| `reasoning_model` | `llama3.2:1b` | `REASONING_MODEL` |
-| `vision_timeout_seconds` | `240` | `VISION_TIMEOUT_SECONDS` |
-| `llm_inline_timeout_seconds` | `15` | `LLM_INLINE_TIMEOUT_SECONDS` |
-| `llm_queue_workers` | `2` | `LLM_QUEUE_WORKERS` |
-| `rule_engine_only` | `false` | `RULE_ENGINE_ONLY` |
-| `unload_after_reasoning` | `true` | `UNLOAD_AFTER_REASONING` |
-| `mongodb_url` | `mongodb://localhost:27017` | `MONGODB_URL` |
-
----
-
-## 10. Installed Ollama Models
-
-| Model | Size | Role |
-|---|---|---|
-| `qwen2.5vl:3b` | 3.2 GB | Primary vision — structured JSON image analysis |
-| `granite3.2-vision:2b` | ~2.4 GB | Mid/fallback vision — used when qwen2.5vl times out or OOMs |
-| `llama3.2:1b` | 1.3 GB | Reasoning (ambiguous cases) + complaint text writer (multilingual) |
-| `llava:latest` | 4.7 GB | Legacy (no longer used by API) |
-
----
-
-## 11. Triage Queue
-
-The Human Review (Triage) queue surfaces complaints where the AI classification is uncertain.
-
-```
-Complaint submitted
-      │
-      ▼
-ai_metadata.confidence_score < 0.65 ?
-      │ YES                  │ NO
-      ▼                      ▼
-Appears in              Routed directly
-Triage Queue            to dept_head
-(GET /triage/review-queue)
-      │
-      ▼
-Admin reviews — Approve / Reject
-(POST /triage/review-queue/decision)
-      │
-      ├─ Optional: override department assignment
-      ├─ Stamps triage_decision on MongoDB complaint doc
-      └─ CSV audit trail in triage_output/
+```mermaid
+flowchart LR
+    Browser[Browser] --> Nginx[Frontend Nginx]
+    Nginx --> Backend[Backend Gunicorn/Uvicorn]
+    Backend --> Mongo[(MongoDB)]
+    Backend --> Ollama[Host Ollama]
 ```
 
-- The queue queries **MongoDB live** — not a static CSV file
-- Filter: `ai_metadata.confidence_score < 0.65` AND `triage_decision: {$exists: false}`
-- Once a decision is made the complaint leaves the queue automatically
-
----
-
-## 12. Language Pipeline
-
-Citizens can select the output language of the AI-generated complaint letter:
-
-```
-POST /complaints/analyze
-  └── language: "hi" | "ta" | "te" | "bn" | "mr" | "gu" | "en" (default)
-                        │
-                        ▼
-              LLMJob.language stored in job queue
-                        │
-                        ▼
-              generator.generate_complaint(language=...)
-                        │
-              _LANG_NAMES dict maps code → language name
-                        │
-              lang_instruction prepended to prompt:
-              "Write the complaint in Hindi."
-                        │
-                        ▼
-              Draft returned to frontend in selected language
-```
-
-Regenerate endpoint (`POST /complaints/analyze/regenerate`) also accepts `language` in the JSON body.
+This is the currently supported production-style deployment in `docker-compose.prod.yml`.

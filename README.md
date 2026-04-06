@@ -1,173 +1,120 @@
 ﻿# Jan-Sunwai AI
 
-**Automated Visual Classification & Routing of Civic Grievances using Local Vision-Language Models**
+Automated visual classification, routing, and lifecycle tracking for civic grievances using local Ollama models.
 
-Jan-Sunwai AI is a full-stack civic complaint platform that lets citizens photograph a civic issue -- pothole, garbage dump, broken street light, etc. -- and automatically classifies it, extracts the location, drafts a formal complaint letter, and routes it to the correct government department. Everything runs locally: no cloud API keys required.
+Jan-Sunwai AI is a full-stack platform where a citizen uploads an issue photo, the backend classifies the department, drafts a formal grievance, captures location, and routes it for departmental action. The stack is built for local-first operation with optional production deployment via Docker Compose.
 
----
+## What Is Implemented
 
-## Table of Contents
+- FastAPI backend with JWT auth, role-aware access control, and MongoDB persistence.
+- React frontend with dedicated flows for citizen, worker, department head, and admin.
+- Hybrid AI pipeline: Vision -> Rule Engine -> Optional Reasoning -> Draft Writer.
+- Worker auto-assignment using department + service-area distance logic.
+- Triage queue for low-confidence complaints.
+- Status history, feedback, comments, notes, notifications, escalation loop, analytics, and public transparency endpoint.
+- API version aliases under `/api/v1` for all major routes.
 
-- [How It Works](#how-it-works)
-- [AI Pipeline](#ai-pipeline)
-- [Tech Stack](#tech-stack)
-- [Project Structure](#project-structure)
-- [Quick Start](#quick-start)
-  - [Windows](#windows-setup-script)
-  - [Linux / Ubuntu](#linux--ubuntu-setup-script)
-  - [Manual Setup](#manual-setup)
-- [Setup and Deployment Guides](#setup-and-deployment-guides)
-- [Running the Project](#running-the-project)
-- [Civic Categories](#civic-categories)
-- [User Roles](#user-roles)
-- [API Endpoints](#api-endpoints)
-- [Dataset Tools](#dataset-tools)
-- [Environment Variables](#environment-variables)
-- [Hardware Requirements](#hardware-requirements)
+## High-Level Architecture
 
----
+```mermaid
+flowchart LR
+    Citizen[Citizen Browser] --> FE[Frontend React + Vite]
+    Worker[Worker Browser] --> FE
+    DeptHead[Dept Head Browser] --> FE
+    Admin[Admin Browser] --> FE
 
-## How It Works
+    FE -->|JWT + REST| API[FastAPI Backend]
 
-1. Citizen uploads a photo of a civic problem via the web app
-2. Backend saves the image and sends it through the two-step AI pipeline
-3. AI identifies the issue, picks a department, and drafts a formal complaint letter
-4. GPS coordinates are extracted from the image's EXIF data (if available)
-5. Complaint is stored in MongoDB and routed to the relevant department head
-6. Department head logs in, reviews, and updates the complaint status
-7. Citizen can track the status of their complaint in real time
+    API --> DB[(MongoDB)]
+    API --> Uploads[(uploads/)]
+    API --> Queue[In-memory LLM Queue]
+    Queue --> Ollama[Ollama Runtime]
 
----
+    API --> Triage[Triage Audit CSV]
+    API --> Logs[Rotating App Logs]
+
+    API --> Notify[In-app Notifications]
+    API --> Mail[SMTP Email Stub/Relay]
+```
 
 ## AI Pipeline
 
-The system uses a **4-step hybrid Vision → Rule Engine → Optional Reasoning → Writer pipeline**, running locally via Ollama with a Python rule engine (zero VRAM):
-
-```
-Image File
-    |
-    v
-+---------------------------------------------+
-|  Step 1 -- Vision Cascade                   |
-|  Primary:   qwen2.5vl:3b      (3.2 GB)      |
-|  Mid-tier:  granite3.2-vision:2b            |
-|  Reads the image -> structured JSON:        |
-|  { description, primary_issue, setting }   |
-+--------------------+------------------------+
-                     |  vision JSON
-                     v
-+---------------------------------------------+
-|  Step 2 -- Rule Engine  (zero VRAM)          |
-|  Deterministic keyword scoring across        |
-|  10 civic categories.                        |
-|  Confident match -> skip LLM reasoning       |
-+--------------------+------------------------+
-                     |  (only if ambiguous)
-                     v
-+---------------------------------------------+
-|  Step 3 -- Optional Reasoning               |
-|  Model: llama3.2:1b   (1.3 GB)             |
-|  Only invoked when Rule Engine uncertain.   |
-|  Picks the best civic category.             |
-+--------------------+------------------------+
-                     |  category
-                     v
-+---------------------------------------------+
-|  Step 4 -- Complaint Writer                  |
-|  Model: llama3.2:1b  (text-only)            |
-|  Drafts a 60-90 word formal complaint.      |
-|  No image re-read.                           |
-+---------------------------------------------+
+```mermaid
+flowchart TD
+    A[Image Upload] --> B[Storage Validation + Save]
+    B --> C[Vision Model Cascade]
+    C --> D[Rule Engine Scoring]
+    D --> E{Ambiguous?}
+    E -->|No| F[Category Finalized]
+    E -->|Yes| G[Reasoning Model]
+    G --> F
+    F --> H[Queue Draft Generation]
+    H --> I[Formal Complaint Draft]
+    I --> J[Citizen Review + Submit]
+    J --> K[Complaint Saved + Routed]
 ```
 
-**Why the hybrid approach?**
-- `qwen2.5vl:3b` understands *scene context* in images (e.g. "overflowing drain near a road"), not just visual similarity; falls back to `granite3.2-vision:2b` if primary times out or VRAM is low
-- The **Rule Engine** runs instantly with zero VRAM — skips LLM reasoning entirely for obvious cases (most complaints)
-- `llama3.2:1b` is loaded only for genuinely ambiguous images, saving ~1.2 GB VRAM in the common case
-- All models fit sequentially in 4 GB VRAM — never loaded simultaneously
+## Complaint Lifecycle
 
----
+```mermaid
+sequenceDiagram
+    actor Citizen
+    participant FE as Frontend
+    participant API as FastAPI
+    participant AI as AI Pipeline
+    participant DB as MongoDB
+    participant ASSIGN as Assignment Service
 
-## Tech Stack
+    Citizen->>FE: Upload image + language
+    FE->>API: POST /analyze
+    API->>AI: classify + draft
+    AI-->>API: category + confidence + draft
+    API-->>FE: analysis payload
 
-| Layer | Technology |
-|---|---|
-| Backend | Python 3.13, FastAPI, Uvicorn |
-| Frontend | React 18, Vite 4, Tailwind CSS v4 |
-| Map | react-map-gl v7 + MapLibre GL v3 (street + satellite toggle) |
-| Database | MongoDB (via Docker), Motor (async driver) |
-| AI Runtime | Ollama (local GPU inference) |
-| Vision Model (primary) | `qwen2.5vl:3b` — image narration, structured JSON output |
-| Vision Model (mid-tier) | `granite3.2-vision:2b` — fallback if primary times out or VRAM is low |
-| Civic Rule Engine | Python keyword scorer — zero VRAM category selection |
-| Reasoning Model | `llama3.2:1b` — ambiguous case classifier + complaint writer |
-| Auth | JWT (OAuth2 password flow) |
-| Containerization | Docker + Docker Compose |
-
----
-
-## Project Structure
-
+    Citizen->>FE: Edit draft + confirm location
+    FE->>API: POST /complaints
+    API->>DB: store complaint (status=Open)
+    API->>ASSIGN: auto_assign()
+    ASSIGN->>DB: assign worker + set In Progress (if eligible)
+    API-->>FE: complaint created
 ```
+
+## Repository Layout
+
+```text
 Jan-Sunwai-AI/
-+-- backend/
-|   +-- app/
-|   |   +-- classifier.py        # Two-step vision-to-reasoning pipeline
-|   |   +-- generator.py         # Formal complaint letter generation
-|   |   +-- geotagging.py        # EXIF GPS extraction
-|   |   +-- category_utils.py    # Canonical category definitions
-|   |   +-- config.py            # Settings (env vars)
-|   |   +-- database.py          # MongoDB connection
-|   |   +-- auth.py              # JWT auth
-|   |   +-- schemas.py           # Pydantic models
-|   |   +-- routers/
-|   |       +-- complaints.py    # /complaints -- main submission flow
-|   |       +-- users.py         # /users -- auth + profile
-|   |       +-- triage.py        # /triage -- live MongoDB triage queue
-|   |       +-- notifications.py # /notifications -- in-app alerts
-|   |       +-- health.py        # /health + /health/gpu
-|   |   +-- services/
-|   |       +-- llm_queue.py     # Async LLM job queue (2 worker threads)
-|   +-- automated_triage.py      # CLI: batch-sort images via Ollama
-|   +-- evaluate_sorted_dataset.py  # CLI: evaluate sorting quality
-|   +-- download_models.py       # CLI: pull Ollama models
-|   +-- create_test_users.py     # CLI: seed test users
-|   +-- requirements.txt
-|   +-- Dockerfile
-+-- frontend/
-|   +-- src/
-|   |   +-- pages/               # Home, Login, Dashboard, etc.
-|   |   +-- components/          # UI components
-|   |   +-- context/             # Auth + complaint context
-|   +-- package.json
-+-- docs/
-|   +-- API_REFERENCE.md        # API endpoint reference
-|   +-- NDMC_DEPLOYMENT.md      # NDMC production deployment runbook
-|   +-- PRODUCTION_DEPLOYMENT_PLAN.md # Production roadmap and rollout plan
-|   +-- reports/                # Academic/report documents
-|   |   +-- SYSTEM_ARCHITECTURE.md
-|   |   +-- SCHEMA_DESIGN.md
-|   |   +-- PROJECT_TIMELINE.md
-|   |   +-- PROJECT_SYNOPSIS.md
-|   |   +-- PROJECT_REPORT.md
-+-- scripts/
-|   +-- run_backend.bat / .sh    # Start backend
-|   +-- run_frontend.bat / .sh   # Start frontend
-|   +-- run_triage.bat / .sh     # Run batch triage
-|   +-- run_tests.bat / .sh      # Run tests
-|   +-- system/check_gpu.ps1/.sh # GPU checks used by setup scripts
-|   +-- db/hash_fix.py           # Worker password hash utility
-|   +-- db/test_db.py            # DB connectivity helper
-+-- setup.ps1                    # Windows one-command setup
-+-- setup.sh                     # Linux/Ubuntu one-command setup
-+-- docker-compose.yml           # MongoDB container
+â”œâ”€â”€ backend/
+â”‚   â”œâ”€â”€ app/
+â”‚   â”‚   â”œâ”€â”€ routers/            # complaints, users, workers, triage, analytics, health, notifications, public
+â”‚   â”‚   â”œâ”€â”€ services/           # assignment, llm_queue, escalation, storage, sanitization, email
+â”‚   â”‚   â”œâ”€â”€ classifier.py       # Vision + rule engine + reasoning orchestration
+â”‚   â”‚   â”œâ”€â”€ generator.py        # complaint drafting + translation fallback
+â”‚   â”‚   â”œâ”€â”€ schemas.py
+â”‚   â”‚   â”œâ”€â”€ auth.py
+â”‚   â”‚   â””â”€â”€ config.py
+â”‚   â”œâ”€â”€ tests/
+â”‚   â”œâ”€â”€ env.local
+â”‚   â”œâ”€â”€ env.production
+â”‚   â””â”€â”€ main.py
+â”œâ”€â”€ frontend/
+â”‚   â”œâ”€â”€ src/
+â”‚   â”‚   â”œâ”€â”€ pages/
+â”‚   â”‚   â”œâ”€â”€ components/
+â”‚   â”‚   â”œâ”€â”€ layouts/
+â”‚   â”‚   â”œâ”€â”€ context/
+â”‚   â”‚   â””â”€â”€ hooks/
+â”‚   â””â”€â”€ package.json
+â”œâ”€â”€ docs/
+â”œâ”€â”€ scripts/
+â”œâ”€â”€ docker-compose.yml
+â”œâ”€â”€ docker-compose.prod.yml
+â”œâ”€â”€ setup.ps1
+â””â”€â”€ setup.sh
 ```
-
----
 
 ## Quick Start
 
-### Windows (Setup Script)
+### Windows (Automated)
 
 ```powershell
 git clone https://github.com/ark5234/Jan-Sunwai-AI.git
@@ -176,19 +123,7 @@ Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
 .\setup.ps1
 ```
 
-The script automatically:
-- Checks GPU / offers NVIDIA driver install (`scripts/system/check_gpu.ps1`)
-- Installs Python 3.13 + creates `.venv` + installs all pip packages
-- Bootstraps `backend/.env` from `backend/env.local` if missing
-- Installs Node.js LTS + `npm install` for frontend
-- Installs Docker Desktop + starts MongoDB container
-- Installs Ollama + pulls `qwen2.5vl:3b`, `granite3.2-vision:2b`, and `llama3.2:1b` (~7 GB total)
-
-**Only prerequisite:** NVIDIA drivers (any modern gaming PC already has these).
-
----
-
-### Linux / Ubuntu (Setup Script)
+### Linux (Automated)
 
 ```bash
 git clone https://github.com/ark5234/Jan-Sunwai-AI.git
@@ -197,79 +132,42 @@ chmod +x setup.sh scripts/system/check_gpu.sh
 ./setup.sh
 ```
 
-The script automatically:
-- Checks GPU via `nvidia-smi` / offers CUDA driver install (`scripts/system/check_gpu.sh`)
-- Installs Python 3.13 + creates `.venv` + installs all pip packages
-- Bootstraps `backend/.env` from `backend/env.local` if missing
-- Installs Node.js LTS + `npm install` for frontend
-- Installs Docker + starts MongoDB container
-- Installs Ollama + pulls all three AI models (`qwen2.5vl:3b`, `granite3.2-vision:2b`, `llama3.2:1b`)
+### Manual
 
----
+1. Create and activate virtual environment.
+2. Install backend dependencies.
+3. Install frontend dependencies.
+4. Copy `backend/env.local` to `backend/.env`.
+5. Start MongoDB.
+6. Start Ollama and pull models.
 
-### Manual Setup
-
-<details>
-<summary>Click to expand</summary>
-
-**1. Prerequisites**
-- Python 3.11+, Node.js 18+
-- [Docker Desktop](https://www.docker.com/products/docker-desktop/) (Windows/Mac) or Docker + Compose (Linux)
-- [Ollama](https://ollama.com/download) installed and running
-
-**2. Pull AI models**
 ```bash
+python -m venv .venv
+# Windows: .venv\Scripts\activate
+# Linux:   source .venv/bin/activate
+
+pip install -r backend/requirements.txt
+cp backend/env.local backend/.env
+
+docker compose up -d mongodb
+
 ollama pull qwen2.5vl:3b
 ollama pull granite3.2-vision:2b
 ollama pull llama3.2:1b
+
+cd frontend && npm install
 ```
 
-**3. Start MongoDB**
+## Run Locally
+
+Terminal 1:
+
 ```bash
 docker compose up -d mongodb
 ```
 
-**4. Backend**
-```bash
-cd backend
-python -m venv ../.venv
-# Windows:  ..\.venv\Scripts\activate
-# Linux:    source ../.venv/bin/activate
-pip install -r requirements.txt
-cp env.local .env   # edit JWT_SECRET_KEY at minimum
-```
+Terminal 2:
 
-**5. Frontend**
-```bash
-cd frontend
-npm install
-```
-
-</details>
-
----
-
-## Setup and Deployment Guides
-
-- **Local setup:** This README's **Quick Start** section (Windows/Linux/manual)
-- **NDMC production deployment:** [`docs/NDMC_DEPLOYMENT.md`](docs/NDMC_DEPLOYMENT.md)
-- **Production architecture roadmap:** [`docs/PRODUCTION_DEPLOYMENT_PLAN.md`](docs/PRODUCTION_DEPLOYMENT_PLAN.md)
-- **Load testing runbook:** [`docs/LOAD_TESTING.md`](docs/LOAD_TESTING.md)
-- **Security testing checklist:** [`docs/SECURITY_TESTING.md`](docs/SECURITY_TESTING.md)
-- **Academic reports archive:** [`docs/reports/README.md`](docs/reports/README.md)
-
----
-
-## Running the Project
-
-After setup, open **3 terminals**:
-
-**Terminal 1 -- MongoDB:**
-```bash
-docker compose up -d mongodb
-```
-
-**Terminal 2 -- Backend:**
 ```bash
 # Windows
 scripts\run_backend.bat
@@ -278,7 +176,8 @@ scripts\run_backend.bat
 bash scripts/run_backend.sh
 ```
 
-**Terminal 3 -- Frontend:**
+Terminal 3:
+
 ```bash
 # Windows
 scripts\run_frontend.bat
@@ -287,191 +186,203 @@ scripts\run_frontend.bat
 bash scripts/run_frontend.sh
 ```
 
-Open **http://localhost:5173** in your browser.
+Open `http://localhost:5173`.
 
-Use Vite (`npm run dev` or `scripts/run_frontend.*`) for development. Opening `frontend/index.html` directly with Live Server does not compile React JSX and triggers `Failed to load module script ... MIME type of "text/jsx"`.
+## Health Checks
 
-**Verify:**
-| URL | What it checks |
-|---|---|
-| http://localhost:8000/health | Backend + MongoDB connection |
-| http://localhost:8000/health/gpu | GPU status + loaded Ollama models |
-| http://localhost:8000/docs | Swagger UI (full API reference) |
+| Endpoint | Purpose |
+| --- | --- |
+| `GET /health/live` | API heartbeat |
+| `GET /health/ready` | MongoDB readiness |
+| `GET /health/models` | Ollama model listing/availability |
+| `GET /health/gpu` | Active model VRAM usage |
+| `GET /docs` | Swagger UI |
 
-### Production Compose (NDMC-style)
+Versioned aliases are available as `/api/v1/health/*`.
+
+## API Surface (Current)
+
+### Users
+
+- `POST /users/register`
+- `POST /users/login`
+- `GET /users/me`
+- `PATCH /users/me`
+- `POST /users/forgot-password`
+- `POST /users/reset-password`
+
+### Analyze + Generation
+
+- `POST /analyze`
+- `POST /analyze/regenerate`
+- `GET /complaints/generation/{job_id}`
+
+### Complaints
+
+- `POST /complaints`
+- `GET /complaints`
+- `GET /complaints/{complaint_id}`
+- `PATCH /complaints/{complaint_id}/status`
+- `PATCH /complaints/{complaint_id}/transfer`
+- `POST /complaints/{complaint_id}/escalate`
+- `POST /complaints/{complaint_id}/feedback`
+- `POST /complaints/{complaint_id}/notes`
+- `GET /complaints/{complaint_id}/notes`
+- `POST /complaints/{complaint_id}/comments`
+- `GET /complaints/{complaint_id}/comments`
+- `POST /complaints/bulk/status`
+- `POST /complaints/bulk/transfer`
+- `GET /complaints/export/csv`
+
+### Workers
+
+- `GET /workers/me`
+- `PATCH /workers/me/status`
+- `PATCH /workers/me/complaints/{complaint_id}/done`
+- `GET /workers`
+- `GET /workers/my-department`
+- `PATCH /workers/{worker_id}/approve`
+- `DELETE /workers/{worker_id}/reject`
+- `POST /workers/{worker_id}/assign/{complaint_id}`
+- `PATCH /workers/{worker_id}/area`
+- `GET /workers/assignment-debug`
+- `POST /workers/reassign-unassigned`
+
+### Notifications
+
+- `GET /notifications`
+- `GET /notifications/unread-count`
+- `PATCH /notifications/{notification_id}/read`
+- `PATCH /notifications/read-all`
+
+### Triage, Analytics, Public
+
+- `GET /triage/review-queue`
+- `POST /triage/review-queue/decision`
+- `GET /analytics/overview`
+- `GET /analytics/heatmap`
+- `GET /public/complaints`
+
+All primary APIs are mirrored under `/api/v1`.
+
+## Roles
+
+| Role | Access |
+| --- | --- |
+| `citizen` | Submit complaints, track status, feedback, comments |
+| `worker` | View assigned tasks, update availability, mark tasks done |
+| `dept_head` | Department queue management, status updates, notes, transfer |
+| `admin` | Global oversight, worker approval, triage, bulk actions, exports, analytics |
+
+## Canonical Department Taxonomy
+
+1. Health Department
+2. Civil Department
+3. Horticulture
+4. Electrical Department
+5. IT Department
+6. Commercial
+7. Enforcement
+8. VBD Department
+9. EBR Department
+10. Fire Department
+11. Uncategorized
+
+## Configuration
+
+Copy `backend/env.local` to `backend/.env` and adjust as needed.
+
+| Variable | Purpose |
+| --- | --- |
+| `APP_ENV` | `development` or `production` |
+| `RATE_LIMIT_ENABLED` | Enable/disable slowapi rate limiting |
+| `MONGODB_URL`, `MONGO_URL` | MongoDB connection string |
+| `DB_NAME` | Database name |
+| `JWT_SECRET_KEY`, `JWT_ALGORITHM` | Auth signing config |
+| `ACCESS_TOKEN_EXPIRE_MINUTES` | Token TTL |
+| `OLLAMA_BASE_URL` | Ollama host URL |
+| `VISION_MODEL`, `MID_VISION_MODEL`, `FALLBACK_VISION_MODEL` | Vision model cascade |
+| `REASONING_MODEL` | Reasoning/writer model |
+| `VISION_TIMEOUT_SECONDS` | Per-tier vision timeout |
+| `LLM_INLINE_TIMEOUT_SECONDS` | Sync wait timeout before queued response |
+| `LLM_QUEUE_WORKERS` | Queue worker count |
+| `RULE_ENGINE_ONLY` | Skip reasoning model when true |
+| `AMBIGUITY_THRESHOLD` | Rule-engine ambiguity threshold |
+| `UNLOAD_AFTER_REASONING` | Unload reasoning model after draft generation |
+| `MODEL_UNLOAD_TIMEOUT_SECONDS` | Wait timeout for unload |
+| `MODEL_UNLOAD_POLL_INTERVAL_SECONDS` | Poll interval for unload checks |
+| `KEEP_REASONING_MODEL_WARM` | Keep reasoning model loaded |
+| `COMPLAINT_OUTPUT_MODE` | `email` or `paragraph` drafting style |
+| `SMTP_HOST`, `SMTP_PORT`, `SMTP_FROM` | Notification email relay settings |
+| `ALLOWED_ORIGINS` | CORS allowlist |
+| `DEFAULT_PAGE_SIZE`, `MAX_PAGE_SIZE` | Pagination config |
+
+Frontend:
+
+| Variable | Purpose |
+| --- | --- |
+| `VITE_API_URL` | API base URL (default `http://localhost:8000`) |
+| `VITE_MAPPLS_API_KEY` | Optional Mappls key for official India map tiles |
+
+## Testing and QA
+
+### Backend smoke/integration
 
 ```bash
-docker compose -f docker-compose.prod.yml up --build -d
+# Linux
+bash scripts/run_tests.sh
+
+# Windows
+scripts\run_tests.bat
 ```
 
-The production frontend proxies `/api/*` calls to backend, with versioned aliases available under `/api/v1/*`.
-
----
-
-## Civic Categories
-
-| Category | Examples |
-|---|---|
-| Municipal - PWD (Roads) | Potholes, cracked pavement, bridge damage |
-| Municipal - Sanitation | Garbage dumps, overflowing bins, dirty toilets |
-| Municipal - Horticulture | Fallen trees, overgrown parks, uprooted plants |
-| Municipal - Street Lighting | Broken lamp posts, dark roads |
-| Municipal - Water & Sewerage | Waterlogging, blocked drains, sewer overflow |
-| Utility - Power (DISCOM) | Dangling wires, open transformers |
-| State Transport | Damaged bus shelters, broken state buses |
-| Pollution Control Board | Industrial smoke, open burning, waste dumping |
-| Police - Local Law Enforcement | Encroachment, illegal parking |
-| Police - Traffic | Failed traffic signals, road blockage |
-| Uncategorized | Does not match any above category |
-
----
-
-## User Roles
-
-| Role | Capabilities |
-|---|---|
-| `citizen` | Submit complaints, upload photos, track status |
-| `dept_head` | View and manage complaints for their department |
-| `admin` | Full system access, user management, all complaints |
-
----
-
-## API Endpoints
-
-| Method | Endpoint | Description |
-|---|---|---|
-| `POST` | `/analyze` | Submit image — classify + generate complaint (supports `language` param) |
-| `POST` | `/analyze/regenerate` | Regenerate complaint draft (with language selection) |
-| `GET` | `/complaints/` | List complaints (filtered by role) |
-| `GET` | `/complaints/{id}` | Get single complaint |
-| `PATCH` | `/complaints/{id}/status` | Update complaint status |
-| `GET` | `/triage/review-queue` | Live queue of low-confidence complaints (confidence < 0.65) |
-| `POST` | `/triage/review-queue/decision` | Approve / reject a triage item, optional dept override |
-| `GET` | `/notifications/` | List in-app notifications for current user |
-| `PATCH` | `/notifications/{id}/read` | Mark notification as read |
-| `POST` | `/users/register` | Register new user |
-| `POST` | `/users/login` | Get JWT token |
-| `GET` | `/health` | Backend + DB health check |
-| `GET` | `/health/gpu` | GPU / Ollama model status |
-| `GET` | `/docs` | Swagger UI |
-
-All primary routes are also exposed via versioned aliases under `/api/v1`.
-
----
-
-## Dataset Tools
-
-CLI scripts for offline dataset work -- not needed for normal app usage:
+### Security/resilience tests
 
 ```bash
-# Batch-sort a folder of images into category subfolders using the AI pipeline
-python backend/automated_triage.py --input <image_folder> --output <output_folder>
+cd backend
+pytest tests/test_resilience_security.py tests/test_notification_chain.py -q
+```
 
-# Evaluate how accurately a pre-sorted dataset was labeled (sample 20 per folder)
-python backend/evaluate_sorted_dataset.py --sample 20
+### Load testing
 
-# Pull Ollama models
+```bash
+# Linux
+bash scripts/run_load_test.sh http://localhost:8000
+
+# Windows
+scripts\run_load_test.bat http://localhost:8000
+```
+
+## Offline Dataset Tools
+
+```bash
+# Pull configured models
 python backend/download_models.py
+
+# Automated triage + sorting
+python backend/automated_triage.py --dataset-dir <input_dir> --output-dir <output_dir>
+
+# Evaluate triaged output
+python backend/evaluate_sorted_dataset.py --sample 20
 ```
 
-### Benchmark Results (200-image sample, Kaggle)
+## Production Compose
 
-Evaluated on 200 civic images (25 sampled per department) using the Vision → Rule Engine → Reasoning pipeline:
+```bash
+cp backend/env.production backend/.env
+docker compose -f docker-compose.prod.yml up --build -d
+python backend/create_indexes.py
+```
 
-| Metric | Result |
-|---|---|
-| Images processed | 200 |
-| Re-labelled | 128 (64.0%) |
-| Confirmed (label unchanged) | 72 (36.0%) |
-| Errors | 0 |
-| Uncategorized | 9 / 200 (4.5%) |
+The production frontend serves on port `5173` and proxies API routes to backend, with primary backend path compatibility under `/api/v1`.
 
-**Classification method breakdown:**
+## Documentation Index
 
-| Method | Count | % |
-|---|---|---|
-| `reasoning` (LLM) | 194 | 97.0% |
-| `keyword_fallback` | 2 | 1.0% |
-| `error` | 4 | 2.0% |
-
-**Confidence statistics:**
-
-| Stat | Value |
-|---|---|
-| Mean | 0.811 |
-| Median | 0.900 |
-| Min | 0.000 |
-| Max | 1.000 |
-
-**Output distribution:**
-
-| Category | Images |
-|---|---|
-| Municipal - PWD (Roads) | 49 |
-| Municipal - Sanitation | 45 |
-| Municipal - Street Lighting | 31 |
-| Utility - Power (DISCOM) | 26 |
-| Municipal - Horticulture | 18 |
-| Municipal - Water & Sewerage | 18 |
-| Uncategorized | 9 |
-| Police - Local Law Enforcement | 2 |
-| Police - Traffic | 2 |
-
-> The high re-labelling rate (64%) reflects genuine dataset noise in the original Kaggle labels — the model correctly identifies misclassified images (e.g. broken lamp-posts labelled as "Horticulture", open drains labelled as "Pollution Control Board").
-
----
-
-## Environment Variables
-
-Copy `backend/env.local` to `backend/.env` and edit as needed:
-
-| Variable | Default | Description |
-|---|---|---|
-| `APP_ENV` | `development` | Runtime mode (`development` or `production`) |
-| `RATE_LIMIT_ENABLED` | `false` (dev) | Enable request rate limiting (`true` in production) |
-| `MONGODB_URL` | `mongodb://localhost:27017` | MongoDB connection string |
-| `MONGO_URL` | `mongodb://localhost:27017` | Legacy MongoDB URL alias (supported fallback) |
-| `DB_NAME` | `jan_sunwai_db` | MongoDB database name |
-| `JWT_SECRET_KEY` | *(change this)* | Secret for signing JWT tokens |
-| `JWT_ALGORITHM` | `HS256` | JWT signing algorithm |
-| `ACCESS_TOKEN_EXPIRE_MINUTES` | `1440` | Access token lifetime in minutes |
-| `VISION_MODEL` | `qwen2.5vl:3b` | Primary vision model for image narration |
-| `MID_VISION_MODEL` | `granite3.2-vision:2b` | Mid-tier vision fallback if primary times out |
-| `FALLBACK_VISION_MODEL` | `granite3.2-vision:2b` | Final fallback for vision step |
-| `REASONING_MODEL` | `llama3.2:1b` | Reasoning model for ambiguous cases + complaint writer |
-| `OLLAMA_BASE_URL` | `http://localhost:11434` | Ollama API endpoint |
-| `ALLOWED_ORIGINS` | `http://localhost:5173,http://127.0.0.1:5173` | CORS whitelist |
-| `VISION_TIMEOUT_SECONDS` | `240` | Per-tier vision model timeout (seconds) |
-| `LLM_INLINE_TIMEOUT_SECONDS` | `8` | Timeout for synchronous LLM calls |
-| `LLM_QUEUE_WORKERS` | `2` | Background LLM worker count |
-| `RULE_ENGINE_ONLY` | `false` | Set `true` to skip LLM reasoning entirely |
-| `AMBIGUITY_THRESHOLD` | `2.0` | Min rule engine score to skip the reasoning step |
-| `UNLOAD_AFTER_REASONING` | `true` | Unload reasoning model after use to free VRAM |
-| `COMPLAINT_OUTPUT_MODE` | `email` | Output format (`email` or `paragraph`) |
-| `MODEL_UNLOAD_TIMEOUT_SECONDS` | `30` | Max wait before model-unload timeout |
-| `MODEL_UNLOAD_POLL_INTERVAL_SECONDS` | `0.1` | Poll interval while waiting model unload |
-| `KEEP_REASONING_MODEL_WARM` | `false` | Keep reasoning model loaded for lower latency |
-| `SMTP_HOST` | *(empty)* | SMTP relay host for notification email |
-| `SMTP_PORT` | `587` | SMTP relay port |
-| `SMTP_FROM` | `noreply@jan-sunwai.local` | Sender email for system notifications |
-| `DEFAULT_PAGE_SIZE` | `25` | Default pagination size |
-| `MAX_PAGE_SIZE` | `100` | Max pagination size |
-
-Frontend environment variables (`frontend/.env`):
-
-| Variable | Default | Description |
-|---|---|---|
-| `VITE_MAPPLS_API_KEY` | *(unset)* | Optional — MapmyIndia/Mappls API key for official GoI survey map tiles. Get a free key at [developer.mappls.com](https://developer.mappls.com). Without it, CARTO Voyager tiles are used (English labels, full India coverage). |
-
----
-
-## Hardware Requirements
-
-| Component | Minimum | Recommended |
-|---|---|---|
-| GPU VRAM | 4 GB (models run sequentially) | 6+ GB |
-| System RAM | 12 GB free | 16 GB |
-| Storage | 10 GB free (models + images) | 20 GB |
-| OS | Windows 10+ or Ubuntu 20.04+ | Windows 11 / Ubuntu 22.04 |
-
-> Models run **sequentially**, never simultaneously -- each fits in 4 GB VRAM alone.
+- `docs/API_REFERENCE.md`
+- `docs/DEPARTMENT_HIERARCHY.md`
+- `docs/GUI_WIREFRAMES.md`
+- `docs/LOAD_TESTING.md`
+- `docs/NDMC_DEPLOYMENT.md`
+- `docs/PRODUCTION_DEPLOYMENT_PLAN.md`
+- `docs/SECURITY_TESTING.md`
+- `docs/reports/README.md`

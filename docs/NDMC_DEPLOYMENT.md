@@ -1,64 +1,137 @@
-# NDMC Deployment Guide
+﻿# NDMC Deployment Runbook
 
-Before this production runbook, complete local bootstrap from the Quick Start in [README.md](../README.md).
+This runbook documents the current production-style deployment path using `docker-compose.prod.yml`.
 
-## 1. Prerequisites
+## Deployment Architecture (Current)
 
-- Ubuntu 22.04+
-- Docker 24+
-- Docker Compose v2
-- NVIDIA GPU + drivers if Ollama runs locally
-- Ollama runtime reachable from backend
+```mermaid
+flowchart LR
+    Browser[Citizen/Officer Browser] --> Nginx[Frontend Nginx Container :5173]
+    Nginx -->|/api/* proxy| Backend[FastAPI Container :8000]
+    Backend --> Mongo[(MongoDB Container)]
+    Backend --> Ollama[Host Ollama Runtime :11434]
+```
 
-## 2. Configure Environment
+## Prerequisites
 
-1. Copy backend env template: `cp backend/env.production backend/.env`
-2. Set required values: JWT_SECRET_KEY, ALLOWED_ORIGINS, OLLAMA_BASE_URL, RATE_LIMIT_ENABLED=true, SMTP_HOST, SMTP_PORT, SMTP_FROM
+1. Ubuntu 22.04+ (or compatible Linux host).
+2. Docker 24+ and Docker Compose v2.
+3. NVIDIA drivers if GPU inference is expected.
+4. Ollama installed and reachable from containers at `host.docker.internal:11434`.
+5. Repository checked out on deployment host.
 
-## 3. Start Production Stack
+## Environment Setup
 
-- docker compose -f docker-compose.prod.yml up --build -d
-- Frontend serves the SPA on port 5173 and proxies `/api/*` to backend service.
+1. Copy production template:
 
-## 3.1 Initialize Database Indexes
+```bash
+cp backend/env.production backend/.env
+```
 
-- python backend/create_indexes.py
+1. Edit required values in `backend/.env`:
 
-## 4. Health Checks
+- `JWT_SECRET_KEY` (must be strong and unique)
+- `ALLOWED_ORIGINS` (production domain)
+- `MONGODB_URL` if non-default
+- `OLLAMA_BASE_URL` if host routing differs
+- `SMTP_HOST`, `SMTP_PORT`, `SMTP_FROM` if email relay is used
 
-- Backend health:
-  - GET /health/live
-- Frontend:
-  - Open port 5173
-- MongoDB:
-  - service health in compose output
+1. Ensure `APP_ENV=production` and `RATE_LIMIT_ENABLED=true`.
 
-## 5. Backup and Recovery
+## Start Production Stack
 
-- Backup command:
-  - bash scripts/backup_db.sh
-  - powershell -ExecutionPolicy Bypass -File scripts/backup_db.ps1
-- Restore:
-  - mongorestore --uri=$MONGO_URI /path/to/backup-folder
-- Recommended NDMC schedule:
-  - Daily backup at off-peak time (e.g. 02:00)
-  - Retain last 30 daily snapshots
+```bash
+docker compose -f docker-compose.prod.yml up --build -d
+```
 
-## 6. Common Troubleshooting
+Services started:
 
-- Ollama unavailable:
-  - verify OLLAMA_BASE_URL
-  - verify host firewall and port 11434
-- JWT auth failures:
-  - verify JWT_SECRET_KEY consistency across restarts
-- CORS failures:
-  - verify ALLOWED_ORIGINS includes frontend domain
-- Rate limiter module errors (`No module named slowapi`):
-  - rebuild backend image after dependency updates
-  - for local/dev fallback, set `RATE_LIMIT_ENABLED=false`
+- `mongodb`
+- `backend` (gunicorn + uvicorn worker class)
+- `frontend` (Nginx serving built React app)
 
-## 7. Related Operational Guides
+## Initialize Database Indexes
 
-- Load testing: [LOAD_TESTING.md](LOAD_TESTING.md)
-- Security validation: [SECURITY_TESTING.md](SECURITY_TESTING.md)
-- Production rollout plan: [PRODUCTION_DEPLOYMENT_PLAN.md](PRODUCTION_DEPLOYMENT_PLAN.md)
+Run once after first deployment or schema-related updates:
+
+```bash
+python backend/create_indexes.py
+```
+
+## Optional: Seed Demo Accounts
+
+```bash
+python backend/create_test_users.py
+```
+
+## Health Verification
+
+```bash
+curl http://localhost:8000/health/live
+curl http://localhost:8000/health/ready
+curl http://localhost:8000/health/models
+curl http://localhost:8000/health/gpu
+```
+
+UI verification:
+
+- Frontend: `http://<host>:5173`
+- Swagger: `http://<host>:8000/docs`
+
+## Deployment Sequence
+
+```mermaid
+sequenceDiagram
+    participant Ops as NDMC Ops
+    participant Host as Deployment Host
+    participant Compose as Docker Compose
+    participant API as Backend Container
+    participant DB as MongoDB
+
+    Ops->>Host: Set backend/.env
+    Ops->>Compose: docker compose -f docker-compose.prod.yml up -d --build
+    Compose->>DB: Start MongoDB + healthcheck
+    Compose->>API: Start backend after DB healthy
+    Compose->>Host: Start frontend Nginx container
+    Ops->>API: python backend/create_indexes.py
+    Ops->>API: curl health endpoints
+```
+
+## Backup and Restore
+
+### Backup
+
+```bash
+# Linux
+bash scripts/backup_db.sh
+
+# Windows
+powershell -ExecutionPolicy Bypass -File scripts/backup_db.ps1
+```
+
+### Restore
+
+```bash
+mongorestore --uri="<mongodb-uri>" /path/to/backup-folder
+```
+
+Recommended schedule:
+
+- Daily backup at off-peak hour (for example 02:00).
+- Retention: last 30 snapshots.
+
+## Common Troubleshooting
+
+| Problem | Check |
+| --- | --- |
+| API responds but analyze fails | Verify Ollama service and `OLLAMA_BASE_URL` |
+| Auth/login issues | Check `JWT_SECRET_KEY` consistency and token TTL |
+| Frontend API 404 | Ensure Nginx `/api/` proxy is active and `VITE_API_URL=/api/v1` at build time |
+| CORS errors | Verify `ALLOWED_ORIGINS` includes actual frontend URL |
+| Rate limiter import warnings | Ensure `slowapi` is installed when rate limiting is enabled |
+
+## Operational Notes
+
+- `docker-compose.prod.yml` already includes healthchecks and restart policies.
+- Frontend Nginx performs SPA fallback routing to `index.html`.
+- API version aliases (`/api/v1`) are active in backend and should be used for external integrations.

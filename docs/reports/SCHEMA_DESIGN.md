@@ -1,172 +1,174 @@
-# Jan-Sunwai AI — Schema Design
+﻿# Jan-Sunwai AI Schema Design
 
-> **Font:** Times New Roman throughout all printed / PDF versions of this document.
-> **Last Updated:** 24 March 2026
+Last updated: 2026-04-06
 
----
+## 1. Data Model Overview
 
-## Entity Relationship Diagram (ERD)
+The platform uses MongoDB document collections with role-driven relations:
 
-The following diagram illustrates the relationships between Users, Complaints, Notifications, and the Worker assignment system.
+- `users`
+- `complaints`
+- `notifications`
+- `password_resets`
+
+## 2. ER Diagram
 
 ```mermaid
 erDiagram
-    user ||--o{ complaint : "reports (citizen)"
-    user ||--o{ complaint : "assigned to (worker)"
-    user ||--o{ notification : receives
-    user {
+    USER ||--o{ COMPLAINT : files
+    USER ||--o{ NOTIFICATION : receives
+    USER ||--o{ COMPLAINT : assigned_to
+    COMPLAINT ||--o{ NOTIFICATION : triggers
+
+    USER {
         string _id PK
         string username
         string email
-        string password_hash
-        string role "citizen | dept_head | admin | worker"
-        string department "null for citizen/admin"
-        boolean is_approved "false until admin approves worker"
-        string worker_status "available | busy | offline"
-        array active_complaint_ids "worker task list"
-        object service_area "lat, lon, radius_km, locality"
-        datetime created_at
-    }
-    complaint {
-        string _id PK
-        string user_id FK "Reporting citizen"
-        string assigned_to FK "Worker handling this complaint"
-        string authority_id FK "Routed civic authority"
-        string status "Open | In Progress | Resolved | Rejected"
-        string description
+        string password
+        string role
         string department
-        string language "en | hi | ta | te | bn | mr | gu"
-        string priority "Low | Medium | High | Critical"
-        object location "lat, lon, address, source"
-        object ai_metadata "model_used, confidence_score, detected_department, labels"
-        string triage_decision "approved | rejected"
-        string triage_reviewed_by FK "Admin who triaged"
-        datetime triage_reviewed_at
-        array status_history "Lifecycle log entries"
-        array comments "citizen + worker + admin comments"
-        array dept_notes "dept_head internal notes"
-        object feedback "citizen rating + comment post-resolution"
-        boolean escalated
+        string job_title
+        bool is_approved
+        string worker_status
+        array active_complaint_ids
+        object service_area
+        datetime created_at
+        datetime updated_at
+    }
+
+    COMPLAINT {
+        string _id PK
+        string user_id FK
+        string assigned_to FK
+        string authority_id
+        string department
+        string status
+        string priority
+        string description
+        string image_url
+        object location
+        object ai_metadata
+        array status_history
+        array dept_notes
+        array comments
+        object feedback
+        bool escalated
         datetime escalated_at
         datetime created_at
         datetime updated_at
     }
-    notification {
+
+    NOTIFICATION {
         string _id PK
         string user_id FK
         string complaint_id FK
-        string type "status_change | assignment | escalation | system"
+        string type
         string title
         string message
-        boolean is_read
+        bool is_read
         datetime created_at
     }
 ```
 
----
+## 3. Complaint Lifecycle Fields
 
-## Entity Details
-
-### 1. User Entity
-
-The User entity covers all four roles of the platform.
-
-| Field | Description |
-|---|---|
-| `role` | `citizen` (default), `dept_head`, `admin`, **`worker`** |
-| `department` | Canonical civic department string — must match exactly for worker auto-assignment |
-| `is_approved` | Workers start `false`; set `true` by admin via `PATCH /workers/{id}/approve` |
-| `worker_status` | `available` — ready to receive tasks; `busy` — has active tasks; `offline` — excluded from assignment |
-| `active_complaint_ids` | Array of complaint ObjectIds currently assigned to the worker |
-| `service_area` | Geographic area: `{ lat, lon, radius_km, locality }` — used by Haversine geo-filter in auto-assignment |
-
-### 2. Complaint Entity
-
-| Field | Description |
-|---|---|
-| `assigned_to` | ObjectId of the field worker assigned to this complaint. Null if unassigned |
-| `status` | `Open` → `In Progress` (set automatically when worker is assigned) → `Resolved` / `Rejected` |
-| `priority` | `Low`, `Medium`, `High`, `Critical` — set by AI or admin |
-| `location.source` | `exif` (GPS from photo), `device` (browser GPS), `manual` (user-pinned on map) |
-| `ai_metadata.confidence_score` | Float 0–1. Complaints < 0.65 enter the Human Triage Queue |
-| `status_history` | Array of `{ status, timestamp, changed_by_user_id, note }` — full lifecycle audit trail |
-| `comments` | Shared thread visible to citizen, worker, dept_head, admin |
-| `dept_notes` | Internal notes visible only to dept_head and admin |
-| `feedback` | Citizen rating (1–5) + optional comment after resolution |
-
-### 3. Notification Entity
-
-In-app notifications for all user roles.
-
-| Field | Description |
-|---|---|
-| `type` | `status_change`, `assignment` (worker gets notified on task assign), `escalation`, `system` |
-| `is_read` | Set to `true` via `PATCH /notifications/{id}/read` or `POST /notifications/mark-all-read` |
-
----
-
-## Worker Auto-Assignment Logic
-
-```
-POST /complaints  (new complaint submitted by citizen)
-      │
-      ▼
-auto_assign(complaint_id, department, complaint_location)
-      │
-      ├─ Query: role=worker, is_approved=True, department=<match>, worker_status≠offline
-      │
-      ├─ Geo-filter: Haversine distance(worker.service_area, complaint.location) ≤ radius_km
-      │  (If no service_area set → worker matches all complaints in their department)
-      │
-      ├─ Load balance: pick worker with fewest active_complaint_ids
-      │
-      └─ _do_assign():
-           • Adds complaint_id to worker.active_complaint_ids
-           • Sets worker.worker_status = "busy"
-           • Sets complaint.assigned_to = worker_id
-           • Sets complaint.status = "In Progress"   ← automatic on assignment
-           • Appends to complaint.status_history
+```mermaid
+flowchart LR
+    Open[Open] --> InProgress[In Progress]
+    InProgress --> Resolved[Resolved]
+    InProgress --> Rejected[Rejected]
+    Open --> Rejected
 ```
 
-**Admin Bulk Re-assign:** `POST /workers/reassign-unassigned` — scans all `Open` + `In Progress` complaints with no `assigned_to` and runs `auto_assign` on each.
+Each transition appends an entry to `status_history`:
 
-**Admin Manual Assign:** `POST /workers/{worker_id}/assign/{complaint_id}` — force-assigns any complaint to any approved worker.
+- `status`
+- `timestamp`
+- `changed_by_user_id`
+- `note`
 
----
+## 4. Important Embedded Objects
 
-## Triage Queue Logic
+## `location`
 
-Complaints enter the Human Review queue when `ai_metadata.confidence_score < 0.65` and `triage_decision` does not exist.
-
+```json
+{
+  "lat": 28.6139,
+  "lon": 77.2090,
+  "address": "Connaught Place, New Delhi",
+  "source": "manual"
+}
 ```
-GET /triage/review-queue
-  └── { "ai_metadata.confidence_score": { "$lt": 0.65 },
-         "triage_decision": { "$exists": false } }
 
-POST /triage/review-queue/decision  { complaint_id, decision, department? }
-  └── Stamps: triage_decision, triage_reviewed_by, triage_reviewed_at
-  └── Optionally overrides: department
-  └── Appends to: triage_output/ CSV audit trail
+## `ai_metadata`
+
+```json
+{
+  "model_used": "qwen2.5vl:3b",
+  "confidence_score": 0.87,
+  "detected_department": "Electrical Department",
+  "labels": ["street light", "dark road"]
+}
 ```
 
----
+## `service_area` (worker users)
 
-## SLA Badge Logic
+```json
+{
+  "lat": 28.6139,
+  "lon": 77.2090,
+  "radius_km": 5.0,
+  "locality": "New Delhi"
+}
+```
 
-The `SLABadge` component shows per-department SLA deadlines:
+## 5. Assignment and Ownership Rules
 
-- **Active complaint:** countdown to deadline based on `created_at` and department SLA window
-- **Resolved / Rejected:** shows actual resolution date from `updated_at`
-- **Overdue:** badge turns red with "Overdue by N days" text
+```mermaid
+flowchart TD
+    C[Complaint created] --> R[Role check and department route]
+    R --> W{Eligible worker exists?}
+    W -->|Yes| A[set assigned_to and status In Progress]
+    W -->|No| B[keep Open]
+```
 
----
+Ownership constraints:
 
-## API Diagnostic Endpoints (Added March 2026)
+- Citizen can only access own complaint records.
+- Department head can operate only within assigned department.
+- Worker actions are scoped to active assigned complaint IDs.
+- Admin has full cross-department access.
 
-| Endpoint | Purpose |
-|---|---|
-| `GET /workers/assignment-debug` | Shows all unassigned complaints and all workers — diagnose why assignment is not running |
-| `POST /workers/reassign-unassigned` | Bulk re-assign all Open + In Progress unassigned complaints |
-| `GET /health/live` | Backend heartbeat |
-| `GET /health/ready` | MongoDB connectivity check |
-| `GET /health/models` | Ollama model availability |
+## 6. Index Strategy
+
+Indexes configured by `backend/app/database.py` and `backend/create_indexes.py`:
+
+| Collection | Index |
+| --- | --- |
+| `users` | unique `username` |
+| `users` | unique `email` |
+| `complaints` | compound `(user_id, created_at)` |
+| `complaints` | compound `(status, created_at)` |
+| `complaints` | compound `(department, created_at)` |
+| `complaints` | `authority_id` |
+| `notifications` | compound `(user_id, created_at)` |
+| `notifications` | compound `(user_id, is_read)` |
+| `password_resets` | unique `token_hash` |
+| `password_resets` | compound `(user_id, used)` |
+| `password_resets` | TTL `expires_at` |
+
+## 7. Password Reset Schema
+
+```mermaid
+flowchart LR
+    Forgot[POST forgot-password] --> IssueToken[Create token_hash document]
+    IssueToken --> TTL[expires_at TTL index]
+    Reset[POST reset-password] --> Validate[Check hash + not used + not expired]
+    Validate --> Rotate[Set new bcrypt password and mark token used]
+```
+
+## 8. Design Notes
+
+- Complaints are document-rich by design to support lifecycle/audit features.
+- `dept_notes`, `comments`, and `feedback` are embedded for request locality.
+- Authority routing metadata (`authority_id`, escalation parent) is stored with each complaint for deterministic escalation.
