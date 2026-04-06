@@ -1,0 +1,102 @@
+import asyncio
+import io
+
+import pytest
+from fastapi import HTTPException, UploadFile
+from fastapi.responses import JSONResponse
+from PIL import Image
+from starlette.requests import Request
+
+from app.routers import complaints, health
+from app.services.sanitization import sanitize_text
+from app.services.storage import StorageService
+
+
+def _make_jpeg_bytes() -> bytes:
+    buf = io.BytesIO()
+    Image.new("RGB", (32, 32), color=(120, 140, 160)).save(buf, format="JPEG")
+    return buf.getvalue()
+
+
+def _make_upload(filename: str, data: bytes) -> UploadFile:
+    return UploadFile(filename=filename, file=io.BytesIO(data))
+
+
+def _dummy_request() -> Request:
+    scope = {
+        "type": "http",
+        "method": "POST",
+        "path": "/analyze",
+        "headers": [],
+    }
+    return Request(scope)
+
+
+def test_storage_rejects_magic_number_mismatch(tmp_path):
+    service = StorageService(upload_dir=tmp_path)
+    fake_jpeg = _make_upload("fake.jpg", b"not-a-valid-jpeg-header")
+
+    with pytest.raises(HTTPException) as exc:
+        service._validate_file(fake_jpeg)
+
+    assert exc.value.status_code == 400
+    assert "Header mismatch" in exc.value.detail
+
+
+def test_storage_accepts_valid_jpeg_magic_number(tmp_path):
+    service = StorageService(upload_dir=tmp_path)
+    valid_jpeg = _make_upload("valid.jpg", _make_jpeg_bytes())
+
+    ext = service._validate_file(valid_jpeg)
+    assert ext == ".jpg"
+
+
+def test_analyze_returns_503_when_classifier_fails(monkeypatch):
+    async def fake_save_file(_file):
+        return "uploads/fake.jpg"
+
+    def fake_resolve_path(_path):
+        return "uploads/fake.jpg"
+
+    def fake_classify(_path):
+        return {"method": "error", "error": "ollama unreachable"}
+
+    monkeypatch.setattr(complaints.storage_service, "save_file", fake_save_file)
+    monkeypatch.setattr(complaints.storage_service, "resolve_path", fake_resolve_path)
+    monkeypatch.setattr(complaints.classifier, "classify", fake_classify)
+
+    response = asyncio.run(
+        complaints.analyze_complaint(
+            request=_dummy_request(),
+            file=_make_upload("sample.jpg", _make_jpeg_bytes()),
+            language="en",
+            current_user={"username": "citizen1", "_id": "u1"},
+        )
+    )
+
+    assert isinstance(response, JSONResponse)
+    assert response.status_code == 503
+    payload = bytes(response.body).decode("utf-8")
+    assert "AI analysis unavailable" in payload
+    assert "retryable" in payload
+
+
+def test_ready_check_reports_degraded_when_db_ping_fails(monkeypatch):
+    class _FailingDB:
+        async def command(self, _name):
+            raise RuntimeError("database is down")
+
+    monkeypatch.setattr(health, "get_database", lambda: _FailingDB())
+    result = asyncio.run(health.ready_check())
+
+    assert result["status"] == "degraded"
+    assert result["database"]["ok"] is False
+    assert "down" in (result["database"].get("error") or "")
+
+
+def test_sanitize_text_escapes_html_payloads():
+    payload = "<script>alert('xss')</script>"
+    sanitized = sanitize_text(payload)
+
+    assert "<script>" not in sanitized
+    assert "&lt;script&gt;" in sanitized

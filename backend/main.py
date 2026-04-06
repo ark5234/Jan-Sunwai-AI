@@ -9,6 +9,13 @@ from app.database import connect_to_mongo, close_mongo_connection
 from app.services.llm_queue import llm_queue_service
 from app.services.escalation import escalation_loop
 from app.config import settings
+from app.rate_limiter import (
+    limiter,
+    RATE_LIMITING_AVAILABLE,
+    RateLimitExceeded,
+    SlowAPIMiddleware,
+    _rate_limit_exceeded_handler,
+)
 import os
 import time
 import logging
@@ -49,6 +56,13 @@ async def lifespan(app: FastAPI):
     await close_mongo_connection()
 
 app = FastAPI(title="Jan-Sunwai AI API", version="1.0.0", lifespan=lifespan)
+if RATE_LIMITING_AVAILABLE and SlowAPIMiddleware is not None and _rate_limit_exceeded_handler is not None:
+    app.state.limiter = limiter
+    app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+    app.add_middleware(SlowAPIMiddleware)
+    logger.info("Rate limiting middleware enabled")
+else:
+    logger.info("Rate limiting middleware disabled (missing slowapi or RATE_LIMIT_ENABLED=false)")
 
 # --- 2. CORS Middleware — MUST be registered first so its headers appear on
 #        ALL responses including error/exception responses. If added after other
@@ -73,6 +87,26 @@ async def add_process_time_header(request: Request, call_next):
         logger.warning(f"Slow request: {request.method} {request.url.path} took {process_time:.4f}s")
     
     response.headers["X-Process-Time"] = str(process_time)
+    return response
+
+
+@app.middleware("http")
+async def add_security_headers(request: Request, call_next):
+    response = await call_next(request)
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    response.headers["X-Frame-Options"] = "DENY"
+    response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
+    response.headers["Permissions-Policy"] = "geolocation=(), microphone=(), camera=()"
+    response.headers["Content-Security-Policy"] = (
+        "default-src 'self'; "
+        "img-src 'self' data: blob: https: http:; "
+        "connect-src 'self' https: http:; "
+        "style-src 'self' 'unsafe-inline'; "
+        "script-src 'self'; "
+        "frame-ancestors 'none'"
+    )
+    if settings.is_production:
+        response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains"
     return response
 
 # Global Exception Handler
@@ -106,6 +140,16 @@ app.include_router(notifications.router)
 app.include_router(analytics.router, tags=["Analytics"])
 app.include_router(public.router, tags=["Public"])
 app.include_router(workers.router, tags=["Workers"])
+
+# API versioned aliases (NDMC handover readiness)
+app.include_router(complaints.router, prefix="/api/v1", tags=["Complaints v1"])
+app.include_router(users.router, prefix="/api/v1/users", tags=["Users v1"])
+app.include_router(health.router, prefix="/api/v1", tags=["Health v1"])
+app.include_router(triage.router, prefix="/api/v1", tags=["Triage v1"])
+app.include_router(notifications.router, prefix="/api/v1", tags=["Notifications v1"])
+app.include_router(analytics.router, prefix="/api/v1", tags=["Analytics v1"])
+app.include_router(public.router, prefix="/api/v1", tags=["Public v1"])
+app.include_router(workers.router, prefix="/api/v1", tags=["Workers v1"])
 
 @app.get("/")
 def read_root():

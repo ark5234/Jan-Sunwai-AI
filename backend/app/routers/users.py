@@ -1,9 +1,23 @@
-from fastapi import APIRouter, HTTPException, Body, Depends
+import asyncio
+import hashlib
+import secrets
+
+from fastapi import APIRouter, HTTPException, Body, Depends, Request
 from fastapi.security import OAuth2PasswordRequestForm
 from app.database import get_database
-from app.schemas import UserCreate, UserResponse, UserRole
+from app.schemas import (
+    UserCreate,
+    UserResponse,
+    UserRole,
+    ForgotPasswordRequest,
+    ResetPasswordRequest,
+    ProfileUpdateRequest,
+)
 from app.auth import create_access_token, get_current_user
 from app.config import settings
+from app.rate_limiter import limiter
+from app.services.sanitization import sanitize_text, sanitize_phone_number
+from app.services.email_service import send_password_reset_email
 from passlib.context import CryptContext
 from bson import ObjectId
 from datetime import datetime, timedelta
@@ -17,8 +31,14 @@ def get_password_hash(password):
 def verify_password(plain_password, hashed_password):
     return pwd_context.verify(plain_password, hashed_password)
 
+
+def _hash_reset_token(token: str) -> str:
+    return hashlib.sha256(token.encode("utf-8")).hexdigest()
+
+
 @router.post("/register")
-async def register_user(user: UserCreate = Body(...)):
+@limiter.limit("5/minute")
+async def register_user(request: Request, user: UserCreate = Body(...)):
     db = get_database()
 
     if user.role not in [UserRole.CITIZEN, UserRole.WORKER]:
@@ -38,6 +58,10 @@ async def register_user(user: UserCreate = Body(...)):
     
     # 3. Create User Document
     user_doc = user.model_dump()
+    if user_doc.get("full_name"):
+        user_doc["full_name"] = sanitize_text(str(user_doc["full_name"]), max_len=100)
+    if user_doc.get("phone_number"):
+        user_doc["phone_number"] = sanitize_phone_number(str(user_doc["phone_number"]))
     user_doc["password"] = hashed_password
     user_doc["created_at"] = datetime.utcnow()
 
@@ -82,8 +106,10 @@ async def register_user(user: UserCreate = Body(...)):
         "department": created_user.get("department")
     }
 
+
 @router.post("/login")
-async def login(form_data: OAuth2PasswordRequestForm = Depends()):
+@limiter.limit("10/minute")
+async def login(request: Request, form_data: OAuth2PasswordRequestForm = Depends()):
     db = get_database()
     user = await db["users"].find_one({"username": form_data.username})
     
@@ -104,6 +130,106 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends()):
         "department": user.get("department")
     }
 
+
 @router.get("/me", response_model=UserResponse)
 async def read_users_me(current_user: dict = Depends(get_current_user)):
     return current_user
+
+
+@router.patch("/me", response_model=UserResponse)
+@limiter.limit("20/minute")
+async def update_users_me(
+    request: Request,
+    payload: ProfileUpdateRequest = Body(...),
+    current_user: dict = Depends(get_current_user),
+):
+    db = get_database()
+    updates: dict = {}
+
+    if payload.full_name is not None:
+        updates["full_name"] = sanitize_text(payload.full_name, max_len=100)
+    if payload.phone_number is not None:
+        updates["phone_number"] = sanitize_phone_number(payload.phone_number)
+
+    if not updates:
+        return current_user
+
+    updates["updated_at"] = datetime.utcnow()
+    updated = await db["users"].find_one_and_update(
+        {"_id": ObjectId(current_user["_id"])},
+        {"$set": updates},
+        return_document=True,
+    )
+    if not updated:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    updated["_id"] = str(updated["_id"])
+    return updated
+
+
+@router.post("/forgot-password")
+@limiter.limit("5/minute")
+async def forgot_password(request: Request, payload: ForgotPasswordRequest = Body(...)):
+    db = get_database()
+    # Always return the same response to avoid account enumeration.
+    generic_msg = {
+        "message": "If an account exists for this email, a password reset token has been issued."
+    }
+
+    user = await db["users"].find_one({"email": payload.email})
+    if not user:
+        return generic_msg
+
+    await db["password_resets"].update_many(
+        {"user_id": str(user["_id"]), "used": False},
+        {"$set": {"used": True, "revoked_at": datetime.utcnow()}},
+    )
+
+    reset_token = secrets.token_urlsafe(32)
+    await db["password_resets"].insert_one(
+        {
+            "user_id": str(user["_id"]),
+            "token_hash": _hash_reset_token(reset_token),
+            "used": False,
+            "created_at": datetime.utcnow(),
+            "expires_at": datetime.utcnow() + timedelta(minutes=30),
+        }
+    )
+
+    await asyncio.to_thread(send_password_reset_email, payload.email, reset_token)
+    return generic_msg
+
+
+@router.post("/reset-password")
+@limiter.limit("10/minute")
+async def reset_password(request: Request, payload: ResetPasswordRequest = Body(...)):
+    db = get_database()
+
+    token_hash = _hash_reset_token(payload.token)
+    reset_doc = await db["password_resets"].find_one(
+        {"token_hash": token_hash, "used": False}
+    )
+    if not reset_doc:
+        raise HTTPException(status_code=400, detail="Invalid or expired reset token")
+
+    if reset_doc.get("expires_at") and reset_doc["expires_at"] < datetime.utcnow():
+        await db["password_resets"].update_one(
+            {"_id": reset_doc["_id"]},
+            {"$set": {"used": True, "expired_at": datetime.utcnow()}},
+        )
+        raise HTTPException(status_code=400, detail="Invalid or expired reset token")
+
+    user_id = reset_doc.get("user_id")
+    if not user_id or not ObjectId.is_valid(user_id):
+        raise HTTPException(status_code=400, detail="Invalid reset token state")
+
+    await db["users"].update_one(
+        {"_id": ObjectId(user_id)},
+        {"$set": {"password": get_password_hash(payload.new_password), "updated_at": datetime.utcnow()}},
+    )
+    await db["password_resets"].update_one(
+        {"_id": reset_doc["_id"]},
+        {"$set": {"used": True, "used_at": datetime.utcnow()}},
+    )
+
+    return {"message": "Password reset successful"}

@@ -2,6 +2,7 @@ import io
 import json
 import os
 import re
+import time
 from concurrent.futures import ThreadPoolExecutor, TimeoutError as _FuturesTimeout
 import ollama
 from PIL import Image
@@ -341,6 +342,11 @@ class CivicClassifier:
             pass  # best-effort; server may not support keep_alive
 
     def classify(self, image_path: str) -> dict:
+        timings = {
+            "vision_ms": 0.0,
+            "rule_engine_ms": 0.0,
+            "reasoning_ms": 0.0,
+        }
         if not os.path.exists(image_path):
             return {
                 "department": "Unknown",
@@ -350,6 +356,7 @@ class CivicClassifier:
                 "method": "error",
                 "rationale": "file not found",
                 "raw_json": "",
+                "timings": timings,
             }
 
         # ── Pre-check: PIL-based screenshot / document detector ──────────────
@@ -368,6 +375,7 @@ class CivicClassifier:
                 "method": "non_civic_guard",
                 "model_used": "pil_heuristic",
                 "raw_json": "",
+                "timings": timings,
             }
 
         ollama_lock.acquire()
@@ -385,6 +393,7 @@ class CivicClassifier:
             #          Each tier has a wall-clock timeout; on timeout or OOM
             #          the model is unloaded and the next tier is tried.
             # ------------------------------------------------------------------
+            vision_start = time.perf_counter()
 
             # Proactive RAM check: pick the best model that fits (3-tier aware)
             active_vision_model = select_vision_model()
@@ -543,6 +552,7 @@ class CivicClassifier:
             vision_payload.setdefault("hazards", [])
             vision_payload.setdefault("setting", "")
             vision_payload = _clean_vision_payload(vision_payload)
+            timings["vision_ms"] = round((time.perf_counter() - vision_start) * 1000.0, 2)
 
             # ------------------------------------------------------------------
             # EARLY-EXIT: Non-civic scene detection across ALL vision fields.
@@ -591,6 +601,7 @@ class CivicClassifier:
                     "method": "non_civic_guard",
                     "model_used": active_vision_model,
                     "raw_json": raw_vision_json,
+                    "timings": timings,
                 }
             if _rail_score >= 2 and _pre_has_electrical_fire_hazard:
                 print(
@@ -623,6 +634,7 @@ class CivicClassifier:
                     "method": "non_civic_guard",
                     "model_used": active_vision_model,
                     "raw_json": raw_vision_json,
+                    "timings": timings,
                 }
 
             print(f"[classifier] full payload — primary_issue={vision_payload.get('primary_issue','')!r}  setting={vision_payload.get('setting','')!r}")
@@ -674,7 +686,9 @@ class CivicClassifier:
             # ------------------------------------------------------------------
             # STEP 2 — Rule Engine: Deterministic classification (zero VRAM)
             # ------------------------------------------------------------------
+            rule_start = time.perf_counter()
             rule_result = classify_by_rules(vision_payload)
+            timings["rule_engine_ms"] = round((time.perf_counter() - rule_start) * 1000.0, 2)
             canonical = rule_result["category"]
             model_confidence = rule_result["confidence"]
             method = rule_result["method"]
@@ -735,6 +749,7 @@ class CivicClassifier:
 
             if is_ambiguous and settings.reasoning_model and not settings.rule_engine_only:
                 print(f"[classifier] ambiguous → invoking {settings.reasoning_model}")
+                reasoning_start = time.perf_counter()
                 # Unload vision model before loading reasoning model to stay within VRAM budget
                 self._unload_model(settings.vision_model)
                 categories_block = "\n".join(
@@ -789,6 +804,8 @@ class CivicClassifier:
                 # Unload reasoning model to free VRAM after use
                 if settings.unload_after_reasoning:
                     self._unload_model(settings.reasoning_model)
+
+                timings["reasoning_ms"] = round((time.perf_counter() - reasoning_start) * 1000.0, 2)
 
             # Final fallback: keyword scan if still Uncategorized
             if canonical == "Uncategorized":
@@ -907,6 +924,7 @@ class CivicClassifier:
                 "method": method,
                 "model_used": active_vision_model,
                 "raw_json": raw_json_str,
+                "timings": timings,
             }
 
         except Exception as e:
@@ -918,9 +936,11 @@ class CivicClassifier:
                 "is_valid": False,
                 "is_non_civic": False,
                 "error": str(e),
+                "details": str(e),
                 "method": "error",
                 "rationale": "",
                 "raw_json": "",
+                "timings": timings,
             }
         finally:
             ollama_lock.release()

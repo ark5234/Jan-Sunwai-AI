@@ -31,7 +31,8 @@ services:
       # Docker-specific overrides (these take precedence over .env values above)
       - MONGODB_URL=mongodb://mongodb:27017/jan_sunwai_db
       - PYTHONUNBUFFERED=1
-      - APP_ENV=production
+      - APP_ENV=${APP_ENV:-development}
+      - RATE_LIMIT_ENABLED=${RATE_LIMIT_ENABLED:-false}
       - OLLAMA_BASE_URL=http://host.docker.internal:11434
       - OLLAMA_HOST=http://host.docker.internal:11434
       - ALLOWED_ORIGINS=${ALLOWED_ORIGINS:-http://localhost:5173,http://127.0.0.1:5173}

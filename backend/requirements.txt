@@ -1,6 +1,7 @@
 ﻿# ── Runtime (live API) ─────────────────────────────────────────────────────
 fastapi
 uvicorn
+gunicorn
 python-multipart
 Pillow          # EXIF geotagging + image validation
 geopy
@@ -16,9 +17,11 @@ pandas          # triage CSV endpoints
 tqdm
 python-dotenv
 deep-translator # post-generation translation for Indian languages
+slowapi        # request rate limiting
 
 # ── Dev / Testing ──────────────────────────────────────────────────────────
 pytest
+locust         # load and stress testing
 
 # ── Offline Scripts only (triage / training) ───────────────────────────────
 # Install separately with:  pip install -r requirements-scripts.txt

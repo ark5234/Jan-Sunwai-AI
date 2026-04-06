@@ -29,17 +29,13 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r backend/requirements.txt
 
-      - name: Run schema/unit tests
-        run: |
-          python -m pytest backend/tests/test_schemas.py -q
-
-      - name: Run API integration smoke
+      - name: Run backend test suite
         env:
           CI_LIGHT: '1'
           MONGODB_URL: mongodb://localhost:27017
           JWT_SECRET_KEY: ci-secret-key
         run: |
-          python backend/tests/test_api_integration.py
+          python -m pytest backend/tests -q
 
       - name: Model script syntax smoke
         run: |
@@ -57,4 +53,5 @@ jobs:
         run: |
           cd frontend
           npm install
+          npm run lint
           npm run build

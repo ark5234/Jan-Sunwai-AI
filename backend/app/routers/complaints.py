@@ -1,9 +1,10 @@
 import asyncio
 import csv
 import io
+import time
 
-from fastapi import APIRouter, File, Form, UploadFile, HTTPException, Body, Depends
-from fastapi.responses import StreamingResponse
+from fastapi import APIRouter, File, Form, UploadFile, HTTPException, Body, Depends, Request
+from fastapi.responses import StreamingResponse, JSONResponse
 from app.classifier import CivicClassifier
 from app.geotagging import extract_location
 from app.database import get_database
@@ -21,6 +22,7 @@ from app.schemas import (
     CommentRequest,
     BulkStatusUpdate,
     BulkTransfer,
+    StatusUpdateRequest,
     PriorityLevel,
 )
 from app.authorities import route_authority, get_authority_by_id
@@ -29,6 +31,9 @@ from app.schemas import NotificationType
 from app.config import settings
 from app.services.priority import compute_priority
 from app.services.assignment import auto_assign, free_worker_slot
+from app.services.sanitization import sanitize_text
+from app.services.email_service import send_status_update_email
+from app.rate_limiter import limiter
 from PIL import Image
 from datetime import datetime, timedelta
 from bson import ObjectId
@@ -55,11 +60,14 @@ async def await_generation(job_id: str, timeout_seconds: float) -> dict:
     return {"status": "queued"}
 
 @router.post("/analyze")
+@limiter.limit("20/minute")
 async def analyze_complaint(
+    request: Request,
     file: UploadFile = File(...),
     language: str = Form("en"),
     current_user: dict = Depends(get_current_user)
 ):
+    analyze_start = time.perf_counter()
     username = current_user["username"]
 
     # 1. Save file and resolve absolute path
@@ -68,6 +76,18 @@ async def analyze_complaint(
 
     # 2. Classify — offload sync model inference so the event loop stays responsive
     classification = await asyncio.to_thread(classifier.classify, absolute_file_path)
+
+    # Graceful degradation: if classifier hard-fails (Ollama unavailable / all tiers failed),
+    # return a user-friendly retryable 503 payload.
+    if classification.get("method") == "error":
+        return JSONResponse(
+            status_code=503,
+            content={
+                "message": "AI analysis unavailable — please try again in a few minutes.",
+                "details": classification.get("error", "Model pipeline unavailable"),
+                "retryable": True,
+            },
+        )
 
     # 3. Extract Location — open from the saved file on disk (avoids re-reading HTTP body)
     image = Image.open(absolute_file_path)
@@ -117,7 +137,13 @@ async def analyze_complaint(
         "generated_complaint": generated_text,
         "generation_status": generation_status,
         "generation_job_id": job_id,
-        "image_url": file_path # Return the path so frontend can pass it to /complaints
+        "image_url": file_path, # Return the path so frontend can pass it to /complaints
+        "timings": {
+            "vision_ms": classification.get("timings", {}).get("vision_ms", 0.0),
+            "rule_engine_ms": classification.get("timings", {}).get("rule_engine_ms", 0.0),
+            "reasoning_ms": classification.get("timings", {}).get("reasoning_ms", 0.0),
+            "total_analyze_ms": round((time.perf_counter() - analyze_start) * 1000.0, 2),
+        },
     }
 
 
@@ -165,6 +191,14 @@ async def create_complaint(
     
     # 2. Prepare Data
     complaint_dict = complaint.model_dump()
+    complaint_dict["description"] = sanitize_text(complaint_dict.get("description", ""), max_len=3000)
+    if len(complaint_dict["description"]) < 10:
+        raise HTTPException(status_code=400, detail="Complaint description is too short after sanitization")
+    if isinstance(complaint_dict.get("location"), dict) and complaint_dict["location"].get("address"):
+        complaint_dict["location"]["address"] = sanitize_text(
+            complaint_dict["location"]["address"],
+            max_len=300,
+        )
     
     # Resolve Authority routing metadata
     routing = route_authority(complaint.department)
@@ -358,7 +392,7 @@ async def get_complaint(complaint_id: str):
 @router.patch("/complaints/{complaint_id}/status", response_model=ComplaintResponse)
 async def update_complaint_status(
     complaint_id: str,
-    status: ComplaintStatus = Body(..., embed=True),
+    payload: StatusUpdateRequest = Body(...),
     current_user: dict = Depends(get_current_admin_or_dept_head),
 ):
     if not ObjectId.is_valid(complaint_id):
@@ -375,6 +409,9 @@ async def update_complaint_status(
         if not user_dept or existing.get("department") != user_dept:
             raise HTTPException(status_code=403, detail="Cannot update complaints outside your department")
     
+    status = payload.status
+    safe_note = sanitize_text(payload.note, max_len=500) if payload.note else "Status updated via API"
+
     # Update Query
     update_data = {
         "$set": {
@@ -386,7 +423,7 @@ async def update_complaint_status(
                 "status": status,
                 "timestamp": datetime.utcnow(),
                 "changed_by_user_id": str(current_user.get("_id")),
-                "note": "Status updated via API"
+                "note": safe_note,
             }
         }
     }
@@ -418,6 +455,8 @@ async def update_complaint_status(
         }
         dept = existing.get("department", "the department")
         msg = status_messages.get(status, f"Status updated to {status}.")
+        if payload.note:
+            msg = f"{msg} Note: {safe_note}"
         status_val = status.value if hasattr(status, 'value') else str(status)
         old_status_val = old_status.value if hasattr(old_status, 'value') else str(old_status)
         await create_notification(
@@ -429,6 +468,19 @@ async def update_complaint_status(
             status_from=old_status_val,
             status_to=status_val,
         )
+
+        if ObjectId.is_valid(citizen_id):
+            citizen_user = await db["users"].find_one({"_id": ObjectId(citizen_id)}, {"email": 1})
+            citizen_email = citizen_user.get("email") if citizen_user else None
+            if citizen_email:
+                await asyncio.to_thread(
+                    send_status_update_email,
+                    citizen_email,
+                    complaint_id,
+                    dept,
+                    status_val,
+                    msg,
+                )
 
     return fix_id(result)
 
@@ -518,7 +570,7 @@ async def submit_feedback(
 
     feedback_doc = {
         "rating": payload.rating,
-        "comment": payload.comment,
+        "comment": sanitize_text(payload.comment, max_len=500) if payload.comment else None,
         "submitted_at": datetime.utcnow(),
     }
     updated = await db["complaints"].find_one_and_update(
@@ -553,7 +605,7 @@ async def add_dept_note(
             raise HTTPException(status_code=403, detail="Cannot add notes to complaints outside your department")
 
     note_doc = {
-        "note": payload.note,
+        "note": sanitize_text(payload.note, max_len=1000),
         "created_by": current_user.get("username"),
         "created_at": datetime.utcnow(),
     }
@@ -607,7 +659,7 @@ async def add_comment(
         raise HTTPException(status_code=403, detail="Not your complaint")
 
     comment_doc = {
-        "text": payload.text,
+        "text": sanitize_text(payload.text, max_len=1000),
         "author_id": str(current_user["_id"]),
         "author_name": current_user.get("username"),
         "author_role": role,
@@ -690,8 +742,9 @@ async def bulk_transfer(
 
     routing = route_authority(payload.new_department)
     note = f"Bulk transferred to '{payload.new_department}'"
-    if payload.reason:
-        note += f". Reason: {payload.reason}"
+    safe_reason = sanitize_text(payload.reason, max_len=500) if payload.reason else None
+    if safe_reason:
+        note += f". Reason: {safe_reason}"
 
     result = await db["complaints"].update_many(
         {"_id": {"$in": valid_ids}},
@@ -758,9 +811,10 @@ async def transfer_complaint(
     # Re-derive authority routing for the new department
     routing = route_authority(new_dept)
 
+    safe_reason = sanitize_text(payload.reason, max_len=500) if payload.reason else None
     transfer_note = f"Transferred from '{old_dept}' to '{new_dept}'"
-    if payload.reason:
-        transfer_note += f". Reason: {payload.reason}"
+    if safe_reason:
+        transfer_note += f". Reason: {safe_reason}"
 
     update_data = {
         "$set": {
@@ -792,8 +846,8 @@ async def transfer_complaint(
         citizen_msg = (
             f"Your grievance has been transferred from {old_dept} to {new_dept}."
         )
-        if payload.reason:
-            citizen_msg += f" Reason: {payload.reason}"
+        if safe_reason:
+            citizen_msg += f" Reason: {safe_reason}"
         await create_notification(
             user_id=citizen_id,
             notification_type=NotificationType.ASSIGNMENT,

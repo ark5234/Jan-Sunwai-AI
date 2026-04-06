@@ -24,6 +24,8 @@ class ServiceArea(BaseModel):
 class UserBase(BaseModel):
     username: str = Field(..., min_length=3, max_length=50)
     email: EmailStr
+    full_name: Optional[str] = Field(None, max_length=100)
+    phone_number: Optional[str] = Field(None, max_length=20)
     department: Optional[str] = Field(None, description="Department for DEPT_HEAD / WORKER users")
     job_title: Optional[str] = Field(None, description="Official job title (e.g., 'Chief engineer', 'Sanitary inspector')")
 
@@ -68,6 +70,20 @@ class WorkerApproval(BaseModel):
 
 class ServiceAreaUpdate(BaseModel):
     service_area: ServiceArea
+
+
+class ForgotPasswordRequest(BaseModel):
+    email: EmailStr
+
+
+class ResetPasswordRequest(BaseModel):
+    token: str = Field(..., min_length=12, max_length=256)
+    new_password: str = Field(..., min_length=6, max_length=128)
+
+
+class ProfileUpdateRequest(BaseModel):
+    full_name: Optional[str] = Field(None, min_length=2, max_length=100)
+    phone_number: Optional[str] = Field(None, min_length=7, max_length=20)
 
 # --- Complaint Schemas ---
 
@@ -191,6 +207,11 @@ class BulkStatusUpdate(BaseModel):
     complaint_ids: List[str] = Field(..., min_length=1)
     status: ComplaintStatus
     note: Optional[str] = None
+
+
+class StatusUpdateRequest(BaseModel):
+    status: ComplaintStatus
+    note: Optional[str] = Field(None, max_length=500)
 
 
 class BulkTransfer(BaseModel):
