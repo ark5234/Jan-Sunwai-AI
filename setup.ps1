@@ -1,15 +1,3 @@
-# =============================================================================
-#  Jan-Sunwai AI — One-Shot Setup Script (Windows)
-#  Run from the project root after unzipping:
-#
-#      Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
-#      .\setup.ps1
-#
-#  Prerequisites (must already be on the machine):
-#      - NVIDIA drivers (for GPU acceleration via Ollama)
-#      - Internet connection
-# =============================================================================
-
 $ErrorActionPreference = "Stop"
 $ProjectRoot = $PSScriptRoot
 
@@ -21,11 +9,9 @@ Write-Host "`n============================================" -ForegroundColor Mag
 Write-Host "  Jan-Sunwai AI — Setup" -ForegroundColor Magenta
 Write-Host "============================================`n" -ForegroundColor Magenta
 
-# ── 0. GPU Check ──────────────────────────────────────────────────────────────
 Write-Step "Running GPU check..."
-& (Join-Path $ProjectRoot "check_gpu.ps1")
+& (Join-Path $ProjectRoot "scripts\system\check_gpu.ps1")
 
-# ── 1. Python ─────────────────────────────────────────────────────────────────
 Write-Step "Checking Python..."
 $py = Get-Command python -ErrorAction SilentlyContinue
 if (-not $py) {
@@ -36,7 +22,6 @@ if (-not $py) {
     Write-Ok "Python found: $($py.Source)"
 }
 
-# ── 2. Python venv + dependencies ─────────────────────────────────────────────
 Write-Step "Setting up Python virtual environment..."
 $venvPath = Join-Path $ProjectRoot ".venv"
 if (-not (Test-Path $venvPath)) {
@@ -47,13 +32,25 @@ if (-not (Test-Path $venvPath)) {
 }
 
 $pip = Join-Path $venvPath "Scripts\pip.exe"
-$pythonExe = Join-Path $venvPath "Scripts\python.exe"
 Write-Step "Installing Python dependencies..."
 & $pip install --upgrade pip --quiet
 & $pip install -r (Join-Path $ProjectRoot "backend\requirements.txt")
 Write-Ok "Python dependencies installed"
 
-# ── 3. Node.js ────────────────────────────────────────────────────────────────
+Write-Step "Ensuring backend environment file..."
+$envFile = Join-Path $ProjectRoot "backend\.env"
+$envLocalFile = Join-Path $ProjectRoot "backend\env.local"
+if (-not (Test-Path $envFile)) {
+    if (Test-Path $envLocalFile) {
+        Copy-Item $envLocalFile $envFile
+        Write-Ok "Created backend/.env from backend/env.local"
+    } else {
+        Write-Warn "backend/env.local not found. Create backend/.env manually."
+    }
+} else {
+    Write-Ok "backend/.env already exists"
+}
+
 Write-Step "Checking Node.js..."
 $node = Get-Command node -ErrorAction SilentlyContinue
 if (-not $node) {
@@ -64,14 +61,12 @@ if (-not $node) {
     Write-Ok "Node.js found: $(node --version)"
 }
 
-# ── 4. Frontend npm install ───────────────────────────────────────────────────
 Write-Step "Installing frontend dependencies..."
 Push-Location (Join-Path $ProjectRoot "frontend")
 npm install
 Pop-Location
 Write-Ok "Frontend dependencies installed"
 
-# ── 5. Docker Desktop ─────────────────────────────────────────────────────────
 Write-Step "Checking Docker..."
 $docker = Get-Command docker -ErrorAction SilentlyContinue
 if (-not $docker) {
@@ -85,7 +80,6 @@ if (-not $docker) {
     Write-Ok "Docker found: $(docker --version)"
 }
 
-# ── 6. Start MongoDB via Docker Compose ───────────────────────────────────────
 Write-Step "Starting MongoDB via Docker Compose..."
 try {
     Push-Location $ProjectRoot
@@ -97,7 +91,6 @@ try {
     Write-Warn "Run manually after Docker starts: docker compose up -d mongodb"
 }
 
-# ── 7. Ollama ─────────────────────────────────────────────────────────────────
 Write-Step "Checking Ollama..."
 $ollama = Get-Command ollama -ErrorAction SilentlyContinue
 if (-not $ollama) {
@@ -112,33 +105,25 @@ if (-not $ollama) {
     Write-Ok "Ollama found: $(ollama --version)"
 }
 
-# ── 8. Start Ollama service ───────────────────────────────────────────────────
 Write-Step "Starting Ollama service..."
-$ollamaRunning = $false
 try {
     Invoke-RestMethod http://localhost:11434/api/tags | Out-Null
-    $ollamaRunning = $true
     Write-Ok "Ollama already running"
 } catch {
     Start-Process "ollama" -ArgumentList "serve" -WindowStyle Hidden
     Start-Sleep -Seconds 4
     try {
         Invoke-RestMethod http://localhost:11434/api/tags | Out-Null
-        $ollamaRunning = $true
         Write-Ok "Ollama started"
     } catch {
         Write-Warn "Ollama did not start in time. Models will be pulled but may require Ollama to be started manually."
     }
 }
 
-# ── 9. Pull Ollama models ─────────────────────────────────────────────────────
-Write-Step "Pulling AI models (reads model names from backend/.env.example)..."
-# Model names come from .env — to change them edit VISION_MODEL/REASONING_MODEL in backend/.env
-# then re-run:  python backend/download_models.py
+Write-Step "Pulling AI models (reads model names from backend/.env)..."
 & "$PSScriptRoot\.venv\Scripts\python.exe" "$PSScriptRoot\backend\download_models.py"
 if ($LASTEXITCODE -ne 0) { Write-Warn "Model pull failed. Run manually: python backend/download_models.py" }
 
-# ── 10. Summary ───────────────────────────────────────────────────────────────
 Write-Host "`n============================================" -ForegroundColor Magenta
 Write-Host "  Setup Complete!" -ForegroundColor Green
 Write-Host "============================================" -ForegroundColor Magenta

@@ -1,8 +1,8 @@
 # Jan-Sunwai AI - Daily Project Report & Plan
 
 > **Font:** Times New Roman throughout all printed / PDF versions of this document.
-> **Last Updated:** 24 March 2026
-> **Current Status:** Week 9 tasks ~70% complete. Worker Panel, auto-assignment engine, heatmap, bulk admin ops, and SLA badges all implemented ahead of schedule.
+> **Last Updated:** 06 April 2026
+> **Current Status:** Security/performance hardening, password reset/profile editing, API versioning, production compose artifacts, and deployment docs are implemented. Remaining work is full UAT/load/security audit and release operations.
 
 **Project Duration:** January 28, 2026 – May 27, 2026
 **Schedule Logic:** Monday to Saturday work weeks. Sundays are always OFF. 2nd & 4th Saturdays are OFF.
@@ -176,15 +176,16 @@
 *   **Mar 16 (Mon):** **File Magic Number Validation** - [PARTIAL — size limit done, magic byte check pending]
     *   5 MB file size limit enforced at FastAPI layer.
     *   Magic byte content-type verification still pending.
-*   **Mar 17 (Tue):** **Rate Limiting on Critical Endpoints** - [PENDING]
-    *   `slowapi` limiter not yet added. Scheduled for completion.
-*   **Mar 18 (Wed):** **Input Sanitization & XSS Prevention** - [PENDING]
-*   **Mar 19 (Thu):** **CORS Lockdown & Security Headers** - [PARTIAL — CORS configured]
-    *   CORS origins list configured. Security header middleware pending.
-*   **Mar 20 (Fri):** **JWT Security Review** - [PARTIAL]
-    *   JWT tokens are in use with 24h expiry. Reduction to 8h for NDMC production is documented but not yet applied.
-*   **Mar 21 (Sat):** **MongoDB Indexing for Production Queries** - [PENDING]
-    *   `create_indexes.py` migration script not yet written.
+*   **Mar 17 (Tue):** **Rate Limiting on Critical Endpoints** - [COMPLETED]
+    *   Added limiter integration on critical endpoints with safe fallback mode for local/offline runs.
+*   **Mar 18 (Wed):** **Input Sanitization & XSS Prevention** - [COMPLETED]
+    *   Added sanitization service and applied to complaint/user free-text fields.
+*   **Mar 19 (Thu):** **CORS Lockdown & Security Headers** - [COMPLETED]
+    *   CORS allowlist plus security headers middleware implemented.
+*   **Mar 20 (Fri):** **JWT Security Review** - [COMPLETED]
+    *   Production defaults now use 8-hour token expiry (480 minutes); development can still override via env.
+*   **Mar 21 (Sat):** **MongoDB Indexing for Production Queries** - [COMPLETED]
+    *   Added index creation helper script and password-reset indexes (including TTL expiry).
 *   **Mar 22 (Sun):** *OFF*
 
 #### Week 9: Mar 23 (Mon) – Mar 28 (Sat) [NDMC Feature Pack]
@@ -201,8 +202,8 @@
     *   Added `GET /workers/assignment-debug` and `POST /workers/reassign-unassigned` admin endpoints.
     *   Admin Dashboard: Re-assign All button, manual per-worker assignment dropdown, pending approvals UI, service area warnings.
     *   `create_test_users.py` update logic now patches all worker-specific fields (is_approved, worker_status, service_area).
-*   **Mar 24 (Tue):** **Escalation Timeline UI** - [IN PROGRESS]
-    *  0 Status history data is available from API. Visual timeline component for CitizenDashboard pending.
+*   **Mar 24 (Tue):** **Escalation Timeline UI** - [COMPLETED]
+    *   Status history timeline component added and wired into CitizenDashboard.
 *   **Mar 25 (Wed):** **Analytics & Heatmap** - [COMPLETED — ahead of schedule]
     *   `/analytics/complaints` and `/analytics/heatmap` endpoints implemented.
     *   AdminDashboard heatmap tab renders complaint density on map using heat circles.
@@ -210,103 +211,111 @@
 *   **Mar 26 (Thu):** **SLA Badges** - [COMPLETED — ahead of schedule]
     *   `SLABadge.jsx` component shows per-department SLA countdowns; overdue complaints show red badge.
     *   Complaint cards across all dashboards include SLA badge.
-*   **Mar 27 (Fri):** **Bulk Status Update & CSV Export** - [PARTIAL]
-    *   Bulk status update (`PATCH /complaints/bulk-status`) and CSV export (`GET /complaints/export/csv`) endpoint implemented in backend.
-    *   Admin Dashboard bulk checkbox UI still pending.
+*   **Mar 27 (Fri):** **Bulk Status Update & CSV Export** - [COMPLETED]
+    *   Backend bulk/status/export endpoints are implemented and Admin Dashboard bulk selection UI is present.
 *   **Mar 28 (Sat):** *OFF (4th Saturday)*
 *   **Mar 29 (Sun):** *OFF*
 
 #### Week 10: Mar 30 (Mon) – Apr 04 (Sat) [Notification System & Communication]
-*   **Mar 30 (Mon):** **Wire Notifications to Navbar**
+*   **Mar 30 (Mon):** **Wire Notifications to Navbar** - [COMPLETED]
     *   Connect `Notifications.jsx` (already built) to the Navbar — show a live unread badge count that updates after each status change.
     *   Add polling (every 30s) or SSE stub to keep the badge count fresh without requiring a page refresh.
-*   **Mar 31 (Tue):** **Auto-Notify on Status Change**
+*   **Mar 31 (Tue):** **Auto-Notify on Status Change** - [COMPLETED]
     *   Trigger an in-app notification automatically when a `dept_head` changes a complaint status via `PATCH /complaints/{id}/status`.
     *   Citizen receives: "Your complaint #{id} has been updated to In Progress by {department}."
-*   **Apr 01 (Wed):** **Notification Email Stub (NDMC-Ready)**
+*   **Apr 01 (Wed):** **Notification Email Stub (NDMC-Ready)** - [COMPLETED]
     *   Create an `email_service.py` module with a `send_status_update_email()` function — logs to file in dev, ready to wire to NDMC's SMTP server in production.
-    *   Add `SMTP_HOST`, `SMTP_PORT`, `SMTP_FROM` to `.env.example` so NDMC IT can plug in their mail relay.
-*   **Apr 02 (Thu):** **Password Reset Flow**
+    *   Add `SMTP_HOST`, `SMTP_PORT`, `SMTP_FROM` to `env.local` so NDMC IT can plug in their mail relay.
+*   **Apr 02 (Thu):** **Password Reset Flow** - [COMPLETED]
     *   Implement `POST /users/forgot-password` and `POST /users/reset-password` endpoints with time-limited token.
     *   Required for NDMC deployment where officers can't rely on a developer to manually reset credentials.
-*   **Apr 03 (Fri):** **Profile Editing**
+*   **Apr 03 (Fri):** **Profile Editing** - [COMPLETED]
     *   Allow citizens to update their display name and phone number via `PATCH /users/me`.
     *   Wire `Profile.jsx` (already built) edit form to this endpoint; phone number is critical for NDMC contact follow-ups.
-*   **Apr 04 (Sat):** **Notification Chain End-to-End Test**
+*   **Apr 04 (Sat):** **Notification Chain End-to-End Test** - [PARTIAL]
     *   Test the full chain: Citizen submits → dept_head updates status → notification appears in Navbar → email logged.
     *   Confirm no duplicate notifications and that `mark-all-read` clears the badge correctly.
+    *   Added `tests/test_notification_chain.py` and `scripts/run_notification_chain_test.py`; live environment execution is still pending.
 *   **Apr 05 (Sun):** *OFF*
 
 #### Week 11: Apr 06 (Mon) – Apr 11 (Sat) [Performance & Reliability]
-*   **Apr 06 (Mon):** **Client-Side Image Compression**
+*   **Apr 06 (Mon):** **Client-Side Image Compression** - [COMPLETED]
     *   Install `browser-image-compression` and compress images to ≤1 MB before POSTing to `/analyze`.
     *   Show the compressed file size and dimensions in the upload UI so citizens understand what's being sent.
-*   **Apr 07 (Tue):** **Frontend Bundle Optimisation**
+*   **Apr 07 (Tue):** **Frontend Bundle Optimisation** - [PARTIAL]
     *   Run Lighthouse performance audit on production build; target score ≥ 80.
     *   Implement React `lazy()` + `Suspense` code splitting for heavy pages (AdminDashboard, Result) to reduce initial bundle size.
-*   **Apr 08 (Wed):** **Ollama Failure Graceful Degradation**
+    *   Lazy loading is implemented in `App.jsx`; Lighthouse benchmark run is pending.
+*   **Apr 08 (Wed):** **Ollama Failure Graceful Degradation** - [COMPLETED]
     *   Ensure the `/analyze` endpoint returns a user-friendly `503` JSON error (not a crash) if all 3 vision model tiers fail or Ollama is unreachable.
     *   Frontend shows: "AI analysis unavailable — please try again in a few minutes" with a retry button.
-*   **Apr 09 (Thu):** **Backend Performance Profiling**
+*   **Apr 09 (Thu):** **Backend Performance Profiling** - [PARTIAL]
     *   Profile the `/analyze` request lifecycle using Python's `cProfile`; identify the slowest non-Ollama step.
     *   Add structured timing logs (`vision_ms`, `rule_engine_ms`, `reasoning_ms`) to every analyze response for NDMC monitoring.
-*   **Apr 10 (Fri):** **Resilience Test**
+    *   Added `backend/profile_analyze.py` and response timing fields; manual report extraction from real NDMC workloads is pending.
+*   **Apr 10 (Fri):** **Resilience Test** - [PARTIAL]
     *   Simulate failures: MongoDB down, Ollama unreachable, image upload with corrupted file.
     *   Verify the app degrades gracefully at each failure point with correct HTTP codes and frontend error messages.
+    *   Added automated resilience checks in `tests/test_resilience_security.py`; full browser-level validation remains.
 *   **Apr 11 (Sat):** *OFF (2nd Saturday)*
 *   **Apr 12 (Sun):** *OFF*
 
 #### Week 12: Apr 13 (Mon) – Apr 18 (Sat) [NDMC Production Hardening]
-*   **Apr 13 (Mon):** **Docker Production Config**
+*   **Apr 13 (Mon):** **Docker Production Config** - [COMPLETED]
     *   Create `Dockerfile.prod` for the backend — use `gunicorn` with `uvicorn` workers (not `--reload`), set worker count to CPU cores.
     *   Build a multi-stage frontend `Dockerfile` (Node build → Nginx serve) with gzip compression enabled.
-*   **Apr 14 (Tue):** **Docker Compose Production Profile**
+*   **Apr 14 (Tue):** **Docker Compose Production Profile** - [COMPLETED]
     *   Add a `docker-compose.prod.yml` with proper healthchecks, `restart: always` policies, named volume mounts, and log rotation.
     *   Test the full stack via `docker compose -f docker-compose.prod.yml up --build`.
-*   **Apr 15 (Wed):** **NDMC Deployment Environment Config**
-    *   Write a production `.env.template` with every variable NDMC IT needs to set (MongoDB URI, JWT secret, CORS domain, SMTP, Ollama host).
+*   **Apr 15 (Wed):** **NDMC Deployment Environment Config** - [COMPLETED]
+    *   Write a production `env.production` with every variable NDMC IT needs to set (MongoDB URI, JWT secret, CORS domain, SMTP, Ollama host).
     *   Document NDMC server requirements: Ubuntu 22.04, NVIDIA GPU with CUDA, Docker 24+, 16 GB RAM.
-*   **Apr 16 (Thu):** **API Versioning**
+*   **Apr 16 (Thu):** **API Versioning** - [COMPLETED]
     *   Add `/api/v1` prefix to all backend routes using FastAPI's `APIRouter(prefix="/api/v1")`.
     *   Update frontend API base URL to `/api/v1`; document versioning strategy so future NDMC API consumers are not broken by changes.
-*   **Apr 17 (Fri):** **MongoDB Backup Strategy**
+*   **Apr 17 (Fri):** **MongoDB Backup Strategy** - [COMPLETED]
     *   Write a `backup_db.sh` script using `mongodump` with timestamp-named output directories.
     *   Document the recommended NDMC backup schedule (daily dumps, 30-day retention) and recovery procedure.
-*   **Apr 18 (Sat):** **UI/UX Audit & NDMC Branding Pass**
+*   **Apr 18 (Sat):** **UI/UX Audit & NDMC Branding Pass** - [PARTIAL]
     *   Review the full app for font/colour consistency; replace placeholder logos with NDMC branding placeholders.
     *   Standardize all Tailwind spacing, heading hierarchy, and button styles for a professional government portal look.
 *   **Apr 19 (Sun):** *OFF*
 
 #### Week 13: Apr 20 (Mon) – Apr 25 (Sat) [Testing Sprint]
-*   **Apr 20 (Mon):** **Backend Unit Tests (pytest)**
+*   **Apr 20 (Mon):** **Backend Unit Tests (pytest)** - [PARTIAL]
     *   Write `pytest` cases for: JWT auth, complaint CRUD, classifier (mock Ollama), geotagging, rule engine, rate limiter.
     *   Use `mongomock` to run tests against an in-memory MongoDB; no real DB required.
-*   **Apr 21 (Tue):** **API Integration Tests**
+    *   Added targeted tests for resilience/security and notification chain; broader unit coverage is still pending.
+*   **Apr 21 (Tue):** **API Integration Tests** - [PARTIAL]
     *   Test all REST endpoints with `httpx.AsyncClient` against a seeded test database.
     *   Assert correct HTTP codes, response schemas, and role-based access control for citizen / dept_head / admin.
-*   **Apr 22 (Wed):** **Security Penetration Test**
+    *   Integration smoke now covers core health and `/api/v1` alias checks; full endpoint matrix is pending.
+*   **Apr 22 (Wed):** **Security Penetration Test** - [PARTIAL]
     *   Attempt: JWT token manipulation, auth bypass on protected routes, file upload with malicious MIME, XSS in remarks field.
     *   Document findings and patch any vulnerabilities before NDMC handover.
-*   **Apr 23 (Thu):** **Load Test**
+    *   Added `docs/SECURITY_TESTING.md` checklist and automated security-oriented tests; external scanner run pending.
+*   **Apr 23 (Thu):** **Load Test** - [PARTIAL]
     *   Use `locust` to simulate 50 concurrent citizen logins + 20 concurrent `/analyze` uploads.
     *   Document queue behavior (Ollama serialises via lock), API latency P95, and MongoDB query times under load.
-*   **Apr 24 (Fri):** **Mobile Responsiveness Fixes**
+    *   Added `backend/locustfile.py`, `backend/requirements-loadtest.txt`, and run scripts; benchmark execution report pending.
+*   **Apr 24 (Fri):** **Mobile Responsiveness Fixes** - [COMPLETED]
     *   Test on 375px viewport (iPhone SE) — fix overflowing tables, navbar collapses, map containers.
     *   Add `viewport` meta tag optimisation; ensure tap targets are ≥ 44px for NDMC field officers on mobile.
 *   **Apr 25 (Sat):** *OFF (4th Saturday)*
 *   **Apr 26 (Sun):** *OFF*
 
 #### Week 14 (Partial): Apr 27 (Mon) – Apr 30 (Thu) [Pre-Handover Sprint]
-*   **Apr 27 (Mon):** **NDMC Handover Guide**
+*   **Apr 27 (Mon):** **NDMC Handover Guide** - [COMPLETED]
     *   Write `docs/NDMC_DEPLOYMENT.md`: step-by-step guide for NDMC IT (clone repo → configure env → docker compose → seed first admin → verify GPU).
     *   Include troubleshooting section: Ollama VRAM errors, MongoDB auth, CORS for production domain.
-*   **Apr 28 (Tue):** **Final API Reference Documentation**
+*   **Apr 28 (Tue):** **Final API Reference Documentation** - [COMPLETED]
     *   Enhance all OpenAPI endpoint descriptions with request/response examples and error code tables.
     *   Export Swagger JSON; publish as `docs/API_REFERENCE.md` for NDMC developers integrating with the backend.
-*   **Apr 29 (Wed):** **Repository Cleanup**
+*   **Apr 29 (Wed):** **Repository Cleanup** - [PARTIAL]
     *   Remove all `console.log` statements, `# TODO`, dead-code branches, and stale comments from every file.
     *   Run final `isort` + `black` (Python) and `Prettier` (JS) formatting pass; ensure zero lint errors.
-*   **Apr 30 (Thu):** **Release Tag v1.0-rc1**
+    *   Added ESLint config and CI lint gate; full formatting and dead-code cleanup pass remains.
+*   **Apr 30 (Thu):** **Release Tag v1.0-rc1** - [PARTIAL]
     *   Tag `v1.0-rc1` on `main`; write a GitHub Release with a changelog summarising all features.
     *   Set up a basic GitHub Actions CI workflow: run `pytest` and ESLint on every push to `main`.
 *   **May 01 (Fri):** *Phase 2 Buffer / Spillover*

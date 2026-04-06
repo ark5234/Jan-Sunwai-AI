@@ -26,8 +26,6 @@ dataset/
 data/
 
 backend/uploads/
-backend/backend/uploads/
-backend/backend/logs/
 backend/triage_output/
 backend/triage_output/**
 
@@ -62,9 +60,12 @@ backend/ai_resort_report.csv
 
 # Except documentation wireframes
 !docs/*.png
+!docs/images/*.png
 
 # Evaluation output (generated files, not source)
 backend/evaluation_report_v2.csv
 backend/evaluation_mismatch_breakdown.csv
 backend/evaluation_per_class_summary.csv
-reports/
+/reports/
+!docs/reports/
+!docs/reports/**

@@ -16,6 +16,7 @@ Jan-Sunwai AI is a full-stack civic complaint platform that lets citizens photog
   - [Windows](#windows-setup-script)
   - [Linux / Ubuntu](#linux--ubuntu-setup-script)
   - [Manual Setup](#manual-setup)
+- [Setup and Deployment Guides](#setup-and-deployment-guides)
 - [Running the Project](#running-the-project)
 - [Civic Categories](#civic-categories)
 - [User Roles](#user-roles)
@@ -140,16 +141,25 @@ Jan-Sunwai-AI/
 |   |   +-- context/             # Auth + complaint context
 |   +-- package.json
 +-- docs/
-|   +-- SYSTEM_ARCHITECTURE.md  # Full system documentation
+|   +-- API_REFERENCE.md        # API endpoint reference
+|   +-- NDMC_DEPLOYMENT.md      # NDMC production deployment runbook
+|   +-- PRODUCTION_DEPLOYMENT_PLAN.md # Production roadmap and rollout plan
+|   +-- reports/                # Academic/report documents
+|   |   +-- SYSTEM_ARCHITECTURE.md
+|   |   +-- SCHEMA_DESIGN.md
+|   |   +-- PROJECT_TIMELINE.md
+|   |   +-- PROJECT_SYNOPSIS.md
+|   |   +-- PROJECT_REPORT.md
 +-- scripts/
 |   +-- run_backend.bat / .sh    # Start backend
 |   +-- run_frontend.bat / .sh   # Start frontend
 |   +-- run_triage.bat / .sh     # Run batch triage
 |   +-- run_tests.bat / .sh      # Run tests
+|   +-- system/check_gpu.ps1/.sh # GPU checks used by setup scripts
+|   +-- db/hash_fix.py           # Worker password hash utility
+|   +-- db/test_db.py            # DB connectivity helper
 +-- setup.ps1                    # Windows one-command setup
 +-- setup.sh                     # Linux/Ubuntu one-command setup
-+-- check_gpu.ps1                # Windows GPU check + driver install
-+-- check_gpu.sh                 # Linux GPU check
 +-- docker-compose.yml           # MongoDB container
 ```
 
@@ -167,8 +177,9 @@ Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
 ```
 
 The script automatically:
-- Checks GPU / offers NVIDIA driver install (`check_gpu.ps1`)
+- Checks GPU / offers NVIDIA driver install (`scripts/system/check_gpu.ps1`)
 - Installs Python 3.13 + creates `.venv` + installs all pip packages
+- Bootstraps `backend/.env` from `backend/env.local` if missing
 - Installs Node.js LTS + `npm install` for frontend
 - Installs Docker Desktop + starts MongoDB container
 - Installs Ollama + pulls `qwen2.5vl:3b`, `granite3.2-vision:2b`, and `llama3.2:1b` (~7 GB total)
@@ -182,13 +193,14 @@ The script automatically:
 ```bash
 git clone https://github.com/ark5234/Jan-Sunwai-AI.git
 cd Jan-Sunwai-AI
-chmod +x setup.sh check_gpu.sh
+chmod +x setup.sh scripts/system/check_gpu.sh
 ./setup.sh
 ```
 
 The script automatically:
-- Checks GPU via `nvidia-smi` / offers CUDA driver install (`check_gpu.sh`)
+- Checks GPU via `nvidia-smi` / offers CUDA driver install (`scripts/system/check_gpu.sh`)
 - Installs Python 3.13 + creates `.venv` + installs all pip packages
+- Bootstraps `backend/.env` from `backend/env.local` if missing
 - Installs Node.js LTS + `npm install` for frontend
 - Installs Docker + starts MongoDB container
 - Installs Ollama + pulls all three AI models (`qwen2.5vl:3b`, `granite3.2-vision:2b`, `llama3.2:1b`)
@@ -224,7 +236,7 @@ python -m venv ../.venv
 # Windows:  ..\.venv\Scripts\activate
 # Linux:    source ../.venv/bin/activate
 pip install -r requirements.txt
-cp .env.example .env   # edit JWT_SECRET_KEY at minimum
+cp env.local .env   # edit JWT_SECRET_KEY at minimum
 ```
 
 **5. Frontend**
@@ -234,6 +246,17 @@ npm install
 ```
 
 </details>
+
+---
+
+## Setup and Deployment Guides
+
+- **Local setup:** This README's **Quick Start** section (Windows/Linux/manual)
+- **NDMC production deployment:** [`docs/NDMC_DEPLOYMENT.md`](docs/NDMC_DEPLOYMENT.md)
+- **Production architecture roadmap:** [`docs/PRODUCTION_DEPLOYMENT_PLAN.md`](docs/PRODUCTION_DEPLOYMENT_PLAN.md)
+- **Load testing runbook:** [`docs/LOAD_TESTING.md`](docs/LOAD_TESTING.md)
+- **Security testing checklist:** [`docs/SECURITY_TESTING.md`](docs/SECURITY_TESTING.md)
+- **Academic reports archive:** [`docs/reports/README.md`](docs/reports/README.md)
 
 ---
 
@@ -266,12 +289,22 @@ bash scripts/run_frontend.sh
 
 Open **http://localhost:5173** in your browser.
 
+Use Vite (`npm run dev` or `scripts/run_frontend.*`) for development. Opening `frontend/index.html` directly with Live Server does not compile React JSX and triggers `Failed to load module script ... MIME type of "text/jsx"`.
+
 **Verify:**
 | URL | What it checks |
 |---|---|
 | http://localhost:8000/health | Backend + MongoDB connection |
 | http://localhost:8000/health/gpu | GPU status + loaded Ollama models |
 | http://localhost:8000/docs | Swagger UI (full API reference) |
+
+### Production Compose (NDMC-style)
+
+```bash
+docker compose -f docker-compose.prod.yml up --build -d
+```
+
+The production frontend proxies `/api/*` calls to backend, with versioned aliases available under `/api/v1/*`.
 
 ---
 
@@ -307,8 +340,8 @@ Open **http://localhost:5173** in your browser.
 
 | Method | Endpoint | Description |
 |---|---|---|
-| `POST` | `/complaints/analyze` | Submit image — classify + generate complaint (supports `language` param) |
-| `POST` | `/complaints/analyze/regenerate` | Regenerate complaint draft (with language selection) |
+| `POST` | `/analyze` | Submit image — classify + generate complaint (supports `language` param) |
+| `POST` | `/analyze/regenerate` | Regenerate complaint draft (with language selection) |
 | `GET` | `/complaints/` | List complaints (filtered by role) |
 | `GET` | `/complaints/{id}` | Get single complaint |
 | `PATCH` | `/complaints/{id}/status` | Update complaint status |
@@ -321,6 +354,8 @@ Open **http://localhost:5173** in your browser.
 | `GET` | `/health` | Backend + DB health check |
 | `GET` | `/health/gpu` | GPU / Ollama model status |
 | `GET` | `/docs` | Swagger UI |
+
+All primary routes are also exposed via versioned aliases under `/api/v1`.
 
 ---
 
@@ -388,20 +423,39 @@ Evaluated on 200 civic images (25 sampled per department) using the Vision → R
 
 ## Environment Variables
 
-Copy `backend/.env.example` to `backend/.env` and edit as needed:
+Copy `backend/env.local` to `backend/.env` and edit as needed:
 
 | Variable | Default | Description |
 |---|---|---|
+| `APP_ENV` | `development` | Runtime mode (`development` or `production`) |
+| `RATE_LIMIT_ENABLED` | `false` (dev) | Enable request rate limiting (`true` in production) |
 | `MONGODB_URL` | `mongodb://localhost:27017` | MongoDB connection string |
+| `MONGO_URL` | `mongodb://localhost:27017` | Legacy MongoDB URL alias (supported fallback) |
+| `DB_NAME` | `jan_sunwai_db` | MongoDB database name |
 | `JWT_SECRET_KEY` | *(change this)* | Secret for signing JWT tokens |
+| `JWT_ALGORITHM` | `HS256` | JWT signing algorithm |
+| `ACCESS_TOKEN_EXPIRE_MINUTES` | `1440` | Access token lifetime in minutes |
 | `VISION_MODEL` | `qwen2.5vl:3b` | Primary vision model for image narration |
-| `MID_VISION_MODEL` | `granite3.2-vision:2b` | Fallback vision model (used if primary times out) |
+| `MID_VISION_MODEL` | `granite3.2-vision:2b` | Mid-tier vision fallback if primary times out |
+| `FALLBACK_VISION_MODEL` | `granite3.2-vision:2b` | Final fallback for vision step |
 | `REASONING_MODEL` | `llama3.2:1b` | Reasoning model for ambiguous cases + complaint writer |
-| `ALLOWED_ORIGINS` | `http://localhost:5173` | CORS whitelist |
+| `OLLAMA_BASE_URL` | `http://localhost:11434` | Ollama API endpoint |
+| `ALLOWED_ORIGINS` | `http://localhost:5173,http://127.0.0.1:5173` | CORS whitelist |
 | `VISION_TIMEOUT_SECONDS` | `240` | Per-tier vision model timeout (seconds) |
-| `LLM_INLINE_TIMEOUT_SECONDS` | `15` | Timeout for synchronous LLM calls |
+| `LLM_INLINE_TIMEOUT_SECONDS` | `8` | Timeout for synchronous LLM calls |
+| `LLM_QUEUE_WORKERS` | `2` | Background LLM worker count |
 | `RULE_ENGINE_ONLY` | `false` | Set `true` to skip LLM reasoning entirely |
 | `AMBIGUITY_THRESHOLD` | `2.0` | Min rule engine score to skip the reasoning step |
+| `UNLOAD_AFTER_REASONING` | `true` | Unload reasoning model after use to free VRAM |
+| `COMPLAINT_OUTPUT_MODE` | `email` | Output format (`email` or `paragraph`) |
+| `MODEL_UNLOAD_TIMEOUT_SECONDS` | `30` | Max wait before model-unload timeout |
+| `MODEL_UNLOAD_POLL_INTERVAL_SECONDS` | `0.1` | Poll interval while waiting model unload |
+| `KEEP_REASONING_MODEL_WARM` | `false` | Keep reasoning model loaded for lower latency |
+| `SMTP_HOST` | *(empty)* | SMTP relay host for notification email |
+| `SMTP_PORT` | `587` | SMTP relay port |
+| `SMTP_FROM` | `noreply@jan-sunwai.local` | Sender email for system notifications |
+| `DEFAULT_PAGE_SIZE` | `25` | Default pagination size |
+| `MAX_PAGE_SIZE` | `100` | Max pagination size |
 
 Frontend environment variables (`frontend/.env`):
 
