@@ -1,230 +1,396 @@
-# Jan-Sunwai AI Project Report
+# Jan-Sunwai AI - Project Report
 
 Automated visual classification and routing of civic grievances using local vision-language models.
 
 Last updated: 2026-04-06
 
-## Table of Contents
+## Table of Contents (Hyperlinked)
 
-1. [1. Executive Summary](#1-executive-summary)
-2. [2. Background and Motivation](#2-background-and-motivation)
-3. [3. Problem Statement and Objectives](#3-problem-statement-and-objectives)
-4. [4. Scope and Stakeholder Model](#4-scope-and-stakeholder-model)
-5. [5. System Architecture](#5-system-architecture)
-6. [6. AI Pipeline and Decisioning](#6-ai-pipeline-and-decisioning)
-7. [7. Data and Schema Design](#7-data-and-schema-design)
-8. [8. API and Module Design](#8-api-and-module-design)
-9. [9. Security, Reliability, and Quality Engineering](#9-security-reliability-and-quality-engineering)
-10. [10. Performance and Load Engineering](#10-performance-and-load-engineering)
-11. [11. Deployment and Operations](#11-deployment-and-operations)
-12. [12. Timeline and Delivery Status](#12-timeline-and-delivery-status)
-13. [13. Outcomes, Limitations, and Future Roadmap](#13-outcomes-limitations-and-future-roadmap)
-14. [14. Conclusion](#14-conclusion)
-15. [15. Appendices](#15-appendices)
+1. [CONTENTS](#contents)
+2. [List of Figures](#list-of-figures)
+3. [List of Tables](#list-of-tables)
+4. [List of Abbreviations](#list-of-abbreviations)
+5. [List of Definitions](#list-of-definitions)
+6. [List of Screenshots](#list-of-screenshots)
+7. [1 Introduction](#1-introduction)
+8. [2 Project Management](#2-project-management)
+9. [3 System Requirement Study](#3-system-requirement-study)
+10. [4 Proposed System Requirements](#4-proposed-system-requirements)
+11. [5 System Design](#5-system-design)
+12. [6 Implementation Planning](#6-implementation-planning)
+13. [7 Testing](#7-testing)
+14. [8 Limitations and Future Scope](#8-limitations-and-future-scope)
+15. [9 Conclusion and References](#9-conclusion-and-references)
+16. [10 Appendices](#10-appendices)
+17. [11 Report Verification Procedure](#11-report-verification-procedure)
 
-## 1. Executive Summary
+## CONTENTS
 
-Jan-Sunwai AI is a multi-role civic grievance platform that converts citizen image uploads into department-routed, trackable complaints. The platform combines:
+| Chapter No. | Description | Page No. |
+| --- | --- | --- |
+| - | List of Figures | I |
+| - | List of Tables | II |
+| - | List of Abbreviations | III |
+| - | List of Definitions | IV |
+| - | List of Screenshots | V |
+| 1 | Introduction | 1 |
+| 1.1 | Project Details | 2 |
+| 1.2 | Purpose | 3 |
+| 1.3 | Scope | 4 |
+| 1.4 | Objectives | 5 |
+| 1.5 | Technology Stack Used | 6 |
+| 1.6 | Literature Review | 7 |
+| 2 | Project Management | 8 |
+| 2.1 | Feasibility Study | 9 |
+| 2.1.1 | Technical Feasibility | 10 |
+| 2.1.2 | Time Schedule Feasibility | 11 |
+| 2.1.3 | Operational Feasibility | 12 |
+| 2.1.4 | Implementation Feasibility | 13 |
+| 2.2 | Project Planning | 14 |
+| 2.2.1 | Development Approach and Justification | 15 |
+| 2.2.2 | Milestones and Deliverables | 16 |
+| 2.2.3 | Roles and Responsibilities | 17 |
+| 2.2.4 | Group Dependencies | 18 |
+| 2.3 | Project Scheduling (Gantt/PERT chart) | 19 |
+| 3 | System Requirement Study | 21 |
+| 3.1 | Existing System Overview | 22 |
+| 3.2 | Limitations of the Existing System | 23 |
+| 3.3 | User Characteristics | 24 |
+| 3.4 | Functional Requirements | 25 |
+| 3.5 | Non-Functional Requirements | 26 |
+| 3.6 | Hardware and Software Requirements | 27 |
+| 3.7 | Constraints | 28 |
+| 3.7.1 | UI Constraints | 29 |
+| 3.7.2 | Communication Interface | 30 |
+| 3.7.3 | Hardware Interface | 31 |
+| 3.7.4 | Criticality of Application | 33 |
+| 3.7.5 | Safety and Security Considerations | 34 |
+| 3.8 | Assumptions and Dependencies | 35 |
+| 4 | Proposed System Requirements | 36 |
+| 4.1 | Overview of Proposed System | 38 |
+| 4.2 | Module Descriptions | 39 |
+| 4.3 | System Features | 40 |
+| 4.4 | Advantages of Proposed System | 42 |
+| 5 | System Design | 43 |
+| 5.1 | System Architecture Design | 44 |
+| 5.2 | UML Diagrams | 46 |
+| 5.2.1 | E-R Diagram | 47 |
+| 5.2.2 | Use Case Diagram | 48 |
+| 5.2.3 | Class Diagram | 49 |
+| 5.2.4 | Sequence Diagram | 50 |
+| 5.2.5 | Activity Diagram | 51 |
+| 5.2.6 | DFD Diagram | 52 |
+| 5.2.7 | Deployment Diagram | 55 |
+| 5.3 | Database Design | 58 |
+| 5.3.1 | Table Design and Relationships | 59 |
+| 5.3.2 | Normalization | 60 |
+| 5.3.3 | Data Dictionary | 62 |
+| 5.4 | GUI Design | 63 |
+| 5.5 | Screenshots | 64 |
+| 6 | Implementation Planning | 66 |
+| 6.1 | Implementation Environment | 68 |
+| 6.2 | Tools and Technologies Used | 69 |
+| 6.3 | Coding Standards Followed | 70 |
+| 7 | Testing | 71 |
+| 7.1 | Testing Plan | 72 |
+| 7.2 | Types of Testing | 74 |
+| 7.2.1 | Unit Testing | 75 |
+| 7.2.2 | Integration Testing | 79 |
+| 7.2.3 | System Testing | 82 |
+| 7.2.4 | User Acceptance Testing (UAT) | 85 |
+| 7.3 | Testing Techniques | 87 |
+| 7.3.1 | Defect Logging | 90 |
+| 8 | Limitations and Future Scope | 91 |
+| 9 | Conclusion and References | 93 |
+| 9.1 | Conclusion | 94 |
+| 9.2 | References | 95 |
+| 10 | Appendices | 96 |
+| 11 | Report Verification Procedure | 97 |
 
-- React frontend workflows for citizen, worker, department head, and admin users.
-- FastAPI backend services with role-based access control and JWT authentication.
-- Local Ollama-based inference with a hybrid decision architecture.
-- MongoDB document persistence for complaints, users, notifications, and audit metadata.
+## List of Figures
 
-The system is built for local-first operation and supports a production-style Docker Compose deployment path.
+| Figure No. | Figure Description | Page No. |
+| --- | --- | --- |
+| Figure 1 | Overall System Context Diagram | 44 |
+| Figure 2 | Component Architecture Diagram | 45 |
+| Figure 3 | E-R Diagram | 47 |
+| Figure 4 | Use Case Diagram | 48 |
+| Figure 5 | Class Diagram | 49 |
+| Figure 6 | Sequence Diagram | 50 |
+| Figure 7 | Activity Diagram | 51 |
+| Figure 8 | DFD Diagram | 52 |
+| Figure 9 | Deployment Diagram | 55 |
+| Figure 10 | Project Gantt and PERT Views | 19 |
 
-## 2. Background and Motivation
+## List of Tables
 
-Conventional civic complaint systems are often form-heavy and require users to manually determine the correct authority, draft formal text, and supply location context. This leads to:
+| Table No. | Table Description | Page No. |
+| --- | --- | --- |
+| Table 1 | Objectives and Expected Outcomes | 5 |
+| Table 2 | Technology Stack | 6 |
+| Table 3 | Functional Requirements | 25 |
+| Table 4 | Non-Functional Requirements | 26 |
+| Table 5 | Module Mapping | 39 |
+| Table 6 | Data Dictionary Summary | 62 |
+| Table 7 | Testing Coverage Matrix | 72 |
+| Table 8 | Defect Log Snapshot | 90 |
 
-- complaint misrouting,
-- incomplete complaint descriptions,
-- inconsistent processing quality,
-- and delayed resolution cycles.
+## List of Abbreviations
 
-Jan-Sunwai AI addresses this by making image analysis the front door of complaint intake and automatically generating structured complaint artifacts required by operational teams.
-
-## 3. Problem Statement and Objectives
-
-### 3.1 Problem Statement
-
-How can a civic platform transform unstructured image submissions into reliable, department-ready grievance records while maintaining role-aware operations, local deployment control, and production readiness?
-
-### 3.2 Objectives
-
-| Objective | Target Outcome |
+| Abbreviation | Full Form |
 | --- | --- |
-| Reduce complaint filing complexity | Citizen flow centered on upload-analyze-submit |
-| Improve routing quality | Canonical department classification and authority mapping |
-| Improve operational turnaround | Worker assignment and lifecycle tracking |
-| Preserve governance visibility | Triage, analytics, status history, and notes |
-| Keep deployment practical | Local-first architecture with production compose support |
+| AI | Artificial Intelligence |
+| API | Application Programming Interface |
+| JWT | JSON Web Token |
+| LLM | Large Language Model |
+| UAT | User Acceptance Testing |
+| SLA | Service Level Agreement |
+| RBAC | Role-Based Access Control |
+| DFD | Data Flow Diagram |
 
-## 4. Scope and Stakeholder Model
+## List of Definitions
 
-### 4.1 Stakeholder Roles
-
-| Role | Primary Capabilities |
+| Term | Definition |
 | --- | --- |
-| Citizen | Analyze image, submit complaint, track status, add feedback/comments |
-| Worker | View assignments, update availability, mark complaints done |
-| Department Head | Manage department queue, update status, add notes, transfer/escalate |
-| Admin | Global oversight, worker approvals, triage decisions, bulk actions, exports, analytics |
+| Civic Complaint | Citizen-reported grievance related to public services/infrastructure |
+| Triage Queue | Admin review queue for low-confidence AI classifications |
+| Service Area | Worker-specific geographic eligibility radius for assignments |
+| Status History | Audit trail of complaint lifecycle transitions |
 
-### 4.2 Functional Scope
+## List of Screenshots
 
-- AI-assisted complaint drafting from uploaded images.
-- Complaint lifecycle from Open to Resolved/Rejected.
-- Geographic and load-aware worker assignment.
-- Notification workflows and unread state management.
-- Triage governance for low-confidence AI outcomes.
-- Analytics and public transparency feed.
+| Screenshot No. | Screenshot Description | Page No. |
+| --- | --- | --- |
+| S1 | Citizen Analyze Page | 64 |
+| S2 | Result and Draft Review Page | 64 |
+| S3 | Admin Dashboard | 64 |
+| S4 | Worker Dashboard | 64 |
+| S5 | Notifications Panel | 64 |
 
-## 5. System Architecture
+## 1 Introduction
 
-### 5.1 Context Architecture
+Jan-Sunwai AI is a full-stack civic grievance platform that converts image uploads into structured complaint workflows and routes them to the correct operational stakeholders.
+
+### 1.1 Project Details
+
+- Project Name: Jan-Sunwai AI
+- Domain: Civic technology and grievance redressal
+- Deployment Model: Local-first with production-ready containerization
+
+### 1.2 Purpose
+
+The project reduces friction in civic complaint filing by automating classification, routing metadata, and formal complaint drafting from uploaded issue images.
+
+### 1.3 Scope
+
+The system covers citizen intake, complaint lifecycle tracking, worker assignment, triage governance, and operational analytics.
+
+### 1.4 Objectives
+
+| Objective | Outcome |
+| --- | --- |
+| Simplify complaint filing | Upload-analyze-submit flow |
+| Improve routing quality | Canonical department assignment |
+| Strengthen operations | Assignment, status history, and escalation support |
+| Enable governance visibility | Dashboards, triage, exports, analytics |
+
+### 1.5 Technology Stack Used
+
+| Layer | Stack |
+| --- | --- |
+| Frontend | React + Vite |
+| Backend | FastAPI + Python |
+| Database | MongoDB |
+| AI Runtime | Ollama (vision + reasoning) |
+| Deployment | Docker Compose |
+
+### 1.6 Literature Review
+
+The system design aligns with practical trends in local inference deployment, deterministic-plus-LLM pipelines, and role-oriented public service workflow automation.
+
+## 2 Project Management
+
+### 2.1 Feasibility Study
+
+#### 2.1.1 Technical Feasibility
+
+The selected stack is already integrated and operational in the repository with validated route mappings and role controls.
+
+#### 2.1.2 Time Schedule Feasibility
+
+The project plan is organized by weekly milestones with explicit status tracking and completion markers.
+
+#### 2.1.3 Operational Feasibility
+
+The role model and dashboards align with real operational personas (citizen, worker, dept head, admin).
+
+#### 2.1.4 Implementation Feasibility
+
+The solution uses widely adopted frameworks and reproducible setup scripts for Windows/Linux and containerized deployment.
+
+### 2.2 Project Planning
+
+#### 2.2.1 Development Approach and Justification
+
+An iterative delivery model was used, allowing security and operational hardening to be added progressively without blocking core functionality.
+
+#### 2.2.2 Milestones and Deliverables
+
+Milestones include core backend/frontend, AI integration, assignment and triage, production hardening, testing sprint, and handover pack.
+
+#### 2.2.3 Roles and Responsibilities
+
+- Product/feature implementation: backend and frontend engineering.
+- AI pipeline and prompt logic: classifier and generation services.
+- Operational governance: triage, analytics, and security controls.
+
+#### 2.2.4 Group Dependencies
+
+- Backend depends on MongoDB and Ollama availability.
+- Frontend depends on backend route availability and auth flow.
+- Production deployment depends on compose, env config, and host runtime access.
+
+### 2.3 Project Scheduling (Gantt/PERT chart)
+
+```mermaid
+gantt
+    title Project Schedule Overview
+    dateFormat YYYY-MM-DD
+    axisFormat %d %b
+
+    section Foundation
+    Core setup and baseline               :done, a1, 2026-01-28, 2026-02-21
+    section Features
+    AI and role workflows                 :done, a2, 2026-02-22, 2026-03-31
+    section Hardening
+    Security and production prep          :active, a3, 2026-04-01, 2026-04-30
+    section Closure
+    UAT and final submission              :a4, 2026-05-01, 2026-05-27
+```
 
 ```mermaid
 flowchart LR
-    Citizen[Citizen User] --> FE[Frontend Application]
-    Worker[Field Worker] --> FE
-    DeptHead[Department Head] --> FE
-    Admin[Administrator] --> FE
+    P1[Plan] --> P2[Build]
+    P2 --> P3[Integrate]
+    P3 --> P4[Test]
+    P4 --> P5[Handover]
+```
 
-    FE --> API[FastAPI Backend]
+## 3 System Requirement Study
+
+### 3.1 Existing System Overview
+
+Conventional grievance systems rely on manual categorization and text-heavy complaint authoring, producing routing delays and inconsistent submissions.
+
+### 3.2 Limitations of the Existing System
+
+- Manual authority selection.
+- Inconsistent complaint quality.
+- Limited operational traceability.
+
+### 3.3 User Characteristics
+
+| User Type | Expected Usage |
+| --- | --- |
+| Citizen | Report and track complaints |
+| Worker | Resolve assigned work items |
+| Dept Head | Manage queue and status transitions |
+| Admin | Approvals, triage, analytics, governance |
+
+### 3.4 Functional Requirements
+
+- Image upload and AI-assisted analysis.
+- Complaint creation and lifecycle state changes.
+- Worker assignment and triage review workflows.
+- Notifications, exports, and analytics.
+
+### 3.5 Non-Functional Requirements
+
+- Security: RBAC, JWT, sanitization, upload checks.
+- Reliability: graceful fallback and readiness probes.
+- Performance: acceptable response behavior under load.
+
+### 3.6 Hardware and Software Requirements
+
+- GPU: 4 GB minimum for sequential model execution.
+- RAM: 12 GB minimum, 16 GB recommended.
+- OS: Windows/Linux supported.
+- Software: Python, Node.js, Docker, MongoDB, Ollama.
+
+### 3.7 Constraints
+
+#### 3.7.1 UI Constraints
+
+Role-gated routes and responsive layouts must remain consistent across dashboard views.
+
+#### 3.7.2 Communication Interface
+
+REST endpoints over HTTP(S), JWT-based auth, and proxied API routing in production.
+
+#### 3.7.3 Hardware Interface
+
+Inference depends on host resources and model runtime availability.
+
+#### 3.7.4 Criticality of Application
+
+The platform is governance-sensitive and requires accurate status tracking and auditability.
+
+#### 3.7.5 Safety and Security Considerations
+
+File safety checks, input sanitization, and role authorization are mandatory controls.
+
+### 3.8 Assumptions and Dependencies
+
+- MongoDB and Ollama are available.
+- Environment variables are configured correctly.
+- Production proxying and CORS are aligned with deployment domains.
+
+## 4 Proposed System Requirements
+
+### 4.1 Overview of Proposed System
+
+A hybrid AI + deterministic routing platform with role-specific workflows and operational governance features.
+
+### 4.2 Module Descriptions
+
+- Auth and user management module.
+- Analyze and complaint module.
+- Worker and assignment module.
+- Triage and notification module.
+- Analytics and public transparency module.
+
+### 4.3 System Features
+
+- AI-assisted draft generation.
+- Auto assignment with service-area filtering.
+- Status history, notes, comments, and feedback.
+- CSV exports and analytics.
+
+### 4.4 Advantages of Proposed System
+
+- Reduced user effort in complaint filing.
+- Better authority routing quality.
+- Stronger operational visibility and lifecycle control.
+
+## 5 System Design
+
+### 5.1 System Architecture Design
+
+```mermaid
+flowchart LR
+    Citizen[Citizen] --> FE[Frontend]
+    Worker[Worker] --> FE
+    DeptHead[Dept Head] --> FE
+    Admin[Admin] --> FE
+    FE --> API[FastAPI]
     API --> DB[(MongoDB)]
-    API --> UP[(uploads/)]
-    API --> OLLAMA[Ollama Runtime]
-    API --> NOTIFY[Notification and Email Services]
+    API --> OLLAMA[Ollama]
+    API --> UP[(uploads)]
 ```
 
-### 5.2 Logical Component Architecture
+### 5.2 UML Diagrams
 
-```mermaid
-flowchart TB
-    subgraph Frontend
-        F1[Auth and Route Guard Layer]
-        F2[Analyze and Result Flows]
-        F3[Role Dashboards]
-        F4[Notification UI]
-    end
-
-    subgraph Backend
-        B1[users router]
-        B2[complaints router]
-        B3[workers router]
-        B4[triage router]
-        B5[notifications router]
-        B6[analytics and public routers]
-        B7[health router]
-        S1[assignment service]
-        S2[llm queue service]
-        S3[escalation service]
-        S4[storage and sanitization services]
-    end
-
-    F1 --> B1
-    F2 --> B2
-    F3 --> B3
-    F3 --> B4
-    F3 --> B6
-    F4 --> B5
-
-    B2 --> S1
-    B2 --> S2
-    B2 --> S4
-    B2 --> DB[(MongoDB)]
-    B3 --> DB
-    B4 --> DB
-    B5 --> DB
-    B6 --> DB
-    B7 --> DB
-    S2 --> OLLAMA[Ollama]
-```
-
-### 5.3 Complaint Lifecycle Sequence
-
-```mermaid
-sequenceDiagram
-    actor Citizen
-    participant FE as Frontend
-    participant API as FastAPI
-    participant AI as Classifier and Generator
-    participant DB as MongoDB
-    participant AS as Assignment Service
-
-    Citizen->>FE: Upload image and choose language
-    FE->>API: POST /analyze
-    API->>AI: classify and draft
-    AI-->>API: department, confidence, draft, metadata
-    API-->>FE: analysis payload
-
-    Citizen->>FE: Review and submit complaint
-    FE->>API: POST /complaints
-    API->>DB: insert complaint with status Open
-    API->>AS: auto_assign()
-
-    alt worker eligible
-        AS->>DB: assign worker and set In Progress
-    else no worker eligible
-        AS->>DB: keep complaint Open
-    end
-
-    API-->>FE: complaint response
-```
-
-### 5.4 Worker Assignment Decision Flow
-
-```mermaid
-flowchart TD
-    NewComplaint[New complaint created] --> DeptFilter[Filter workers by department]
-    DeptFilter --> ApprovalFilter[Keep only approved workers]
-    ApprovalFilter --> StatusFilter[Exclude offline workers]
-    StatusFilter --> GeoFilter[Apply service area match if location available]
-    GeoFilter --> LoadSelect[Pick lowest active workload]
-    LoadSelect --> Assign[Assign worker and update status]
-```
-
-## 6. AI Pipeline and Decisioning
-
-### 6.1 Hybrid Pipeline
-
-```mermaid
-flowchart TD
-    A[Image upload] --> B[Store and validate upload]
-    B --> C[Vision model cascade]
-    C --> D[Rule engine scoring]
-    D --> E{Ambiguous score?}
-    E -->|No| F[Department selected]
-    E -->|Yes| G[Reasoning model step]
-    G --> F
-    F --> H[Queue draft generation]
-    H --> I[Generated complaint text]
-```
-
-### 6.2 Model and Logic Responsibilities
-
-| Stage | Component | Responsibility |
-| --- | --- | --- |
-| Vision | `VISION_MODEL` / cascade | Extract scene-level issue context |
-| Deterministic classification | Rule engine | Fast category scoring and confidence gating |
-| Ambiguous fallback | `REASONING_MODEL` | Resolve low-confidence edge cases |
-| Draft generation | queue + generator | Produce formal complaint text in selected language |
-
-### 6.3 Failure and Degradation Path
-
-```mermaid
-flowchart TD
-    Req[Analyze request] --> TryVision[Try vision cascade]
-    TryVision --> VisionOK{Vision success?}
-    VisionOK -->|Yes| Continue[Proceed with classification]
-    VisionOK -->|No| Fail503[Return structured 503 fallback]
-    Continue --> DraftStatus[Return completed, queued, failed, or skipped draft status]
-```
-
-## 7. Data and Schema Design
-
-### 7.1 Entity Relationships
+#### 5.2.1 E-R Diagram
 
 ```mermaid
 erDiagram
@@ -232,268 +398,206 @@ erDiagram
     USER ||--o{ COMPLAINT : assigned_to
     USER ||--o{ NOTIFICATION : receives
     COMPLAINT ||--o{ NOTIFICATION : triggers
-
-    USER {
-        string _id
-        string username
-        string role
-        string department
-        bool is_approved
-        string worker_status
-        array active_complaint_ids
-        object service_area
-    }
-
-    COMPLAINT {
-        string _id
-        string user_id
-        string assigned_to
-        string authority_id
-        string department
-        string status
-        object ai_metadata
-        object location
-        array status_history
-        array comments
-        array dept_notes
-        object feedback
-        bool escalated
-    }
-
-    NOTIFICATION {
-        string _id
-        string user_id
-        string complaint_id
-        string type
-        bool is_read
-    }
 ```
 
-### 7.2 Complaint State Model
-
-```mermaid
-stateDiagram-v2
-    [*] --> Open
-    Open --> In_Progress
-    Open --> Rejected
-    In_Progress --> Resolved
-    In_Progress --> Rejected
-```
-
-### 7.3 Index and Access Strategy
-
-| Collection | Key Index Patterns |
-| --- | --- |
-| `users` | unique username, unique email |
-| `complaints` | user+created_at, status+created_at, department+created_at |
-| `notifications` | user+created_at, user+is_read |
-| `password_resets` | token hash uniqueness, TTL expiry, user+used state |
-
-## 8. API and Module Design
-
-### 8.1 Domain Route Map
+#### 5.2.2 Use Case Diagram
 
 ```mermaid
 flowchart LR
-    Client[Frontend or API consumer] --> Users[Users]
-    Client --> Analyze[Analyze]
-    Client --> Complaints[Complaints]
-    Client --> Workers[Workers]
-    Client --> Notifications[Notifications]
-    Client --> Triage[Triage]
-    Client --> Analytics[Analytics and Public]
-    Client --> Health[Health]
-
-    Users --> U1[Register, login, profile, password reset]
-    Analyze --> A1[Analyze and regenerate]
-    Complaints --> C1[CRUD, status, transfer, escalate, notes, comments]
-    Workers --> W1[Self-service and admin assignment actions]
-    Notifications --> N1[List, unread count, mark read]
-    Triage --> T1[Queue and review decisions]
-    Analytics --> X1[Overview, heatmap, public complaints]
-    Health --> H1[Live, ready, models, gpu]
+    Citizen --> U1[Submit complaint]
+    Citizen --> U2[Track status]
+    Worker --> U3[Resolve assigned complaint]
+    DeptHead --> U4[Update status and notes]
+    Admin --> U5[Approve workers and triage queue]
 ```
 
-### 8.2 Endpoint Surface Summary
+#### 5.2.3 Class Diagram
 
-| Domain | Representative Endpoints |
-| --- | --- |
-| Users | `/users/register`, `/users/login`, `/users/me` |
-| Analyze | `/analyze`, `/analyze/regenerate`, `/complaints/generation/{job_id}` |
-| Complaints | `/complaints`, `/complaints/{complaint_id}/status`, bulk endpoints |
-| Workers | `/workers/me`, `/workers/{worker_id}/assign/{complaint_id}` |
-| Notifications | `/notifications`, `/notifications/unread-count` |
-| Triage | `/triage/review-queue`, `/triage/review-queue/decision` |
-| Analytics/Public | `/analytics/overview`, `/analytics/heatmap`, `/public/complaints` |
-| Health | `/health/live`, `/health/ready`, `/health/models`, `/health/gpu` |
+```mermaid
+classDiagram
+    class User {
+      id
+      role
+      department
+    }
+    class Complaint {
+      id
+      status
+      department
+    }
+    class Notification {
+      id
+      is_read
+    }
+    User "1" --> "many" Complaint : files
+    User "1" --> "many" Notification : receives
+```
 
-### 8.3 API Versioning
+#### 5.2.4 Sequence Diagram
 
-All major routers are mirrored under `/api/v1` aliases for stable integration contracts.
+```mermaid
+sequenceDiagram
+    actor Citizen
+    participant FE as Frontend
+    participant API as Backend
+    participant DB as MongoDB
+    Citizen->>FE: Upload and submit
+    FE->>API: analyze and create complaint
+    API->>DB: persist complaint
+    API-->>FE: return created complaint
+```
 
-## 9. Security, Reliability, and Quality Engineering
-
-### 9.1 Security Control Flow
+#### 5.2.5 Activity Diagram
 
 ```mermaid
 flowchart TD
-    Req[Incoming request] --> Auth[JWT auth validation]
-    Auth --> Role[Role authorization]
-    Role --> Validate[Request schema validation]
-    Validate --> Sanitize[Text sanitization]
-    Sanitize --> UploadGuard[Upload checks: extension, size, magic]
-    UploadGuard --> RateLimit[Rate limiting if enabled]
-    RateLimit --> Logic[Business logic]
-    Logic --> Headers[Security headers and response]
+    Start --> Upload
+    Upload --> Analyze
+    Analyze --> Review
+    Review --> Submit
+    Submit --> Assign
+    Assign --> Track
+    Track --> End
 ```
 
-### 9.2 Security Control Matrix
-
-| Area | Current Control |
-| --- | --- |
-| Authentication | OAuth2 password flow with JWT |
-| Authorization | Role-gated endpoint dependencies |
-| Secrets and token policy | Configurable JWT secret and expiry |
-| Upload safety | Content checks and max size controls |
-| Input safety | Sanitization for free-text fields |
-| Browser security | CORS allowlist and security headers |
-| Abuse mitigation | Optional slowapi-based rate limiting |
-
-### 9.3 Reliability and Test Strategy
+#### 5.2.6 DFD Diagram
 
 ```mermaid
 flowchart LR
-    Unit[Unit tests] --> Integration[Integration tests]
-    Integration --> SecurityResilience[Security and resilience tests]
-    SecurityResilience --> Load[Locust load tests]
-    Load --> Regression[Release regression checks]
+    User --> FE[Frontend]
+    FE --> API[API Layer]
+    API --> DB[(Complaint Data)]
+    API --> AI[Inference Engine]
+    API --> N[Notification Data]
 ```
 
-| Test Asset | Purpose |
+#### 5.2.7 Deployment Diagram
+
+```mermaid
+flowchart LR
+    Browser --> Nginx[Frontend Nginx]
+    Nginx --> API[FastAPI Container]
+    API --> DB[(MongoDB Container)]
+    API --> Ollama[Host Runtime]
+```
+
+### 5.3 Database Design
+
+#### 5.3.1 Table Design and Relationships
+
+Document model centers on users, complaints, notifications, and reset tokens with indexed lookup paths.
+
+#### 5.3.2 Normalization
+
+Controlled denormalization is used for operational speed while preserving clear ownership boundaries.
+
+#### 5.3.3 Data Dictionary
+
+| Field | Description |
 | --- | --- |
-| `test_schemas.py` | Schema validation correctness |
-| `test_api_integration.py` | Endpoint-level role and response checks |
-| `test_resilience_security.py` | Failure and security behavior checks |
-| `test_notification_chain.py` | Notification workflow correctness |
-| `locustfile.py` | Traffic profile and degradation characterization |
+| `complaint.status` | Lifecycle state |
+| `complaint.department` | Canonical routing label |
+| `complaint.ai_metadata` | AI decision metadata |
+| `user.role` | Access-control role |
 
-## 10. Performance and Load Engineering
+### 5.4 GUI Design
 
-### 10.1 Load Scenario Mix
+Role-specific dashboard patterns and analyze-result-submit flow with map-assisted location capture.
 
-| Endpoint | Typical Locust Weight | Expected Behavior |
+### 5.5 Screenshots
+
+Screenshots are cataloged in the report artifact pack and linked in documentation assets.
+
+## 6 Implementation Planning
+
+### 6.1 Implementation Environment
+
+- Local development with Python virtual environment and Node workspace.
+- Production-style stack via Docker Compose.
+
+### 6.2 Tools and Technologies Used
+
+FastAPI, React, MongoDB, Ollama, Docker, pytest, locust, and markdown-based documentation tooling.
+
+### 6.3 Coding Standards Followed
+
+- Structured API route organization.
+- Validation and sanitization-first request handling.
+- Role-gated authorization patterns and explicit error semantics.
+
+## 7 Testing
+
+### 7.1 Testing Plan
+
+| Layer | Method | Target |
 | --- | --- | --- |
-| `GET /public/complaints` | High | Stable read performance |
-| `GET /health/live` | Medium | Fast heartbeat response |
-| `GET /notifications/unread-count` | Medium | Token-scoped response correctness |
-| `POST /analyze` | Lower, high-cost | Controlled degradation under pressure |
+| Unit | pytest | schema and utility correctness |
+| Integration | API tests | role and endpoint behavior |
+| Resilience/Security | focused suites | degradation and control validation |
+| Load | locust | throughput and latency profile |
 
-### 10.2 Degradation Handling
+### 7.2 Types of Testing
 
-```mermaid
-flowchart TD
-    Run[Load test run] --> AnalyzeErrors{Analyze 429 or 503 increased?}
-    AnalyzeErrors -->|Yes| Capacity[Investigate model availability and rate limits]
-    AnalyzeErrors -->|No| Latency{P95 latency high?}
-    Latency -->|Yes| BackendTune[Investigate backend or DB bottlenecks]
-    Latency -->|No| Stable[Profile accepted as stable]
-```
+#### 7.2.1 Unit Testing
 
-## 11. Deployment and Operations
+Validation of schemas, helper utilities, and isolated logic units.
 
-### 11.1 Local Deployment Topology
+#### 7.2.2 Integration Testing
 
-```mermaid
-flowchart LR
-    Browser[Browser] --> Frontend[Vite frontend]
-    Frontend --> Backend[FastAPI backend]
-    Backend --> Mongo[(MongoDB)]
-    Backend --> Ollama[Local Ollama runtime]
-```
+Role-aware endpoint checks and versioned API path validation.
 
-### 11.2 Production-Style Compose Topology
+#### 7.2.3 System Testing
 
-```mermaid
-flowchart LR
-    User[Citizen or officer browser] --> Nginx[Frontend Nginx container]
-    Nginx -->|/api proxy| API[FastAPI container]
-    API --> DB[(MongoDB container)]
-    API --> Ollama[Host Ollama runtime]
-```
+End-to-end flow testing from analyze to complaint lifecycle updates.
 
-### 11.3 Operational Runbooks
+#### 7.2.4 User Acceptance Testing (UAT)
 
-- `docs/NDMC_DEPLOYMENT.md`
-- `docs/LOAD_TESTING.md`
-- `docs/SECURITY_TESTING.md`
-- `docs/PRODUCTION_DEPLOYMENT_PLAN.md`
+Persona-driven walkthroughs for citizen/admin workflows and operational checks.
 
-## 12. Timeline and Delivery Status
+### 7.3 Testing Techniques
 
-The complete daily planning and delivery timeline is maintained in:
+- Positive and negative case matrices.
+- Failure injection for dependency outage behavior.
+- Regression checks after feature integration.
 
-- `docs/reports/PROJECT_TIMELINE.md`
+#### 7.3.1 Defect Logging
 
-That report includes:
+| Defect ID | Description | Status |
+| --- | --- | --- |
+| DEF-01 | Analyze fallback response consistency | Partial |
+| DEF-02 | Notification chain full live validation | Partial |
+| DEF-03 | Bundle optimization benchmark evidence | Partial |
 
-- full week-by-week delivery records,
-- dual status snapshots (24 Mar and 06 Apr),
-- master and detailed Gantt views,
-- and gate dependency mapping.
+## 8 Limitations and Future Scope
 
-## 13. Outcomes, Limitations, and Future Roadmap
+Current limitations include in-memory queue durability, filesystem-bound upload storage, and host-runtime dependency for inference. Future scope includes durable queueing, dedicated inference workers, managed storage, and stronger production observability.
 
-### 13.1 Outcomes
+## 9 Conclusion and References
 
-- Full grievance lifecycle implemented across citizen, worker, department head, and admin roles.
-- AI-assisted classification and draft generation integrated into operational complaint workflows.
-- Worker assignment and triage governance delivered.
-- Production-style deployment and operational documentation established.
+### 9.1 Conclusion
 
-### 13.2 Current Limitations
+Jan-Sunwai AI delivers a practical civic workflow platform with strong role governance, AI-assisted intake, and production-focused operational planning.
 
-| Limitation | Operational Impact |
-| --- | --- |
-| In-memory queue for generation | Queue state is not durable across backend restart |
-| Local filesystem upload storage | Needs object storage for larger deployments |
-| Ollama host dependency | Availability tied to local/host inference runtime |
-
-### 13.3 Roadmap Diagram
-
-```mermaid
-flowchart LR
-    R1[Durable queue] --> R2[Dedicated inference workers]
-    R2 --> R3[Object storage for media]
-    R3 --> R4[Managed or replicated MongoDB]
-    R4 --> R5[Horizontal API scaling]
-    R5 --> R6[City-scale observability and SLO governance]
-```
-
-## 14. Conclusion
-
-Jan-Sunwai AI demonstrates a practical civic technology pattern: image-first intake, deterministic-plus-LLM decisioning, role-governed operations, and deployment paths that can evolve from local operation to structured production environments. The current implementation is operationally meaningful and extensible for larger institutional rollout.
-
-## 15. Appendices
-
-### 15.1 Canonical Department Taxonomy
-
-1. Health Department
-2. Civil Department
-3. Horticulture
-4. Electrical Department
-5. IT Department
-6. Commercial
-7. Enforcement
-8. VBD Department
-9. EBR Department
-10. Fire Department
-11. Uncategorized
-
-### 15.2 Key Implementation References
+### 9.2 References
 
 - `README.md`
 - `docs/API_REFERENCE.md`
-- `docs/DEPARTMENT_HIERARCHY.md`
+- `docs/NDMC_DEPLOYMENT.md`
+- `docs/LOAD_TESTING.md`
+- `docs/SECURITY_TESTING.md`
+- `docs/reports/PROJECT_TIMELINE.md`
 - `docs/reports/SYSTEM_ARCHITECTURE.md`
 - `docs/reports/SCHEMA_DESIGN.md`
-- `docs/reports/PROJECT_TIMELINE.md`
+
+## 10 Appendices
+
+- Appendix A: Canonical department taxonomy.
+- Appendix B: Environment variable matrix.
+- Appendix C: Operational runbook index.
+
+## 11 Report Verification Procedure
+
+1. Validate all route groups against backend routers.
+2. Confirm timeline entries against code and docs commits.
+3. Verify Mermaid diagrams render correctly in GitHub markdown view.
+4. Run smoke diagnostics for markdown quality and consistency.
