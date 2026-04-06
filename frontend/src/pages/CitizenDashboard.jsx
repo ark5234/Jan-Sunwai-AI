@@ -5,6 +5,7 @@ import { FileText, MapPin, Calendar, AlertCircle, PlusCircle, Clock, CheckCircle
 import axios from 'axios';
 import SLABadge from '../components/SLABadge';
 import ComplaintComments from '../components/ComplaintComments';
+import StatusTimeline from '../components/StatusTimeline';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
@@ -305,6 +306,7 @@ const CitizenDashboard = () => {
                           )}
                         </div>
                       )}
+                      <StatusTimeline items={complaint.status_history || []} />
                       <ComplaintComments complaintId={complaint._id} currentRole="citizen" />
                     </div>
                     {complaint.image_url && (

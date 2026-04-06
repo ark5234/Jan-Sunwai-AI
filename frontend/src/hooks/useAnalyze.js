@@ -1,17 +1,35 @@
 import { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import imageCompression from 'browser-image-compression';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
 export default function useAnalyze() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [uploadMetrics, setUploadMetrics] = useState(null);
   const navigate = useNavigate();
 
-  const analyzeImage = async (file, username = "Concerned Citizen", language = "en") => {
+  const getImageDimensions = (imageFile) =>
+    new Promise((resolve) => {
+      const objectUrl = URL.createObjectURL(imageFile);
+      const img = new Image();
+      img.onload = () => {
+        resolve({ width: img.naturalWidth, height: img.naturalHeight });
+        URL.revokeObjectURL(objectUrl);
+      };
+      img.onerror = () => {
+        resolve({ width: null, height: null });
+        URL.revokeObjectURL(objectUrl);
+      };
+      img.src = objectUrl;
+    });
+
+  const analyzeImage = async (file, _username = "Concerned Citizen", language = "en") => {
     setLoading(true);
     setError(null);
+    setUploadMetrics(null);
 
     // Get Token
     const storedUser = localStorage.getItem('jan_sunwai_user');
@@ -31,8 +49,30 @@ export default function useAnalyze() {
         return;
     }
 
+    let uploadFile = file;
+    try {
+      // Compress to reduce upload time and backend load.
+      uploadFile = await imageCompression(file, {
+        maxSizeMB: 1,
+        maxWidthOrHeight: 1920,
+        useWebWorker: true,
+        initialQuality: 0.85,
+      });
+    } catch (compressionError) {
+      console.warn('Image compression failed, using original file:', compressionError);
+      uploadFile = file;
+    }
+
+    const dimensions = await getImageDimensions(uploadFile);
+    setUploadMetrics({
+      originalBytes: file.size,
+      compressedBytes: uploadFile.size,
+      width: dimensions.width,
+      height: dimensions.height,
+    });
+
     const formData = new FormData();
-    formData.append('file', file);
+    formData.append('file', uploadFile);
     formData.append('language', language);
     // Username is extracted from Token in backend now
     
@@ -53,6 +93,8 @@ export default function useAnalyze() {
             setError("Session expired. Please log out and log back in.");
             // Clear invalid session
             localStorage.removeItem('jan_sunwai_user');
+        } else if (err.response?.status === 503) {
+          setError(err.response?.data?.message || "AI analysis unavailable — please try again in a few minutes.");
         } else {
             setError(err.response?.data?.detail || "Failed to analyze image. Please try again.");
         }
@@ -61,5 +103,5 @@ export default function useAnalyze() {
     }
   };
 
-  return { analyzeImage, loading, error };
+  return { analyzeImage, loading, error, uploadMetrics };
 }

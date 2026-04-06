@@ -19,8 +19,15 @@ const LANGUAGES = [
 export default function Analyze() {
   const [selectedImage, setSelectedImage] = useState(null);
   const [language, setLanguage] = useState('en');
-  const { analyzeImage, loading, error } = useAnalyze();
+  const { analyzeImage, loading, error, uploadMetrics } = useAnalyze();
   const { user } = useAuth();
+
+  const formatSize = (bytes) => {
+    if (typeof bytes !== 'number' || Number.isNaN(bytes)) return '—';
+    if (bytes < 1024) return `${bytes} B`;
+    if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+    return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
+  };
 
   const handleAnalysis = async () => {
     if (!selectedImage) return;
@@ -78,7 +85,7 @@ export default function Analyze() {
               <select
                 value={language}
                 onChange={e => setLanguage(e.target.value)}
-                className="text-xs border border-gray-200 rounded-md px-2 py-1.5 focus:outline-none focus:ring-1 focus:ring-blue-400"
+                className="text-xs border border-gray-200 rounded-md px-2 py-2.5 sm:py-1.5 focus:outline-none focus:ring-1 focus:ring-blue-400"
               >
                 {LANGUAGES.map(l => (
                   <option key={l.code} value={l.code}>{l.label}</option>
@@ -108,6 +115,17 @@ export default function Analyze() {
               )}
             </button>
           </div>
+
+          {uploadMetrics && (
+            <div className="mt-4 rounded-md border border-slate-200 bg-slate-50 px-3 py-2.5 text-xs text-slate-600">
+              <div className="font-semibold text-slate-700 mb-1">Upload payload summary</div>
+              <div>
+                Original: <span className="font-medium">{formatSize(uploadMetrics.originalBytes)}</span> ·
+                Sent: <span className="font-medium"> {formatSize(uploadMetrics.compressedBytes)}</span> ·
+                Resolution: <span className="font-medium"> {uploadMetrics.width || '—'} x {uploadMetrics.height || '—'}</span>
+              </div>
+            </div>
+          )}
         </div>
         
         {/* Detectable Issues */}

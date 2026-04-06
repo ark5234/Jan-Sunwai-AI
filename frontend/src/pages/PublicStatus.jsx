@@ -95,23 +95,23 @@ export default function PublicStatus() {
       </div>
 
       {/* Filters */}
-      <div className="flex flex-wrap gap-3 items-center">
-        <div className="relative flex-1 min-w-[200px]">
+      <div className="flex flex-wrap gap-3 items-stretch sm:items-center">
+        <div className="relative flex-1 min-w-40">
           <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
           <input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search department or ID…"
-            className="w-full pl-8 pr-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+            className="w-full pl-8 pr-3 py-3 sm:py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
           />
         </div>
 
-        <div className="flex items-center gap-1.5 text-sm">
+        <div className="flex items-center gap-1.5 text-sm w-full sm:w-auto">
           <Filter size={13} className="text-slate-400" />
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-blue-400"
+            className="border border-slate-200 rounded-lg px-3 py-3 sm:py-2 text-sm focus:outline-none focus:ring-1 focus:ring-blue-400 flex-1 sm:flex-none"
           >
             {["All", "Open", "In Progress", "Resolved", "Rejected"].map((s) => (
               <option key={s}>{s}</option>
@@ -121,7 +121,7 @@ export default function PublicStatus() {
           <select
             value={deptFilter}
             onChange={(e) => setDeptFilter(e.target.value)}
-            className="border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-blue-400 max-w-[200px]"
+            className="border border-slate-200 rounded-lg px-3 py-3 sm:py-2 text-sm focus:outline-none focus:ring-1 focus:ring-blue-400 flex-1 sm:flex-none sm:max-w-50"
           >
             {departments.map((d) => (
               <option key={d}>{d}</option>
@@ -129,7 +129,7 @@ export default function PublicStatus() {
           </select>
         </div>
 
-        <span className="text-xs text-slate-400 ml-auto">
+        <span className="text-xs text-slate-400 sm:ml-auto">
           {filtered.length} grievance{filtered.length !== 1 ? "s" : ""}
         </span>
       </div>

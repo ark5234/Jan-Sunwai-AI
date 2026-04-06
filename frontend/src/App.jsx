@@ -1,24 +1,25 @@
-import React from 'react';
+import React, { Suspense, lazy } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import Navbar from './layouts/Navbar';
 import Home from './pages/Home';
-import Analyze from './pages/Analyze';
-import Result from './pages/Result';
 import Register from './pages/Register';
 import Login from './pages/Login';
-import CitizenDashboard from './pages/CitizenDashboard';
-import DeptHeadDashboard from './pages/DeptHeadDashboard';
-import AdminDashboard from './pages/AdminDashboard';
-import TriageReview from './pages/TriageReview';
-import Profile from './pages/Profile';
-import Notifications from './pages/Notifications';
-import AnalyticsDashboard from './pages/AnalyticsDashboard';
-import ComplaintsMap from './pages/ComplaintsMap';
-import PublicStatus from './pages/PublicStatus';
-import WorkerDashboard from './pages/WorkerDashboard';
-import WorkerRegister from './pages/WorkerRegister';
-import GrievanceHeatmap from './pages/GrievanceHeatmap';
+
+const Analyze = lazy(() => import('./pages/Analyze'));
+const Result = lazy(() => import('./pages/Result'));
+const CitizenDashboard = lazy(() => import('./pages/CitizenDashboard'));
+const DeptHeadDashboard = lazy(() => import('./pages/DeptHeadDashboard'));
+const AdminDashboard = lazy(() => import('./pages/AdminDashboard'));
+const TriageReview = lazy(() => import('./pages/TriageReview'));
+const Profile = lazy(() => import('./pages/Profile'));
+const Notifications = lazy(() => import('./pages/Notifications'));
+const AnalyticsDashboard = lazy(() => import('./pages/AnalyticsDashboard'));
+const ComplaintsMap = lazy(() => import('./pages/ComplaintsMap'));
+const PublicStatus = lazy(() => import('./pages/PublicStatus'));
+const WorkerDashboard = lazy(() => import('./pages/WorkerDashboard'));
+const WorkerRegister = lazy(() => import('./pages/WorkerRegister'));
+const GrievanceHeatmap = lazy(() => import('./pages/GrievanceHeatmap'));
 
 // Protected Route Component
 function ProtectedRoute({ children, allowedRoles }) {
@@ -72,6 +73,13 @@ function App() {
           <div className="min-h-screen bg-gray-50 font-sans">
           <Navbar />
           <main>
+            <Suspense
+              fallback={
+                <div className="min-h-[60vh] flex items-center justify-center">
+                  <div className="h-10 w-10 animate-spin rounded-full border-b-2 border-primary" />
+                </div>
+              }
+            >
             <Routes>
               <Route path="/" element={<GuestRoute><Home /></GuestRoute>} />
               <Route path="/register" element={<GuestRoute><Register /></GuestRoute>} />
@@ -171,6 +179,7 @@ function App() {
                 }
               />
             </Routes>
+            </Suspense>
           </main>
         </div>
       </Router>

@@ -14,37 +14,85 @@ export default function Profile() {
   const [complaints, setComplaints] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [editMode, setEditMode] = useState(false);
+  const [savingProfile, setSavingProfile] = useState(false);
+  const [profileMessage, setProfileMessage] = useState(null);
+  const [profileForm, setProfileForm] = useState({
+    full_name: '',
+    phone_number: '',
+  });
+
+  const fetchData = async () => {
+    if (!user?.access_token) return;
+    try {
+      setLoading(true);
+      const headers = { Authorization: `Bearer ${user.access_token}` };
+
+      const [profileRes, complaintsRes] = await Promise.all([
+        fetch(`${API}/users/me`, { headers }),
+        fetch(`${API}/complaints`, { headers }),
+      ]);
+
+      if (profileRes.ok) {
+        setProfile(await profileRes.json());
+      } else {
+        setError('Failed to load profile data');
+      }
+
+      if (complaintsRes.ok) {
+        setComplaints(await complaintsRes.json());
+      }
+    } catch (err) {
+      console.error('Profile fetch error:', err);
+      setError('Unable to connect to server');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    async function fetchData() {
-      if (!user?.access_token) return;
-      try {
-        setLoading(true);
-        const headers = { Authorization: `Bearer ${user.access_token}` };
-
-        const [profileRes, complaintsRes] = await Promise.all([
-          fetch(`${API}/users/me`, { headers }),
-          fetch(`${API}/complaints`, { headers }),
-        ]);
-
-        if (profileRes.ok) {
-          setProfile(await profileRes.json());
-        } else {
-          setError('Failed to load profile data');
-        }
-
-        if (complaintsRes.ok) {
-          setComplaints(await complaintsRes.json());
-        }
-      } catch (err) {
-        console.error('Profile fetch error:', err);
-        setError('Unable to connect to server');
-      } finally {
-        setLoading(false);
-      }
-    }
     fetchData();
   }, [user]);
+
+  useEffect(() => {
+    setProfileForm({
+      full_name: profile?.full_name || '',
+      phone_number: profile?.phone_number || '',
+    });
+  }, [profile]);
+
+  const saveProfile = async () => {
+    if (!user?.access_token) return;
+    setSavingProfile(true);
+    setProfileMessage(null);
+    try {
+      const response = await fetch(`${API}/users/me`, {
+        method: 'PATCH',
+        headers: {
+          Authorization: `Bearer ${user.access_token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          full_name: profileForm.full_name,
+          phone_number: profileForm.phone_number,
+        }),
+      });
+
+      if (!response.ok) {
+        const payload = await response.json().catch(() => ({}));
+        throw new Error(payload?.detail || 'Profile update failed');
+      }
+
+      const updated = await response.json();
+      setProfile(updated);
+      setEditMode(false);
+      setProfileMessage({ type: 'success', text: 'Profile updated successfully.' });
+    } catch (err) {
+      setProfileMessage({ type: 'error', text: err.message || 'Could not update profile.' });
+    } finally {
+      setSavingProfile(false);
+    }
+  };
 
   // Complaint statistics
   const stats = {
@@ -150,15 +198,88 @@ export default function Profile() {
           <div className="lg:col-span-1 space-y-6">
             {/* Account Details Card */}
             <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
-              <div className="px-5 py-3.5 bg-gray-50 border-b border-gray-200">
+              <div className="px-5 py-3.5 bg-gray-50 border-b border-gray-200 flex items-center justify-between gap-3">
                 <h2 className="text-sm font-semibold text-gray-700 uppercase tracking-wide">Account Details</h2>
+                <div className="flex items-center gap-2">
+                  {editMode ? (
+                    <>
+                      <button
+                        onClick={saveProfile}
+                        disabled={savingProfile}
+                        className="text-xs px-2.5 py-1 rounded bg-primary text-white hover:bg-primary-light disabled:opacity-60"
+                      >
+                        {savingProfile ? 'Saving...' : 'Save'}
+                      </button>
+                      <button
+                        onClick={() => {
+                          setEditMode(false);
+                          setProfileForm({
+                            full_name: profile?.full_name || '',
+                            phone_number: profile?.phone_number || '',
+                          });
+                        }}
+                        className="text-xs px-2.5 py-1 rounded border border-gray-300 text-gray-700 hover:bg-white"
+                      >
+                        Cancel
+                      </button>
+                    </>
+                  ) : (
+                    <button
+                      onClick={() => setEditMode(true)}
+                      className="text-xs px-2.5 py-1 rounded border border-gray-300 text-gray-700 hover:bg-white"
+                    >
+                      Edit
+                    </button>
+                  )}
+                </div>
               </div>
               <div className="p-5 space-y-4">
+                {profileMessage && (
+                  <div className={`text-xs rounded px-2.5 py-2 ${
+                    profileMessage.type === 'success'
+                      ? 'bg-green-50 text-green-700 border border-green-200'
+                      : 'bg-red-50 text-red-700 border border-red-200'
+                  }`}>
+                    {profileMessage.text}
+                  </div>
+                )}
                 <div className="flex items-start gap-3">
                   <UserCircle className="w-5 h-5 text-primary mt-0.5 shrink-0" />
                   <div>
                     <div className="text-xs text-gray-500 uppercase tracking-wide">Username</div>
                     <div className="text-sm font-medium text-gray-900 mt-0.5">{displayName}</div>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <UserCircle className="w-5 h-5 text-primary mt-0.5 shrink-0" />
+                  <div className="w-full">
+                    <div className="text-xs text-gray-500 uppercase tracking-wide">Full Name</div>
+                    {editMode ? (
+                      <input
+                        value={profileForm.full_name}
+                        onChange={(e) => setProfileForm(prev => ({ ...prev, full_name: e.target.value }))}
+                        placeholder="Enter full name"
+                        className="mt-1 w-full text-sm border border-gray-300 rounded px-2 py-1.5"
+                      />
+                    ) : (
+                      <div className="text-sm font-medium text-gray-900 mt-0.5">{profile?.full_name || '—'}</div>
+                    )}
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <UserCircle className="w-5 h-5 text-primary mt-0.5 shrink-0" />
+                  <div className="w-full">
+                    <div className="text-xs text-gray-500 uppercase tracking-wide">Phone Number</div>
+                    {editMode ? (
+                      <input
+                        value={profileForm.phone_number}
+                        onChange={(e) => setProfileForm(prev => ({ ...prev, phone_number: e.target.value }))}
+                        placeholder="Enter phone number"
+                        className="mt-1 w-full text-sm border border-gray-300 rounded px-2 py-1.5"
+                      />
+                    ) : (
+                      <div className="text-sm font-medium text-gray-900 mt-0.5">{profile?.phone_number || '—'}</div>
+                    )}
                   </div>
                 </div>
                 <div className="flex items-start gap-3">

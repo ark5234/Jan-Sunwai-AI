@@ -23,6 +23,7 @@
 
 html {
   scroll-behavior: smooth;
+  text-size-adjust: 100%;
   -webkit-text-size-adjust: 100%;
 }
 
@@ -71,14 +72,15 @@ body {
   }
 
   html {
-    -webkit-text-size-adjust: none;
+    text-size-adjust: 100%;
+    -webkit-text-size-adjust: 100%;
   }
 }
 
 /* Touch-friendly scrolling */
 .overflow-auto,
 .overflow-scroll {
-  -webkit-overflow-scrolling: touch;
+  overflow: auto;
 }
 
 /* Improve touch interactions */

@@ -193,7 +193,7 @@ export default function Home() {
               <span>जन-सुनवाई — Public Grievance Redressal System</span>
             </div>
             <div className="text-gray-500 text-xs">
-              Built with AI for transparent governance. All data processed locally.
+              Built for transparent governance. All data processed locally.
             </div>
           </div>
         </div>

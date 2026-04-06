@@ -353,7 +353,7 @@ export default function Navbar() {
               <Link 
                 to="/" 
                 onClick={() => setIsOpen(false)}
-                className="block px-3 py-2.5 rounded text-base font-medium text-blue-100 hover:text-white hover:bg-white/10"
+                  className="block px-3 py-3 rounded text-base font-medium text-blue-100 hover:text-white hover:bg-white/10"
               >
                 Home
               </Link>
@@ -363,14 +363,14 @@ export default function Navbar() {
                 <Link 
                   to="/dashboard" 
                   onClick={() => setIsOpen(false)}
-                  className="block px-3 py-2.5 rounded text-base font-medium text-blue-100 hover:text-white hover:bg-white/10"
+                  className="block px-3 py-3 rounded text-base font-medium text-blue-100 hover:text-white hover:bg-white/10"
                 >
                   Dashboard
                 </Link>
                 <Link 
                   to="/analyze" 
                   onClick={() => setIsOpen(false)}
-                  className="block px-3 py-2.5 rounded text-base font-medium text-blue-100 hover:text-white hover:bg-white/10"
+                  className="block px-3 py-3 rounded text-base font-medium text-blue-100 hover:text-white hover:bg-white/10"
                 >
                   File Complaint
                 </Link>
@@ -378,7 +378,7 @@ export default function Navbar() {
                   <Link 
                     to="/analytics" 
                     onClick={() => setIsOpen(false)}
-                    className="flex items-center gap-2 px-3 py-2.5 rounded text-base font-medium text-blue-100 hover:text-white hover:bg-white/10"
+                    className="flex items-center gap-2 px-3 py-3 rounded text-base font-medium text-blue-100 hover:text-white hover:bg-white/10"
                   >
                     <BarChart2 className="w-4 h-4" />
                     Analytics
@@ -388,7 +388,7 @@ export default function Navbar() {
                   <Link 
                     to="/map" 
                     onClick={() => setIsOpen(false)}
-                    className="flex items-center gap-2 px-3 py-2.5 rounded text-base font-medium text-blue-100 hover:text-white hover:bg-white/10"
+                    className="flex items-center gap-2 px-3 py-3 rounded text-base font-medium text-blue-100 hover:text-white hover:bg-white/10"
                   >
                     <Map className="w-4 h-4" />
                     Complaints Map
@@ -397,7 +397,7 @@ export default function Navbar() {
                 <Link 
                   to="/public" 
                   onClick={() => setIsOpen(false)}
-                  className="flex items-center gap-2 px-3 py-2.5 rounded text-base font-medium text-blue-100 hover:text-white hover:bg-white/10"
+                  className="flex items-center gap-2 px-3 py-3 rounded text-base font-medium text-blue-100 hover:text-white hover:bg-white/10"
                 >
                   <Globe className="w-4 h-4" />
                   Public Board
@@ -410,7 +410,7 @@ export default function Navbar() {
                 <Link 
                   to="/notifications" 
                   onClick={() => setIsOpen(false)}
-                  className="flex items-center justify-between px-3 py-2.5 rounded text-blue-100 hover:text-white hover:bg-white/10"
+                  className="flex items-center justify-between px-3 py-3 rounded text-blue-100 hover:text-white hover:bg-white/10"
                 >
                   <span className="flex items-center gap-2 text-base font-medium">
                     <Bell className="w-4 h-4" />
@@ -425,7 +425,7 @@ export default function Navbar() {
                 <Link 
                   to="/profile" 
                   onClick={() => setIsOpen(false)}
-                  className="flex items-center gap-3 px-3 py-2.5 rounded text-blue-100 hover:text-white hover:bg-white/10"
+                  className="flex items-center gap-3 px-3 py-3 rounded text-blue-100 hover:text-white hover:bg-white/10"
                 >
                   <div className="w-8 h-8 rounded-full bg-white/15 border border-white/25 flex items-center justify-center">
                     <UserCircle className="w-5 h-5" />
@@ -437,7 +437,7 @@ export default function Navbar() {
                 </Link>
                 <button 
                   onClick={() => { logout(); setIsOpen(false); }} 
-                  className="w-full text-left px-3 py-2.5 rounded text-red-300 hover:text-red-200 hover:bg-white/10 text-sm font-medium flex items-center gap-2"
+                  className="w-full text-left px-3 py-3 rounded text-red-300 hover:text-red-200 hover:bg-white/10 text-sm font-medium flex items-center gap-2"
                 >
                   <LogOut className="w-4 h-4" />
                   Sign Out

@@ -74,53 +74,55 @@ const TriageReview = () => {
         </div>
       ) : (
         <div className="bg-white rounded-lg shadow overflow-hidden">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
-              <tr>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">File</th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">AI Label</th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Confidence</th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Rationale</th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
-              {items.map((item) => {
-                const confidencePct = item.confidence != null
-                  ? `${(parseFloat(item.confidence) * 100).toFixed(0)}%`
-                  : '—';
-                const confidenceColor = parseFloat(item.confidence) >= 0.5
-                  ? 'text-amber-600'
-                  : 'text-red-600';
-                return (
-                  <tr key={item.image}>
-                    <td className="px-4 py-3 text-xs text-gray-500 break-all max-w-xs">
-                      {item.image?.split(/[\\/]/).pop() || item.image}
-                    </td>
-                    <td className="px-4 py-3 text-sm font-medium text-gray-800">{item.final_label || '—'}</td>
-                    <td className={`px-4 py-3 text-sm font-semibold ${confidenceColor}`}>{confidencePct}</td>
-                    <td className="px-4 py-3 text-xs text-gray-500 max-w-sm">{item.rationale || item.vision_summary || '—'}</td>
-                    <td className="px-4 py-3">
-                      <div className="flex gap-2">
-                        <button
-                          onClick={() => submitDecision(item, 'approve')}
-                          className="px-3 py-1 bg-green-600 text-white text-sm rounded hover:bg-green-700"
-                        >
-                          Approve
-                        </button>
-                        <button
-                          onClick={() => submitDecision(item, 'reject')}
-                          className="px-3 py-1 bg-red-600 text-white text-sm rounded hover:bg-red-700"
-                        >
-                          Reject
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+          <div className="overflow-x-auto">
+            <table className="min-w-full divide-y divide-gray-200">
+              <thead className="bg-gray-50">
+                <tr>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">File</th>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">AI Label</th>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Confidence</th>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Rationale</th>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
+                </tr>
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-200">
+                {items.map((item) => {
+                  const confidencePct = item.confidence != null
+                    ? `${(parseFloat(item.confidence) * 100).toFixed(0)}%`
+                    : '—';
+                  const confidenceColor = parseFloat(item.confidence) >= 0.5
+                    ? 'text-amber-600'
+                    : 'text-red-600';
+                  return (
+                    <tr key={item.image}>
+                      <td className="px-4 py-3 text-xs text-gray-500 break-all max-w-xs">
+                        {item.image?.split(/[\\/]/).pop() || item.image}
+                      </td>
+                      <td className="px-4 py-3 text-sm font-medium text-gray-800">{item.final_label || '—'}</td>
+                      <td className={`px-4 py-3 text-sm font-semibold ${confidenceColor}`}>{confidencePct}</td>
+                      <td className="px-4 py-3 text-xs text-gray-500 max-w-sm">{item.rationale || item.vision_summary || '—'}</td>
+                      <td className="px-4 py-3">
+                        <div className="flex gap-2 min-w-45">
+                          <button
+                            onClick={() => submitDecision(item, 'approve')}
+                            className="px-3 h-11 bg-green-600 text-white text-sm rounded hover:bg-green-700"
+                          >
+                            Approve
+                          </button>
+                          <button
+                            onClick={() => submitDecision(item, 'reject')}
+                            className="px-3 h-11 bg-red-600 text-white text-sm rounded hover:bg-red-700"
+                          >
+                            Reject
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
         </div>
       )}
     </div>
