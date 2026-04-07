@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.141592653-2.6-0.999997 (MiKTeX 25.12) (preloaded format=xelatex 2026.4.7)  7 APR 2026 20:53
+This is XeTeX, Version 3.141592653-2.6-0.999997 (MiKTeX 25.12) (preloaded format=xelatex 2026.4.7)  8 APR 2026 00:26
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -511,7 +511,25 @@ Package microtype Info: Loading configuration file microtype.cfg.
 File: microtype.cfg 2026/03/01 v3.2d microtype main configuration file (RS)
 )
 LaTeX Info: Redefining \microtypesetup on input line 3065.
-) (C:\Users\Vikra\AppData\Local\Programs\MiKTeX\tex/latex/xcolor\xcolor.sty
+)
+(C:\Users\Vikra\AppData\Local\Programs\MiKTeX\tex/latex/ragged2e\ragged2e.sty
+Package: ragged2e 2023/06/22 v3.6 ragged2e Package
+\CenteringLeftskip=\skip81
+\RaggedLeftLeftskip=\skip82
+\RaggedRightLeftskip=\skip83
+\CenteringRightskip=\skip84
+\RaggedLeftRightskip=\skip85
+\RaggedRightRightskip=\skip86
+\CenteringParfillskip=\skip87
+\RaggedLeftParfillskip=\skip88
+\RaggedRightParfillskip=\skip89
+\JustifyingParfillskip=\skip90
+\CenteringParindent=\skip91
+\RaggedLeftParindent=\skip92
+\RaggedRightParindent=\skip93
+\JustifyingParindent=\skip94
+)
+(C:\Users\Vikra\AppData\Local\Programs\MiKTeX\tex/latex/xcolor\xcolor.sty
 Package: xcolor 2024/09/29 v3.02 LaTeX color extensions (UK)
 
 (C:\Users\Vikra\AppData\Local\Programs\MiKTeX\tex/latex/graphics-cfg\color.cfg
@@ -530,31 +548,31 @@ Package xcolor Info: Model `wave' substituted by `hsb' on input line 1372.
 ) (C:\Users\Vikra\AppData\Local\Programs\MiKTeX\tex/latex/xurl\xurl.sty
 Package: xurl 2022/01/09 v 0.10 modify URL breaks
 )
-Package hyperref Info: Option `colorlinks' set `true' on input line 41.
+Package hyperref Info: Option `colorlinks' set `true' on input line 42.
 
 (main.aux)
 \openout1 = `main.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 139.
-LaTeX Font Info:    ... okay on input line 139.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 139.
-LaTeX Font Info:    ... okay on input line 139.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 139.
-LaTeX Font Info:    ... okay on input line 139.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 139.
-LaTeX Font Info:    ... okay on input line 139.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 139.
-LaTeX Font Info:    ... okay on input line 139.
-LaTeX Font Info:    Checking defaults for TU/lmr/m/n on input line 139.
-LaTeX Font Info:    ... okay on input line 139.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 139.
-LaTeX Font Info:    ... okay on input line 139.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 139.
-LaTeX Font Info:    ... okay on input line 139.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 139.
-LaTeX Font Info:    ... okay on input line 139.
-LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 139.
-LaTeX Font Info:    ... okay on input line 139.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 170.
+LaTeX Font Info:    ... okay on input line 170.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 170.
+LaTeX Font Info:    ... okay on input line 170.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 170.
+LaTeX Font Info:    ... okay on input line 170.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 170.
+LaTeX Font Info:    ... okay on input line 170.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 170.
+LaTeX Font Info:    ... okay on input line 170.
+LaTeX Font Info:    Checking defaults for TU/lmr/m/n on input line 170.
+LaTeX Font Info:    ... okay on input line 170.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 170.
+LaTeX Font Info:    ... okay on input line 170.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 170.
+LaTeX Font Info:    ... okay on input line 170.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 170.
+LaTeX Font Info:    ... okay on input line 170.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 170.
+LaTeX Font Info:    ... okay on input line 170.
 
 Package fontspec Info: 
 (fontspec)             Adjusting the maths setup (use [no-math] to avoid
@@ -562,64 +580,64 @@ Package fontspec Info:
 
 \symlegacymaths=\mathgroup4
 LaTeX Font Info:    Overwriting symbol font `legacymaths' in version `bold'
-(Font)                  OT1/cmr/m/n --> OT1/cmr/bx/n on input line 139.
-LaTeX Font Info:    Redeclaring math accent \acute on input line 139.
-LaTeX Font Info:    Redeclaring math accent \grave on input line 139.
-LaTeX Font Info:    Redeclaring math accent \ddot on input line 139.
-LaTeX Font Info:    Redeclaring math accent \tilde on input line 139.
-LaTeX Font Info:    Redeclaring math accent \bar on input line 139.
-LaTeX Font Info:    Redeclaring math accent \breve on input line 139.
-LaTeX Font Info:    Redeclaring math accent \check on input line 139.
-LaTeX Font Info:    Redeclaring math accent \hat on input line 139.
-LaTeX Font Info:    Redeclaring math accent \dot on input line 139.
-LaTeX Font Info:    Redeclaring math accent \mathring on input line 139.
-LaTeX Font Info:    Redeclaring math symbol \Gamma on input line 139.
-LaTeX Font Info:    Redeclaring math symbol \Delta on input line 139.
-LaTeX Font Info:    Redeclaring math symbol \Theta on input line 139.
-LaTeX Font Info:    Redeclaring math symbol \Lambda on input line 139.
-LaTeX Font Info:    Redeclaring math symbol \Xi on input line 139.
-LaTeX Font Info:    Redeclaring math symbol \Pi on input line 139.
-LaTeX Font Info:    Redeclaring math symbol \Sigma on input line 139.
-LaTeX Font Info:    Redeclaring math symbol \Upsilon on input line 139.
-LaTeX Font Info:    Redeclaring math symbol \Phi on input line 139.
-LaTeX Font Info:    Redeclaring math symbol \Psi on input line 139.
-LaTeX Font Info:    Redeclaring math symbol \Omega on input line 139.
-LaTeX Font Info:    Redeclaring math symbol \mathdollar on input line 139.
-LaTeX Font Info:    Redeclaring symbol font `operators' on input line 139.
+(Font)                  OT1/cmr/m/n --> OT1/cmr/bx/n on input line 170.
+LaTeX Font Info:    Redeclaring math accent \acute on input line 170.
+LaTeX Font Info:    Redeclaring math accent \grave on input line 170.
+LaTeX Font Info:    Redeclaring math accent \ddot on input line 170.
+LaTeX Font Info:    Redeclaring math accent \tilde on input line 170.
+LaTeX Font Info:    Redeclaring math accent \bar on input line 170.
+LaTeX Font Info:    Redeclaring math accent \breve on input line 170.
+LaTeX Font Info:    Redeclaring math accent \check on input line 170.
+LaTeX Font Info:    Redeclaring math accent \hat on input line 170.
+LaTeX Font Info:    Redeclaring math accent \dot on input line 170.
+LaTeX Font Info:    Redeclaring math accent \mathring on input line 170.
+LaTeX Font Info:    Redeclaring math symbol \Gamma on input line 170.
+LaTeX Font Info:    Redeclaring math symbol \Delta on input line 170.
+LaTeX Font Info:    Redeclaring math symbol \Theta on input line 170.
+LaTeX Font Info:    Redeclaring math symbol \Lambda on input line 170.
+LaTeX Font Info:    Redeclaring math symbol \Xi on input line 170.
+LaTeX Font Info:    Redeclaring math symbol \Pi on input line 170.
+LaTeX Font Info:    Redeclaring math symbol \Sigma on input line 170.
+LaTeX Font Info:    Redeclaring math symbol \Upsilon on input line 170.
+LaTeX Font Info:    Redeclaring math symbol \Phi on input line 170.
+LaTeX Font Info:    Redeclaring math symbol \Psi on input line 170.
+LaTeX Font Info:    Redeclaring math symbol \Omega on input line 170.
+LaTeX Font Info:    Redeclaring math symbol \mathdollar on input line 170.
+LaTeX Font Info:    Redeclaring symbol font `operators' on input line 170.
 LaTeX Font Info:    Encoding `OT1' has changed to `TU' for symbol font
-(Font)              `operators' in the math version `normal' on input line 139.
+(Font)              `operators' in the math version `normal' on input line 170.
 
 LaTeX Font Info:    Overwriting symbol font `operators' in version `normal'
 (Font)                  OT1/cmr/m/n --> TU/TimesNewRoman(0)/m/n on input line 1
-39.
+70.
 LaTeX Font Info:    Encoding `OT1' has changed to `TU' for symbol font
-(Font)              `operators' in the math version `bold' on input line 139.
+(Font)              `operators' in the math version `bold' on input line 170.
 LaTeX Font Info:    Overwriting symbol font `operators' in version `bold'
 (Font)                  OT1/cmr/bx/n --> TU/TimesNewRoman(0)/m/n on input line 
-139.
+170.
 LaTeX Font Info:    Overwriting symbol font `operators' in version `normal'
 (Font)                  TU/TimesNewRoman(0)/m/n --> TU/TimesNewRoman(0)/m/n on 
-input line 139.
+input line 170.
 LaTeX Font Info:    Overwriting math alphabet `\mathit' in version `normal'
 (Font)                  OT1/cmr/m/it --> TU/TimesNewRoman(0)/m/it on input line
- 139.
+ 170.
 LaTeX Font Info:    Overwriting math alphabet `\mathbf' in version `normal'
 (Font)                  OT1/cmr/bx/n --> TU/TimesNewRoman(0)/b/n on input line 
-139.
+170.
 LaTeX Font Info:    Overwriting math alphabet `\mathsf' in version `normal'
-(Font)                  OT1/cmss/m/n --> TU/lmss/m/n on input line 139.
+(Font)                  OT1/cmss/m/n --> TU/lmss/m/n on input line 170.
 LaTeX Font Info:    Overwriting math alphabet `\mathtt' in version `normal'
-(Font)                  OT1/cmtt/m/n --> TU/lmtt/m/n on input line 139.
+(Font)                  OT1/cmtt/m/n --> TU/lmtt/m/n on input line 170.
 LaTeX Font Info:    Overwriting symbol font `operators' in version `bold'
 (Font)                  TU/TimesNewRoman(0)/m/n --> TU/TimesNewRoman(0)/b/n on 
-input line 139.
+input line 170.
 LaTeX Font Info:    Overwriting math alphabet `\mathit' in version `bold'
 (Font)                  OT1/cmr/bx/it --> TU/TimesNewRoman(0)/b/it on input lin
-e 139.
+e 170.
 LaTeX Font Info:    Overwriting math alphabet `\mathsf' in version `bold'
-(Font)                  OT1/cmss/bx/n --> TU/lmss/b/n on input line 139.
+(Font)                  OT1/cmss/bx/n --> TU/lmss/b/n on input line 170.
 LaTeX Font Info:    Overwriting math alphabet `\mathtt' in version `bold'
-(Font)                  OT1/cmtt/m/n --> TU/lmtt/b/n on input line 139.
+(Font)                  OT1/cmtt/m/n --> TU/lmtt/b/n on input line 170.
 
 *geometry* driver: auto-detecting
 *geometry* detected driver: xetex
@@ -655,20 +673,20 @@ LaTeX Font Info:    Overwriting math alphabet `\mathtt' in version `bold'
 * \@reversemarginfalse
 * (1in=72.27pt=25.4mm, 1cm=28.453pt)
 
-Package hyperref Info: Link coloring ON on input line 139.
+Package hyperref Info: Link coloring ON on input line 170.
 (main.out) (main.out)
 \@outlinefile=\write3
 \openout3 = `main.out'.
 
 Package caption Info: Begin \AtBeginDocument code.
 Package caption Info: End \AtBeginDocument code.
-LaTeX Info: Redefining \microtypecontext on input line 139.
-Package microtype Info: Applying patch `item' on input line 139.
-Package microtype Info: Applying patch `toc' on input line 139.
-Package microtype Info: Applying patch `eqnum' on input line 139.
-Package microtype Info: Applying patch `footnote' on input line 139.
-Package microtype Info: Applying patch `verbatim' on input line 139.
-LaTeX Info: Redefining \microtypesetup on input line 139.
+LaTeX Info: Redefining \microtypecontext on input line 170.
+Package microtype Info: Applying patch `item' on input line 170.
+Package microtype Info: Applying patch `toc' on input line 170.
+Package microtype Info: Applying patch `eqnum' on input line 170.
+Package microtype Info: Applying patch `footnote' on input line 170.
+Package microtype Info: Applying patch `verbatim' on input line 170.
+LaTeX Info: Redefining \microtypesetup on input line 170.
 Package microtype Info: Character protrusion enabled (level 2).
 Package microtype Info: Using default protrusion set `alltext'.
 Package microtype Info: No adjustment of tracking.
@@ -689,33 +707,33 @@ File: mt-cmr.cfg 2013/05/19 v2.2 microtype config. file: Computer Modern Roman
 
 ] (main.toc [1
 
-] [2] [3] [4])
+] [2] [3] [4] [5])
 \tf@toc=\write4
 \openout4 = `main.toc'.
 
- [5] (main.lof)
+ [6] (main.lof)
 \tf@lof=\write5
 \openout5 = `main.lof'.
 
- [6
+ [7
 
 
-] (main.lot [7
+] (main.lot [8
 
 
 ])
 \tf@lot=\write6
 \openout6 = `main.lot'.
 
- [8]
-(frontmatter/abbreviations.tex) [9
+ [9]
+(frontmatter/abbreviations.tex) [10
 
 
 ] (frontmatter/definitions.tex
-ignored error: Infinite glue shrinkage found in box being split [10
+ignored error: Infinite glue shrinkage found in box being split [11
 
 
-]) [11]
+]) [12]
 (frontmatter/screenshots.tex
 Package microtype Info: Loading generic protrusion settings for font family
 (microtype)             `lmtt' (encoding: TU).
@@ -736,7 +754,7 @@ Underfull \hbox (badness 1762) in paragraph at lines 34--34
 []|\TU/TimesNewRoman(0)/m/n/10.95 Supplementary: result page location
  []
 
-) [12
+) [13
 
 
 ] (chapters/ch01_introduction.tex
@@ -744,499 +762,505 @@ Chapter 1.
 [1
 
 
-] [2] [3]
-Overfull \hbox (5.85384pt too wide) in paragraph at lines 122--123
-[]\TU/TimesNewRoman(0)/m/n/12 In civic applications, explainability is not opti
-onal. Decision provenance (confidence, method,
+]
+Underfull \hbox (badness 4072) in paragraph at lines 72--72
+[]|\TU/TimesNewRoman(0)/m/n/12 Auto-assignment by department, service
  []
 
 
-Overfull \hbox (10.14261pt too wide) in paragraph at lines 124--125
-[]\TU/TimesNewRoman(0)/m/n/12 The project design is aligned with development pr
-inciples and platform guidance from FastAPI,
+Underfull \hbox (badness 10000) in paragraph at lines 92--92
+[]|\TU/TimesNewRoman(0)/m/n/12 Unit/integration/security/resilience/load
  []
 
-) (chapters/ch02_project_management.tex [4]
+[2] [3]) (chapters/ch02_project_management.tex [4]
 Chapter 2.
-
-Overfull \hbox (1.27933pt too wide) in paragraph at lines 27--28
-[]\TU/TimesNewRoman(0)/m/n/12 Operational feasibility was validated by mapping 
-actual municipal personas into role-specific
- []
-
 [5
 
 ]
-Underfull \hbox (badness 4819) in paragraph at lines 70--70
+Underfull \hbox (badness 4819) in paragraph at lines 73--73
 \TU/TimesNewRoman(0)/m/n/12 end skeleton, DB connectivity, auth
  []
 
 
-Underfull \hbox (badness 1533) in paragraph at lines 75--75
+Underfull \hbox (badness 1533) in paragraph at lines 78--78
 []|\TU/TimesNewRoman(0)/m/n/12 Worker panel, assignment engine, au-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 79--79
+Underfull \hbox (badness 10000) in paragraph at lines 82--82
 []|\TU/TimesNewRoman(0)/m/n/12 Testing and Pre-
  []
 
 
-Underfull \hbox (badness 1968) in paragraph at lines 81--81
+Underfull \hbox (badness 1968) in paragraph at lines 84--84
 []|\TU/TimesNewRoman(0)/m/n/12 Technical report artifacts, screenshots,
  []
 
 
-Underfull \hbox (badness 1184) in paragraph at lines 81--81
+Underfull \hbox (badness 1184) in paragraph at lines 84--84
 \TU/TimesNewRoman(0)/m/n/12 presentation, final submission hygiene
  []
 
 ignored error: Infinite glue shrinkage found in box being split [6]
-Underfull \hbox (badness 10000) in paragraph at lines 103--103
+Underfull \hbox (badness 10000) in paragraph at lines 108--108
 []|\TU/TimesNewRoman(0)/m/n/12 DevOps and Deploy-
  []
 
 [7] [8]
-Underfull \hbox (badness 10000) in paragraph at lines 169--169
+Underfull \hbox (badness 10000) in paragraph at lines 178--178
 []|\TU/TimesNewRoman(0)/m/n/12 Model unavailability
  []
 
 
-Underfull \hbox (badness 3343) in paragraph at lines 169--170
+Underfull \hbox (badness 3343) in paragraph at lines 178--178
 []|\TU/TimesNewRoman(0)/m/n/12 Multi-tier vision fallback, queue-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 170--170
+Underfull \hbox (badness 10000) in paragraph at lines 179--179
 []|\TU/TimesNewRoman(0)/m/n/12 Wrong department
  []
 
 
-Underfull \hbox (badness 4792) in paragraph at lines 170--171
+Underfull \hbox (badness 4792) in paragraph at lines 179--179
 []|\TU/TimesNewRoman(0)/m/n/12 Deterministic rule engine, triage
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 171--171
+Underfull \hbox (badness 10000) in paragraph at lines 180--180
 []|\TU/TimesNewRoman(0)/m/n/12 Invalid/malicious
  []
 
 
-Underfull \hbox (badness 7326) in paragraph at lines 172--173
+Underfull \hbox (badness 7326) in paragraph at lines 181--181
 []|\TU/TimesNewRoman(0)/m/n/12 JWT auth, role-gated dependen-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 173--173
+Underfull \hbox (badness 10000) in paragraph at lines 182--182
 []|\TU/TimesNewRoman(0)/m/n/12 Configuration drift
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 174--174
+Underfull \hbox (badness 10000) in paragraph at lines 183--183
 []|\TU/TimesNewRoman(0)/m/n/12 Notification inconsis-
  []
 
 
-Underfull \hbox (badness 1286) in paragraph at lines 174--175
+Underfull \hbox (badness 1286) in paragraph at lines 183--183
 []|\TU/TimesNewRoman(0)/m/n/12 Automated notification-chain tests
  []
 
 
-Underfull \hbox (badness 3679) in paragraph at lines 175--175
+Underfull \hbox (badness 3679) in paragraph at lines 184--184
 []|\TU/TimesNewRoman(0)/m/n/12 Performance degrada-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 176--176
+Underfull \hbox (badness 10000) in paragraph at lines 185--185
 []|\TU/TimesNewRoman(0)/m/n/12 Documentation mis-
  []
 
 ignored error: Infinite glue shrinkage found in box being split [9]
-Underfull \hbox (badness 10000) in paragraph at lines 195--196
+Underfull \hbox (badness 10000) in paragraph at lines 204--204
 []|\TU/TimesNewRoman(0)/b/n/12 Management
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 199--200
+Underfull \hbox (badness 10000) in paragraph at lines 208--208
 []|\TU/TimesNewRoman(0)/b/n/12 Management
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 202--202
+Underfull \hbox (badness 10000) in paragraph at lines 211--211
 []|\TU/TimesNewRoman(0)/m/n/12 Repository initialization, environment
  []
 
 
-Underfull \hbox (badness 3590) in paragraph at lines 202--203
+Underfull \hbox (badness 3590) in paragraph at lines 211--211
 []|\TU/TimesNewRoman(0)/m/n/12 Foundation con-
  []
 
 
-Underfull \hbox (badness 3148) in paragraph at lines 203--203
+Underfull \hbox (badness 3148) in paragraph at lines 212--212
 []|\TU/TimesNewRoman(0)/m/n/12 Mongo connectivity, schema definitions,
  []
 
 
-Underfull \hbox (badness 3657) in paragraph at lines 203--204
+Underfull \hbox (badness 3657) in paragraph at lines 212--212
 []|\TU/TimesNewRoman(0)/m/n/12 Core API base-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 204--205
+Underfull \hbox (badness 10000) in paragraph at lines 213--213
 []|\TU/TimesNewRoman(0)/m/n/12 Security and
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 204--205
+Underfull \hbox (badness 10000) in paragraph at lines 213--213
 \TU/TimesNewRoman(0)/m/n/12 AI direction
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 205--205
+Underfull \hbox (badness 10000) in paragraph at lines 214--214
 []|\TU/TimesNewRoman(0)/m/n/12 EXIF/location extraction and reverse-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 205--206
+Underfull \hbox (badness 10000) in paragraph at lines 214--214
 \TU/TimesNewRoman(0)/m/n/12 readiness
  []
 
 
-Underfull \hbox (badness 2012) in paragraph at lines 208--208
+Underfull \hbox (badness 2012) in paragraph at lines 217--217
 []|\TU/TimesNewRoman(0)/m/n/12 Map refinement, draft persistence, error
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 208--209
+Underfull \hbox (badness 10000) in paragraph at lines 217--217
 []|\TU/TimesNewRoman(0)/m/n/12 Baseline UX
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 208--209
+Underfull \hbox (badness 10000) in paragraph at lines 217--217
 \TU/TimesNewRoman(0)/m/n/12 hardening com-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 209--210
+Underfull \hbox (badness 10000) in paragraph at lines 218--218
 []|\TU/TimesNewRoman(0)/m/n/12 Production-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 209--210
+Underfull \hbox (badness 10000) in paragraph at lines 218--218
 \TU/TimesNewRoman(0)/m/n/12 risk exposure
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 210--211
+Underfull \hbox (badness 10000) in paragraph at lines 219--219
 []|\TU/TimesNewRoman(0)/m/n/12 Operational
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 211--212
+Underfull \hbox (badness 10000) in paragraph at lines 220--220
 []|\TU/TimesNewRoman(0)/m/n/12 Communication
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 211--212
+Underfull \hbox (badness 10000) in paragraph at lines 220--220
 \TU/TimesNewRoman(0)/m/n/12 workflows
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 212--212
+Underfull \hbox (badness 10000) in paragraph at lines 221--221
 []|\TU/TimesNewRoman(0)/m/n/12 Performance optimization, graceful de-
  []
 
 
-Underfull \hbox (badness 1946) in paragraph at lines 213--213
+Underfull \hbox (badness 1946) in paragraph at lines 222--222
 []|\TU/TimesNewRoman(0)/m/n/12 Production container profile and deploy-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 213--214
+Underfull \hbox (badness 10000) in paragraph at lines 222--222
 []|\TU/TimesNewRoman(0)/m/n/12 Deployment
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 213--214
+Underfull \hbox (badness 10000) in paragraph at lines 222--222
 \TU/TimesNewRoman(0)/m/n/12 readiness
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 214--214
+Underfull \hbox (badness 10000) in paragraph at lines 223--223
 []|\TU/TimesNewRoman(0)/m/n/12 Test expansion
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 214--214
+Underfull \hbox (badness 10000) in paragraph at lines 223--223
 \TU/TimesNewRoman(0)/m/n/12 (unit/integration/security/load) and mo-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 215--216
+Underfull \hbox (badness 10000) in paragraph at lines 224--224
 []|\TU/TimesNewRoman(0)/m/n/12 Pre-handover
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 215--216
+Underfull \hbox (badness 10000) in paragraph at lines 224--224
 \TU/TimesNewRoman(0)/m/n/12 alignment com-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 216--217
+Underfull \hbox (badness 10000) in paragraph at lines 225--225
 []|\TU/TimesNewRoman(0)/m/n/12 Reproducibility
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 218--219
+Underfull \hbox (badness 10000) in paragraph at lines 227--227
 []|\TU/TimesNewRoman(0)/m/n/12 Submission as-
  []
 
 
-Underfull \hbox (badness 1436) in paragraph at lines 219--220
+Underfull \hbox (badness 1436) in paragraph at lines 228--228
 []|\TU/TimesNewRoman(0)/m/n/12 Project lifecycle
  []
 
 ignored error: Infinite glue shrinkage found in box being split [10]
-Underfull \hbox (badness 10000) in paragraph at lines 239--239
+Underfull \hbox (badness 10000) in paragraph at lines 247--247
 []|\TU/TimesNewRoman(0)/m/n/12 Milestone completion consis-
  []
 
-[11]) (chapters/ch03_system_requirement_study.tex
-Overfull \hbox (21.66168pt too wide) in paragraph at lines 254--1
-\TU/TimesNewRoman(0)/m/n/12 management, risk planning, and milestone tracking e
-nabled predictable progress toward a production-
- []
-
-[12]
+[11]) (chapters/ch03_system_requirement_study.tex [12]
 Chapter 3.
 
-Underfull \hbox (badness 4543) in paragraph at lines 36--36
+Underfull \hbox (badness 4543) in paragraph at lines 35--35
 []|\TU/TimesNewRoman(0)/m/n/12 Inconsistent complaint descrip-
  []
 
 
-Underfull \hbox (badness 1019) in paragraph at lines 36--36
+Underfull \hbox (badness 1019) in paragraph at lines 35--35
 []|\TU/TimesNewRoman(0)/m/n/12 Weak integration of visual evi-
  []
 
 
-Underfull \hbox (badness 4144) in paragraph at lines 55--55
+Underfull \hbox (badness 4144) in paragraph at lines 54--54
 []|\TU/TimesNewRoman(0)/m/n/12 Resolve assigned field
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 55--55
+Underfull \hbox (badness 10000) in paragraph at lines 54--54
 []|\TU/TimesNewRoman(0)/m/n/12 Department
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 55--55
+Underfull \hbox (badness 10000) in paragraph at lines 54--54
 []|\TU/TimesNewRoman(0)/m/n/12 Manage departmental
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 55--55
+Underfull \hbox (badness 1571) in paragraph at lines 54--54
+[]|\TU/TimesNewRoman(0)/m/n/12 Filter department queue, change status, add
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 54--54
 []|\TU/TimesNewRoman(0)/m/n/12 Governance and over-
  []
 
 [13
 
 ]
-Underfull \hbox (badness 2173) in paragraph at lines 73--74
+Underfull \hbox (badness 2173) in paragraph at lines 73--73
 []|\TU/TimesNewRoman(0)/m/n/12 System shall support forgot-password and
  []
 
 
-Underfull \hbox (badness 2111) in paragraph at lines 80--81
+Underfull \hbox (badness 2111) in paragraph at lines 80--80
 []|\TU/TimesNewRoman(0)/m/n/12 Department head/admin shall update com-
  []
 
 
-Underfull \hbox (badness 1430) in paragraph at lines 81--82
+Underfull \hbox (badness 1430) in paragraph at lines 81--81
 \TU/TimesNewRoman(0)/m/n/12 plaint ownership across departments when
  []
 
 
-Underfull \hbox (badness 4024) in paragraph at lines 86--87
+Underfull \hbox (badness 4024) in paragraph at lines 86--86
 []|\TU/TimesNewRoman(0)/m/n/12 Admin shall review low-confidence com-
  []
 
 ignored error: Infinite glue shrinkage found in box being split [14]
-Underfull \hbox (badness 4266) in paragraph at lines 110--111
+Underfull \hbox (badness 4266) in paragraph at lines 110--110
 \TU/TimesNewRoman(0)/m/n/12 and support responsive layouts for desk-
  []
 
 
-Underfull \hbox (badness 2351) in paragraph at lines 111--112
+Underfull \hbox (badness 2351) in paragraph at lines 111--111
 []|\TU/TimesNewRoman(0)/m/n/12 Modular routers/services with documented
  []
 
 
-Underfull \hbox (badness 6559) in paragraph at lines 112--113
+Underfull \hbox (badness 6559) in paragraph at lines 112--112
 []|\TU/TimesNewRoman(0)/m/n/12 Process-time headers, rotating logs, and
  []
 
 
-Underfull \hbox (badness 2762) in paragraph at lines 114--115
+Underfull \hbox (badness 2762) in paragraph at lines 114--114
 []|\TU/TimesNewRoman(0)/m/n/12 Project setup shall support Windows and
  []
 
 
-Underfull \hbox (badness 2961) in paragraph at lines 116--117
+Underfull \hbox (badness 2961) in paragraph at lines 116--116
 []|\TU/TimesNewRoman(0)/m/n/12 Validation schemas and controlled update
  []
 
 [15]
-Underfull \hbox (badness 8189) in paragraph at lines 135--135
+Underfull \hbox (badness 8189) in paragraph at lines 137--137
 []|\TU/TimesNewRoman(0)/m/n/12 Stable LAN/internet for
  []
 
 
-Underfull \hbox (badness 6300) in paragraph at lines 135--136
+Underfull \hbox (badness 6300) in paragraph at lines 137--137
 []|\TU/TimesNewRoman(0)/m/n/12 Managed institutional net-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 157--157
+Underfull \hbox (badness 10000) in paragraph at lines 162--162
 []|\TU/TimesNewRoman(0)/m/n/12 Docker 24+ recom-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 157--157
+Underfull \hbox (badness 10000) in paragraph at lines 162--162
 []|\TU/TimesNewRoman(0)/m/n/12 Chromium/Firefox
  []
 
 [16] [17]
-Underfull \hbox (badness 2376) in paragraph at lines 215--215
+Underfull \hbox (badness 2376) in paragraph at lines 232--232
 []|\TU/TimesNewRoman(0)/m/n/12 MongoDB instance is reachable and
  []
 
 
-Underfull \hbox (badness 1742) in paragraph at lines 215--215
+Underfull \hbox (badness 1867) in paragraph at lines 232--232
+[]|\TU/TimesNewRoman(0)/m/n/12 Analyze and generation pathways re-
+ []
+
+
+Underfull \hbox (badness 1742) in paragraph at lines 232--232
 []|\TU/TimesNewRoman(0)/m/n/12 Worker profiles include valid depart-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 215--215
+Underfull \hbox (badness 2376) in paragraph at lines 232--232
+[]|\TU/TimesNewRoman(0)/m/n/12 Assignment service can select candi-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 232--232
 []|\TU/TimesNewRoman(0)/m/n/12 Deployment host supports Docker
  []
 
 
-Underfull \hbox (badness 2310) in paragraph at lines 231--232
+Underfull \hbox (badness 4429) in paragraph at lines 232--232
+[]|\TU/TimesNewRoman(0)/m/n/12 Production-style stack can be repro-
+ []
+
+
+Underfull \hbox (badness 2310) in paragraph at lines 249--249
 []|\TU/TimesNewRoman(0)/m/n/12 Unsupported/corrupt image
  []
 
 
-Underfull \hbox (badness 3612) in paragraph at lines 232--233
+Underfull \hbox (badness 3612) in paragraph at lines 250--250
 \TU/TimesNewRoman(0)/m/n/12 submits manual complaint
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 234--235
+Underfull \hbox (badness 10000) in paragraph at lines 252--252
 []|\TU/TimesNewRoman(0)/m/n/12 Duplicate feedback at-
  []
 
 
-Underfull \hbox (badness 5359) in paragraph at lines 235--235
+Underfull \hbox (badness 5359) in paragraph at lines 253--253
 []|\TU/TimesNewRoman(0)/m/n/12 View assigned complaints
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 235--236
+Underfull \hbox (badness 10000) in paragraph at lines 253--253
 []|\TU/TimesNewRoman(0)/m/n/12 Worker pending approval
  []
 
 
-Underfull \hbox (badness 2846) in paragraph at lines 235--236
+Underfull \hbox (badness 2846) in paragraph at lines 253--253
 \TU/TimesNewRoman(0)/m/n/12 cannot access worker-only
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 237--237
+Underfull \hbox (badness 10000) in paragraph at lines 255--255
 []|\TU/TimesNewRoman(0)/m/n/12 Filter department com-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 237--238
+Underfull \hbox (badness 10000) in paragraph at lines 255--255
 []|\TU/TimesNewRoman(0)/m/n/12 Dept-head cannot update
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 237--238
+Underfull \hbox (badness 10000) in paragraph at lines 255--255
 \TU/TimesNewRoman(0)/m/n/12 complaints outside own
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 238--238
+Underfull \hbox (badness 10000) in paragraph at lines 256--256
 []|\TU/TimesNewRoman(0)/m/n/12 Add notes and trans-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 238--239
+Underfull \hbox (badness 10000) in paragraph at lines 256--256
 []|\TU/TimesNewRoman(0)/m/n/12 Invalid complaint ID or
  []
 
 
-Underfull \hbox (badness 3803) in paragraph at lines 238--239
+Underfull \hbox (badness 3803) in paragraph at lines 256--256
 \TU/TimesNewRoman(0)/m/n/12 missing target yields con-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 239--240
+Underfull \hbox (badness 10000) in paragraph at lines 257--257
 []|\TU/TimesNewRoman(0)/m/n/12 Already-approved/rejected
  []
 
 
-Underfull \hbox (badness 5316) in paragraph at lines 241--242
+Underfull \hbox (badness 5316) in paragraph at lines 259--259
 []|\TU/TimesNewRoman(0)/m/n/12 No authenticated personal
  []
 
 
-Underfull \hbox (badness 5847) in paragraph at lines 241--242
+Underfull \hbox (badness 5847) in paragraph at lines 259--259
 \TU/TimesNewRoman(0)/m/n/12 fields are exposed in re-
  []
 
 ignored error: Infinite glue shrinkage found in box being split [18]
-Underfull \hbox (badness 10000) in paragraph at lines 259--259
+Underfull \hbox (badness 10000) in paragraph at lines 276--276
 []|\TU/TimesNewRoman(0)/b/n/12 Requirement
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 259--259
+Underfull \hbox (badness 10000) in paragraph at lines 276--276
 \TU/TimesNewRoman(0)/m/n/12 FR-14, FR-16,
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 259--259
+Underfull \hbox (badness 10000) in paragraph at lines 276--276
 []|\TU/TimesNewRoman(0)/m/n/12 FR-13, FR-15,
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 259--259
+Underfull \hbox (badness 10000) in paragraph at lines 276--276
 \TU/TimesNewRoman(0)/m/n/12 FR-17, FR-18,
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 259--259
+Underfull \hbox (badness 10000) in paragraph at lines 276--276
 []|\TU/TimesNewRoman(0)/m/n/12 Non-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 259--259
+Underfull \hbox (badness 10000) in paragraph at lines 276--276
 \TU/TimesNewRoman(0)/m/n/12 Functional
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 259--259
+Underfull \hbox (badness 10000) in paragraph at lines 276--276
 []|\TU/TimesNewRoman(0)/m/n/12 NFR-01, NFR-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 259--259
+Underfull \hbox (badness 10000) in paragraph at lines 276--276
 \TU/TimesNewRoman(0)/m/n/12 02, NFR-06,
  []
 
-) (chapters/ch04_proposed_system_requirements.tex [19] [20]
+[19]) (chapters/ch04_proposed_system_requirements.tex [20]
 Chapter 4.
 [21
 
@@ -1251,317 +1275,381 @@ Underfull \hbox (badness 10000) in paragraph at lines 58--58
  []
 
 
-Underfull \hbox (badness 1436) in paragraph at lines 63--64
+Underfull \hbox (badness 1436) in paragraph at lines 63--63
 []|\TU/TimesNewRoman(0)/m/n/12 Standardizes language quality and reduces
  []
 
 
-Underfull \hbox (badness 1648) in paragraph at lines 65--66
+Underfull \hbox (badness 1648) in paragraph at lines 65--65
 []|\TU/TimesNewRoman(0)/m/n/12 Reduces manual workload and accelerates
  []
 
 
-Underfull \hbox (badness 3291) in paragraph at lines 68--69
+Underfull \hbox (badness 3291) in paragraph at lines 68--68
 []|\TU/TimesNewRoman(0)/m/n/12 Prevents low-confidence AI outputs from
  []
 
 
-Underfull \hbox (badness 2368) in paragraph at lines 69--70
+Underfull \hbox (badness 2368) in paragraph at lines 69--69
 []|\TU/TimesNewRoman(0)/m/n/12 Improves throughput for backlog manage-
  []
 
 ignored error: Infinite glue shrinkage found in box being split [22]
-Underfull \hbox (badness 10000) in paragraph at lines 110--110
+Underfull \hbox (badness 10000) in paragraph at lines 119--119
 []|\TU/TimesNewRoman(0)/b/n/12 Requirement
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 114--114
+Underfull \hbox (badness 10000) in paragraph at lines 123--123
 []|\TU/TimesNewRoman(0)/b/n/12 Requirement
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 117--117
+Underfull \hbox (badness 10000) in paragraph at lines 126--126
 []|\TU/TimesNewRoman(0)/m/n/12 Registration
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 118--118
+Underfull \hbox (badness 10000) in paragraph at lines 127--127
 []|\TU/TimesNewRoman(0)/m/n/12 AI Classifi-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 118--118
+Underfull \hbox (badness 10000) in paragraph at lines 127--127
 \TU/TimesNewRoman(0)/m/n/12 cation and
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 118--118
+Underfull \hbox (badness 10000) in paragraph at lines 127--127
 []|\TU/TimesNewRoman(0)/m/n/12 Analyze Module +
  []
 
 
-Underfull \hbox (badness 3189) in paragraph at lines 118--119
+Underfull \hbox (badness 3189) in paragraph at lines 127--127
 []|\TU/TimesNewRoman(0)/m/n/12 Vision model cascade, rule engine scor-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 119--119
+Underfull \hbox (badness 10000) in paragraph at lines 128--128
 []|\TU/TimesNewRoman(0)/m/n/12 Lifecycle and
  []
 
 
-Underfull \hbox (badness 5592) in paragraph at lines 119--119
+Underfull \hbox (badness 5592) in paragraph at lines 128--128
 []|\TU/TimesNewRoman(0)/m/n/12 Complaint Lifecycle
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 120--120
+Underfull \hbox (badness 10000) in paragraph at lines 129--129
 []|\TU/TimesNewRoman(0)/m/n/12 Worker Opera-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 120--120
+Underfull \hbox (badness 10000) in paragraph at lines 129--129
 []|\TU/TimesNewRoman(0)/m/n/12 Assignment and
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 121--121
+Underfull \hbox (badness 10000) in paragraph at lines 130--130
 []|\TU/TimesNewRoman(0)/m/n/12 Triage and Admin
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 123--123
+Underfull \hbox (badness 10000) in paragraph at lines 132--132
 []|\TU/TimesNewRoman(0)/m/n/12 Reporting and
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 123--123
+Underfull \hbox (badness 10000) in paragraph at lines 132--132
 []|\TU/TimesNewRoman(0)/m/n/12 Analytics/Public
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 123--124
+Underfull \hbox (badness 10000) in paragraph at lines 132--132
 []|\TU/TimesNewRoman(0)/m/n/12 Overview metrics, heatmap endpoint,
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 124--124
+Underfull \hbox (badness 10000) in paragraph at lines 133--133
 []|\TU/TimesNewRoman(0)/m/n/12 Resilience and
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 124--124
+Underfull \hbox (badness 10000) in paragraph at lines 133--133
 []|\TU/TimesNewRoman(0)/m/n/12 Cross-cutting Plat-
  []
 
-ignored error: Infinite glue shrinkage found in box being split [23] [24]
-Underfull \hbox (badness 10000) in paragraph at lines 163--163
+[23] [24]
+Underfull \hbox (badness 10000) in paragraph at lines 172--172
 []|\TU/TimesNewRoman(0)/m/n/12 Authentication mod-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 164--164
+Underfull \hbox (badness 10000) in paragraph at lines 173--173
 []|\TU/TimesNewRoman(0)/m/n/12 Complaint lifecycle
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 164--165
+Underfull \hbox (badness 10000) in paragraph at lines 173--173
 []|\TU/TimesNewRoman(0)/m/n/12 Produces classification/location/draft
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 165--165
+Underfull \hbox (badness 10000) in paragraph at lines 174--174
 []|\TU/TimesNewRoman(0)/m/n/12 Complaint lifecycle
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 165--166
+Underfull \hbox (badness 10000) in paragraph at lines 174--174
 []|\TU/TimesNewRoman(0)/m/n/12 Emits status/registration/escalation
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 166--166
+Underfull \hbox (badness 10000) in paragraph at lines 175--175
 []|\TU/TimesNewRoman(0)/m/n/12 Complaint lifecycle
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 167--167
+Underfull \hbox (badness 10000) in paragraph at lines 176--176
 []|\TU/TimesNewRoman(0)/m/n/12 Complaint lifecycle
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 168--168
+Underfull \hbox (badness 10000) in paragraph at lines 177--177
 []|\TU/TimesNewRoman(0)/m/n/12 Complaint lifecycle
  []
 
 
-Underfull \hbox (badness 2970) in paragraph at lines 168--169
+Underfull \hbox (badness 2970) in paragraph at lines 177--177
 []|\TU/TimesNewRoman(0)/m/n/12 Applies corrected decisions for low-
  []
 
 
-Underfull \hbox (badness 2119) in paragraph at lines 169--170
+Underfull \hbox (badness 2119) in paragraph at lines 178--178
 []|\TU/TimesNewRoman(0)/m/n/12 Executes aggregate queries for dash-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 171--172
+Underfull \hbox (badness 10000) in paragraph at lines 180--180
 []|\TU/TimesNewRoman(0)/m/n/12 Publishes live-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 171--172
+Underfull \hbox (badness 10000) in paragraph at lines 180--180
 \TU/TimesNewRoman(0)/m/n/12 ness/readiness/dependency status
  []
 
-
-Underfull \hbox (badness 1867) in paragraph at lines 190--190
+ignored error: Infinite glue shrinkage found in box being split [25]
+Underfull \hbox (badness 1867) in paragraph at lines 198--198
 []|\TU/TimesNewRoman(0)/m/n/12 Analyze intake, dashboard
  []
 
 
-Underfull \hbox (badness 1221) in paragraph at lines 190--190
+Underfull \hbox (badness 1221) in paragraph at lines 198--198
 []|\TU/TimesNewRoman(0)/m/n/12 Assignment list, status up-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 190--190
+Underfull \hbox (badness 8019) in paragraph at lines 198--198
+[]|\TU/TimesNewRoman(0)/m/n/12 Structured field execution and improved
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 198--198
 []|\TU/TimesNewRoman(0)/m/n/12 Department
  []
 
 
-Underfull \hbox (badness 1342) in paragraph at lines 190--190
+Underfull \hbox (badness 1342) in paragraph at lines 198--198
 \TU/TimesNewRoman(0)/m/n/12 updates, transfer/escalation,
  []
 
-[25]) (chapters/ch05_system_design.tex [26]
+
+Underfull \hbox (badness 4713) in paragraph at lines 198--198
+[]|\TU/TimesNewRoman(0)/m/n/12 Transparency without exposing personally
+ []
+
+) (chapters/ch05_system_design.tex [26]
 Chapter 5.
 [27
 
-] [28] [29] [30] [31] [32]
-ignored error: Infinite glue shrinkage found in box being split [33] [34]
+]
+Underfull \hbox (badness 1412) in paragraph at lines 42--42
+[]|\TU/TimesNewRoman(0)/m/n/12 Hybrid AI pipeline (vision +
+ []
+
+
+Underfull \hbox (badness 2111) in paragraph at lines 42--42
+[]|\TU/TimesNewRoman(0)/m/n/12 Queue-based draft generation
+ []
+
+[28] [29] [30] [31]
+Underfull \hbox (badness 3872) in paragraph at lines 124--124
+[]|\TU/TimesNewRoman(0)/m/n/10.95 Department linkage for worker and
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 126--126
+[]|\TU/TimesNewRoman(0)/m/n/10.95 Availability state (avail-
+ []
+
+
+Underfull \hbox (badness 4621) in paragraph at lines 128--128
+[]|\TU/TimesNewRoman(0)/m/n/10.95 Worker geofence with lat, lon, ra-
+ []
+
+
+Underfull \hbox (badness 3088) in paragraph at lines 141--141
+[]|\TU/TimesNewRoman(0)/m/n/10.95 Model, confidence, labels, rationale
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 149--149
+[]|\TU/TimesNewRoman(0)/m/n/10.95 is_duplicate / dupli-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 155--155
+[]|\TU/TimesNewRoman(0)/m/n/10.95 Notification category (sta-
+ []
+
+
+Underfull \hbox (badness 1024) in paragraph at lines 167--167
+[]|\TU/TimesNewRoman(0)/m/n/10.95 used_at / revoked_at /
+ []
+
+[32]
+ignored error: Infinite glue shrinkage found in box being split [33]
+Underfull \hbox (badness 10000) in paragraph at lines 194--194
+[]|\TU/TimesNewRoman(0)/m/n/12 unique(username),
+ []
+
+[34]
+Underfull \hbox (badness 10000) in paragraph at lines 243--243
+[]|\TU/TimesNewRoman(0)/m/n/12 Analyze and Result
+ []
+
+[35]
 File: ../../images/GUI_Wireframe.png Graphic file (type bmp)
 <../../images/GUI_Wireframe.png>
-
-[35] [36]
+ [36] [37]
 File: ../../images/screenshots/S01_home_desktop.png Graphic file (type bmp)
 <../../images/screenshots/S01_home_desktop.png>
- [37
+ [38
 
 ]
 File: ../../images/screenshots/S02_login_desktop.png Graphic file (type bmp)
 <../../images/screenshots/S02_login_desktop.png>
- [38
+ [39
 
 ]
 File: ../../images/screenshots/S03_register_desktop.png Graphic file (type bmp)
 
 <../../images/screenshots/S03_register_desktop.png>
- [39
+ [40
 
 ]
 File: ../../images/screenshots/S04_reset_password_desktop.png Graphic file (typ
 e bmp)
 <../../images/screenshots/S04_reset_password_desktop.png>
- [40
+ [41
 
 ]
 File: ../../images/screenshots/S05_admin_dashboard_desktop.png Graphic file (ty
 pe bmp)
 <../../images/screenshots/S05_admin_dashboard_desktop.png>
- [41
+ [42
 
 ]
 File: ../../images/screenshots/S06_triage_review_desktop.png Graphic file (type
  bmp)
 <../../images/screenshots/S06_triage_review_desktop.png>
- [42
+ [43
 
 ]
 File: ../../images/screenshots/S07_worker_assignment_panel_desktop.png Graphic 
 file (type bmp)
 <../../images/screenshots/S07_worker_assignment_panel_desktop.png>
- [43
+ [44
 
 ]
 File: ../../images/screenshots/S08_analytics_dashboard_desktop.png Graphic file
  (type bmp)
 <../../images/screenshots/S08_analytics_dashboard_desktop.png>
- [44
+ [45
 
 ]
 File: ../../images/screenshots/S09_map_overview_satellite_desktop.png Graphic f
 ile (type bmp)
 <../../images/screenshots/S09_map_overview_satellite_desktop.png>
- [45
+ [46
 
 ]
 File: ../../images/screenshots/S10_map_popup_detail_desktop.png Graphic file (t
 ype bmp)
 <../../images/screenshots/S10_map_popup_detail_desktop.png>
- [46
+ [47
 
 ]
 File: ../../images/screenshots/S11_public_board_desktop.png Graphic file (type 
 bmp)
 <../../images/screenshots/S11_public_board_desktop.png>
- [47
+ [48
 
 ]
 File: ../../images/screenshots/S12_heatmap_desktop.png Graphic file (type bmp)
 <../../images/screenshots/S12_heatmap_desktop.png>
- [48
+ [49
 
 ]
 File: ../../images/screenshots/S13_profile_admin_desktop.png Graphic file (type
  bmp)
 <../../images/screenshots/S13_profile_admin_desktop.png>
- [49
+
+[50
 
 ]
 File: ../../images/screenshots/S14_citizen_dashboard_desktop.png Graphic file (
 type bmp)
 <../../images/screenshots/S14_citizen_dashboard_desktop.png>
-
-[50
+ [51
 
 ]
 File: ../../images/screenshots/S15_notifications_panel_desktop.png Graphic file
  (type bmp)
 <../../images/screenshots/S15_notifications_panel_desktop.png>
- [51
+ [52
 
 ]
 File: ../../images/screenshots/SX1_file_complaint_upload_desktop.png Graphic fi
 le (type bmp)
 <../../images/screenshots/SX1_file_complaint_upload_desktop.png>
- [52
+ [53
 
 ]
 File: ../../images/screenshots/SX2_citizen_timeline_multilingual_desktop.png Gr
 aphic file (type bmp)
 <../../images/screenshots/SX2_citizen_timeline_multilingual_desktop.png>
- [53
+ [54
 
 ]
 File: ../../images/screenshots/SX3_resolved_feedback_snapshot_desktop.png Graph
 ic file (type bmp)
 <../../images/screenshots/SX3_resolved_feedback_snapshot_desktop.png>
- [54
+ [55
 
 ]
 File: ../../images/screenshots/SX4_result_location_analysis_desktop.png Graphic
  file (type bmp)
 <../../images/screenshots/SX4_result_location_analysis_desktop.png>
- [55
+ [56
 
 ]
 File: ../../images/screenshots/SX5_result_grievance_description_desktop.png Gra
 phic file (type bmp)
 <../../images/screenshots/SX5_result_grievance_description_desktop.png>
 ) (chapters/ch06_implementation_planning.tex
-[56
+[57
 
 ]
 Chapter 6.
@@ -1586,251 +1674,603 @@ Underfull \hbox (badness 10000) in paragraph at lines 52--52
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 56--57
+Underfull \hbox (badness 10000) in paragraph at lines 56--56
 []|\TU/TimesNewRoman(0)/m/n/12 Reproducible orchestration of back-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 57--58
+Underfull \hbox (badness 10000) in paragraph at lines 57--57
 []|\TU/TimesNewRoman(0)/m/n/12 Unit/integration/security/resilience/load test
  []
 
-ignored error: Infinite glue shrinkage found in box being split [57
+ignored error: Infinite glue shrinkage found in box being split [58
 
-] [58]
-Overfull \hbox (10.20845pt too wide) in paragraph at lines 117--118
-[]\TU/TimesNewRoman(0)/m/n/12 Deliverables included production compose profile,
- deployment guides, API references, backup
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 138--138
+] [59]
+Underfull \hbox (badness 10000) in paragraph at lines 146--146
 []|\TU/TimesNewRoman(0)/m/n/12 Implement analyze pipeline
  []
 
 
-Underfull \hbox (badness 4013) in paragraph at lines 138--138
+Underfull \hbox (badness 4013) in paragraph at lines 146--146
 []|\TU/TimesNewRoman(0)/m/n/12 Build frontend analyze/result
  []
 
 
-Underfull \hbox (badness 7397) in paragraph at lines 138--138
+Underfull \hbox (badness 2707) in paragraph at lines 146--146
+[]|\TU/TimesNewRoman(0)/m/n/12 Depends on complaint schema maturity and
+ []
+
+
+Underfull \hbox (badness 7397) in paragraph at lines 146--146
 []|\TU/TimesNewRoman(0)/m/n/12 Add security and reliability
  []
 
-[59] [60]
-Underfull \hbox (badness 4416) in paragraph at lines 194--194
+[60] [61]
+Underfull \hbox (badness 4416) in paragraph at lines 206--206
 []|\TU/TimesNewRoman(0)/m/n/12 registration, login, profile
  []
 
 
-Underfull \hbox (badness 1259) in paragraph at lines 195--196
+Underfull \hbox (badness 1259) in paragraph at lines 207--207
 []|\TU/TimesNewRoman(0)/m/n/12 Needed consistent status-history ap-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 196--196
+Underfull \hbox (badness 10000) in paragraph at lines 208--208
 []|\TU/TimesNewRoman(0)/m/n/12 assignment views, ap-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 196--196
+Underfull \hbox (badness 10000) in paragraph at lines 208--208
 \TU/TimesNewRoman(0)/m/n/12 proval/rejection, service-
  []
 
 
-Underfull \hbox (badness 2626) in paragraph at lines 196--197
+Underfull \hbox (badness 2626) in paragraph at lines 208--208
 []|\TU/TimesNewRoman(0)/m/n/12 Needed separation between worker
  []
 
 
-Underfull \hbox (badness 3815) in paragraph at lines 196--197
+Underfull \hbox (badness 3815) in paragraph at lines 208--208
 \TU/TimesNewRoman(0)/m/n/12 self-actions and admin governance
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 199--199
+Underfull \hbox (badness 10000) in paragraph at lines 211--211
 []|\TU/TimesNewRoman(0)/m/n/12 dashboards, heatmap,
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 200--200
+Underfull \hbox (badness 10000) in paragraph at lines 212--212
 []|\TU/TimesNewRoman(0)/m/n/12 live/ready/models/gpu
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 200--201
+Underfull \hbox (badness 10000) in paragraph at lines 212--212
 []|\TU/TimesNewRoman(0)/m/n/12 Needed operationally meaningful
  []
 
-ignored error: Infinite glue shrinkage found in box being split [61]
-Underfull \hbox (badness 10000) in paragraph at lines 242--242
+ignored error: Infinite glue shrinkage found in box being split [62]
+Underfull \hbox (badness 10000) in paragraph at lines 259--259
 []|\TU/TimesNewRoman(0)/m/n/12 Environment readi-
  []
 
-[62]
-Underfull \hbox (badness 10000) in paragraph at lines 268--268
+[63]
+Underfull \hbox (badness 10000) in paragraph at lines 286--286
 []|\TU/TimesNewRoman(0)/m/n/12 Response header
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 270--270
+Underfull \hbox (badness 10000) in paragraph at lines 288--288
 []|\TU/TimesNewRoman(0)/m/n/12 /health/models end-
  []
 
 
-Underfull \hbox (badness 5563) in paragraph at lines 272--272
+Underfull \hbox (badness 5563) in paragraph at lines 290--290
 []|\TU/TimesNewRoman(0)/m/n/12 unread-count behavior
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 273--273
+Underfull \hbox (badness 10000) in paragraph at lines 291--291
 []|\TU/TimesNewRoman(0)/m/n/12 Assignment queue
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 273--273
+Underfull \hbox (badness 10000) in paragraph at lines 291--291
 []|\TU/TimesNewRoman(0)/m/n/12 open/unassigned com-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 273--273
+Underfull \hbox (badness 10000) in paragraph at lines 291--291
 \TU/TimesNewRoman(0)/m/n/12 plaints and worker
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 274--274
+Underfull \hbox (badness 10000) in paragraph at lines 292--292
 []|\TU/TimesNewRoman(0)/m/n/12 low-confidence com-
  []
 
-ignored error: Infinite glue shrinkage found in box being split [63])
-(chapters/ch07_testing.tex [64]
+ignored error: Infinite glue shrinkage found in box being split [64])
+(chapters/ch07_testing.tex [65]
 Chapter 7.
-ignored error: Infinite glue shrinkage found in box being split [65
 
-] [66]
-Underfull \hbox (badness 1297) in paragraph at lines 108--108
+Underfull \hbox (badness 10000) in paragraph at lines 56--56
+[]|\TU/TimesNewRoman(0)/m/n/12 GeoLocation bounds, complaint
+ []
+
+
+Underfull \hbox (badness 2735) in paragraph at lines 56--56
+\TU/TimesNewRoman(0)/m/n/12 schema validity, confidence-score
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 57--57
+[]|\TU/TimesNewRoman(0)/m/n/12 Token claims, admin and
+ []
+
+
+Underfull \hbox (badness 2799) in paragraph at lines 59--59
+[]|\TU/TimesNewRoman(0)/m/n/12 /api/v1 profile route, CORS pre-
+ []
+
+[66
+
+] [67]
+Underfull \hbox (badness 1297) in paragraph at lines 116--116
 []|\TU/TimesNewRoman(0)/m/n/12 Citizen upload -> analyze ->
  []
 
-[67]
-ignored error: Infinite glue shrinkage found in box being split [68]
-Underfull \hbox (badness 10000) in paragraph at lines 201--201
+[68]
+Underfull \hbox (badness 3646) in paragraph at lines 189--189
+[]|\TU/TimesNewRoman(0)/m/n/12 Reworked login end-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 189--189
+\TU/TimesNewRoman(0)/m/n/12 fields and validated
+ []
+
+
+Underfull \hbox (badness 7433) in paragraph at lines 190--190
+\TU/TimesNewRoman(0)/m/n/12 major versions com-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 190--190
+\TU/TimesNewRoman(0)/m/n/12 patible with current
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 191--191
+[]|\TU/TimesNewRoman(0)/m/n/12 Corrected compose
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 191--191
+\TU/TimesNewRoman(0)/m/n/12 volume target to
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 191--191
+\TU/TimesNewRoman(0)/m/n/12 /app/uploads and
+ []
+
+
+Underfull \hbox (badness 7468) in paragraph at lines 191--191
+\TU/TimesNewRoman(0)/m/n/12 cleaned stray nested
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 192--192
+[]|\TU/TimesNewRoman(0)/m/n/12 Added dedicated
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 192--192
+\TU/TimesNewRoman(0)/m/n/12 forgot/reset pages,
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 192--192
+\TU/TimesNewRoman(0)/m/n/12 route wiring, and
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 192--192
+\TU/TimesNewRoman(0)/m/n/12 contextual links in
+ []
+
+
+Underfull \hbox (badness 1424) in paragraph at lines 193--193
+[]|\TU/TimesNewRoman(0)/m/n/12 Repositioned link un-
+ []
+
+ignored error: Infinite glue shrinkage found in box being split [69]
+Underfull \hbox (badness 10000) in paragraph at lines 212--212
 []|\TU/TimesNewRoman(0)/m/n/12 Backend automated
  []
 
 
-Underfull \hbox (badness 7851) in paragraph at lines 201--201
+Underfull \hbox (badness 7685) in paragraph at lines 212--212
+[]|\TU/TimesNewRoman(0)/m/n/12 Controlled degraded responses confirmed for
+ []
+
+
+Underfull \hbox (badness 7851) in paragraph at lines 212--212
 []|\TU/TimesNewRoman(0)/m/n/12 Pass with re-
  []
 
-ignored error: Infinite glue shrinkage found in box being split [69]
-ignored error: Infinite glue shrinkage found in box being split [70]
-Underfull \hbox (badness 10000) in paragraph at lines 263--263
+[70]
+Underfull \hbox (badness 10000) in paragraph at lines 239--239
+[]|\TU/TimesNewRoman(0)/m/n/12 Account created
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 239--239
+\TU/TimesNewRoman(0)/m/n/12 and token-based
+ []
+
+
+Underfull \hbox (badness 3138) in paragraph at lines 240--240
+[]|\TU/TimesNewRoman(0)/m/n/12 Classification and
+ []
+
+
+Underfull \hbox (badness 3439) in paragraph at lines 240--240
+\TU/TimesNewRoman(0)/m/n/12 draft payload are
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 241--241
+[]|\TU/TimesNewRoman(0)/m/n/12 Complaint record
+ []
+
+
+Underfull \hbox (badness 1127) in paragraph at lines 242--242
+[]|\TU/TimesNewRoman(0)/m/n/12 View dashboard timeline after
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 242--242
+[]|\TU/TimesNewRoman(0)/m/n/12 Status history
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 242--242
+\TU/TimesNewRoman(0)/m/n/12 includes creation
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 243--243
+\TU/TimesNewRoman(0)/m/n/12 list are synchro-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 244--244
+[]|\TU/TimesNewRoman(0)/m/n/12 Forgot-password and reset-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 245--245
+[]|\TU/TimesNewRoman(0)/m/n/12 Only assigned
+ []
+
+
+Underfull \hbox (badness 3635) in paragraph at lines 245--245
+\TU/TimesNewRoman(0)/m/n/12 tasks and worker
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 246--246
+[]|\TU/TimesNewRoman(0)/m/n/12 Mark assigned complaint as
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 246--246
+[]|\TU/TimesNewRoman(0)/m/n/12 Complaint transi-
+ []
+
+
+Underfull \hbox (badness 4403) in paragraph at lines 246--246
+\TU/TimesNewRoman(0)/m/n/12 tions and worker
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 247--247
+[]|\TU/TimesNewRoman(0)/m/n/12 Department-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 247--247
+\TU/TimesNewRoman(0)/m/n/12 scoped records
+ []
+
+
+Underfull \hbox (badness 3323) in paragraph at lines 248--248
+[]|\TU/TimesNewRoman(0)/m/n/12 Update complaint status with
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 249--249
+[]|\TU/TimesNewRoman(0)/m/n/12 Access denied
+ []
+
+
+Underfull \hbox (badness 1668) in paragraph at lines 249--249
+\TU/TimesNewRoman(0)/m/n/12 with authorization
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 250--250
+[]|\TU/TimesNewRoman(0)/m/n/12 Worker status
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 250--250
+\TU/TimesNewRoman(0)/m/n/12 changes to ap-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 251--251
+[]|\TU/TimesNewRoman(0)/m/n/12 Assignment
+ []
+
+
+Underfull \hbox (badness 5050) in paragraph at lines 251--251
+\TU/TimesNewRoman(0)/m/n/12 reflected in com-
+ []
+
+
+Underfull \hbox (badness 1067) in paragraph at lines 251--251
+\TU/TimesNewRoman(0)/m/n/12 plaint and worker
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 252--252
+[]|\TU/TimesNewRoman(0)/m/n/12 Open triage queue and ap-
+ []
+
+
+Underfull \hbox (badness 2205) in paragraph at lines 253--253
+[]|\TU/TimesNewRoman(0)/m/n/12 All selected com-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 253--253
+\TU/TimesNewRoman(0)/m/n/12 plaints updated
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 254--254
+[]|\TU/TimesNewRoman(0)/m/n/12 Download file
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 254--254
+\TU/TimesNewRoman(0)/m/n/12 with expected
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 255--255
+[]|\TU/TimesNewRoman(0)/m/n/12 View analytics and heatmap
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 255--255
+[]|\TU/TimesNewRoman(0)/m/n/12 Aggregates and
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 256--256
+[]|\TU/TimesNewRoman(0)/m/n/12 Anonymized list-
+ []
+
+
+Underfull \hbox (badness 1038) in paragraph at lines 257--257
+[]|\TU/TimesNewRoman(0)/m/n/12 Submit malformed image pay-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 257--257
+[]|\TU/TimesNewRoman(0)/m/n/12 Request rejected
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 257--257
+\TU/TimesNewRoman(0)/m/n/12 with safe valida-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 258--258
+[]|\TU/TimesNewRoman(0)/m/n/12 User-friendly
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 258--258
+\TU/TimesNewRoman(0)/m/n/12 retryable 503
+ []
+
+ignored error: Infinite glue shrinkage found in box being split [71]
+Underfull \hbox (badness 10000) in paragraph at lines 274--274
 []|\TU/TimesNewRoman(0)/b/n/12 Spawn
  []
 
-[71]) (chapters/ch08_limitations_future_scope.tex [72]
-Chapter 8.
-[73
+[72]
+Underfull \hbox (badness 10000) in paragraph at lines 283--283
+[]|\TU/TimesNewRoman(0)/b/n/12 Expected
+ []
 
-]
-Underfull \hbox (badness 10000) in paragraph at lines 93--93
+
+Underfull \hbox (badness 10000) in paragraph at lines 287--287
+[]|\TU/TimesNewRoman(0)/b/n/12 Expected
+ []
+
+
+Underfull \hbox (badness 5036) in paragraph at lines 290--290
+[]|\TU/TimesNewRoman(0)/m/n/12 Invalid bearer token on pro-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 290--290
+[]|\TU/TimesNewRoman(0)/m/n/12 Unauthorized access
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 294--294
+[]|\TU/TimesNewRoman(0)/m/n/12 200 with
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 295--295
+[]|\TU/TimesNewRoman(0)/m/n/12 Notification read on foreign
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 295--295
+[]|\TU/TimesNewRoman(0)/m/n/12 Ownership scope pre-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 296--296
+[]|\TU/TimesNewRoman(0)/m/n/12 nosniff, frame deny,
+ []
+
+
+Underfull \hbox (badness 2495) in paragraph at lines 296--296
+\TU/TimesNewRoman(0)/m/n/12 CSP and policy headers
+ []
+
+
+Underfull \hbox (badness 1803) in paragraph at lines 297--297
+[]|\TU/TimesNewRoman(0)/m/n/12 CORS preflight from allowed
+ []
+
+
+Underfull \hbox (badness 3168) in paragraph at lines 297--297
+[]|\TU/TimesNewRoman(0)/m/n/12 Allow-origin policy con-
+ []
+
+
+Underfull \hbox (badness 1270) in paragraph at lines 298--298
+[]|\TU/TimesNewRoman(0)/m/n/12 Invalid/expired reset token us-
+ []
+
+
+Underfull \hbox (badness 4713) in paragraph at lines 299--299
+[]|\TU/TimesNewRoman(0)/m/n/12 Controlled degrade mes-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 299--299
+\TU/TimesNewRoman(0)/m/n/12 sage returned without
+ []
+
+ignored error: Infinite glue shrinkage found in box being split [73])
+(chapters/ch08_limitations_future_scope.tex [74]
+Chapter 8.
+[75
+
+] [76]
+Underfull \hbox (badness 10000) in paragraph at lines 116--116
 []|\TU/TimesNewRoman(0)/m/n/12 Scale and institutionaliza-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 112--112
+Underfull \hbox (badness 1466) in paragraph at lines 116--116
+[]|\TU/TimesNewRoman(0)/m/n/12 Distributed queueing, observability stack,
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 136--136
 []|\TU/TimesNewRoman(0)/m/n/12 Domain-adapted classifier
  []
 
 
-Underfull \hbox (badness 2376) in paragraph at lines 113--113
+Underfull \hbox (badness 2376) in paragraph at lines 137--137
 []|\TU/TimesNewRoman(0)/m/n/12 Duplicate complaint detec-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 114--114
+Underfull \hbox (badness 10000) in paragraph at lines 138--138
 []|\TU/TimesNewRoman(0)/m/n/12 SLA rules engine with
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 114--114
+Underfull \hbox (badness 10000) in paragraph at lines 138--138
 \TU/TimesNewRoman(0)/m/n/12 department-specific thresh-
  []
 
 
-Underfull \hbox (badness 3635) in paragraph at lines 119--119
+Underfull \hbox (badness 3635) in paragraph at lines 143--143
 []|\TU/TimesNewRoman(0)/m/n/12 Expanded public analytics
  []
 
 
-Underfull \hbox (badness 1189) in paragraph at lines 120--120
+Underfull \hbox (badness 1189) in paragraph at lines 144--144
 []|\TU/TimesNewRoman(0)/m/n/12 Multi-tenant authority hier-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 122--122
+Underfull \hbox (badness 10000) in paragraph at lines 146--146
 []|\TU/TimesNewRoman(0)/m/n/12 Integrated vulnerability
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 123--123
+Underfull \hbox (badness 10000) in paragraph at lines 147--147
 []|\TU/TimesNewRoman(0)/m/n/12 Observability stack with
  []
 
 
-Underfull \hbox (badness 6758) in paragraph at lines 125--125
+Underfull \hbox (badness 6758) in paragraph at lines 149--149
 []|\TU/TimesNewRoman(0)/m/n/12 Complaint closure quality
  []
 
 
-Underfull \hbox (badness 7379) in paragraph at lines 126--126
+Underfull \hbox (badness 7379) in paragraph at lines 150--150
 []|\TU/TimesNewRoman(0)/m/n/12 Auto-generated administra-
  []
 
 
-Underfull \hbox (badness 1072) in paragraph at lines 127--127
+Underfull \hbox (badness 1072) in paragraph at lines 151--151
 []|\TU/TimesNewRoman(0)/m/n/12 Predictive hotspot forecast-
  []
 
-[74]
-ignored error: Infinite glue shrinkage found in box being split [75])
-(chapters/ch09_conclusion_references.tex [76]
+ignored error: Infinite glue shrinkage found in box being split [77] [78])
+(chapters/ch09_conclusion_references.tex [79]
 Chapter 9.
-[77
+[80
 
-]) (chapters/ch10_appendices.tex [78
+]) (chapters/ch10_appendices.tex [81
 
 ]
 Chapter 10.
 
-Underfull \hbox (badness 10000) in paragraph at lines 18--19
+Underfull \hbox (badness 10000) in paragraph at lines 18--18
 []|\TU/TimesNewRoman(0)/m/n/10.95 Citizen/worker self-
  []
 
 
-Underfull \hbox (badness 1242) in paragraph at lines 22--23
+Underfull \hbox (badness 1242) in paragraph at lines 22--22
 []|\TU/TimesNewRoman(0)/m/n/10.95 Reset token issuance re-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 23--24
+Underfull \hbox (badness 10000) in paragraph at lines 23--23
 []|\TU/TimesNewRoman(0)/m/n/10.95 Password reset submis-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 26--27
+Underfull \hbox (badness 10000) in paragraph at lines 26--26
 []|\TU/TimesNewRoman(0)/m/n/10.95 Regenerate complaint
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 27--28
+Underfull \hbox (badness 10000) in paragraph at lines 27--27
 []|\TU/TimesNewRoman(0)/m/n/10.95 Poll queued generation
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 30--31
+Underfull \hbox (badness 10000) in paragraph at lines 30--30
 []|\TU/TimesNewRoman(0)/m/n/10.95 Role-filtered complaint
  []
 
@@ -1860,7 +2300,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 37--37
  []
 
 
-Underfull \hbox (badness 7704) in paragraph at lines 38--39
+Underfull \hbox (badness 7704) in paragraph at lines 38--38
 []|\TU/TimesNewRoman(0)/m/n/10.95 Add collaborative com-
  []
 
@@ -1870,17 +2310,17 @@ Underfull \hbox (badness 10000) in paragraph at lines 48--48
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 52--53
+Underfull \hbox (badness 10000) in paragraph at lines 52--52
 []|\TU/TimesNewRoman(0)/m/n/10.95 Update worker service
  []
 
 
-Underfull \hbox (badness 2478) in paragraph at lines 58--59
+Underfull \hbox (badness 2478) in paragraph at lines 58--58
 []|\TU/TimesNewRoman(0)/m/n/10.95 Mark single notification
  []
 
 
-Underfull \hbox (badness 7925) in paragraph at lines 61--62
+Underfull \hbox (badness 7925) in paragraph at lines 61--61
 []|\TU/TimesNewRoman(0)/m/n/10.95 Retrieve low-confidence
  []
 
@@ -1890,26 +2330,32 @@ Underfull \hbox (badness 10000) in paragraph at lines 65--65
  []
 
 
-Underfull \hbox (badness 1142) in paragraph at lines 66--67
+Underfull \hbox (badness 1142) in paragraph at lines 66--66
 []|\TU/TimesNewRoman(0)/m/n/10.95 Public anonymized com-
  []
 
-ignored error: Infinite glue shrinkage found in box being split [79
+ignored error: Infinite glue shrinkage found in box being split [82
 
 ]
-Underfull \hbox (badness 10000) in paragraph at lines 86--87
+Underfull \hbox (badness 10000) in paragraph at lines 86--86
 []|\TU/TimesNewRoman(0)/m/n/10.95 Runtime mode (develop-
  []
 
-[80]
-ignored error: Infinite glue shrinkage found in box being split [81] [82]
-[83] [84]
-Underfull \hbox (badness 3386) in paragraph at lines 308--309
+
+Underfull \hbox (badness 10000) in paragraph at lines 92--92
+[]|\TU/TimesNewRoman(0)/m/n/10.95 1440 (dev) / 480
+ []
+
+[83]
+ignored error: Infinite glue shrinkage found in box being split [84]
+ignored error: Infinite glue shrinkage found in box being split [85]
+ignored error: Infinite glue shrinkage found in box being split [86] [87]
+Underfull \hbox (badness 3386) in paragraph at lines 308--308
 []|\TU/TimesNewRoman(0)/m/n/12 Security hardening: upload checks, sanitization,
 
  []
 
-ignored error: Infinite glue shrinkage found in box being split [85]
+[88]
 Underfull \hbox (badness 10000) in paragraph at lines 327--327
 []|\TU/TimesNewRoman(0)/b/n/12 Validation Evi-
  []
@@ -2089,23 +2535,23 @@ Underfull \hbox (badness 10000) in paragraph at lines 355--355
 \TU/TimesNewRoman(0)/m/n/12 checks in matrix
  []
 
-ignored error: Infinite glue shrinkage found in box being split [86]
-ignored error: Infinite glue shrinkage found in box being split [87]) [88]
+[89]
+ignored error: Infinite glue shrinkage found in box being split [90]) [91]
 (main.aux)
  ***********
 LaTeX2e <2025-11-01>
 L3 programming layer <2025-12-24>
  ***********
 Package rerunfilecheck Info: File `main.out' has not changed.
-(rerunfilecheck)             Checksum: A8B09687E543A613C9B916BE70669AB1;37581.
+(rerunfilecheck)             Checksum: 3902536FBDF36BCDFFF81EFB179F314C;37433.
  ) 
 Here is how much of TeX's memory you used:
- 17174 strings out of 402987
- 333177 string characters out of 5448525
- 919243 words of memory out of 5000000
- 45630 multiletter control sequences out of 15000+600000
- 632871 words of font info for 87 fonts, out of 8000000 for 9000
+ 17270 strings out of 402987
+ 335241 string characters out of 5448525
+ 934497 words of memory out of 5000000
+ 45722 multiletter control sequences out of 15000+600000
+ 632879 words of font info for 88 fonts, out of 8000000 for 9000
  1348 hyphenation exceptions out of 8191
- 73i,12n,93p,1003b,654s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 73i,12n,93p,1003b,648s stack positions out of 10000i,1000n,20000p,200000b,200000s
 
-Output written on main.pdf (101 pages).
+Output written on main.pdf (105 pages).

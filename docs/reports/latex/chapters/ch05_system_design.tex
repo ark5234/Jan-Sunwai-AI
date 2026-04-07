@@ -17,24 +17,27 @@ The platform follows a layered service architecture:
 \item AI Runtime Layer: Ollama-hosted models with staged invocation.
 \end{itemize}
 
-\placeholderfigure{Figure 1: Overall System Context Diagram}{Users interact with the frontend, which communicates with backend APIs. Backend coordinates MongoDB, uploads storage, AI runtime, notification logic, and escalation loop.}
+\placeholderfigure{Overall System Context Diagram}{Users interact with the frontend, which communicates with backend APIs. Backend coordinates MongoDB, uploads storage, AI runtime, notification logic, and escalation loop.}
 
-\placeholderfigure{Figure 2: Component Architecture Diagram}{Frontend modules map to backend routers and services. Persistence collections and model runtime are isolated behind service interfaces for maintainability and testability.}
+\placeholderfigure{Component Architecture Diagram}{Frontend modules map to backend routers and services. Persistence collections and model runtime are isolated behind service interfaces for maintainability and testability.}
 
 \subsection{Key Architectural Decisions}
 
+The following table summarizes the major points relevant to this subsection for quick review.
+
+
 \begin{table}[H]
 \centering
-\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}p{0.33\textwidth}|X|}
+\begin{tabularx}{\textwidth}{|p{0.33\textwidth}|X|}
 \toprule
-\textbf{Decision} & \textbf{Rationale} \\
+\textbf{Decision} & \textbf{Rationale} \\ \hline
 \midrule
-Hybrid AI pipeline (vision + rules + optional reasoning) & Reduces hallucination risk, lowers VRAM pressure, and improves deterministic routing for common civic scenes \\
-Document model in MongoDB & Supports rich complaint lifecycle payloads and embedded audit metadata without heavy relational join overhead \\
-Role-specific route gates & Enforces operational boundaries between citizen, worker, department head, and admin personas \\
-Queue-based draft generation fallback & Prevents long-running model calls from blocking frontend experience \\
-Security middleware and sanitization by default & Reduces exploit surface for API consumers and file uploads \\
-Versioned API alias (/api/v1) & Improves long-term integration stability for external municipal consumers \\
+Hybrid AI pipeline (vision + rules + optional reasoning) & Reduces hallucination risk, lowers VRAM pressure, and improves deterministic routing for common civic scenes \\ \hline
+Document model in MongoDB & Supports rich complaint lifecycle payloads and embedded audit metadata without heavy relational join overhead \\ \hline
+Role-specific route gates & Enforces operational boundaries between citizen, worker, department head, and admin personas \\ \hline
+Queue-based draft generation fallback & Prevents long-running model calls from blocking frontend experience \\ \hline
+Security middleware and sanitization by default & Reduces exploit surface for API consumers and file uploads \\ \hline
+Versioned API alias (/api/v1) & Improves long-term integration stability for external municipal consumers \\ \hline
 \bottomrule
 \end{tabularx}
 \caption{Major Design Decisions and Rationale}
@@ -43,37 +46,39 @@ Versioned API alias (/api/v1) & Improves long-term integration stability for ext
 
 \section{UML Diagrams}
 
+The following diagrams are aligned with the implemented module boundaries, routing flow, and lifecycle stages documented in the project report and API references.
+
 \subsection{E-R Diagram}
 
-\placeholderfigure{Figure 3: E-R Diagram}{Primary entities: User, Complaint, Notification, and PasswordReset token. Relationships include complaint ownership, assignment, and notification generation.}
+\placeholderfigure{E-R Diagram}{Primary entities: User, Complaint, Notification, and PasswordReset token. Relationships include complaint ownership, assignment, and notification generation.}
 
 \subsection{Use Case Diagram}
 
-\placeholderfigure{Figure 4: Use Case Diagram}{Citizen submits and tracks complaints; worker resolves assignments; department head updates status; admin governs approvals, triage, and analytics.}
+\placeholderfigure{Use Case Diagram}{Citizen submits and tracks complaints; worker resolves assignments; department head updates status; admin governs approvals, triage, and analytics.}
 
 \subsection{Class Diagram}
 
-\placeholderfigure{Figure 5: Class Diagram}{Schema-level classes represent User, Complaint, and Notification with association to role, status, and metadata properties.}
+\placeholderfigure{Class Diagram}{Schema-level classes represent User, Complaint, and Notification with association to role, status, and metadata properties.}
 
 \subsection{Sequence Diagram}
 
-\placeholderfigure{Figure 6: Sequence Diagram}{Upload -> analyze -> generate draft -> submit complaint -> auto-assign -> status updates -> notifications.}
+\placeholderfigure{Sequence Diagram}{Upload -> analyze -> generate draft -> submit complaint -> auto-assign -> status updates -> notifications.}
 
 \subsection{Activity Diagram}
 
-\placeholderfigure{Figure 7: Activity Diagram}{Lifecycle from citizen intake through operational processing and closure with feedback and audit logging.}
+\placeholderfigure{Activity Diagram}{Lifecycle from citizen intake through operational processing and closure with feedback and audit logging.}
 
 \subsection{DFD Diagram}
 
-\placeholderfigure{Figure 8: Data Flow Diagram}{Data moves from frontend to API services, then to persistence and AI runtime. Notification and analytics streams derive from lifecycle events.}
+\placeholderfigure{Data Flow Diagram}{Data moves from frontend to API services, then to persistence and AI runtime. Notification and analytics streams derive from lifecycle events.}
 
 \subsection{Deployment Diagram}
 
-\placeholderfigure{Figure 9: Deployment Diagram}{Browser clients access frontend service; frontend proxies API calls to backend service; backend communicates with MongoDB and host-level Ollama runtime.}
+\placeholderfigure{Deployment Diagram}{Browser clients access frontend service; frontend proxies API calls to backend service; backend communicates with MongoDB and host-level Ollama runtime.}
 
 \section{Database Design}
 
-\subsection{Collection Design and Relationships}
+\subsection{Table Design and Relationships}
 
 The database is organized around four principal collections:
 
@@ -86,7 +91,7 @@ The database is organized around four principal collections:
 
 The design intentionally keeps lifecycle and audit structures close to complaint documents for locality and retrieval simplicity.
 
-\subsection{Normalization Strategy}
+\subsection{Normalization}
 
 The platform uses controlled denormalization:
 
@@ -101,88 +106,90 @@ This approach preserves operational read performance while retaining clear owner
 \subsection{Data Dictionary}
 
 \small
-\begin{longtable}{|>{\raggedright\arraybackslash}p{0.15\textwidth}|>{\raggedright\arraybackslash}p{0.23\textwidth}|>{\raggedright\arraybackslash}p{0.16\textwidth}|>{\raggedright\arraybackslash}p{0.38\textwidth}|}
-\caption{Data Dictionary (Core Fields)}\\
-\label{tab:data-dictionary}\\
+\begin{longtable}{|p{0.15\textwidth}|p{0.23\textwidth}|p{0.16\textwidth}|p{0.38\textwidth}|}
+\caption{Data Dictionary (Core Fields)}\label{tab:data-dictionary}\\
 \toprule
-\textbf{Collection} & \textbf{Field} & \textbf{Type} & \textbf{Purpose} \\
+\textbf{Collection} & \textbf{Field} & \textbf{Type} & \textbf{Purpose} \\ \hline
 \midrule
 \endfirsthead
 \toprule
-\textbf{Collection} & \textbf{Field} & \textbf{Type} & \textbf{Purpose} \\
+\textbf{Collection} & \textbf{Field} & \textbf{Type} & \textbf{Purpose} \\ \hline
 \midrule
 \endhead
-users & \_id & ObjectId & Primary identifier for user record \\
-users & username & String & Unique login identity \\
-users & email & String & Unique contact and recovery identity \\
-users & password & String (hash) & bcrypt password hash \\
-users & role & Enum/String & Citizen, worker, department head, admin \\
-users & department & String & Department linkage for worker and head roles \\
-users & is\_approved & Boolean & Worker approval gate \\
-users & worker\_status & String & Availability state (available/offline/busy) \\
-users & active\_complaint\_ids & Array[String] & Assigned active complaint references \\
-users & service\_area & Object & Worker geofence with lat, lon, radius\_km \\
-users & created\_at / updated\_at & Datetime & Audit timestamps \\
+users & \_id & ObjectId & Primary identifier for user record \\ \hline
+users & username & String & Unique login identity \\ \hline
+users & email & String & Unique contact and recovery identity \\ \hline
+users & password & String (hash) & bcrypt password hash \\ \hline
+users & role & Enum/String & Citizen, worker, department head, admin \\ \hline
+users & department & String & Department linkage for worker and head roles \\ \hline
+users & is\_approved & Boolean & Worker approval gate \\ \hline
+users & worker\_status & String & Availability state (available/offline/busy) \\ \hline
+users & active\_complaint\_ids & Array[String] & Assigned active complaint references \\ \hline
+users & service\_area & Object & Worker geofence with lat, lon, radius\_km \\ \hline
+users & created\_at / updated\_at & Datetime & Audit timestamps \\ \hline
 \midrule
-complaints & \_id & ObjectId & Primary complaint identity \\
-complaints & user\_id & String & Citizen owner reference \\
-complaints & assigned\_to & String/Null & Worker currently assigned \\
-complaints & authority\_id & String & Current authority mapping \\
-complaints & department & String & Canonical department label \\
-complaints & status & Enum/String & Open/In Progress/Resolved/Rejected \\
-complaints & priority & Enum/String & Derived urgency priority \\
-complaints & description & String & Citizen complaint text \\
-complaints & image\_url & String & Stored upload path \\
-complaints & location & Object & Geospatial metadata and address \\
-complaints & ai\_metadata & Object & Model, confidence, labels, rationale fields \\
-complaints & routing\_confidence & Float & Routing confidence metadata \\
-complaints & escalated & Boolean & Escalation state \\
-complaints & \path{escalation_parent_authority_id} & String/Null & Parent target for escalation \\
-complaints & status\_history & Array[Object] & Lifecycle transition audit \\
-complaints & dept\_notes & Array[Object] & Internal notes for admin/head \\
-complaints & comments & Array[Object] & Shared comment thread \\
-complaints & feedback & Object/Null & Citizen post-resolution feedback \\
-complaints & is\_duplicate / duplicate\_of & Boolean/String & Duplicate detection metadata \\
-complaints & created\_at / updated\_at & Datetime & Lifecycle timestamps \\
+complaints & \_id & ObjectId & Primary complaint identity \\ \hline
+complaints & user\_id & String & Citizen owner reference \\ \hline
+complaints & assigned\_to & String/Null & Worker currently assigned \\ \hline
+complaints & authority\_id & String & Current authority mapping \\ \hline
+complaints & department & String & Canonical department label \\ \hline
+complaints & status & Enum/String & Open/In Progress/Resolved/Rejected \\ \hline
+complaints & priority & Enum/String & Derived urgency priority \\ \hline
+complaints & description & String & Citizen complaint text \\ \hline
+complaints & image\_url & String & Stored upload path \\ \hline
+complaints & location & Object & Geospatial metadata and address \\ \hline
+complaints & ai\_metadata & Object & Model, confidence, labels, rationale fields \\ \hline
+complaints & routing\_confidence & Float & Routing confidence metadata \\ \hline
+complaints & escalated & Boolean & Escalation state \\ \hline
+complaints & \path{escalation_parent_authority_id} & String/Null & Parent target for escalation \\ \hline
+complaints & status\_history & Array[Object] & Lifecycle transition audit \\ \hline
+complaints & dept\_notes & Array[Object] & Internal notes for admin/head \\ \hline
+complaints & comments & Array[Object] & Shared comment thread \\ \hline
+complaints & feedback & Object/Null & Citizen post-resolution feedback \\ \hline
+complaints & is\_duplicate / duplicate\_of & Boolean/String & Duplicate detection metadata \\ \hline
+complaints & created\_at / updated\_at & Datetime & Lifecycle timestamps \\ \hline
 \midrule
-notifications & \_id & ObjectId & Notification identifier \\
-notifications & user\_id & String & Recipient user identity \\
-notifications & complaint\_id & String/Null & Related complaint reference \\
-notifications & type & String & Notification category (status/escalation/etc.) \\
-notifications & title & String & Display title \\
-notifications & message & String & Display message \\
-notifications & is\_read & Boolean & Read-state for badge computation \\
-notifications & created\_at & Datetime & Event timestamp \\
+notifications & \_id & ObjectId & Notification identifier \\ \hline
+notifications & user\_id & String & Recipient user identity \\ \hline
+notifications & complaint\_id & String/Null & Related complaint reference \\ \hline
+notifications & type & String & Notification category (status/escalation/etc.) \\ \hline
+notifications & title & String & Display title \\ \hline
+notifications & message & String & Display message \\ \hline
+notifications & is\_read & Boolean & Read-state for badge computation \\ \hline
+notifications & created\_at & Datetime & Event timestamp \\ \hline
 \midrule
-\path{password_resets} & \_id & ObjectId & Reset record identity \\
-\path{password_resets} & user\_id & String & Target user identity \\
-\path{password_resets} & token\_hash & String & SHA-256 hash of reset token \\
-\path{password_resets} & used & Boolean & Token consumed/revoked marker \\
-\path{password_resets} & created\_at & Datetime & Token issued time \\
-\path{password_resets} & expires\_at & Datetime & TTL-controlled expiry time \\
-\path{password_resets} & used\_at / revoked\_at / expired\_at & Datetime/Null & Token lifecycle audit fields \\
+\path{password_resets} & \_id & ObjectId & Reset record identity \\ \hline
+\path{password_resets} & user\_id & String & Target user identity \\ \hline
+\path{password_resets} & token\_hash & String & SHA-256 hash of reset token \\ \hline
+\path{password_resets} & used & Boolean & Token consumed/revoked marker \\ \hline
+\path{password_resets} & created\_at & Datetime & Token issued time \\ \hline
+\path{password_resets} & expires\_at & Datetime & TTL-controlled expiry time \\ \hline
+\path{password_resets} & used\_at / revoked\_at / expired\_at & Datetime/Null & Token lifecycle audit fields \\ \hline
 \bottomrule
 \end{longtable}
 \normalsize
 
 \subsection{Indexing Strategy}
 
+The following table summarizes the major points relevant to this subsection for quick review.
+
+
 \begin{table}[H]
 \centering
-\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}p{0.22\textwidth}|>{\raggedright\arraybackslash}p{0.31\textwidth}|X|}
+\begin{tabularx}{\textwidth}{|p{0.22\textwidth}|p{0.31\textwidth}|X|}
 \toprule
-\textbf{Collection} & \textbf{Index} & \textbf{Purpose} \\
+\textbf{Collection} & \textbf{Index} & \textbf{Purpose} \\ \hline
 \midrule
-users & unique(username), unique(email) & Fast auth lookups and uniqueness enforcement \\
-complaints & (user\_id, created\_at) & Efficient citizen dashboard history retrieval \\
-complaints & (status, created\_at) & Queue and status-oriented admin filtering \\
-complaints & (department, created\_at) & Department-level operational listing \\
-complaints & authority\_id & Escalation and authority review queries \\
-notifications & (user\_id, created\_at) & Ordered notification feed retrieval \\
-notifications & (user\_id, is\_read) & Unread badge counter queries \\
-\path{password_resets} & \path{unique(token_hash)} & Token lookup and collision prevention \\
-\path{password_resets} & \path{(user_id, used)} & Active token invalidation management \\
-\path{password_resets} & \path{TTL(expires_at)} & Automatic expired-token cleanup \\
+users & unique(username), unique(email) & Fast auth lookups and uniqueness enforcement \\ \hline
+complaints & (user\_id, created\_at) & Efficient citizen dashboard history retrieval \\ \hline
+complaints & (status, created\_at) & Queue and status-oriented admin filtering \\ \hline
+complaints & (department, created\_at) & Department-level operational listing \\ \hline
+complaints & authority\_id & Escalation and authority review queries \\ \hline
+notifications & (user\_id, created\_at) & Ordered notification feed retrieval \\ \hline
+notifications & (user\_id, is\_read) & Unread badge counter queries \\ \hline
+\path{password_resets} & \path{unique(token_hash)} & Token lookup and collision prevention \\ \hline
+\path{password_resets} & \path{(user_id, used)} & Active token invalidation management \\ \hline
+\path{password_resets} & \path{TTL(expires_at)} & Automatic expired-token cleanup \\ \hline
 \bottomrule
 \end{tabularx}
 \caption{Indexing Strategy by Collection}
@@ -214,21 +221,24 @@ The UI follows practical governance portal principles:
 
 \subsection{Interface Areas}
 
+The following table summarizes the major points relevant to this subsection for quick review.
+
+
 \begin{table}[H]
 \centering
-\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}p{0.25\textwidth}|X|}
+\begin{tabularx}{\textwidth}{|p{0.25\textwidth}|X|}
 \toprule
-\textbf{Interface Area} & \textbf{Purpose} \\
+\textbf{Interface Area} & \textbf{Purpose} \\ \hline
 \midrule
-Public Home & Awareness, role entry points, and transparency access \\
-Authentication Screens & Login, registration, forgot password, reset password \\
-Analyze and Result Views & Upload, AI analysis display, map interaction, draft review \\
-Citizen Dashboard & Complaint list, timeline, feedback, and progress visibility \\
-Worker Dashboard & Assigned queue and completion updates \\
-Department Head Dashboard & Department-level filtering, status updates, and notes \\
-Admin Dashboard & Global queue, approvals, triage, bulk actions, analytics, exports \\
-Notification Panel & Event feed and read-state management \\
-Profile Screen & Personal information update controls \\
+Public Home & Awareness, role entry points, and transparency access \\ \hline
+Authentication Screens & Login, registration, forgot password, reset password \\ \hline
+Analyze and Result Views & Upload, AI analysis display, map interaction, draft review \\ \hline
+Citizen Dashboard & Complaint list, timeline, feedback, and progress visibility \\ \hline
+Worker Dashboard & Assigned queue and completion updates \\ \hline
+Department Head Dashboard & Department-level filtering, status updates, and notes \\ \hline
+Admin Dashboard & Global queue, approvals, triage, bulk actions, analytics, exports \\ \hline
+Notification Panel & Event feed and read-state management \\ \hline
+Profile Screen & Personal information update controls \\ \hline
 \bottomrule
 \end{tabularx}
 \caption{GUI Areas and Purpose}
@@ -236,6 +246,9 @@ Profile Screen & Personal information update controls \\
 \end{table}
 
 \subsection{Wireframe Reference}
+
+The following figure provides a visual reference that complements the explanatory text in this subsection.
+
 
 \begin{figure}[H]
 \centering

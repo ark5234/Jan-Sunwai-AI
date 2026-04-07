@@ -4,36 +4,36 @@
 \addvspace {10\p@ }
 \contentsline {figure}{\numberline {4.1}{\ignorespaces Proposed End-to-End Workflow}}{24}{figure.caption.19}%
 \addvspace {10\p@ }
-\contentsline {figure}{\numberline {5.1}{\ignorespaces Figure 1: Overall System Context Diagram}}{27}{figure.caption.22}%
-\contentsline {figure}{\numberline {5.2}{\ignorespaces Figure 2: Component Architecture Diagram}}{28}{figure.caption.23}%
-\contentsline {figure}{\numberline {5.3}{\ignorespaces Figure 3: E-R Diagram}}{29}{figure.caption.25}%
-\contentsline {figure}{\numberline {5.4}{\ignorespaces Figure 4: Use Case Diagram}}{29}{figure.caption.26}%
-\contentsline {figure}{\numberline {5.5}{\ignorespaces Figure 5: Class Diagram}}{30}{figure.caption.27}%
-\contentsline {figure}{\numberline {5.6}{\ignorespaces Figure 6: Sequence Diagram}}{30}{figure.caption.28}%
-\contentsline {figure}{\numberline {5.7}{\ignorespaces Figure 7: Activity Diagram}}{31}{figure.caption.29}%
-\contentsline {figure}{\numberline {5.8}{\ignorespaces Figure 8: Data Flow Diagram}}{31}{figure.caption.30}%
-\contentsline {figure}{\numberline {5.9}{\ignorespaces Figure 9: Deployment Diagram}}{32}{figure.caption.31}%
-\contentsline {figure}{\numberline {5.10}{\ignorespaces GUI Wireframe Reference from Project Documentation}}{36}{figure.caption.34}%
-\contentsline {figure}{\numberline {5.11}{\ignorespaces S01: Home Page Hero and Public Entry CTA}}{37}{figure.caption.35}%
-\contentsline {figure}{\numberline {5.12}{\ignorespaces S02: Login Page}}{38}{figure.caption.36}%
-\contentsline {figure}{\numberline {5.13}{\ignorespaces S03: Citizen Registration Page}}{39}{figure.caption.37}%
-\contentsline {figure}{\numberline {5.14}{\ignorespaces S04: Reset Password Page}}{40}{figure.caption.38}%
-\contentsline {figure}{\numberline {5.15}{\ignorespaces S05: Admin Dashboard Overview}}{41}{figure.caption.39}%
-\contentsline {figure}{\numberline {5.16}{\ignorespaces S06: Triage Human Review Queue}}{42}{figure.caption.40}%
-\contentsline {figure}{\numberline {5.17}{\ignorespaces S07: Worker Assignment Panel}}{43}{figure.caption.41}%
-\contentsline {figure}{\numberline {5.18}{\ignorespaces S08: Analytics Dashboard}}{44}{figure.caption.42}%
-\contentsline {figure}{\numberline {5.19}{\ignorespaces S09: Complaints Map Overview (Satellite Layer)}}{45}{figure.caption.43}%
-\contentsline {figure}{\numberline {5.20}{\ignorespaces S10: Map Popup Detail View}}{46}{figure.caption.44}%
-\contentsline {figure}{\numberline {5.21}{\ignorespaces S11: Public Grievance Board}}{47}{figure.caption.45}%
-\contentsline {figure}{\numberline {5.22}{\ignorespaces S12: Grievance Heatmap Page}}{48}{figure.caption.46}%
-\contentsline {figure}{\numberline {5.23}{\ignorespaces S13: Profile Page (Admin)}}{49}{figure.caption.47}%
-\contentsline {figure}{\numberline {5.24}{\ignorespaces S14: Citizen Dashboard with Timeline}}{50}{figure.caption.48}%
-\contentsline {figure}{\numberline {5.25}{\ignorespaces S15: Notifications Dropdown Panel}}{51}{figure.caption.49}%
-\contentsline {figure}{\numberline {5.26}{\ignorespaces SX1: File Complaint Upload Interface}}{52}{figure.caption.50}%
-\contentsline {figure}{\numberline {5.27}{\ignorespaces SX2: Multilingual Citizen Timeline Snapshot}}{53}{figure.caption.51}%
-\contentsline {figure}{\numberline {5.28}{\ignorespaces SX3: Resolved Complaint with Citizen Feedback}}{54}{figure.caption.52}%
-\contentsline {figure}{\numberline {5.29}{\ignorespaces SX4: Result Page with Location Context and AI Analysis}}{55}{figure.caption.53}%
-\contentsline {figure}{\numberline {5.30}{\ignorespaces SX5: Result Page with Grievance Description Editing}}{56}{figure.caption.54}%
+\contentsline {figure}{\numberline {5.1}{\ignorespaces Overall System Context Diagram}}{27}{figure.caption.22}%
+\contentsline {figure}{\numberline {5.2}{\ignorespaces Component Architecture Diagram}}{28}{figure.caption.23}%
+\contentsline {figure}{\numberline {5.3}{\ignorespaces E-R Diagram}}{29}{figure.caption.25}%
+\contentsline {figure}{\numberline {5.4}{\ignorespaces Use Case Diagram}}{29}{figure.caption.26}%
+\contentsline {figure}{\numberline {5.5}{\ignorespaces Class Diagram}}{30}{figure.caption.27}%
+\contentsline {figure}{\numberline {5.6}{\ignorespaces Sequence Diagram}}{30}{figure.caption.28}%
+\contentsline {figure}{\numberline {5.7}{\ignorespaces Activity Diagram}}{31}{figure.caption.29}%
+\contentsline {figure}{\numberline {5.8}{\ignorespaces Data Flow Diagram}}{31}{figure.caption.30}%
+\contentsline {figure}{\numberline {5.9}{\ignorespaces Deployment Diagram}}{32}{figure.caption.31}%
+\contentsline {figure}{\numberline {5.10}{\ignorespaces GUI Wireframe Reference from Project Documentation}}{37}{figure.caption.34}%
+\contentsline {figure}{\numberline {5.11}{\ignorespaces S01: Home Page Hero and Public Entry CTA}}{38}{figure.caption.35}%
+\contentsline {figure}{\numberline {5.12}{\ignorespaces S02: Login Page}}{39}{figure.caption.36}%
+\contentsline {figure}{\numberline {5.13}{\ignorespaces S03: Citizen Registration Page}}{40}{figure.caption.37}%
+\contentsline {figure}{\numberline {5.14}{\ignorespaces S04: Reset Password Page}}{41}{figure.caption.38}%
+\contentsline {figure}{\numberline {5.15}{\ignorespaces S05: Admin Dashboard Overview}}{42}{figure.caption.39}%
+\contentsline {figure}{\numberline {5.16}{\ignorespaces S06: Triage Human Review Queue}}{43}{figure.caption.40}%
+\contentsline {figure}{\numberline {5.17}{\ignorespaces S07: Worker Assignment Panel}}{44}{figure.caption.41}%
+\contentsline {figure}{\numberline {5.18}{\ignorespaces S08: Analytics Dashboard}}{45}{figure.caption.42}%
+\contentsline {figure}{\numberline {5.19}{\ignorespaces S09: Complaints Map Overview (Satellite Layer)}}{46}{figure.caption.43}%
+\contentsline {figure}{\numberline {5.20}{\ignorespaces S10: Map Popup Detail View}}{47}{figure.caption.44}%
+\contentsline {figure}{\numberline {5.21}{\ignorespaces S11: Public Grievance Board}}{48}{figure.caption.45}%
+\contentsline {figure}{\numberline {5.22}{\ignorespaces S12: Grievance Heatmap Page}}{49}{figure.caption.46}%
+\contentsline {figure}{\numberline {5.23}{\ignorespaces S13: Profile Page (Admin)}}{50}{figure.caption.47}%
+\contentsline {figure}{\numberline {5.24}{\ignorespaces S14: Citizen Dashboard with Timeline}}{51}{figure.caption.48}%
+\contentsline {figure}{\numberline {5.25}{\ignorespaces S15: Notifications Dropdown Panel}}{52}{figure.caption.49}%
+\contentsline {figure}{\numberline {5.26}{\ignorespaces SX1: File Complaint Upload Interface}}{53}{figure.caption.50}%
+\contentsline {figure}{\numberline {5.27}{\ignorespaces SX2: Multilingual Citizen Timeline Snapshot}}{54}{figure.caption.51}%
+\contentsline {figure}{\numberline {5.28}{\ignorespaces SX3: Resolved Complaint with Citizen Feedback}}{55}{figure.caption.52}%
+\contentsline {figure}{\numberline {5.29}{\ignorespaces SX4: Result Page with Location Context and AI Analysis}}{56}{figure.caption.53}%
+\contentsline {figure}{\numberline {5.30}{\ignorespaces SX5: Result Page with Grievance Description Editing}}{57}{figure.caption.54}%
 \addvspace {10\p@ }
 \addvspace {10\p@ }
 \addvspace {10\p@ }

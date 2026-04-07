@@ -20,20 +20,20 @@ Key characteristics of existing systems observed in this problem context:
 
 \begin{table}[H]
 \centering
-\caption{Limitations in Legacy Grievance Handling}
 \begin{tabularx}{\textwidth}{|p{0.08\textwidth}|p{0.35\textwidth}|X|}
 \toprule
-\textbf{ID} & \textbf{Observed Limitation} & \textbf{Operational Effect} \\
+\textbf{ID} & \textbf{Observed Limitation} & \textbf{Operational Effect} \\ \hline
 \midrule
-L1 & Manual authority selection by citizens & High probability of misrouting and delayed first response \\
-L2 & Inconsistent complaint description quality & Staff time spent rewriting or clarifying cases \\
-L3 & Weak integration of visual evidence & Evidence underused in initial triage and prioritization \\
-L4 & Limited role-specific workflows & Same interface burden across very different operational personas \\
-L5 & Minimal lifecycle traceability & Difficult root-cause analysis and accountability review \\
-L6 & Low transparency in queue behavior & Citizens lose trust when progress signals are unclear \\
-L7 & Sparse analytics for administrators & Planning decisions made without stable trend and workload data \\
+L1 & Manual authority selection by citizens & High probability of misrouting and delayed first response \\ \hline
+L2 & Inconsistent complaint description quality & Staff time spent rewriting or clarifying cases \\ \hline
+L3 & Weak integration of visual evidence & Evidence underused in initial triage and prioritization \\ \hline
+L4 & Limited role-specific workflows & Same interface burden across very different operational personas \\ \hline
+L5 & Minimal lifecycle traceability & Difficult root-cause analysis and accountability review \\ \hline
+L6 & Low transparency in queue behavior & Citizens lose trust when progress signals are unclear \\ \hline
+L7 & Sparse analytics for administrators & Planning decisions made without stable trend and workload data \\ \hline
 \bottomrule
 \end{tabularx}
+\caption{Limitations in Legacy Grievance Handling}
 \end{table}
 
 \section{User Characteristics}
@@ -42,17 +42,17 @@ The system is designed for four operational personas with distinct interaction p
 
 \begin{table}[H]
 \centering
-\caption{User Characteristics and Behavioral Expectations}
 \begin{tabularx}{\textwidth}{|p{0.18\textwidth}|p{0.26\textwidth}|X|}
 \toprule
-\textbf{User Role} & \textbf{Primary Goals} & \textbf{Typical Interaction Pattern} \\
+\textbf{User Role} & \textbf{Primary Goals} & \textbf{Typical Interaction Pattern} \\ \hline
 \midrule
-Citizen & Report issues and track outcomes & Upload image, review generated draft, submit complaint, monitor notifications and status timeline \\
-Worker & Resolve assigned field tasks & View own queue, update availability, mark task completion, add resolution note \\
-Department Head & Manage departmental flow & Filter department queue, change status, add notes, transfer/escalate cases when needed \\
-Administrator & Governance and oversight & Approve workers, triage ambiguous cases, perform bulk actions, export reports, monitor analytics \\
+Citizen & Report issues and track outcomes & Upload image, review generated draft, submit complaint, monitor notifications and status timeline \\ \hline
+Worker & Resolve assigned field tasks & View own queue, update availability, mark task completion, add resolution note \\ \hline
+Department Head & Manage departmental flow & Filter department queue, change status, add notes, transfer/escalate cases when needed \\ \hline
+Administrator & Governance and oversight & Approve workers, triage ambiguous cases, perform bulk actions, export reports, monitor analytics \\ \hline
 \bottomrule
 \end{tabularx}
+\caption{User Characteristics and Behavioral Expectations}
 \end{table}
 
 \section{Functional Requirements}
@@ -60,35 +60,35 @@ Administrator & Governance and oversight & Approve workers, triage ambiguous cas
 \begin{longtable}{|p{0.12\textwidth}|p{0.30\textwidth}|p{0.48\textwidth}|}
 \caption{Functional Requirement Specification}\\
 \toprule
-\textbf{FR ID} & \textbf{Requirement Name} & \textbf{Requirement Description} \\
+\textbf{FR ID} & \textbf{Requirement Name} & \textbf{Requirement Description} \\ \hline
 \midrule
 \endfirsthead
 \toprule
-\textbf{FR ID} & \textbf{Requirement Name} & \textbf{Requirement Description} \\
+\textbf{FR ID} & \textbf{Requirement Name} & \textbf{Requirement Description} \\ \hline
 \midrule
 \endhead
-FR-01 & User Registration & System shall allow self-registration for citizen and worker roles with validation and duplicate checks. \\
-FR-02 & User Authentication & System shall issue JWT access tokens on successful login and protect authorized routes. \\
-FR-03 & Profile Management & Authenticated users shall update selected profile fields such as full name and phone number. \\
-FR-04 & Password Recovery & System shall support forgot-password and reset-password flows with time-bound tokens. \\
-FR-05 & Image Upload Validation & Analyze endpoint shall accept valid JPG/PNG images and reject unsupported or malformed payloads. \\
-FR-06 & AI-Assisted Analysis & System shall analyze uploaded image and return category, confidence, location metadata, and draft status. \\
-FR-07 & Draft Generation & System shall produce a complaint draft synchronously or via queued generation, with polling support. \\
-FR-08 & Complaint Creation & System shall create a complaint record from reviewed analysis payload and user-provided description edits. \\
-FR-09 & Complaint Listing & System shall provide role-filtered complaint lists with pagination and optional status filters. \\
-FR-10 & Complaint Detail View & System shall provide complete complaint detail including status history and operational metadata. \\
-FR-11 & Status Update Workflow & Department head/admin shall update complaint status with note and trigger citizen notification. \\
-FR-12 & Department Transfer & Department head/admin shall transfer complaint ownership across departments when misrouted. \\
-FR-13 & Escalation & Department head/admin shall escalate complaints to parent authorities when required. \\
-FR-14 & Worker Assignment & System shall auto-assign eligible workers and support manual override by admin. \\
-FR-15 & Worker Operations & Worker shall manage availability and mark assigned complaints as done. \\
-FR-16 & Notification Center & System shall provide list, unread count, single-read, and mark-all-read operations. \\
-FR-17 & Triage Queue & Admin shall review low-confidence complaints and approve/reject/correct labels. \\
-FR-18 & Analytics & Admin/dept-head shall access overview and geospatial heatmap summaries. \\
-FR-19 & CSV Export & Admin shall export complaint data to CSV for external reporting. \\
-FR-20 & Public Transparency Feed & System shall expose anonymized complaint records without authentication. \\
-FR-21 & Health Monitoring & System shall provide live, ready, model, and GPU health endpoints. \\
-FR-22 & API Version Alias & System shall expose major endpoints under /api/v1 for integration stability. \\
+FR-01 & User Registration & System shall allow self-registration for citizen and worker roles with validation and duplicate checks. \\ \hline
+FR-02 & User Authentication & System shall issue JWT access tokens on successful login and protect authorized routes. \\ \hline
+FR-03 & Profile Management & Authenticated users shall update selected profile fields such as full name and phone number. \\ \hline
+FR-04 & Password Recovery & System shall support forgot-password and reset-password flows with time-bound tokens. \\ \hline
+FR-05 & Image Upload Validation & Analyze endpoint shall accept valid JPG/PNG images and reject unsupported or malformed payloads. \\ \hline
+FR-06 & AI-Assisted Analysis & System shall analyze uploaded image and return category, confidence, location metadata, and draft status. \\ \hline
+FR-07 & Draft Generation & System shall produce a complaint draft synchronously or via queued generation, with polling support. \\ \hline
+FR-08 & Complaint Creation & System shall create a complaint record from reviewed analysis payload and user-provided description edits. \\ \hline
+FR-09 & Complaint Listing & System shall provide role-filtered complaint lists with pagination and optional status filters. \\ \hline
+FR-10 & Complaint Detail View & System shall provide complete complaint detail including status history and operational metadata. \\ \hline
+FR-11 & Status Update Workflow & Department head/admin shall update complaint status with note and trigger citizen notification. \\ \hline
+FR-12 & Department Transfer & Department head/admin shall transfer complaint ownership across departments when misrouted. \\ \hline
+FR-13 & Escalation & Department head/admin shall escalate complaints to parent authorities when required. \\ \hline
+FR-14 & Worker Assignment & System shall auto-assign eligible workers and support manual override by admin. \\ \hline
+FR-15 & Worker Operations & Worker shall manage availability and mark assigned complaints as done. \\ \hline
+FR-16 & Notification Center & System shall provide list, unread count, single-read, and mark-all-read operations. \\ \hline
+FR-17 & Triage Queue & Admin shall review low-confidence complaints and approve/reject/correct labels. \\ \hline
+FR-18 & Analytics & Admin/dept-head shall access overview and geospatial heatmap summaries. \\ \hline
+FR-19 & CSV Export & Admin shall export complaint data to CSV for external reporting. \\ \hline
+FR-20 & Public Transparency Feed & System shall expose anonymized complaint records without authentication. \\ \hline
+FR-21 & Health Monitoring & System shall provide live, ready, model, and GPU health endpoints. \\ \hline
+FR-22 & API Version Alias & System shall expose major endpoints under /api/v1 for integration stability. \\ \hline
 \bottomrule
 \end{longtable}
 
@@ -97,23 +97,23 @@ FR-22 & API Version Alias & System shall expose major endpoints under /api/v1 fo
 \begin{longtable}{|p{0.12\textwidth}|p{0.30\textwidth}|p{0.48\textwidth}|}
 \caption{Non-Functional Requirement Specification}\\
 \toprule
-\textbf{NFR ID} & \textbf{Quality Attribute} & \textbf{Requirement Description} \\
+\textbf{NFR ID} & \textbf{Quality Attribute} & \textbf{Requirement Description} \\ \hline
 \midrule
 \endfirsthead
 \toprule
-\textbf{NFR ID} & \textbf{Quality Attribute} & \textbf{Requirement Description} \\
+\textbf{NFR ID} & \textbf{Quality Attribute} & \textbf{Requirement Description} \\ \hline
 \midrule
 \endhead
-NFR-01 & Security & JWT auth, RBAC, sanitization, secure headers, and account-safe reset flow shall be enforced. \\
-NFR-02 & Reliability & API shall degrade gracefully under model or DB faults with explicit status semantics. \\
-NFR-03 & Performance & Public and health endpoints shall respond consistently under mixed read-heavy load. \\
-NFR-04 & Usability & Role-specific UI shall reduce cognitive load and support responsive layouts for desktop/mobile usage. \\
-NFR-05 & Maintainability & Modular routers/services with documented runbooks shall support iterative enhancement. \\
-NFR-06 & Observability & Process-time headers, rotating logs, and health routes shall support debugging and operations. \\
-NFR-07 & Scalability Readiness & Queue-based generation and container deployment shall support controlled scaling. \\
-NFR-08 & Portability & Project setup shall support Windows and Linux via scripts and Docker-based workflow. \\
-NFR-09 & Compliance Readiness & Local-first inference and sanitized logs shall support stricter governance deployments. \\
-NFR-10 & Data Integrity & Validation schemas and controlled update flows shall minimize malformed or inconsistent records. \\
+NFR-01 & Security & JWT auth, RBAC, sanitization, secure headers, and account-safe reset flow shall be enforced. \\ \hline
+NFR-02 & Reliability & API shall degrade gracefully under model or DB faults with explicit status semantics. \\ \hline
+NFR-03 & Performance & Public and health endpoints shall respond consistently under mixed read-heavy load. \\ \hline
+NFR-04 & Usability & Role-specific UI shall reduce cognitive load and support responsive layouts for desktop/mobile usage. \\ \hline
+NFR-05 & Maintainability & Modular routers/services with documented runbooks shall support iterative enhancement. \\ \hline
+NFR-06 & Observability & Process-time headers, rotating logs, and health routes shall support debugging and operations. \\ \hline
+NFR-07 & Scalability Readiness & Queue-based generation and container deployment shall support controlled scaling. \\ \hline
+NFR-08 & Portability & Project setup shall support Windows and Linux via scripts and Docker-based workflow. \\ \hline
+NFR-09 & Compliance Readiness & Local-first inference and sanitized logs shall support stricter governance deployments. \\ \hline
+NFR-10 & Data Integrity & Validation schemas and controlled update flows shall minimize malformed or inconsistent records. \\ \hline
 \bottomrule
 \end{longtable}
 
@@ -121,45 +121,54 @@ NFR-10 & Data Integrity & Validation schemas and controlled update flows shall m
 
 \subsection{Hardware Requirements}
 
+The following table summarizes the major points relevant to this subsection for quick review.
+
+
 \begin{table}[H]
 \centering
-\caption{Hardware Requirement Baseline}
 \begin{tabular}{|p{0.30\textwidth}|p{0.28\textwidth}|p{0.30\textwidth}|}
 \toprule
-\textbf{Component} & \textbf{Minimum} & \textbf{Recommended} \\
+\textbf{Component} & \textbf{Minimum} & \textbf{Recommended} \\ \hline
 \midrule
-CPU & 4-core modern processor & 6 to 8-core processor \\
-System RAM & 12 GB available & 16 GB or higher \\
-GPU VRAM & 4 GB & 6 GB or higher \\
-Storage & 10 GB free & 20 GB free \\
-Network & Stable LAN/internet for maps and package fetch & Managed institutional network \\
+CPU & 4-core modern processor & 6 to 8-core processor \\ \hline
+System RAM & 12 GB available & 16 GB or higher \\ \hline
+GPU VRAM & 4 GB & 6 GB or higher \\ \hline
+Storage & 10 GB free & 20 GB free \\ \hline
+Network & Stable LAN/internet for maps and package fetch & Managed institutional network \\ \hline
 \bottomrule
 \end{tabular}
+\caption{Hardware Requirement Baseline}
 \end{table}
 
 \subsection{Software Requirements}
 
+The following table summarizes the major points relevant to this subsection for quick review.
+
+
 \begin{table}[H]
 \centering
-\caption{Software Environment Requirements}
 \begin{tabularx}{\textwidth}{|p{0.28\textwidth}|p{0.24\textwidth}|X|}
 \toprule
-\textbf{Software Component} & \textbf{Baseline} & \textbf{Purpose} \\
+\textbf{Software Component} & \textbf{Baseline} & \textbf{Purpose} \\ \hline
 \midrule
-Operating System & Windows 10+/Linux & Development and deployment host \\
-Python Runtime & Python 3.10+ & Backend and automation scripts \\
-Node.js and npm & Current LTS range & Frontend build and tooling \\
-MongoDB & 7.x class deployment & Document persistence \\
-Ollama Runtime & Local model runtime & Vision/reasoning generation pipeline \\
-Docker Engine/Compose & Docker 24+ recommended & Containerized orchestration \\
-Browser & Chromium/Firefox class & Frontend access and UAT execution \\
+Operating System & Windows 10+/Linux & Development and deployment host \\ \hline
+Python Runtime & Python 3.10+ & Backend and automation scripts \\ \hline
+Node.js and npm & Current LTS range & Frontend build and tooling \\ \hline
+MongoDB & 7.x class deployment & Document persistence \\ \hline
+Ollama Runtime & Local model runtime & Vision/reasoning generation pipeline \\ \hline
+Docker Engine/Compose & Docker 24+ recommended & Containerized orchestration \\ \hline
+Browser & Chromium/Firefox class & Frontend access and UAT execution \\ \hline
 \bottomrule
 \end{tabularx}
+\caption{Software Environment Requirements}
 \end{table}
 
 \section{Constraints}
 
 \subsection{UI Constraints}
+
+The points below highlight the most important considerations that define this subsection.
+
 
 \begin{itemize}
 \item Role-specific pages must enforce access boundaries and clear redirection behavior.
@@ -169,6 +178,9 @@ Browser & Chromium/Firefox class & Frontend access and UAT execution \\
 
 \subsection{Communication Interface}
 
+The points below highlight the most important considerations that define this subsection.
+
+
 \begin{itemize}
 \item REST over HTTP(S) is the canonical communication model.
 \item JWT bearer token is mandatory for protected routes.
@@ -176,6 +188,9 @@ Browser & Chromium/Firefox class & Frontend access and UAT execution \\
 \end{itemize}
 
 \subsection{Hardware Interface}
+
+The points below highlight the most important considerations that define this subsection.
+
 
 \begin{itemize}
 \item AI response times depend on model runtime health and available VRAM.
@@ -189,6 +204,9 @@ The system is governance-sensitive. Incorrect status transitions, misrouted comp
 
 \subsection{Safety and Security Considerations}
 
+The points below highlight the most important considerations that define this subsection.
+
+
 \begin{itemize}
 \item Input sanitization is required for free-text fields.
 \item File intake must detect extension-header mismatches and corrupted payloads.
@@ -200,19 +218,19 @@ The system is governance-sensitive. Incorrect status transitions, misrouted comp
 
 \begin{table}[H]
 \centering
-\caption{Assumptions and External Dependencies}
 \begin{tabularx}{\textwidth}{|p{0.10\textwidth}|p{0.42\textwidth}|X|}
 \toprule
-\textbf{ID} & \textbf{Assumption/Dependency} & \textbf{Implication} \\
+\textbf{ID} & \textbf{Assumption/Dependency} & \textbf{Implication} \\ \hline
 \midrule
-A1 & MongoDB instance is reachable and healthy & Core read/write workflows remain functional \\
-A2 & Ollama runtime is available with configured models & Analyze and generation pathways remain active \\
-A3 & Environment variables are configured accurately & Auth, DB, CORS, and model endpoints behave as intended \\
-A4 & Frontend and backend URL mapping is consistent & API calls and route protection remain stable \\
-A5 & Worker profiles include valid department and status metadata & Assignment service can select candidates correctly \\
-A6 & Deployment host supports Docker where container mode is used & Production-style stack can be reproduced \\
+A1 & MongoDB instance is reachable and healthy & Core read/write workflows remain functional \\ \hline
+A2 & Ollama runtime is available with configured models & Analyze and generation pathways remain active \\ \hline
+A3 & Environment variables are configured accurately & Auth, DB, CORS, and model endpoints behave as intended \\ \hline
+A4 & Frontend and backend URL mapping is consistent & API calls and route protection remain stable \\ \hline
+A5 & Worker profiles include valid department and status metadata & Assignment service can select candidates correctly \\ \hline
+A6 & Deployment host supports Docker where container mode is used & Production-style stack can be reproduced \\ \hline
 \bottomrule
 \end{tabularx}
+\caption{Assumptions and External Dependencies}
 \end{table}
 
 \section{Detailed Use-Case Narratives}
@@ -220,25 +238,25 @@ A6 & Deployment host supports Docker where container mode is used & Production-s
 \begin{longtable}{|p{0.12\textwidth}|p{0.18\textwidth}|p{0.30\textwidth}|p{0.30\textwidth}|}
 \caption{Narrative Use-Case Requirements}\\
 \toprule
-\textbf{UC ID} & \textbf{Actor} & \textbf{Main Flow} & \textbf{Alternate/Exception Flow} \\
+\textbf{UC ID} & \textbf{Actor} & \textbf{Main Flow} & \textbf{Alternate/Exception Flow} \\ \hline
 \midrule
 \endfirsthead
 \toprule
-\textbf{UC ID} & \textbf{Actor} & \textbf{Main Flow} & \textbf{Alternate/Exception Flow} \\
+\textbf{UC ID} & \textbf{Actor} & \textbf{Main Flow} & \textbf{Alternate/Exception Flow} \\ \hline
 \midrule
 \endhead
-UC-01 & Citizen & Register account, login, access dashboard & Duplicate username/email is rejected with validation message \\
-UC-02 & Citizen & Upload image and run analyze pipeline & Unsupported/corrupt image rejected with explicit reason \\
-UC-03 & Citizen & Edit draft and submit complaint & If analyze unavailable, user submits manual complaint text after retry guidance \\
-UC-04 & Citizen & Track status and receive notifications & If no notifications available, panel remains stable with unread count zero \\
-UC-05 & Citizen & Submit feedback after complaint resolution & Duplicate feedback attempt blocked with conflict response \\
-UC-06 & Worker & View assigned complaints and update availability & Worker pending approval cannot access worker-only operations \\
-UC-07 & Worker & Mark complaint done & If assignment mismatch occurs, operation is denied by role/ownership checks \\
-UC-08 & Dept Head & Filter department complaints and update status & Dept-head cannot update complaints outside own department \\
-UC-09 & Dept Head & Add notes and transfer/escalate complaint & Invalid complaint ID or missing target yields controlled validation error \\
-UC-10 & Admin & Approve/reject worker registrations & Already-approved/rejected states handled idempotently \\
-UC-11 & Admin & Operate triage queue and analytics & Empty triage queue still returns successful response \\
-UC-12 & Public User & View anonymized complaint board & No authenticated personal fields are exposed in response payload \\
+UC-01 & Citizen & Register account, login, access dashboard & Duplicate username/email is rejected with validation message \\ \hline
+UC-02 & Citizen & Upload image and run analyze pipeline & Unsupported/corrupt image rejected with explicit reason \\ \hline
+UC-03 & Citizen & Edit draft and submit complaint & If analyze unavailable, user submits manual complaint text after retry guidance \\ \hline
+UC-04 & Citizen & Track status and receive notifications & If no notifications available, panel remains stable with unread count zero \\ \hline
+UC-05 & Citizen & Submit feedback after complaint resolution & Duplicate feedback attempt blocked with conflict response \\ \hline
+UC-06 & Worker & View assigned complaints and update availability & Worker pending approval cannot access worker-only operations \\ \hline
+UC-07 & Worker & Mark complaint done & If assignment mismatch occurs, operation is denied by role/ownership checks \\ \hline
+UC-08 & Dept Head & Filter department complaints and update status & Dept-head cannot update complaints outside own department \\ \hline
+UC-09 & Dept Head & Add notes and transfer/escalate complaint & Invalid complaint ID or missing target yields controlled validation error \\ \hline
+UC-10 & Admin & Approve/reject worker registrations & Already-approved/rejected states handled idempotently \\ \hline
+UC-11 & Admin & Operate triage queue and analytics & Empty triage queue still returns successful response \\ \hline
+UC-12 & Public User & View anonymized complaint board & No authenticated personal fields are exposed in response payload \\ \hline
 \bottomrule
 \end{longtable}
 
@@ -246,17 +264,17 @@ UC-12 & Public User & View anonymized complaint board & No authenticated persona
 
 \begin{table}[H]
 \centering
-\caption{MoSCoW-Style Requirement Priority Mapping}
 \begin{tabularx}{\textwidth}{|p{0.14\textwidth}|p{0.18\textwidth}|X|}
 \toprule
-\textbf{Priority} & \textbf{Requirement IDs} & \textbf{Interpretation} \\
+\textbf{Priority} & \textbf{Requirement IDs} & \textbf{Interpretation} \\ \hline
 \midrule
-Must Have & FR-01 to FR-12, FR-14, FR-16, FR-21 & Core operational viability: authentication, complaint lifecycle, role control, assignment, notifications, and service health \\
-Should Have & FR-13, FR-15, FR-17, FR-18, FR-22 & Strong governance and maintainability improvements that meaningfully increase institutional readiness \\
-Could Have & FR-19, FR-20 & Non-blocking but high-value transparency and reporting improvements \\
-Non-Functional Critical & NFR-01, NFR-02, NFR-06, NFR-10 & Security, reliability, observability, and data integrity controls required for trusted operation \\
+Must Have & FR-01 to FR-12, FR-14, FR-16, FR-21 & Core operational viability: authentication, complaint lifecycle, role control, assignment, notifications, and service health \\ \hline
+Should Have & FR-13, FR-15, FR-17, FR-18, FR-22 & Strong governance and maintainability improvements that meaningfully increase institutional readiness \\ \hline
+Could Have & FR-19, FR-20 & Non-blocking but high-value transparency and reporting improvements \\ \hline
+Non-Functional Critical & NFR-01, NFR-02, NFR-06, NFR-10 & Security, reliability, observability, and data integrity controls required for trusted operation \\ \hline
 \bottomrule
 \end{tabularx}
+\caption{MoSCoW-Style Requirement Priority Mapping}
 \end{table}
 
 \section{Chapter Summary}

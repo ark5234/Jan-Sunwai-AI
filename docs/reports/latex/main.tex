@@ -26,6 +26,7 @@
 \usepackage{fancyhdr}
 \usepackage{titlesec}
 \usepackage{microtype}
+\usepackage{ragged2e}
 \usepackage{xcolor}
 \usepackage{xurl}
 
@@ -46,33 +47,37 @@
 \setlength{\headheight}{14.5pt}
 \setlength{\emergencystretch}{6em}
 \setlength{\parindent}{1.5em}
+\setlength{\parskip}{0.2em}
 \setlength{\tabcolsep}{4pt}
 \setlength{\arrayrulewidth}{0.5pt}
 \renewcommand{\arraystretch}{1.1}
-\renewcommand{\tabularxcolumn}[1]{>{\raggedright\arraybackslash}p{#1}}
 \renewcommand{\toprule}{\hline}
 \renewcommand{\midrule}{\hline}
 \renewcommand{\bottomrule}{\hline}
-\setlist[itemize,1]{leftmargin=2.0em,labelsep=0.6em,itemsep=0.35em,topsep=0.35em,parsep=0pt,partopsep=0pt}
-\setlist[enumerate,1]{leftmargin=2.2em,labelsep=0.6em,itemsep=0.35em,topsep=0.35em,parsep=0pt,partopsep=0pt}
+\setlist[itemize,1]{label=\textbullet,leftmargin=2.0em,labelsep=0.6em,itemsep=0.35em,topsep=0.35em,parsep=0pt,partopsep=0pt}
+\setlist[itemize,2]{label=\textendash,leftmargin=2.2em,labelsep=0.5em,itemsep=0.25em,topsep=0.25em,parsep=0pt,partopsep=0pt}
+\setlist[enumerate,1]{label=\arabic*.,leftmargin=2.2em,labelsep=0.6em,itemsep=0.35em,topsep=0.35em,parsep=0pt,partopsep=0pt}
+\setlist[enumerate,2]{label=\alph*),leftmargin=2.5em,labelsep=0.6em,itemsep=0.25em,topsep=0.25em,parsep=0pt,partopsep=0pt}
+\setlist[enumerate,3]{label=\roman*),leftmargin=2.8em,labelsep=0.6em,itemsep=0.2em,topsep=0.2em,parsep=0pt,partopsep=0pt}
 \definecolor{headingblue}{RGB}{0,76,153}
 \captionsetup{position=bottom,skip=6pt}
 \captionsetup[figure]{position=bottom,skip=6pt}
 \captionsetup[table]{position=bottom,skip=6pt}
 \captionsetup[longtable]{position=bottom,skip=6pt}
+\AtBeginDocument{\justifying}
 \fussy
 
-\titleformat{\chapter}[display]
+\titleformat{\chapter}[block]
   {\bfseries\fontsize{18}{22}\selectfont\centering\color{headingblue}}
-  {\chaptername\ \thechapter}
-  {0.35em}
-  {\centering}
-\titleformat{name=\chapter,numberless}[display]
+  {\chaptername\ \thechapter:}
+  {0.6em}
+  {}
+\titleformat{name=\chapter,numberless}[block]
   {\bfseries\fontsize{18}{22}\selectfont\centering\color{headingblue}}
   {}
   {0pt}
   {}
-\titlespacing*{\chapter}{0pt}{8pt}{14pt}
+\titlespacing*{\chapter}{0pt}{6pt}{14pt}
 
 \titleformat{\section}
   {\bfseries\fontsize{14}{17}\selectfont\color{headingblue}}
@@ -97,14 +102,40 @@
 
 \pagestyle{fancy}
 \fancyhf{}
-\fancyfoot[C]{\thepage}
+\fancyfoot[R]{\textcolor{headingblue}{Page \thepage\ of \pageref{lastpage}}}
 \renewcommand{\headrulewidth}{0pt}
 \renewcommand{\footrulewidth}{0pt}
 \fancypagestyle{plain}{%
   \fancyhf{}
-  \fancyfoot[C]{\thepage}
+  \fancyfoot[R]{\textcolor{headingblue}{Page \thepage\ of \pageref{lastpage}}}
   \renewcommand{\headrulewidth}{0pt}
   \renewcommand{\footrulewidth}{0pt}
+}
+\fancypagestyle{romanfront}{%
+  \fancyhf{}
+  \fancyfoot[C]{\textcolor{headingblue}{\thepage}}
+  \renewcommand{\headrulewidth}{0pt}
+  \renewcommand{\footrulewidth}{0pt}
+}
+
+\newcommand{\setromanfooterstyles}{%
+  \pagestyle{romanfront}
+  \fancypagestyle{plain}{%
+    \fancyhf{}
+    \fancyfoot[C]{\textcolor{headingblue}{\thepage}}
+    \renewcommand{\headrulewidth}{0pt}
+    \renewcommand{\footrulewidth}{0pt}
+  }
+}
+
+\newcommand{\setarabicfooterstyles}{%
+  \pagestyle{fancy}
+  \fancypagestyle{plain}{%
+    \fancyhf{}
+    \fancyfoot[R]{\textcolor{headingblue}{Page \thepage\ of \pageref{lastpage}}}
+    \renewcommand{\headrulewidth}{0pt}
+    \renewcommand{\footrulewidth}{0pt}
+  }
 }
 
 \newcommand{\placeholderfigure}[2]{
@@ -168,6 +199,7 @@ Institute: & \textit{Institution Name} \\
 \end{titlepage}
 
 \pagenumbering{roman}
+\setromanfooterstyles
 
 \tableofcontents
 \clearpage
@@ -186,6 +218,7 @@ Institute: & \textit{Institution Name} \\
 \clearpage
 
 \pagenumbering{arabic}
+\setarabicfooterstyles
 
 \input{chapters/ch01_introduction}
 \input{chapters/ch02_project_management}
@@ -197,5 +230,7 @@ Institute: & \textit{Institution Name} \\
 \input{chapters/ch08_limitations_future_scope}
 \input{chapters/ch09_conclusion_references}
 \input{chapters/ch10_appendices}
+
+\label{lastpage}
 
 \end{document}

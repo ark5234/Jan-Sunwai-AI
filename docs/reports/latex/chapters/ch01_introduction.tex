@@ -8,20 +8,20 @@ The project was developed as a local-first system to satisfy practical constrain
 
 \begin{table}[H]
 \centering
-\caption{Project Profile}
 \begin{tabular}{|p{0.30\textwidth}|p{0.60\textwidth}|}
 \toprule
-\textbf{Attribute} & \textbf{Value} \\
+\textbf{Attribute} & \textbf{Value} \\ \hline
 \midrule
-Project Name & Jan-Sunwai AI \\
-Application Domain & Civic Grievance Management and Municipal Operations \\
-Problem Theme & Image-based complaint intake with authority routing and lifecycle traceability \\
-Project Duration & 28 January 2026 to 27 May 2026 \\
-Primary Users & Citizens, Workers, Department Heads, Administrators \\
-Deployment Style & Local-first, production-ready containerized stack \\
-Target Institutional Context & NDMC-style municipal governance operations \\
+Project Name & Jan-Sunwai AI \\ \hline
+Application Domain & Civic Grievance Management and Municipal Operations \\ \hline
+Problem Theme & Image-based complaint intake with authority routing and lifecycle traceability \\ \hline
+Project Duration & 28 January 2026 to 27 May 2026 \\ \hline
+Primary Users & Citizens, Workers, Department Heads, Administrators \\ \hline
+Deployment Style & Local-first, production-ready containerized stack \\ \hline
+Target Institutional Context & NDMC-style municipal governance operations \\ \hline
 \bottomrule
 \end{tabular}
+\caption{Project Profile}
 \end{table}
 
 \section{Purpose}
@@ -57,40 +57,40 @@ Out-of-scope items for the current release include multilingual voice intake, di
 
 \begin{table}[H]
 \centering
-\caption{Objectives and Expected Outcomes}
 \begin{tabularx}{\textwidth}{|p{0.06\textwidth}|p{0.42\textwidth}|X|}
 \toprule
-\textbf{No.} & \textbf{Objective} & \textbf{Expected Outcome} \\
+\textbf{No.} & \textbf{Objective} & \textbf{Expected Outcome} \\ \hline
 \midrule
-O1 & Reduce submission friction for citizens & Simplified upload-analyze-submit flow with optional draft editing \\
-O2 & Improve complaint routing quality & Canonical department taxonomy and authority mapping \\
-O3 & Ensure operational traceability & Status history, notes, comments, and audit-ready timeline \\
-O4 & Support workload distribution & Auto-assignment by department, service area, and load balancing \\
-O5 & Strengthen security posture & JWT auth, input sanitization, upload validation, and CORS/security headers \\
-O6 & Improve governance transparency & Analytics dashboard, heatmap, and public complaint feed \\
-O7 & Enable production transition & Docker-based deployment profile, environment controls, and runbooks \\
+O1 & Reduce submission friction for citizens & Simplified upload-analyze-submit flow with optional draft editing \\ \hline
+O2 & Improve complaint routing quality & Canonical department taxonomy and authority mapping \\ \hline
+O3 & Ensure operational traceability & Status history, notes, comments, and audit-ready timeline \\ \hline
+O4 & Support workload distribution & Auto-assignment by department, service area, and load balancing \\ \hline
+O5 & Strengthen security posture & JWT auth, input sanitization, upload validation, and CORS/security headers \\ \hline
+O6 & Improve governance transparency & Analytics dashboard, heatmap, and public complaint feed \\ \hline
+O7 & Enable production transition & Docker-based deployment profile, environment controls, and runbooks \\ \hline
 \bottomrule
 \end{tabularx}
+\caption{Objectives and Expected Outcomes}
 \end{table}
 
 \section{Technology Stack Used}
 
 \begin{table}[H]
 \centering
-\caption{Technology Stack and Role in System}
 \begin{tabularx}{\textwidth}{|p{0.22\textwidth}|p{0.26\textwidth}|X|}
 \toprule
-\textbf{Layer} & \textbf{Primary Technology} & \textbf{Usage in Project} \\
+\textbf{Layer} & \textbf{Primary Technology} & \textbf{Usage in Project} \\ \hline
 \midrule
-Frontend & React + Vite & Role-based SPA, dashboards, analyze/result flows, authentication-aware routing \\
-Backend API & FastAPI + Python & REST endpoints, validation, business logic, authentication, and middleware \\
-Database & MongoDB & Document storage for users, complaints, notifications, and reset tokens \\
-AI Runtime & Ollama models & Vision extraction, optional reasoning, and complaint draft generation \\
-Containerization & Docker Compose & Reproducible dev/prod deployment and dependency orchestration \\
-Testing & pytest, httpx, locust & Unit/integration/security/resilience/load testing coverage \\
-Documentation & Markdown + LaTeX & Technical runbooks, architecture notes, final submission report \\
+Frontend & React + Vite & Role-based SPA, dashboards, analyze/result flows, authentication-aware routing \\ \hline
+Backend API & FastAPI + Python & REST endpoints, validation, business logic, authentication, and middleware \\ \hline
+Database & MongoDB & Document storage for users, complaints, notifications, and reset tokens \\ \hline
+AI Runtime & Ollama models & Vision extraction, optional reasoning, and complaint draft generation \\ \hline
+Containerization & Docker Compose & Reproducible dev/prod deployment and dependency orchestration \\ \hline
+Testing & pytest, httpx, locust & Unit/integration/security/resilience/load testing coverage \\ \hline
+Documentation & Markdown + LaTeX & Technical runbooks, architecture notes, final submission report \\ \hline
 \bottomrule
 \end{tabularx}
+\caption{Technology Stack and Role in System}
 \end{table}
 
 \section{Problem Context and Motivation}
@@ -119,9 +119,9 @@ Recent engineering patterns favor staged AI systems over monolithic generation. 
 
 \subsection{Governance, Explainability, and Auditability}
 
-In civic applications, explainability is not optional. Decision provenance (confidence, method, timestamp, actor) enables triage, accountability, and policy audits. Therefore, the platform records status history and decision metadata, supports internal notes and comments, and surfaces traces through dashboards and logs.
+In civic applications, explainability is not optional. Decision provenance records confidence, method, timestamp, and actor. These details support triage, accountability, and policy audits. Therefore, the platform records status history and decision metadata, supports internal notes and comments, and surfaces traces through dashboards and logs.
 
-The project design is aligned with development principles and platform guidance from FastAPI, React, MongoDB, and OWASP security best-practice references listed in Chapter 9.
+The project design aligns with development principles and platform guidance from FastAPI, React, MongoDB, and OWASP references listed in Chapter 9.
 
 \section{Chapter Summary}
 

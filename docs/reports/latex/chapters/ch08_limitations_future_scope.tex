@@ -6,6 +6,9 @@ No production-oriented civic platform is complete without explicit recognition o
 
 \subsection{Model and AI Limitations}
 
+The points below highlight the most important considerations that define this subsection.
+
+
 \begin{itemize}
 \item Classification quality depends on local model behavior and image quality.
 \item Ambiguous civic scenes may still require administrative triage despite hybrid logic.
@@ -15,6 +18,9 @@ No production-oriented civic platform is complete without explicit recognition o
 
 \subsection{Infrastructure Limitations}
 
+The points below highlight the most important considerations that define this subsection.
+
+
 \begin{itemize}
 \item Throughput is constrained by local hardware, especially VRAM and CPU availability.
 \item Single-node deployment is suitable for pilot and controlled workloads, not large multi-zone production scale without additional orchestration.
@@ -22,6 +28,9 @@ No production-oriented civic platform is complete without explicit recognition o
 \end{itemize}
 
 \subsection{Workflow and Data Limitations}
+
+The points below highlight the most important considerations that define this subsection.
+
 
 \begin{itemize}
 \item Worker service-area quality depends on correctness and completeness of admin-maintained profiles.
@@ -31,6 +40,9 @@ No production-oriented civic platform is complete without explicit recognition o
 \end{itemize}
 
 \subsection{Security and Governance Limitations}
+
+The points below highlight the most important considerations that define this subsection.
+
 
 \begin{itemize}
 \item Security checks are strong at application layer but external perimeter controls (WAF, zero-trust segmentation) are deployment-dependent.
@@ -42,6 +54,9 @@ No production-oriented civic platform is complete without explicit recognition o
 
 \subsection{AI and Intelligence Enhancements}
 
+The sequence below presents the recommended order of actions and priorities for this subsection.
+
+
 \begin{enumerate}
 \item Introduce domain fine-tuning or retrieval-augmented context for better local scene understanding.
 \item Add multilingual voice-to-text intake for accessibility.
@@ -50,6 +65,9 @@ No production-oriented civic platform is complete without explicit recognition o
 \end{enumerate}
 
 \subsection{Operational Workflow Enhancements}
+
+The sequence below presents the recommended order of actions and priorities for this subsection.
+
 
 \begin{enumerate}
 \item Implement SLA policy engine with configurable thresholds per department and issue class.
@@ -60,6 +78,9 @@ No production-oriented civic platform is complete without explicit recognition o
 
 \subsection{Platform and Deployment Enhancements}
 
+The sequence below presents the recommended order of actions and priorities for this subsection.
+
+
 \begin{enumerate}
 \item Move from single-node compose to orchestrated deployments for higher availability.
 \item Add asynchronous message broker for queue resilience and horizontal worker scaling.
@@ -68,6 +89,9 @@ No production-oriented civic platform is complete without explicit recognition o
 \end{enumerate}
 
 \subsection{Security and Compliance Enhancements}
+
+The sequence below presents the recommended order of actions and priorities for this subsection.
+
 
 \begin{enumerate}
 \item Introduce periodic penetration testing workflow with report tracking.
@@ -80,17 +104,17 @@ No production-oriented civic platform is complete without explicit recognition o
 
 \begin{table}[H]
 \centering
-\caption{Indicative Post-Submission Roadmap}
 \begin{tabularx}{\textwidth}{|p{0.18\textwidth}|p{0.30\textwidth}|X|}
 \toprule
-\textbf{Horizon} & \textbf{Priority Area} & \textbf{Expected Deliverables} \\
+\textbf{Horizon} & \textbf{Priority Area} & \textbf{Expected Deliverables} \\ \hline
 \midrule
-0--3 months & Stabilization and hardening & SMTP integration, expanded tests, deployment checklist closure \\
-3--6 months & AI and workflow maturity & Better triage intelligence, SLA policy engine, richer analytics \\
-6--12 months & Scale and institutionalization & Distributed queueing, observability stack, multi-zone deployment model \\
-12+ months & Advanced governance intelligence & Predictive demand analytics and department workload forecasting \\
+0--3 months & Stabilization and hardening & SMTP integration, expanded tests, deployment checklist closure \\ \hline
+3--6 months & AI and workflow maturity & Better triage intelligence, SLA policy engine, richer analytics \\ \hline
+6--12 months & Scale and institutionalization & Distributed queueing, observability stack, multi-zone deployment model \\ \hline
+12+ months & Advanced governance intelligence & Predictive demand analytics and department workload forecasting \\ \hline
 \bottomrule
 \end{tabularx}
+\caption{Indicative Post-Submission Roadmap}
 \end{table}
 
 \section{Risk-Prioritized Improvement Backlog}
@@ -98,33 +122,33 @@ No production-oriented civic platform is complete without explicit recognition o
 \begin{longtable}{|p{0.10\textwidth}|p{0.30\textwidth}|p{0.13\textwidth}|p{0.13\textwidth}|p{0.24\textwidth}|}
 \caption{Future Backlog Prioritization Matrix}\\
 \toprule
-\textbf{ID} & \textbf{Improvement Item} & \textbf{Impact} & \textbf{Effort} & \textbf{Suggested Horizon} \\
+\textbf{ID} & \textbf{Improvement Item} & \textbf{Impact} & \textbf{Effort} & \textbf{Suggested Horizon} \\ \hline
 \midrule
 \endfirsthead
 \toprule
-\textbf{ID} & \textbf{Improvement Item} & \textbf{Impact} & \textbf{Effort} & \textbf{Suggested Horizon} \\
+\textbf{ID} & \textbf{Improvement Item} & \textbf{Impact} & \textbf{Effort} & \textbf{Suggested Horizon} \\ \hline
 \midrule
 \endhead
-FB-01 & SMTP relay production integration with delivery audit logs & High & Medium & 0--3 months \\
-FB-02 & Centralized secrets management and rotation policy & High & Medium & 0--6 months \\
-FB-03 & Distributed queue broker for LLM jobs & High & High & 3--9 months \\
-FB-04 & Expanded language support in generated drafts & Medium & Medium & 3--6 months \\
-FB-05 & Domain-adapted classifier tuning dataset & High & High & 6--12 months \\
-FB-06 & Duplicate complaint detection using embeddings & Medium & High & 6--12 months \\
-FB-07 & SLA rules engine with department-specific thresholds & High & Medium & 3--9 months \\
-FB-08 & Escalation policy simulator for governance review & Medium & Medium & 6--12 months \\
-FB-09 & Citizen voice intake and transcription & Medium & High & 9--15 months \\
-FB-10 & Geo-aware workload balancing with travel-time estimation & Medium & High & 6--12 months \\
-FB-11 & Real-time websocket notification stream & Medium & Medium & 3--6 months \\
-FB-12 & Expanded public analytics visualizations & Medium & Medium & 3--9 months \\
-FB-13 & Multi-tenant authority hierarchy support & High & High & 9--18 months \\
-FB-14 & Formal accessibility conformance audit (WCAG) & High & Medium & 0--6 months \\
-FB-15 & Integrated vulnerability scanning in CI pipeline & High & Low & 0--3 months \\
-FB-16 & Observability stack with trace correlation & High & Medium & 3--9 months \\
-FB-17 & Offline-first synchronization for field staff app mode & Medium & High & 9--18 months \\
-FB-18 & Complaint closure quality scoring and follow-up loop & Medium & Medium & 3--9 months \\
-FB-19 & Auto-generated administrative weekly digest reports & Low & Low & 0--3 months \\
-FB-20 & Predictive hotspot forecasting for civic incidents & Medium & High & 12+ months \\
+FB-01 & SMTP relay production integration with delivery audit logs & High & Medium & 0--3 months \\ \hline
+FB-02 & Centralized secrets management and rotation policy & High & Medium & 0--6 months \\ \hline
+FB-03 & Distributed queue broker for LLM jobs & High & High & 3--9 months \\ \hline
+FB-04 & Expanded language support in generated drafts & Medium & Medium & 3--6 months \\ \hline
+FB-05 & Domain-adapted classifier tuning dataset & High & High & 6--12 months \\ \hline
+FB-06 & Duplicate complaint detection using embeddings & Medium & High & 6--12 months \\ \hline
+FB-07 & SLA rules engine with department-specific thresholds & High & Medium & 3--9 months \\ \hline
+FB-08 & Escalation policy simulator for governance review & Medium & Medium & 6--12 months \\ \hline
+FB-09 & Citizen voice intake and transcription & Medium & High & 9--15 months \\ \hline
+FB-10 & Geo-aware workload balancing with travel-time estimation & Medium & High & 6--12 months \\ \hline
+FB-11 & Real-time websocket notification stream & Medium & Medium & 3--6 months \\ \hline
+FB-12 & Expanded public analytics visualizations & Medium & Medium & 3--9 months \\ \hline
+FB-13 & Multi-tenant authority hierarchy support & High & High & 9--18 months \\ \hline
+FB-14 & Formal accessibility conformance audit (WCAG) & High & Medium & 0--6 months \\ \hline
+FB-15 & Integrated vulnerability scanning in CI pipeline & High & Low & 0--3 months \\ \hline
+FB-16 & Observability stack with trace correlation & High & Medium & 3--9 months \\ \hline
+FB-17 & Offline-first synchronization for field staff app mode & Medium & High & 9--18 months \\ \hline
+FB-18 & Complaint closure quality scoring and follow-up loop & Medium & Medium & 3--9 months \\ \hline
+FB-19 & Auto-generated administrative weekly digest reports & Low & Low & 0--3 months \\ \hline
+FB-20 & Predictive hotspot forecasting for civic incidents & Medium & High & 12+ months \\ \hline
 \bottomrule
 \end{longtable}
 
@@ -135,6 +159,9 @@ FB-20 & Predictive hotspot forecasting for civic incidents & Medium & High & 12+
 Municipal deployment success is influenced by organizational readiness as much as software maturity. Key factors include role training quality, escalation policy clarity, and data-governance ownership. Even technically complete systems can underperform if operational owners do not have clear process responsibility.
 
 \subsection{Change Management Considerations}
+
+The points below highlight the most important considerations that define this subsection.
+
 
 \begin{itemize}
 \item Staff onboarding must include role-specific workflow rehearsals, not only UI tours.
