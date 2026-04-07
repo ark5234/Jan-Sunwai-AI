@@ -8,7 +8,7 @@ Project management for Jan-Sunwai AI followed an iterative delivery approach wit
 
 The selected stack (React, FastAPI, MongoDB, Ollama) was technically feasible for local-first civic deployment due to mature ecosystem support, strong documentation, and compatibility with available development infrastructure. Key feasibility observations were:
 
-\begin{itemize}[leftmargin=1.5em]
+\begin{itemize}
 \item FastAPI provided rapid API development, typed schemas, and OpenAPI generation.
 \item MongoDB supported flexible document structures suited to complaint histories, comments, and embedded metadata.
 \item React enabled role-specific UI composition with route guards and dashboard specialization.
@@ -26,7 +26,7 @@ The schedule was structured over 18 weeks, progressing from foundation to harden
 
 Operational feasibility was validated by mapping actual municipal personas into role-specific workflows:
 
-\begin{itemize}[leftmargin=1.5em]
+\begin{itemize}
 \item Citizen: complaint intake and tracking.
 \item Worker: assignment execution and completion updates.
 \item Department Head: queue supervision and status transitions.
@@ -45,7 +45,7 @@ Implementation was feasible under both manual and scripted setup modes. Automati
 
 The project used an incremental and verification-driven approach with the following cycle:
 
-\begin{enumerate}[leftmargin=1.8em]
+\begin{enumerate}
 \item Build baseline functionality for a module.
 \item Validate through unit and integration checks.
 \item Expose role workflow in UI and test end-to-end behavior.
@@ -57,7 +57,7 @@ This approach was chosen over a strict waterfall model because AI behavior and U
 
 \subsection{Milestones and Deliverables}
 
-\begin{longtable}{p{0.12\textwidth}p{0.24\textwidth}p{0.43\textwidth}p{0.13\textwidth}}
+\begin{longtable}{|p{0.12\textwidth}|p{0.24\textwidth}|p{0.43\textwidth}|p{0.13\textwidth}|}
 \caption{Milestone Summary and Deliverables}\\
 \toprule
 \textbf{Window} & \textbf{Theme} & \textbf{Key Deliverables} & \textbf{Status} \\
@@ -87,7 +87,7 @@ Weeks 17--18 & Reporting and Submission & Technical report artifacts, screenshot
 \begin{table}[H]
 \centering
 \caption{Role Responsibility Matrix (Project Execution)}
-\begin{tabularx}{\textwidth}{p{0.26\textwidth}X}
+\begin{tabularx}{\textwidth}{|p{0.26\textwidth}|X|}
 \toprule
 \textbf{Role Area} & \textbf{Responsibilities} \\
 \midrule
@@ -107,7 +107,7 @@ Documentation and Handover & API reference, deployment guides, user manual, arch
 
 The project includes cross-cutting dependencies that were managed explicitly:
 
-\begin{itemize}[leftmargin=1.5em]
+\begin{itemize}
 \item Backend depends on MongoDB availability and correctly configured environment variables.
 \item Analyze flow depends on file storage service and Ollama runtime health.
 \item Frontend route behavior depends on JWT session state and role claims.
@@ -123,7 +123,7 @@ Dependency risks were controlled through health endpoints, fallback behaviors, a
 
 The schedule can be interpreted as a four-phase progression:
 
-\begin{enumerate}[leftmargin=1.8em]
+\begin{enumerate}
 \item Foundation and Core Build (Weeks 1--6)
 \item Security and NDMC-oriented Feature Hardening (Weeks 7--14)
 \item UAT and Operational Validation (Weeks 15--16)
@@ -135,7 +135,7 @@ The schedule can be interpreted as a four-phase progression:
 \begin{table}[H]
 \centering
 \caption{PERT-Style Activity Dependencies}
-\begin{tabular}{p{0.15\textwidth}p{0.44\textwidth}p{0.30\textwidth}}
+\begin{tabular}{|p{0.15\textwidth}|p{0.44\textwidth}|p{0.30\textwidth}|}
 \toprule
 \textbf{Activity ID} & \textbf{Activity} & \textbf{Depends On} \\
 \midrule
@@ -156,7 +156,7 @@ A11 & Final documentation and submission & A10 \\
 
 \section{Risk Management}
 
-\begin{longtable}{p{0.24\textwidth}p{0.15\textwidth}p{0.15\textwidth}p{0.38\textwidth}}
+\begin{longtable}{|p{0.24\textwidth}|p{0.15\textwidth}|p{0.15\textwidth}|p{0.38\textwidth}|}
 \caption{Risk Register and Mitigation Plan}\\
 \toprule
 \textbf{Risk} & \textbf{Likelihood} & \textbf{Impact} & \textbf{Mitigation} \\
@@ -181,7 +181,7 @@ Documentation mismatch at handover & Medium & Medium & NDMC deployment guide, AP
 
 The management strategy achieved three notable outcomes:
 
-\begin{itemize}[leftmargin=1.5em]
+\begin{itemize}
 \item Feature breadth was delivered without compromising security and reliability hardening.
 \item Delivery confidence increased through continuous testing and issue-driven iteration.
 \item Handover readiness improved through consolidated deployment/configuration artifacts and documentation alignment.
@@ -189,7 +189,7 @@ The management strategy achieved three notable outcomes:
 
 \section{Detailed Week-Wise Execution Digest}
 
-\begin{longtable}{p{0.10\textwidth}p{0.18\textwidth}p{0.46\textwidth}p{0.18\textwidth}}
+\begin{longtable}{|p{0.10\textwidth}|p{0.18\textwidth}|p{0.46\textwidth}|p{0.18\textwidth}|}
 \caption{Week-by-Week Execution Summary (W1--W18)}\\
 \toprule
 \textbf{Week} & \textbf{Date Range} & \textbf{Primary Execution Focus} & \textbf{Management Outcome} \\
@@ -225,7 +225,7 @@ W18 & May 25--May 27 & Final release hygiene and submission closure & Project li
 \begin{table}[H]
 \centering
 \caption{Governance-Oriented Delivery Metrics}
-\begin{tabularx}{\textwidth}{p{0.34\textwidth}X}
+\begin{tabularx}{\textwidth}{|p{0.34\textwidth}|X|}
 \toprule
 \textbf{Metric} & \textbf{Interpretation in This Project} \\
 \midrule
@@ -243,7 +243,7 @@ Operational risk closure rate & Key risk classes (auth, upload security, route d
 
 Three management lessons were central to delivery quality:
 
-\begin{enumerate}[leftmargin=1.8em]
+\begin{enumerate}
 \item \textbf{Early role modeling reduced rework:} Defining citizen/worker/dept-head/admin pathways early prevented significant UI and authorization redesign later.
 \item \textbf{Security and reliability should not be deferred:} Integrating these streams before final release avoided unstable late-stage merges.
 \item \textbf{Artifact consolidation is a management task:} Unifying environment and compose artifacts reduced support burden and improved handover confidence.

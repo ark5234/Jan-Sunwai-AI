@@ -8,7 +8,7 @@ Many conventional civic complaint channels depend on one or more of the followin
 
 Key characteristics of existing systems observed in this problem context:
 
-\begin{itemize}[leftmargin=1.5em]
+\begin{itemize}
 \item Citizens are expected to manually choose departments, often without sufficient guidance.
 \item Complaint narratives are text-heavy and unstructured, leading to inconsistent detail quality.
 \item Photo evidence may be accepted but is rarely integrated into routing logic.
@@ -21,7 +21,7 @@ Key characteristics of existing systems observed in this problem context:
 \begin{table}[H]
 \centering
 \caption{Limitations in Legacy Grievance Handling}
-\begin{tabularx}{\textwidth}{p{0.08\textwidth}p{0.35\textwidth}X}
+\begin{tabularx}{\textwidth}{|p{0.08\textwidth}|p{0.35\textwidth}|X|}
 \toprule
 \textbf{ID} & \textbf{Observed Limitation} & \textbf{Operational Effect} \\
 \midrule
@@ -43,7 +43,7 @@ The system is designed for four operational personas with distinct interaction p
 \begin{table}[H]
 \centering
 \caption{User Characteristics and Behavioral Expectations}
-\begin{tabularx}{\textwidth}{p{0.18\textwidth}p{0.26\textwidth}X}
+\begin{tabularx}{\textwidth}{|p{0.18\textwidth}|p{0.26\textwidth}|X|}
 \toprule
 \textbf{User Role} & \textbf{Primary Goals} & \textbf{Typical Interaction Pattern} \\
 \midrule
@@ -57,7 +57,7 @@ Administrator & Governance and oversight & Approve workers, triage ambiguous cas
 
 \section{Functional Requirements}
 
-\begin{longtable}{p{0.12\textwidth}p{0.30\textwidth}p{0.48\textwidth}}
+\begin{longtable}{|p{0.12\textwidth}|p{0.30\textwidth}|p{0.48\textwidth}|}
 \caption{Functional Requirement Specification}\\
 \toprule
 \textbf{FR ID} & \textbf{Requirement Name} & \textbf{Requirement Description} \\
@@ -94,7 +94,7 @@ FR-22 & API Version Alias & System shall expose major endpoints under /api/v1 fo
 
 \section{Non-Functional Requirements}
 
-\begin{longtable}{p{0.12\textwidth}p{0.30\textwidth}p{0.48\textwidth}}
+\begin{longtable}{|p{0.12\textwidth}|p{0.30\textwidth}|p{0.48\textwidth}|}
 \caption{Non-Functional Requirement Specification}\\
 \toprule
 \textbf{NFR ID} & \textbf{Quality Attribute} & \textbf{Requirement Description} \\
@@ -124,7 +124,7 @@ NFR-10 & Data Integrity & Validation schemas and controlled update flows shall m
 \begin{table}[H]
 \centering
 \caption{Hardware Requirement Baseline}
-\begin{tabular}{p{0.30\textwidth}p{0.28\textwidth}p{0.30\textwidth}}
+\begin{tabular}{|p{0.30\textwidth}|p{0.28\textwidth}|p{0.30\textwidth}|}
 \toprule
 \textbf{Component} & \textbf{Minimum} & \textbf{Recommended} \\
 \midrule
@@ -142,7 +142,7 @@ Network & Stable LAN/internet for maps and package fetch & Managed institutional
 \begin{table}[H]
 \centering
 \caption{Software Environment Requirements}
-\begin{tabularx}{\textwidth}{p{0.28\textwidth}p{0.24\textwidth}X}
+\begin{tabularx}{\textwidth}{|p{0.28\textwidth}|p{0.24\textwidth}|X|}
 \toprule
 \textbf{Software Component} & \textbf{Baseline} & \textbf{Purpose} \\
 \midrule
@@ -161,7 +161,7 @@ Browser & Chromium/Firefox class & Frontend access and UAT execution \\
 
 \subsection{UI Constraints}
 
-\begin{itemize}[leftmargin=1.5em]
+\begin{itemize}
 \item Role-specific pages must enforce access boundaries and clear redirection behavior.
 \item Analyze/result screens must preserve draft continuity during refresh and error conditions.
 \item Dashboard cards and maps must remain usable at mobile widths (e.g., 375 px baseline tests).
@@ -169,7 +169,7 @@ Browser & Chromium/Firefox class & Frontend access and UAT execution \\
 
 \subsection{Communication Interface}
 
-\begin{itemize}[leftmargin=1.5em]
+\begin{itemize}
 \item REST over HTTP(S) is the canonical communication model.
 \item JWT bearer token is mandatory for protected routes.
 \item Production frontend proxy must route API traffic to backend service with /api/v1 compatibility.
@@ -177,7 +177,7 @@ Browser & Chromium/Firefox class & Frontend access and UAT execution \\
 
 \subsection{Hardware Interface}
 
-\begin{itemize}[leftmargin=1.5em]
+\begin{itemize}
 \item AI response times depend on model runtime health and available VRAM.
 \item GPU contention and model load/unload latency can affect throughput.
 \item Large image uploads require strict file-size and decode constraints to avoid resource exhaustion.
@@ -189,7 +189,7 @@ The system is governance-sensitive. Incorrect status transitions, misrouted comp
 
 \subsection{Safety and Security Considerations}
 
-\begin{itemize}[leftmargin=1.5em]
+\begin{itemize}
 \item Input sanitization is required for free-text fields.
 \item File intake must detect extension-header mismatches and corrupted payloads.
 \item Token reset flow must avoid account enumeration and raw token persistence.
@@ -201,7 +201,7 @@ The system is governance-sensitive. Incorrect status transitions, misrouted comp
 \begin{table}[H]
 \centering
 \caption{Assumptions and External Dependencies}
-\begin{tabularx}{\textwidth}{p{0.10\textwidth}p{0.42\textwidth}X}
+\begin{tabularx}{\textwidth}{|p{0.10\textwidth}|p{0.42\textwidth}|X|}
 \toprule
 \textbf{ID} & \textbf{Assumption/Dependency} & \textbf{Implication} \\
 \midrule
@@ -217,7 +217,7 @@ A6 & Deployment host supports Docker where container mode is used & Production-s
 
 \section{Detailed Use-Case Narratives}
 
-\begin{longtable}{p{0.12\textwidth}p{0.18\textwidth}p{0.30\textwidth}p{0.30\textwidth}}
+\begin{longtable}{|p{0.12\textwidth}|p{0.18\textwidth}|p{0.30\textwidth}|p{0.30\textwidth}|}
 \caption{Narrative Use-Case Requirements}\\
 \toprule
 \textbf{UC ID} & \textbf{Actor} & \textbf{Main Flow} & \textbf{Alternate/Exception Flow} \\
@@ -247,7 +247,7 @@ UC-12 & Public User & View anonymized complaint board & No authenticated persona
 \begin{table}[H]
 \centering
 \caption{MoSCoW-Style Requirement Priority Mapping}
-\begin{tabularx}{\textwidth}{p{0.14\textwidth}p{0.18\textwidth}X}
+\begin{tabularx}{\textwidth}{|p{0.14\textwidth}|p{0.18\textwidth}|X|}
 \toprule
 \textbf{Priority} & \textbf{Requirement IDs} & \textbf{Interpretation} \\
 \midrule

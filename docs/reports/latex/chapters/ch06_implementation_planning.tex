@@ -8,7 +8,7 @@ Implementation planning for Jan-Sunwai AI focused on three parallel goals: repro
 
 The local workflow supports rapid iteration with role-based UI validation and backend testing. Typical development topology includes:
 
-\begin{itemize}[leftmargin=1.5em]
+\begin{itemize}
 \item Backend running on FastAPI/Uvicorn at port 8000.
 \item Frontend development server on Vite at port 5173.
 \item MongoDB either local service or containerized dependency.
@@ -21,7 +21,7 @@ The local setup was selected to reduce iteration latency while preserving fideli
 
 For deployment simulation and handover readiness, the project includes a unified compose configuration with a production profile. In production mode:
 
-\begin{itemize}[leftmargin=1.5em]
+\begin{itemize}
 \item MongoDB runs as a dedicated service with health checks.
 \item Backend runs from production Dockerfile and mounts uploads volume to \texttt{/app/uploads}.
 \item Frontend runs in Nginx container under compose profile \texttt{prod}.
@@ -32,7 +32,7 @@ This ensures that local verification and deployment handover use the same operat
 
 \section{Tools and Technologies Used}
 
-\begin{longtable}{p{0.20\textwidth}p{0.23\textwidth}p{0.49\textwidth}}
+\begin{longtable}{|p{0.20\textwidth}|p{0.23\textwidth}|p{0.49\textwidth}|}
 \caption{Implementation Toolchain and Use Cases}\\
 \toprule
 \textbf{Category} & \textbf{Tool/Library} & \textbf{Implementation Use} \\
@@ -63,7 +63,7 @@ Documentation & Markdown + LaTeX & Runbooks, architecture docs, and final academ
 
 \subsection{Backend Standards}
 
-\begin{itemize}[leftmargin=1.5em]
+\begin{itemize}
 \item Router-based modularization for domain isolation.
 \item Strict schema validation through typed request models.
 \item Clear HTTP semantics for validation, auth, and lifecycle errors.
@@ -73,7 +73,7 @@ Documentation & Markdown + LaTeX & Runbooks, architecture docs, and final academ
 
 \subsection{Frontend Standards}
 
-\begin{itemize}[leftmargin=1.5em]
+\begin{itemize}
 \item Role-aware route guards and dashboard redirection.
 \item Separation of pages, reusable components, layouts, and context providers.
 \item Consistent API base usage through environment variables.
@@ -83,7 +83,7 @@ Documentation & Markdown + LaTeX & Runbooks, architecture docs, and final academ
 
 \subsection{Configuration Standards}
 
-\begin{itemize}[leftmargin=1.5em]
+\begin{itemize}
 \item Single canonical backend environment file for consistency.
 \item Explicit production defaults and overrides for sensitive settings.
 \item Avoidance of duplicate compose and env artifacts to reduce drift.
@@ -121,7 +121,7 @@ Deliverables included production compose profile, deployment guides, API referen
 \begin{table}[H]
 \centering
 \caption{Implementation Sequence with Dependency Notes}
-\begin{tabularx}{\textwidth}{p{0.10\textwidth}p{0.33\textwidth}X}
+\begin{tabularx}{\textwidth}{|p{0.10\textwidth}|p{0.33\textwidth}|X|}
 \toprule
 \textbf{Step} & \textbf{Implementation Activity} & \textbf{Dependency Consideration} \\
 \midrule
@@ -142,7 +142,7 @@ Deliverables included production compose profile, deployment guides, API referen
 
 The implementation plan emphasized explicit secret handling and runtime configurability. Important control groups include:
 
-\begin{itemize}[leftmargin=1.5em]
+\begin{itemize}
 \item Authentication controls: JWT secret, algorithm, token expiry.
 \item Data controls: Mongo URL and database selection.
 \item AI controls: model identifiers, timeout windows, queue worker count.
@@ -157,7 +157,7 @@ A notable planning correction during implementation was moving to one canonical 
 \begin{table}[H]
 \centering
 \caption{Implementation Quality Gates}
-\begin{tabularx}{\textwidth}{p{0.27\textwidth}X}
+\begin{tabularx}{\textwidth}{|p{0.27\textwidth}|X|}
 \toprule
 \textbf{Gate} & \textbf{Acceptance Criterion} \\
 \midrule
@@ -181,7 +181,7 @@ Implementation effort was distributed between development, stabilization, testin
 
 \subsection{Backend Router Implementation Notes}
 
-\begin{longtable}{p{0.22\textwidth}p{0.30\textwidth}p{0.40\textwidth}}
+\begin{longtable}{|p{0.22\textwidth}|p{0.30\textwidth}|p{0.40\textwidth}|}
 \caption{Router-Level Implementation Planning Notes}\\
 \toprule
 \textbf{Router Group} & \textbf{Core Responsibilities} & \textbf{Planning/Implementation Considerations} \\
@@ -206,7 +206,7 @@ health & live/ready/models/gpu probes & Needed operationally meaningful readines
 \begin{table}[H]
 \centering
 \caption{Service-Level Implementation Planning}
-\begin{tabularx}{\textwidth}{p{0.24\textwidth}X}
+\begin{tabularx}{\textwidth}{|p{0.24\textwidth}|X|}
 \toprule
 \textbf{Service} & \textbf{Planning Note} \\
 \midrule
@@ -227,7 +227,7 @@ Email service & Implemented as environment-driven stub/relay abstraction for gra
 \begin{table}[H]
 \centering
 \caption{Deployment Rollout Stages}
-\begin{tabularx}{\textwidth}{p{0.12\textwidth}p{0.24\textwidth}X}
+\begin{tabularx}{\textwidth}{|p{0.12\textwidth}|p{0.24\textwidth}|X|}
 \toprule
 \textbf{Stage} & \textbf{Objective} & \textbf{Execution Checklist} \\
 \midrule
@@ -246,7 +246,7 @@ R7 & Handover sign-off & Archive logs, backups, and runbook evidence for deploym
 
 Rollback planning was included to avoid high-impact downtime during deployment changes:
 
-\begin{itemize}[leftmargin=1.5em]
+\begin{itemize}
 \item Preserve previous container images and compose configuration snapshots.
 \item Ensure database backup is taken before schema/index-affecting changes.
 \item Revert frontend image and backend service independently when only one tier regresses.
@@ -255,7 +255,7 @@ Rollback planning was included to avoid high-impact downtime during deployment c
 
 \section{Operational Monitoring Plan}
 
-\begin{longtable}{p{0.25\textwidth}p{0.25\textwidth}p{0.38\textwidth}}
+\begin{longtable}{|p{0.25\textwidth}|p{0.25\textwidth}|p{0.38\textwidth}|}
 \caption{Operational Monitoring Matrix}\\
 \toprule
 \textbf{Signal} & \textbf{Collection Source} & \textbf{Operational Interpretation} \\
@@ -280,7 +280,7 @@ Error logs & rotating backend logs & Captures fault signatures for rapid remedia
 
 \subsection{Release Checklist}
 
-\begin{enumerate}[leftmargin=1.8em]
+\begin{enumerate}
 \item Confirm automated tests pass for backend and frontend quality gates.
 \item Verify compose validation for default and production profiles.
 \item Validate security controls: headers, CORS allowlist, upload checks, and role restrictions.

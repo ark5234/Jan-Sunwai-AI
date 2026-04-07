@@ -9,7 +9,7 @@ System design in Jan-Sunwai AI focuses on reliable complaint orchestration in a 
 
 The platform follows a layered service architecture:
 
-\begin{itemize}[leftmargin=1.5em]
+\begin{itemize}
 \item Presentation Layer: React SPA with role-aware route protection.
 \item API Layer: FastAPI routers grouped by domain concern.
 \item Service Layer: Assignment, queueing, sanitization, and utility services.
@@ -25,8 +25,7 @@ The platform follows a layered service architecture:
 
 \begin{table}[H]
 \centering
-\caption{Major Design Decisions and Rationale}
-\begin{tabularx}{\textwidth}{p{0.33\textwidth}X}
+\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}p{0.33\textwidth}|X|}
 \toprule
 \textbf{Decision} & \textbf{Rationale} \\
 \midrule
@@ -38,6 +37,8 @@ Security middleware and sanitization by default & Reduces exploit surface for AP
 Versioned API alias (/api/v1) & Improves long-term integration stability for external municipal consumers \\
 \bottomrule
 \end{tabularx}
+\caption{Major Design Decisions and Rationale}
+\label{tab:design-decisions}
 \end{table}
 
 \section{UML Diagrams}
@@ -76,7 +77,7 @@ Versioned API alias (/api/v1) & Improves long-term integration stability for ext
 
 The database is organized around four principal collections:
 
-\begin{itemize}[leftmargin=1.5em]
+\begin{itemize}
 \item \textbf{users}: identity, role, and worker service-area metadata.
 \item \textbf{complaints}: complaint payload, routing metadata, status history, and collaboration artifacts.
 \item \textbf{notifications}: user-scoped notification events and read-state tracking.
@@ -89,7 +90,7 @@ The design intentionally keeps lifecycle and audit structures close to complaint
 
 The platform uses controlled denormalization:
 
-\begin{itemize}[leftmargin=1.5em]
+\begin{itemize}
 \item Embedded \texttt{status\_history}, \texttt{dept\_notes}, and \texttt{comments} reduce query complexity.
 \item Core identity references (e.g., \texttt{user\_id}, \texttt{assigned\_to}) remain external for role and profile updates.
 \item Routing metadata is persisted with complaint records to preserve deterministic decision context over time.
@@ -100,8 +101,9 @@ This approach preserves operational read performance while retaining clear owner
 \subsection{Data Dictionary}
 
 \small
-\begin{longtable}{p{0.15\textwidth}>{\raggedright\arraybackslash}p{0.23\textwidth}p{0.16\textwidth}p{0.38\textwidth}}
+\begin{longtable}{|>{\raggedright\arraybackslash}p{0.15\textwidth}|>{\raggedright\arraybackslash}p{0.23\textwidth}|>{\raggedright\arraybackslash}p{0.16\textwidth}|>{\raggedright\arraybackslash}p{0.38\textwidth}|}
 \caption{Data Dictionary (Core Fields)}\\
+\label{tab:data-dictionary}\\
 \toprule
 \textbf{Collection} & \textbf{Field} & \textbf{Type} & \textbf{Purpose} \\
 \midrule
@@ -167,8 +169,7 @@ notifications & created\_at & Datetime & Event timestamp \\
 
 \begin{table}[H]
 \centering
-\caption{Indexing Strategy by Collection}
-\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{0.22\textwidth}>{\raggedright\arraybackslash}p{0.31\textwidth}X}
+\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}p{0.22\textwidth}|>{\raggedright\arraybackslash}p{0.31\textwidth}|X|}
 \toprule
 \textbf{Collection} & \textbf{Index} & \textbf{Purpose} \\
 \midrule
@@ -184,11 +185,13 @@ notifications & (user\_id, is\_read) & Unread badge counter queries \\
 \path{password_resets} & \path{TTL(expires_at)} & Automatic expired-token cleanup \\
 \bottomrule
 \end{tabularx}
+\caption{Indexing Strategy by Collection}
+\label{tab:indexing-strategy}
 \end{table}
 
 \subsection{Assignment Distance Formula}
 
-Auto-assignment uses geospatial proximity filtering where service-area radii are configured for workers. The distance calculation follows the Haversine relation \cite{haversine_original}:
+Auto-assignment uses geospatial proximity filtering where service-area radii are configured for workers. The distance calculation follows the Haversine relation described by Sinnott (1984):
 
 \begin{equation}\label{eq:haversine_distance}
  d = 2R \arcsin\left(\sqrt{\sin^2\left(\frac{\phi_2-\phi_1}{2}\right) + \cos(\phi_1)\cos(\phi_2)\sin^2\left(\frac{\lambda_2-\lambda_1}{2}\right)}\right)
@@ -202,7 +205,7 @@ Equation~\eqref{eq:haversine_distance} is used for worker-to-complaint distance 
 
 The UI follows practical governance portal principles:
 
-\begin{itemize}[leftmargin=1.5em]
+\begin{itemize}
 \item Clarity of action over decorative complexity.
 \item Explicit role boundaries in navigation and controls.
 \item Immediate visual feedback for status and notification changes.
@@ -213,8 +216,7 @@ The UI follows practical governance portal principles:
 
 \begin{table}[H]
 \centering
-\caption{GUI Areas and Purpose}
-\begin{tabularx}{\textwidth}{p{0.25\textwidth}X}
+\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}p{0.25\textwidth}|X|}
 \toprule
 \textbf{Interface Area} & \textbf{Purpose} \\
 \midrule
@@ -229,6 +231,8 @@ Notification Panel & Event feed and read-state management \\
 Profile Screen & Personal information update controls \\
 \bottomrule
 \end{tabularx}
+\caption{GUI Areas and Purpose}
+\label{tab:gui-areas-purpose}
 \end{table}
 
 \subsection{Wireframe Reference}

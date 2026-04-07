@@ -45,20 +45,28 @@
 \setlength{\headheight}{14.5pt}
 \setlength{\emergencystretch}{6em}
 \setlength{\tabcolsep}{4pt}
+\setlength{\arrayrulewidth}{0.5pt}
 \renewcommand{\arraystretch}{1.1}
-\sloppy
+\renewcommand{\tabularxcolumn}[1]{>{\raggedright\arraybackslash}p{#1}}
+\renewcommand{\toprule}{\hline}
+\renewcommand{\midrule}{\hline}
+\renewcommand{\bottomrule}{\hline}
+\setlist[itemize,1]{leftmargin=2.0em,labelsep=0.6em,itemsep=0.35em,topsep=0.35em,parsep=0pt,partopsep=0pt}
+\setlist[enumerate,1]{leftmargin=2.2em,labelsep=0.6em,itemsep=0.35em,topsep=0.35em,parsep=0pt,partopsep=0pt}
+\captionsetup[table]{position=bottom,skip=6pt}
+\fussy
 
-\titleformat{\chapter}[display]
-  {\bfseries\fontsize{16}{19}\selectfont\centering}
-  {\chaptertitlename\ \thechapter}
-  {0.4em}
-  {}
-\titleformat{name=\chapter,numberless}[display]
+\titleformat{\chapter}[hang]
+  {\bfseries\fontsize{16}{19}\selectfont}
+  {\chaptername\ \thechapter:}
+  {0.5em}
+  {\ignorespaces}
+\titleformat{name=\chapter,numberless}[hang]
   {\bfseries\fontsize{16}{19}\selectfont\centering}
   {}
   {0pt}
   {}
-\titlespacing*{\chapter}{0pt}{0pt}{14pt}
+\titlespacing*{\chapter}{0pt}{0pt}{10pt}
 
 \titleformat{\section}
   {\bfseries\fontsize{14}{17}\selectfont}
@@ -183,6 +191,5 @@ Institute: & \textit{Institution Name} \\
 \input{chapters/ch08_limitations_future_scope}
 \input{chapters/ch09_conclusion_references}
 \input{chapters/ch10_appendices}
-\input{chapters/ch11_verification_procedure}
 
 \end{document}

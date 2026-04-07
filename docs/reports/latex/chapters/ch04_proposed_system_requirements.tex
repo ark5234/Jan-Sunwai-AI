@@ -8,7 +8,7 @@ The proposed system is a role-driven civic complaint platform that combines AI-a
 
 The system can be summarized as a five-stage path:
 
-\begin{enumerate}[leftmargin=1.8em]
+\begin{enumerate}
 \item Complaint Intake: Citizen uploads image and requests analysis.
 \item AI Enrichment: System extracts likely category, location hints, and draft text.
 \item Structured Submission: Citizen reviews/edits and confirms complaint payload.
@@ -48,7 +48,7 @@ This module aggregates operational statistics, trend lines, and geospatial heatm
 
 \section{System Features}
 
-\begin{longtable}{p{0.12\textwidth}p{0.30\textwidth}p{0.48\textwidth}}
+\begin{longtable}{|p{0.12\textwidth}|p{0.30\textwidth}|p{0.48\textwidth}|}
 \caption{Proposed Feature Set and Operational Benefit}\\
 \toprule
 \textbf{Feature ID} & \textbf{Feature} & \textbf{Operational Benefit} \\
@@ -77,7 +77,7 @@ PF-12 & Health endpoints and timing logs & Supports operational diagnosis and pr
 
 \subsection{Citizen-Centric Advantages}
 
-\begin{itemize}[leftmargin=1.5em]
+\begin{itemize}
 \item Simplified complaint filing with image-based assistance.
 \item Better complaint quality due to generated formal drafts.
 \item Real-time feedback through status and notification channels.
@@ -86,7 +86,7 @@ PF-12 & Health endpoints and timing logs & Supports operational diagnosis and pr
 
 \subsection{Administrative and Departmental Advantages}
 
-\begin{itemize}[leftmargin=1.5em]
+\begin{itemize}
 \item Better routing quality and lower manual triage burden for standard cases.
 \item Strong lifecycle auditability for supervisory and escalation actions.
 \item Faster assignment and backlog control through automation and bulk operations.
@@ -95,7 +95,7 @@ PF-12 & Health endpoints and timing logs & Supports operational diagnosis and pr
 
 \subsection{Institutional Advantages}
 
-\begin{itemize}[leftmargin=1.5em]
+\begin{itemize}
 \item Local-first inference supports stricter data residency requirements.
 \item Containerized deployment supports repeatable setup and handover.
 \item Explicit API version aliasing improves integration stability.
@@ -104,7 +104,7 @@ PF-12 & Health endpoints and timing logs & Supports operational diagnosis and pr
 
 \section{Requirement Realization Matrix}
 
-\begin{longtable}{p{0.17\textwidth}p{0.23\textwidth}p{0.47\textwidth}}
+\begin{longtable}{|p{0.17\textwidth}|p{0.23\textwidth}|p{0.47\textwidth}|}
 \caption{Traceability from Requirements to Proposed Modules}\\
 \toprule
 \textbf{Requirement Group} & \textbf{Primary Module} & \textbf{Realization Mechanism} \\
@@ -134,7 +134,7 @@ Resilience and Security & Cross-cutting Platform Controls & Health probes, secur
 \begin{table}[H]
 \centering
 \caption{Expected Impact of Proposed System}
-\begin{tabularx}{\textwidth}{p{0.36\textwidth}X}
+\begin{tabularx}{\textwidth}{|p{0.36\textwidth}|X|}
 \toprule
 \textbf{Impact Area} & \textbf{Expected Outcome} \\
 \midrule
@@ -150,7 +150,7 @@ Deployment readiness & Lower setup friction due to unified compose and environme
 
 \section{Module Interaction Contracts}
 
-\begin{longtable}{p{0.24\textwidth}p{0.26\textwidth}p{0.42\textwidth}}
+\begin{longtable}{|p{0.24\textwidth}|p{0.26\textwidth}|p{0.42\textwidth}|}
 \caption{Inter-Module Contract Summary}\\
 \toprule
 \textbf{Producer Module} & \textbf{Consumer Module} & \textbf{Interaction Contract} \\
@@ -177,7 +177,7 @@ Health module & Database/model runtime & Publishes liveness/readiness/dependency
 \begin{table}[H]
 \centering
 \caption{Persona-Oriented Realization Snapshot}
-\begin{tabularx}{\textwidth}{p{0.16\textwidth}p{0.30\textwidth}X}
+\begin{tabularx}{\textwidth}{|p{0.16\textwidth}|p{0.30\textwidth}|X|}
 \toprule
 \textbf{Persona} & \textbf{Key Features Delivered} & \textbf{Operational Value Delivered} \\
 \midrule

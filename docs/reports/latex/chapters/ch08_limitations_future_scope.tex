@@ -6,7 +6,7 @@ No production-oriented civic platform is complete without explicit recognition o
 
 \subsection{Model and AI Limitations}
 
-\begin{itemize}[leftmargin=1.5em]
+\begin{itemize}
 \item Classification quality depends on local model behavior and image quality.
 \item Ambiguous civic scenes may still require administrative triage despite hybrid logic.
 \item Domain adaptation is limited to existing taxonomy and keyword/rule coverage.
@@ -15,7 +15,7 @@ No production-oriented civic platform is complete without explicit recognition o
 
 \subsection{Infrastructure Limitations}
 
-\begin{itemize}[leftmargin=1.5em]
+\begin{itemize}
 \item Throughput is constrained by local hardware, especially VRAM and CPU availability.
 \item Single-node deployment is suitable for pilot and controlled workloads, not large multi-zone production scale without additional orchestration.
 \item Current queue strategy is in-process and may require distributed message infrastructure for higher concurrency targets.
@@ -23,7 +23,7 @@ No production-oriented civic platform is complete without explicit recognition o
 
 \subsection{Workflow and Data Limitations}
 
-\begin{itemize}[leftmargin=1.5em]
+\begin{itemize}
 \item Worker service-area quality depends on correctness and completeness of admin-maintained profiles.
 \item Escalation semantics are configurable but not yet integrated with external authority APIs.
 \item Public feed is intentionally anonymized, limiting deeper citizen-facing analytics.
@@ -32,7 +32,7 @@ No production-oriented civic platform is complete without explicit recognition o
 
 \subsection{Security and Governance Limitations}
 
-\begin{itemize}[leftmargin=1.5em]
+\begin{itemize}
 \item Security checks are strong at application layer but external perimeter controls (WAF, zero-trust segmentation) are deployment-dependent.
 \item Email delivery remains stub-based until institutional SMTP integration is finalized.
 \item Continuous dependency vulnerability tracking is not yet fully automated in release workflow.
@@ -42,7 +42,7 @@ No production-oriented civic platform is complete without explicit recognition o
 
 \subsection{AI and Intelligence Enhancements}
 
-\begin{enumerate}[leftmargin=1.8em]
+\begin{enumerate}
 \item Introduce domain fine-tuning or retrieval-augmented context for better local scene understanding.
 \item Add multilingual voice-to-text intake for accessibility.
 \item Integrate confidence calibration dashboards and model drift alerts.
@@ -51,7 +51,7 @@ No production-oriented civic platform is complete without explicit recognition o
 
 \subsection{Operational Workflow Enhancements}
 
-\begin{enumerate}[leftmargin=1.8em]
+\begin{enumerate}
 \item Implement SLA policy engine with configurable thresholds per department and issue class.
 \item Add escalation automation with conditional approvals and supervisor override logs.
 \item Extend assignment with route optimization and field workload balancing by travel cost.
@@ -60,7 +60,7 @@ No production-oriented civic platform is complete without explicit recognition o
 
 \subsection{Platform and Deployment Enhancements}
 
-\begin{enumerate}[leftmargin=1.8em]
+\begin{enumerate}
 \item Move from single-node compose to orchestrated deployments for higher availability.
 \item Add asynchronous message broker for queue resilience and horizontal worker scaling.
 \item Integrate centralized observability stack for metrics, traces, and security audit events.
@@ -69,7 +69,7 @@ No production-oriented civic platform is complete without explicit recognition o
 
 \subsection{Security and Compliance Enhancements}
 
-\begin{enumerate}[leftmargin=1.8em]
+\begin{enumerate}
 \item Introduce periodic penetration testing workflow with report tracking.
 \item Add secret rotation automation and hardware-backed key management integration.
 \item Expand privacy controls for retention and redaction policies aligned with institutional mandates.
@@ -81,7 +81,7 @@ No production-oriented civic platform is complete without explicit recognition o
 \begin{table}[H]
 \centering
 \caption{Indicative Post-Submission Roadmap}
-\begin{tabularx}{\textwidth}{p{0.18\textwidth}p{0.30\textwidth}X}
+\begin{tabularx}{\textwidth}{|p{0.18\textwidth}|p{0.30\textwidth}|X|}
 \toprule
 \textbf{Horizon} & \textbf{Priority Area} & \textbf{Expected Deliverables} \\
 \midrule
@@ -95,7 +95,7 @@ No production-oriented civic platform is complete without explicit recognition o
 
 \section{Risk-Prioritized Improvement Backlog}
 
-\begin{longtable}{p{0.10\textwidth}p{0.30\textwidth}p{0.13\textwidth}p{0.13\textwidth}p{0.24\textwidth}}
+\begin{longtable}{|p{0.10\textwidth}|p{0.30\textwidth}|p{0.13\textwidth}|p{0.13\textwidth}|p{0.24\textwidth}|}
 \caption{Future Backlog Prioritization Matrix}\\
 \toprule
 \textbf{ID} & \textbf{Improvement Item} & \textbf{Impact} & \textbf{Effort} & \textbf{Suggested Horizon} \\
@@ -136,7 +136,7 @@ Municipal deployment success is influenced by organizational readiness as much a
 
 \subsection{Change Management Considerations}
 
-\begin{itemize}[leftmargin=1.5em]
+\begin{itemize}
 \item Staff onboarding must include role-specific workflow rehearsals, not only UI tours.
 \item Escalation policy language should be standardized before production launch.
 \item Existing manual grievance channels should run in parallel during pilot transition.
@@ -151,7 +151,7 @@ Future rollout should include an explicit policy for retention, redaction, acces
 
 The platform also creates opportunities for academic extension:
 
-\begin{enumerate}[leftmargin=1.8em]
+\begin{enumerate}
 \item Comparative analysis of hybrid rule+LLM pipelines versus end-to-end multimodal classifiers in civic datasets.
 \item Measurement of complaint resolution outcomes before and after AI-assisted intake.
 \item Bias and fairness analysis across department categories and geographies.

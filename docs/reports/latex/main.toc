@@ -1,6 +1,6 @@
-\contentsline {chapter}{List of Abbreviations}{x}{chapter*.4}%
-\contentsline {chapter}{List of Definitions}{xi}{chapter*.5}%
-\contentsline {chapter}{List of Screenshots}{xiii}{chapter*.6}%
+\contentsline {chapter}{List of Abbreviations}{ix}{chapter*.4}%
+\contentsline {chapter}{List of Definitions}{x}{chapter*.5}%
+\contentsline {chapter}{List of Screenshots}{xii}{chapter*.6}%
 \contentsline {chapter}{\numberline {1}Introduction}{1}{chapter.1}%
 \contentsline {section}{\numberline {1.1}Project Details}{1}{section.1.1}%
 \contentsline {section}{\numberline {1.2}Purpose}{1}{section.1.2}%
@@ -24,188 +24,171 @@
 \contentsline {section}{\numberline {2.2}Project Planning}{6}{section.2.2}%
 \contentsline {subsection}{\numberline {2.2.1}Development Approach and Justification}{6}{subsection.2.2.1}%
 \contentsline {subsection}{\numberline {2.2.2}Milestones and Deliverables}{6}{subsection.2.2.2}%
-\contentsline {subsection}{\numberline {2.2.3}Roles and Responsibilities}{8}{subsection.2.2.3}%
+\contentsline {subsection}{\numberline {2.2.3}Roles and Responsibilities}{7}{subsection.2.2.3}%
 \contentsline {subsection}{\numberline {2.2.4}Group Dependencies}{8}{subsection.2.2.4}%
 \contentsline {section}{\numberline {2.3}Project Scheduling (Gantt/PERT Interpretation)}{8}{section.2.3}%
 \contentsline {subsection}{\numberline {2.3.1}High-Level Schedule}{8}{subsection.2.3.1}%
-\contentsline {subsection}{\numberline {2.3.2}PERT-Like Dependency Flow}{9}{subsection.2.3.2}%
-\contentsline {section}{\numberline {2.4}Risk Management}{9}{section.2.4}%
-\contentsline {section}{\numberline {2.5}Management Outcomes}{10}{section.2.5}%
-\contentsline {section}{\numberline {2.6}Detailed Week-Wise Execution Digest}{10}{section.2.6}%
-\contentsline {section}{\numberline {2.7}Project Governance Metrics}{12}{section.2.7}%
-\contentsline {section}{\numberline {2.8}Management Retrospective}{12}{section.2.8}%
-\contentsline {section}{\numberline {2.9}Chapter Summary}{12}{section.2.9}%
-\contentsline {chapter}{\numberline {3}System Requirement Study}{13}{chapter.3}%
-\contentsline {section}{\numberline {3.1}Existing System Overview}{13}{section.3.1}%
-\contentsline {section}{\numberline {3.2}Limitations of the Existing System}{14}{section.3.2}%
-\contentsline {section}{\numberline {3.3}User Characteristics}{14}{section.3.3}%
-\contentsline {section}{\numberline {3.4}Functional Requirements}{14}{section.3.4}%
-\contentsline {section}{\numberline {3.5}Non-Functional Requirements}{16}{section.3.5}%
-\contentsline {section}{\numberline {3.6}Hardware and Software Requirements}{17}{section.3.6}%
-\contentsline {subsection}{\numberline {3.6.1}Hardware Requirements}{17}{subsection.3.6.1}%
-\contentsline {subsection}{\numberline {3.6.2}Software Requirements}{17}{subsection.3.6.2}%
-\contentsline {section}{\numberline {3.7}Constraints}{17}{section.3.7}%
-\contentsline {subsection}{\numberline {3.7.1}UI Constraints}{17}{subsection.3.7.1}%
-\contentsline {subsection}{\numberline {3.7.2}Communication Interface}{18}{subsection.3.7.2}%
-\contentsline {subsection}{\numberline {3.7.3}Hardware Interface}{18}{subsection.3.7.3}%
-\contentsline {subsection}{\numberline {3.7.4}Criticality of Application}{18}{subsection.3.7.4}%
-\contentsline {subsection}{\numberline {3.7.5}Safety and Security Considerations}{18}{subsection.3.7.5}%
-\contentsline {section}{\numberline {3.8}Assumptions and Dependencies}{19}{section.3.8}%
-\contentsline {section}{\numberline {3.9}Detailed Use-Case Narratives}{19}{section.3.9}%
-\contentsline {section}{\numberline {3.10}Requirement Priority Classification}{20}{section.3.10}%
-\contentsline {section}{\numberline {3.11}Chapter Summary}{20}{section.3.11}%
-\contentsline {chapter}{\numberline {4}Proposed System Requirements}{21}{chapter.4}%
-\contentsline {section}{\numberline {4.1}Overview of Proposed System}{21}{section.4.1}%
-\contentsline {section}{\numberline {4.2}Module Descriptions}{21}{section.4.2}%
-\contentsline {subsection}{\numberline {4.2.1}Authentication and User Management Module}{21}{subsection.4.2.1}%
-\contentsline {subsection}{\numberline {4.2.2}Analyze and Complaint Intake Module}{21}{subsection.4.2.2}%
-\contentsline {subsection}{\numberline {4.2.3}Complaint Lifecycle Module}{21}{subsection.4.2.3}%
-\contentsline {subsection}{\numberline {4.2.4}Assignment and Worker Operations Module}{22}{subsection.4.2.4}%
-\contentsline {subsection}{\numberline {4.2.5}Notification and Communication Module}{22}{subsection.4.2.5}%
-\contentsline {subsection}{\numberline {4.2.6}Triage and Governance Module}{22}{subsection.4.2.6}%
-\contentsline {subsection}{\numberline {4.2.7}Analytics and Public Transparency Module}{22}{subsection.4.2.7}%
-\contentsline {section}{\numberline {4.3}System Features}{22}{section.4.3}%
-\contentsline {section}{\numberline {4.4}Advantages of the Proposed System}{23}{section.4.4}%
-\contentsline {subsection}{\numberline {4.4.1}Citizen-Centric Advantages}{23}{subsection.4.4.1}%
-\contentsline {subsection}{\numberline {4.4.2}Administrative and Departmental Advantages}{23}{subsection.4.4.2}%
-\contentsline {subsection}{\numberline {4.4.3}Institutional Advantages}{23}{subsection.4.4.3}%
-\contentsline {section}{\numberline {4.5}Requirement Realization Matrix}{23}{section.4.5}%
-\contentsline {section}{\numberline {4.6}Proposed Operational Workflow}{24}{section.4.6}%
-\contentsline {section}{\numberline {4.7}Expected Impact}{25}{section.4.7}%
-\contentsline {section}{\numberline {4.8}Module Interaction Contracts}{25}{section.4.8}%
-\contentsline {section}{\numberline {4.9}Requirement Realization Detail by Persona}{26}{section.4.9}%
-\contentsline {section}{\numberline {4.10}Proposed Data and Control Flow Narrative}{26}{section.4.10}%
-\contentsline {section}{\numberline {4.11}Chapter Summary}{26}{section.4.11}%
-\contentsline {chapter}{\numberline {5}System Design}{27}{chapter.5}%
-\contentsline {section}{\numberline {5.1}System Architecture Design}{27}{section.5.1}%
-\contentsline {subsection}{\numberline {5.1.1}Architectural Style}{27}{subsection.5.1.1}%
-\contentsline {subsection}{\numberline {5.1.2}Key Architectural Decisions}{28}{subsection.5.1.2}%
-\contentsline {section}{\numberline {5.2}UML Diagrams}{29}{section.5.2}%
-\contentsline {subsection}{\numberline {5.2.1}E-R Diagram}{29}{subsection.5.2.1}%
-\contentsline {subsection}{\numberline {5.2.2}Use Case Diagram}{29}{subsection.5.2.2}%
-\contentsline {subsection}{\numberline {5.2.3}Class Diagram}{30}{subsection.5.2.3}%
-\contentsline {subsection}{\numberline {5.2.4}Sequence Diagram}{30}{subsection.5.2.4}%
-\contentsline {subsection}{\numberline {5.2.5}Activity Diagram}{31}{subsection.5.2.5}%
-\contentsline {subsection}{\numberline {5.2.6}DFD Diagram}{31}{subsection.5.2.6}%
-\contentsline {subsection}{\numberline {5.2.7}Deployment Diagram}{32}{subsection.5.2.7}%
-\contentsline {section}{\numberline {5.3}Database Design}{32}{section.5.3}%
-\contentsline {subsection}{\numberline {5.3.1}Collection Design and Relationships}{32}{subsection.5.3.1}%
-\contentsline {subsection}{\numberline {5.3.2}Normalization Strategy}{32}{subsection.5.3.2}%
-\contentsline {subsection}{\numberline {5.3.3}Data Dictionary}{33}{subsection.5.3.3}%
-\contentsline {subsection}{\numberline {5.3.4}Indexing Strategy}{35}{subsection.5.3.4}%
-\contentsline {subsection}{\numberline {5.3.5}Assignment Distance Formula}{35}{subsection.5.3.5}%
-\contentsline {section}{\numberline {5.4}GUI Design}{35}{section.5.4}%
-\contentsline {subsection}{\numberline {5.4.1}Design Principles}{35}{subsection.5.4.1}%
-\contentsline {subsection}{\numberline {5.4.2}Interface Areas}{36}{subsection.5.4.2}%
-\contentsline {subsection}{\numberline {5.4.3}Wireframe Reference}{37}{subsection.5.4.3}%
-\contentsline {section}{\numberline {5.5}Screenshots}{37}{section.5.5}%
-\contentsline {subsection}{\numberline {5.5.1}Primary Screenshot Gallery (S01--S15)}{37}{subsection.5.5.1}%
-\contentsline {subsection}{\numberline {5.5.2}Supplementary Screens (Optional in Final Print)}{52}{subsection.5.5.2}%
-\contentsline {section}{\numberline {5.6}Chapter Summary}{57}{section.5.6}%
-\contentsline {chapter}{\numberline {6}Implementation Planning}{58}{chapter.6}%
-\contentsline {section}{\numberline {6.1}Implementation Environment}{58}{section.6.1}%
-\contentsline {subsection}{\numberline {6.1.1}Local Development Environment}{58}{subsection.6.1.1}%
-\contentsline {subsection}{\numberline {6.1.2}Production-Style Container Environment}{58}{subsection.6.1.2}%
-\contentsline {section}{\numberline {6.2}Tools and Technologies Used}{58}{section.6.2}%
-\contentsline {section}{\numberline {6.3}Coding Standards Followed}{59}{section.6.3}%
-\contentsline {subsection}{\numberline {6.3.1}Backend Standards}{59}{subsection.6.3.1}%
-\contentsline {subsection}{\numberline {6.3.2}Frontend Standards}{59}{subsection.6.3.2}%
-\contentsline {subsection}{\numberline {6.3.3}Configuration Standards}{60}{subsection.6.3.3}%
-\contentsline {section}{\numberline {6.4}Implementation Work Packages}{60}{section.6.4}%
-\contentsline {subsection}{\numberline {6.4.1}Work Package 1: Core Backend and Data Layer}{60}{subsection.6.4.1}%
-\contentsline {subsection}{\numberline {6.4.2}Work Package 2: AI Pipeline Integration}{60}{subsection.6.4.2}%
-\contentsline {subsection}{\numberline {6.4.3}Work Package 3: Frontend Role Flows}{60}{subsection.6.4.3}%
-\contentsline {subsection}{\numberline {6.4.4}Work Package 4: Operational Features}{60}{subsection.6.4.4}%
-\contentsline {subsection}{\numberline {6.4.5}Work Package 5: Security and Reliability Hardening}{60}{subsection.6.4.5}%
-\contentsline {subsection}{\numberline {6.4.6}Work Package 6: Deployment and Handover Readiness}{60}{subsection.6.4.6}%
-\contentsline {section}{\numberline {6.5}Implementation Sequence and Dependencies}{61}{section.6.5}%
-\contentsline {section}{\numberline {6.6}Configuration and Secret Planning}{61}{section.6.6}%
-\contentsline {section}{\numberline {6.7}Quality Gates in Implementation Plan}{62}{section.6.7}%
-\contentsline {section}{\numberline {6.8}Resource and Effort Planning}{62}{section.6.8}%
-\contentsline {section}{\numberline {6.9}Detailed Module Implementation Notes}{62}{section.6.9}%
-\contentsline {subsection}{\numberline {6.9.1}Backend Router Implementation Notes}{62}{subsection.6.9.1}%
-\contentsline {subsection}{\numberline {6.9.2}Service-Layer Planning Notes}{63}{subsection.6.9.2}%
-\contentsline {section}{\numberline {6.10}Deployment Runbook and Rollout Plan}{64}{section.6.10}%
-\contentsline {subsection}{\numberline {6.10.1}Rollout Stages}{64}{subsection.6.10.1}%
-\contentsline {subsection}{\numberline {6.10.2}Rollback Planning}{64}{subsection.6.10.2}%
-\contentsline {section}{\numberline {6.11}Operational Monitoring Plan}{64}{section.6.11}%
-\contentsline {section}{\numberline {6.12}Change Management and Release Strategy}{65}{section.6.12}%
-\contentsline {subsection}{\numberline {6.12.1}Release Checklist}{65}{subsection.6.12.1}%
-\contentsline {subsection}{\numberline {6.12.2}Implementation Learnings}{65}{subsection.6.12.2}%
-\contentsline {section}{\numberline {6.13}Chapter Summary}{65}{section.6.13}%
-\contentsline {chapter}{\numberline {7}Testing}{66}{chapter.7}%
-\contentsline {section}{\numberline {7.1}Testing Plan}{66}{section.7.1}%
-\contentsline {subsection}{\numberline {7.1.1}Testing Objectives}{66}{subsection.7.1.1}%
-\contentsline {subsection}{\numberline {7.1.2}Test Environment}{66}{subsection.7.1.2}%
-\contentsline {subsection}{\numberline {7.1.3}Coverage Matrix}{66}{subsection.7.1.3}%
-\contentsline {section}{\numberline {7.2}Types of Testing}{67}{section.7.2}%
-\contentsline {subsection}{\numberline {7.2.1}Unit Testing}{67}{subsection.7.2.1}%
-\contentsline {subsection}{\numberline {7.2.2}Integration Testing}{67}{subsection.7.2.2}%
-\contentsline {subsection}{\numberline {7.2.3}System Testing}{68}{subsection.7.2.3}%
-\contentsline {subsection}{\numberline {7.2.4}User Acceptance Testing (UAT)}{68}{subsection.7.2.4}%
-\contentsline {section}{\numberline {7.3}Testing Techniques}{68}{section.7.3}%
-\contentsline {subsection}{\numberline {7.3.1}Black-Box Behavioral Testing}{68}{subsection.7.3.1}%
-\contentsline {subsection}{\numberline {7.3.2}Negative Testing}{69}{subsection.7.3.2}%
-\contentsline {subsection}{\numberline {7.3.3}Resilience and Fault Injection}{69}{subsection.7.3.3}%
-\contentsline {subsection}{\numberline {7.3.4}Performance and Load Testing}{69}{subsection.7.3.4}%
-\contentsline {section}{\numberline {7.4}Defect Logging}{69}{section.7.4}%
-\contentsline {subsection}{\numberline {7.4.1}Defect Classification}{69}{subsection.7.4.1}%
-\contentsline {subsection}{\numberline {7.4.2}Defect Log Snapshot}{69}{subsection.7.4.2}%
-\contentsline {section}{\numberline {7.5}Testing Outcomes}{70}{section.7.5}%
-\contentsline {section}{\numberline {7.6}Residual Risks and Test Gaps}{70}{section.7.6}%
-\contentsline {section}{\numberline {7.7}Detailed UAT Case Matrix}{71}{section.7.7}%
-\contentsline {section}{\numberline {7.8}Load Benchmark Profiles and Acceptance Rubric}{73}{section.7.8}%
-\contentsline {section}{\numberline {7.9}Security Regression Matrix}{73}{section.7.9}%
-\contentsline {section}{\numberline {7.10}Chapter Summary}{74}{section.7.10}%
-\contentsline {chapter}{\numberline {8}Limitations and Future Scope}{75}{chapter.8}%
-\contentsline {section}{\numberline {8.1}Current Limitations}{75}{section.8.1}%
-\contentsline {subsection}{\numberline {8.1.1}Model and AI Limitations}{75}{subsection.8.1.1}%
-\contentsline {subsection}{\numberline {8.1.2}Infrastructure Limitations}{75}{subsection.8.1.2}%
-\contentsline {subsection}{\numberline {8.1.3}Workflow and Data Limitations}{75}{subsection.8.1.3}%
-\contentsline {subsection}{\numberline {8.1.4}Security and Governance Limitations}{75}{subsection.8.1.4}%
-\contentsline {section}{\numberline {8.2}Future Scope}{76}{section.8.2}%
-\contentsline {subsection}{\numberline {8.2.1}AI and Intelligence Enhancements}{76}{subsection.8.2.1}%
-\contentsline {subsection}{\numberline {8.2.2}Operational Workflow Enhancements}{76}{subsection.8.2.2}%
-\contentsline {subsection}{\numberline {8.2.3}Platform and Deployment Enhancements}{76}{subsection.8.2.3}%
-\contentsline {subsection}{\numberline {8.2.4}Security and Compliance Enhancements}{76}{subsection.8.2.4}%
-\contentsline {section}{\numberline {8.3}Roadmap Perspective}{77}{section.8.3}%
-\contentsline {section}{\numberline {8.4}Risk-Prioritized Improvement Backlog}{77}{section.8.4}%
-\contentsline {section}{\numberline {8.5}Adoption Considerations for Municipal Deployment}{78}{section.8.5}%
-\contentsline {subsection}{\numberline {8.5.1}Institutional Readiness Factors}{78}{subsection.8.5.1}%
-\contentsline {subsection}{\numberline {8.5.2}Change Management Considerations}{78}{subsection.8.5.2}%
-\contentsline {subsection}{\numberline {8.5.3}Data Governance Considerations}{79}{subsection.8.5.3}%
-\contentsline {section}{\numberline {8.6}Research Continuation Opportunities}{79}{section.8.6}%
-\contentsline {section}{\numberline {8.7}Chapter Summary}{79}{section.8.7}%
-\contentsline {chapter}{\numberline {9}Conclusion and References}{80}{chapter.9}%
-\contentsline {section}{\numberline {9.1}Conclusion}{80}{section.9.1}%
-\contentsline {section}{\numberline {9.2}References}{80}{section.9.2}%
-\contentsline {chapter}{\numberline {10}Appendices}{82}{chapter.10}%
-\contentsline {section}{\numberline {10.1}Appendix A: API Endpoint Snapshot}{82}{section.10.1}%
-\contentsline {section}{\numberline {10.2}Appendix B: Environment Variable Catalog}{84}{section.10.2}%
-\contentsline {section}{\numberline {10.3}Appendix C: Canonical Department Taxonomy and Routing}{85}{section.10.3}%
-\contentsline {section}{\numberline {10.4}Appendix D: Script Inventory}{85}{section.10.4}%
-\contentsline {section}{\numberline {10.5}Appendix E: Screenshot Asset Checklist}{86}{section.10.5}%
-\contentsline {section}{\numberline {10.6}Appendix F: Sample Request and Response Payloads}{87}{section.10.6}%
-\contentsline {subsection}{\numberline {10.6.1}Login Request (Form Encoded)}{87}{subsection.10.6.1}%
-\contentsline {subsection}{\numberline {10.6.2}Analyze Request (Multipart)}{87}{subsection.10.6.2}%
-\contentsline {subsection}{\numberline {10.6.3}Analyze Response (Representative)}{87}{subsection.10.6.3}%
-\contentsline {subsection}{\numberline {10.6.4}Complaint Creation Payload (Representative)}{88}{subsection.10.6.4}%
-\contentsline {subsection}{\numberline {10.6.5}Triage Decision Payload}{88}{subsection.10.6.5}%
-\contentsline {section}{\numberline {10.7}Appendix G: Consolidated Execution Timeline}{88}{section.10.7}%
-\contentsline {section}{\numberline {10.8}Appendix H: Requirement-to-Test Traceability Matrix}{89}{section.10.8}%
-\contentsline {chapter}{\numberline {11}Report Verification Procedure}{92}{chapter.11}%
-\contentsline {section}{\numberline {11.1}Verification Objectives}{92}{section.11.1}%
-\contentsline {section}{\numberline {11.2}Document Verification Checklist}{92}{section.11.2}%
-\contentsline {section}{\numberline {11.3}Technical Verification Checklist}{92}{section.11.3}%
-\contentsline {section}{\numberline {11.4}Reproducibility Procedure}{93}{section.11.4}%
-\contentsline {subsection}{\numberline {11.4.1}Build and Run Verification}{93}{subsection.11.4.1}%
-\contentsline {subsection}{\numberline {11.4.2}Test Verification}{93}{subsection.11.4.2}%
-\contentsline {subsection}{\numberline {11.4.3}Deployment Verification}{94}{subsection.11.4.3}%
-\contentsline {section}{\numberline {11.5}Artifact Completeness Checklist}{94}{section.11.5}%
-\contentsline {section}{\numberline {11.6}Final Sign-Off Template}{94}{section.11.6}%
-\contentsline {section}{\numberline {11.7}Evidence Mapping Matrix}{95}{section.11.7}%
-\contentsline {section}{\numberline {11.8}Submission-Day Verification Script}{96}{section.11.8}%
-\contentsline {subsection}{\numberline {11.8.1}Pre-Compilation Steps}{96}{subsection.11.8.1}%
-\contentsline {subsection}{\numberline {11.8.2}Compilation Steps}{96}{subsection.11.8.2}%
-\contentsline {subsection}{\numberline {11.8.3}Final QA Steps}{96}{subsection.11.8.3}%
-\contentsline {section}{\numberline {11.9}Chapter Summary}{96}{section.11.9}%
+\contentsline {subsection}{\numberline {2.3.2}PERT-Like Dependency Flow}{8}{subsection.2.3.2}%
+\contentsline {section}{\numberline {2.4}Risk Management}{8}{section.2.4}%
+\contentsline {section}{\numberline {2.5}Management Outcomes}{9}{section.2.5}%
+\contentsline {section}{\numberline {2.6}Detailed Week-Wise Execution Digest}{9}{section.2.6}%
+\contentsline {section}{\numberline {2.7}Project Governance Metrics}{11}{section.2.7}%
+\contentsline {section}{\numberline {2.8}Management Retrospective}{11}{section.2.8}%
+\contentsline {section}{\numberline {2.9}Chapter Summary}{11}{section.2.9}%
+\contentsline {chapter}{\numberline {3}System Requirement Study}{12}{chapter.3}%
+\contentsline {section}{\numberline {3.1}Existing System Overview}{12}{section.3.1}%
+\contentsline {section}{\numberline {3.2}Limitations of the Existing System}{12}{section.3.2}%
+\contentsline {section}{\numberline {3.3}User Characteristics}{13}{section.3.3}%
+\contentsline {section}{\numberline {3.4}Functional Requirements}{13}{section.3.4}%
+\contentsline {section}{\numberline {3.5}Non-Functional Requirements}{14}{section.3.5}%
+\contentsline {section}{\numberline {3.6}Hardware and Software Requirements}{15}{section.3.6}%
+\contentsline {subsection}{\numberline {3.6.1}Hardware Requirements}{15}{subsection.3.6.1}%
+\contentsline {subsection}{\numberline {3.6.2}Software Requirements}{16}{subsection.3.6.2}%
+\contentsline {section}{\numberline {3.7}Constraints}{16}{section.3.7}%
+\contentsline {subsection}{\numberline {3.7.1}UI Constraints}{16}{subsection.3.7.1}%
+\contentsline {subsection}{\numberline {3.7.2}Communication Interface}{16}{subsection.3.7.2}%
+\contentsline {subsection}{\numberline {3.7.3}Hardware Interface}{16}{subsection.3.7.3}%
+\contentsline {subsection}{\numberline {3.7.4}Criticality of Application}{16}{subsection.3.7.4}%
+\contentsline {subsection}{\numberline {3.7.5}Safety and Security Considerations}{16}{subsection.3.7.5}%
+\contentsline {section}{\numberline {3.8}Assumptions and Dependencies}{17}{section.3.8}%
+\contentsline {section}{\numberline {3.9}Detailed Use-Case Narratives}{17}{section.3.9}%
+\contentsline {section}{\numberline {3.10}Requirement Priority Classification}{18}{section.3.10}%
+\contentsline {section}{\numberline {3.11}Chapter Summary}{18}{section.3.11}%
+\contentsline {chapter}{\numberline {4}Proposed System Requirements}{20}{chapter.4}%
+\contentsline {section}{\numberline {4.1}Overview of Proposed System}{20}{section.4.1}%
+\contentsline {section}{\numberline {4.2}Module Descriptions}{20}{section.4.2}%
+\contentsline {subsection}{\numberline {4.2.1}Authentication and User Management Module}{20}{subsection.4.2.1}%
+\contentsline {subsection}{\numberline {4.2.2}Analyze and Complaint Intake Module}{20}{subsection.4.2.2}%
+\contentsline {subsection}{\numberline {4.2.3}Complaint Lifecycle Module}{20}{subsection.4.2.3}%
+\contentsline {subsection}{\numberline {4.2.4}Assignment and Worker Operations Module}{20}{subsection.4.2.4}%
+\contentsline {subsection}{\numberline {4.2.5}Notification and Communication Module}{21}{subsection.4.2.5}%
+\contentsline {subsection}{\numberline {4.2.6}Triage and Governance Module}{21}{subsection.4.2.6}%
+\contentsline {subsection}{\numberline {4.2.7}Analytics and Public Transparency Module}{21}{subsection.4.2.7}%
+\contentsline {section}{\numberline {4.3}System Features}{21}{section.4.3}%
+\contentsline {section}{\numberline {4.4}Advantages of the Proposed System}{22}{section.4.4}%
+\contentsline {subsection}{\numberline {4.4.1}Citizen-Centric Advantages}{22}{subsection.4.4.1}%
+\contentsline {subsection}{\numberline {4.4.2}Administrative and Departmental Advantages}{22}{subsection.4.4.2}%
+\contentsline {subsection}{\numberline {4.4.3}Institutional Advantages}{22}{subsection.4.4.3}%
+\contentsline {section}{\numberline {4.5}Requirement Realization Matrix}{22}{section.4.5}%
+\contentsline {section}{\numberline {4.6}Proposed Operational Workflow}{23}{section.4.6}%
+\contentsline {section}{\numberline {4.7}Expected Impact}{23}{section.4.7}%
+\contentsline {section}{\numberline {4.8}Module Interaction Contracts}{24}{section.4.8}%
+\contentsline {section}{\numberline {4.9}Requirement Realization Detail by Persona}{24}{section.4.9}%
+\contentsline {section}{\numberline {4.10}Proposed Data and Control Flow Narrative}{25}{section.4.10}%
+\contentsline {section}{\numberline {4.11}Chapter Summary}{25}{section.4.11}%
+\contentsline {chapter}{\numberline {5}System Design}{26}{chapter.5}%
+\contentsline {section}{\numberline {5.1}System Architecture Design}{26}{section.5.1}%
+\contentsline {subsection}{\numberline {5.1.1}Architectural Style}{26}{subsection.5.1.1}%
+\contentsline {subsection}{\numberline {5.1.2}Key Architectural Decisions}{27}{subsection.5.1.2}%
+\contentsline {section}{\numberline {5.2}UML Diagrams}{28}{section.5.2}%
+\contentsline {subsection}{\numberline {5.2.1}E-R Diagram}{28}{subsection.5.2.1}%
+\contentsline {subsection}{\numberline {5.2.2}Use Case Diagram}{28}{subsection.5.2.2}%
+\contentsline {subsection}{\numberline {5.2.3}Class Diagram}{29}{subsection.5.2.3}%
+\contentsline {subsection}{\numberline {5.2.4}Sequence Diagram}{29}{subsection.5.2.4}%
+\contentsline {subsection}{\numberline {5.2.5}Activity Diagram}{30}{subsection.5.2.5}%
+\contentsline {subsection}{\numberline {5.2.6}DFD Diagram}{30}{subsection.5.2.6}%
+\contentsline {subsection}{\numberline {5.2.7}Deployment Diagram}{31}{subsection.5.2.7}%
+\contentsline {section}{\numberline {5.3}Database Design}{31}{section.5.3}%
+\contentsline {subsection}{\numberline {5.3.1}Collection Design and Relationships}{31}{subsection.5.3.1}%
+\contentsline {subsection}{\numberline {5.3.2}Normalization Strategy}{31}{subsection.5.3.2}%
+\contentsline {subsection}{\numberline {5.3.3}Data Dictionary}{31}{subsection.5.3.3}%
+\contentsline {subsection}{\numberline {5.3.4}Indexing Strategy}{33}{subsection.5.3.4}%
+\contentsline {subsection}{\numberline {5.3.5}Assignment Distance Formula}{34}{subsection.5.3.5}%
+\contentsline {section}{\numberline {5.4}GUI Design}{34}{section.5.4}%
+\contentsline {subsection}{\numberline {5.4.1}Design Principles}{34}{subsection.5.4.1}%
+\contentsline {subsection}{\numberline {5.4.2}Interface Areas}{34}{subsection.5.4.2}%
+\contentsline {subsection}{\numberline {5.4.3}Wireframe Reference}{35}{subsection.5.4.3}%
+\contentsline {section}{\numberline {5.5}Screenshots}{35}{section.5.5}%
+\contentsline {subsection}{\numberline {5.5.1}Primary Screenshot Gallery (S01--S15)}{35}{subsection.5.5.1}%
+\contentsline {subsection}{\numberline {5.5.2}Supplementary Screens (Optional in Final Print)}{50}{subsection.5.5.2}%
+\contentsline {section}{\numberline {5.6}Chapter Summary}{55}{section.5.6}%
+\contentsline {chapter}{\numberline {6}Implementation Planning}{56}{chapter.6}%
+\contentsline {section}{\numberline {6.1}Implementation Environment}{56}{section.6.1}%
+\contentsline {subsection}{\numberline {6.1.1}Local Development Environment}{56}{subsection.6.1.1}%
+\contentsline {subsection}{\numberline {6.1.2}Production-Style Container Environment}{56}{subsection.6.1.2}%
+\contentsline {section}{\numberline {6.2}Tools and Technologies Used}{56}{section.6.2}%
+\contentsline {section}{\numberline {6.3}Coding Standards Followed}{57}{section.6.3}%
+\contentsline {subsection}{\numberline {6.3.1}Backend Standards}{57}{subsection.6.3.1}%
+\contentsline {subsection}{\numberline {6.3.2}Frontend Standards}{57}{subsection.6.3.2}%
+\contentsline {subsection}{\numberline {6.3.3}Configuration Standards}{57}{subsection.6.3.3}%
+\contentsline {section}{\numberline {6.4}Implementation Work Packages}{58}{section.6.4}%
+\contentsline {subsection}{\numberline {6.4.1}Work Package 1: Core Backend and Data Layer}{58}{subsection.6.4.1}%
+\contentsline {subsection}{\numberline {6.4.2}Work Package 2: AI Pipeline Integration}{58}{subsection.6.4.2}%
+\contentsline {subsection}{\numberline {6.4.3}Work Package 3: Frontend Role Flows}{58}{subsection.6.4.3}%
+\contentsline {subsection}{\numberline {6.4.4}Work Package 4: Operational Features}{58}{subsection.6.4.4}%
+\contentsline {subsection}{\numberline {6.4.5}Work Package 5: Security and Reliability Hardening}{58}{subsection.6.4.5}%
+\contentsline {subsection}{\numberline {6.4.6}Work Package 6: Deployment and Handover Readiness}{58}{subsection.6.4.6}%
+\contentsline {section}{\numberline {6.5}Implementation Sequence and Dependencies}{59}{section.6.5}%
+\contentsline {section}{\numberline {6.6}Configuration and Secret Planning}{59}{section.6.6}%
+\contentsline {section}{\numberline {6.7}Quality Gates in Implementation Plan}{60}{section.6.7}%
+\contentsline {section}{\numberline {6.8}Resource and Effort Planning}{60}{section.6.8}%
+\contentsline {section}{\numberline {6.9}Detailed Module Implementation Notes}{60}{section.6.9}%
+\contentsline {subsection}{\numberline {6.9.1}Backend Router Implementation Notes}{60}{subsection.6.9.1}%
+\contentsline {subsection}{\numberline {6.9.2}Service-Layer Planning Notes}{61}{subsection.6.9.2}%
+\contentsline {section}{\numberline {6.10}Deployment Runbook and Rollout Plan}{62}{section.6.10}%
+\contentsline {subsection}{\numberline {6.10.1}Rollout Stages}{62}{subsection.6.10.1}%
+\contentsline {subsection}{\numberline {6.10.2}Rollback Planning}{62}{subsection.6.10.2}%
+\contentsline {section}{\numberline {6.11}Operational Monitoring Plan}{62}{section.6.11}%
+\contentsline {section}{\numberline {6.12}Change Management and Release Strategy}{63}{section.6.12}%
+\contentsline {subsection}{\numberline {6.12.1}Release Checklist}{63}{subsection.6.12.1}%
+\contentsline {subsection}{\numberline {6.12.2}Implementation Learnings}{63}{subsection.6.12.2}%
+\contentsline {section}{\numberline {6.13}Chapter Summary}{63}{section.6.13}%
+\contentsline {chapter}{\numberline {7}Testing}{64}{chapter.7}%
+\contentsline {section}{\numberline {7.1}Testing Plan}{64}{section.7.1}%
+\contentsline {subsection}{\numberline {7.1.1}Testing Objectives}{64}{subsection.7.1.1}%
+\contentsline {subsection}{\numberline {7.1.2}Test Environment}{64}{subsection.7.1.2}%
+\contentsline {subsection}{\numberline {7.1.3}Coverage Matrix}{64}{subsection.7.1.3}%
+\contentsline {section}{\numberline {7.2}Types of Testing}{65}{section.7.2}%
+\contentsline {subsection}{\numberline {7.2.1}Unit Testing}{65}{subsection.7.2.1}%
+\contentsline {subsection}{\numberline {7.2.2}Integration Testing}{65}{subsection.7.2.2}%
+\contentsline {subsection}{\numberline {7.2.3}System Testing}{66}{subsection.7.2.3}%
+\contentsline {subsection}{\numberline {7.2.4}User Acceptance Testing (UAT)}{66}{subsection.7.2.4}%
+\contentsline {section}{\numberline {7.3}Testing Techniques}{66}{section.7.3}%
+\contentsline {subsection}{\numberline {7.3.1}Black-Box Behavioral Testing}{66}{subsection.7.3.1}%
+\contentsline {subsection}{\numberline {7.3.2}Negative Testing}{66}{subsection.7.3.2}%
+\contentsline {subsection}{\numberline {7.3.3}Resilience and Fault Injection}{67}{subsection.7.3.3}%
+\contentsline {subsection}{\numberline {7.3.4}Performance and Load Testing}{67}{subsection.7.3.4}%
+\contentsline {section}{\numberline {7.4}Defect Logging}{67}{section.7.4}%
+\contentsline {subsection}{\numberline {7.4.1}Defect Classification}{67}{subsection.7.4.1}%
+\contentsline {subsection}{\numberline {7.4.2}Defect Log Snapshot}{67}{subsection.7.4.2}%
+\contentsline {section}{\numberline {7.5}Testing Outcomes}{68}{section.7.5}%
+\contentsline {section}{\numberline {7.6}Residual Risks and Test Gaps}{68}{section.7.6}%
+\contentsline {section}{\numberline {7.7}Detailed UAT Case Matrix}{68}{section.7.7}%
+\contentsline {section}{\numberline {7.8}Load Benchmark Profiles and Acceptance Rubric}{70}{section.7.8}%
+\contentsline {section}{\numberline {7.9}Security Regression Matrix}{70}{section.7.9}%
+\contentsline {section}{\numberline {7.10}Chapter Summary}{71}{section.7.10}%
+\contentsline {chapter}{\numberline {8}Limitations and Future Scope}{72}{chapter.8}%
+\contentsline {section}{\numberline {8.1}Current Limitations}{72}{section.8.1}%
+\contentsline {subsection}{\numberline {8.1.1}Model and AI Limitations}{72}{subsection.8.1.1}%
+\contentsline {subsection}{\numberline {8.1.2}Infrastructure Limitations}{72}{subsection.8.1.2}%
+\contentsline {subsection}{\numberline {8.1.3}Workflow and Data Limitations}{72}{subsection.8.1.3}%
+\contentsline {subsection}{\numberline {8.1.4}Security and Governance Limitations}{72}{subsection.8.1.4}%
+\contentsline {section}{\numberline {8.2}Future Scope}{72}{section.8.2}%
+\contentsline {subsection}{\numberline {8.2.1}AI and Intelligence Enhancements}{72}{subsection.8.2.1}%
+\contentsline {subsection}{\numberline {8.2.2}Operational Workflow Enhancements}{73}{subsection.8.2.2}%
+\contentsline {subsection}{\numberline {8.2.3}Platform and Deployment Enhancements}{73}{subsection.8.2.3}%
+\contentsline {subsection}{\numberline {8.2.4}Security and Compliance Enhancements}{73}{subsection.8.2.4}%
+\contentsline {section}{\numberline {8.3}Roadmap Perspective}{73}{section.8.3}%
+\contentsline {section}{\numberline {8.4}Risk-Prioritized Improvement Backlog}{73}{section.8.4}%
+\contentsline {section}{\numberline {8.5}Adoption Considerations for Municipal Deployment}{75}{section.8.5}%
+\contentsline {subsection}{\numberline {8.5.1}Institutional Readiness Factors}{75}{subsection.8.5.1}%
+\contentsline {subsection}{\numberline {8.5.2}Change Management Considerations}{75}{subsection.8.5.2}%
+\contentsline {subsection}{\numberline {8.5.3}Data Governance Considerations}{75}{subsection.8.5.3}%
+\contentsline {section}{\numberline {8.6}Research Continuation Opportunities}{75}{section.8.6}%
+\contentsline {section}{\numberline {8.7}Chapter Summary}{75}{section.8.7}%
+\contentsline {chapter}{\numberline {9}Conclusion and References}{76}{chapter.9}%
+\contentsline {section}{\numberline {9.1}Conclusion}{76}{section.9.1}%
+\contentsline {chapter}{\numberline {10}Appendices}{78}{chapter.10}%
+\contentsline {section}{\numberline {10.1}Appendix A: API Endpoint Snapshot}{78}{section.10.1}%
+\contentsline {section}{\numberline {10.2}Appendix B: Environment Variable Catalog}{79}{section.10.2}%
+\contentsline {section}{\numberline {10.3}Appendix C: Canonical Department Taxonomy and Routing}{81}{section.10.3}%
+\contentsline {section}{\numberline {10.4}Appendix D: Script Inventory}{81}{section.10.4}%
+\contentsline {section}{\numberline {10.5}Appendix E: Screenshot Asset Checklist}{81}{section.10.5}%
+\contentsline {section}{\numberline {10.6}Appendix F: Sample Request and Response Payloads}{83}{section.10.6}%
+\contentsline {subsection}{\numberline {10.6.1}Login Request (Form Encoded)}{83}{subsection.10.6.1}%
+\contentsline {subsection}{\numberline {10.6.2}Analyze Request (Multipart)}{83}{subsection.10.6.2}%
+\contentsline {subsection}{\numberline {10.6.3}Analyze Response (Representative)}{83}{subsection.10.6.3}%
+\contentsline {subsection}{\numberline {10.6.4}Complaint Creation Payload (Representative)}{83}{subsection.10.6.4}%
+\contentsline {subsection}{\numberline {10.6.5}Triage Decision Payload}{84}{subsection.10.6.5}%
+\contentsline {section}{\numberline {10.7}Appendix G: Consolidated Execution Timeline}{84}{section.10.7}%
+\contentsline {section}{\numberline {10.8}Appendix H: Requirement-to-Test Traceability Matrix}{85}{section.10.8}%

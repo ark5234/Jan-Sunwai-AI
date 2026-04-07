@@ -4,7 +4,7 @@ This chapter defines a structured verification process to ensure that the final 
 
 \section{Verification Objectives}
 
-\begin{itemize}[leftmargin=1.5em]
+\begin{itemize}
 \item Verify that the report accurately reflects the implemented system.
 \item Validate consistency between codebase features, documentation, and chapter claims.
 \item Confirm reproducibility of setup, execution, and testing steps.
@@ -13,7 +13,7 @@ This chapter defines a structured verification process to ensure that the final 
 
 \section{Document Verification Checklist}
 
-\begin{longtable}{p{0.08\textwidth}p{0.58\textwidth}p{0.24\textwidth}}
+\begin{longtable}{|p{0.08\textwidth}|p{0.58\textwidth}|p{0.24\textwidth}|}
 \caption{Document-Level Verification Checklist}\\
 \toprule
 \textbf{ID} & \textbf{Verification Item} & \textbf{Status (Y/N/NA)} \\
@@ -38,7 +38,7 @@ DV-10 & Final PDF metadata and hyperlinks are functioning \\
 
 \section{Technical Verification Checklist}
 
-\begin{longtable}{p{0.08\textwidth}p{0.58\textwidth}p{0.24\textwidth}}
+\begin{longtable}{|p{0.08\textwidth}|p{0.58\textwidth}|p{0.24\textwidth}|}
 \caption{Technical Consistency Verification Checklist}\\
 \toprule
 \textbf{ID} & \textbf{Verification Item} & \textbf{Status (Y/N/NA)} \\
@@ -65,7 +65,7 @@ TV-10 & Appendices contain accurate and non-contradictory operational details \\
 
 \subsection{Build and Run Verification}
 
-\begin{enumerate}[leftmargin=1.8em]
+\begin{enumerate}
 \item Verify backend environment file is configured.
 \item Start MongoDB dependency using Docker Compose.
 \item Start backend service and confirm live and ready probes.
@@ -76,7 +76,7 @@ TV-10 & Appendices contain accurate and non-contradictory operational details \\
 
 \subsection{Test Verification}
 
-\begin{enumerate}[leftmargin=1.8em]
+\begin{enumerate}
 \item Execute backend automated tests through provided script wrapper.
 \item Execute security and resilience test scripts.
 \item Run notification chain test script.
@@ -86,7 +86,7 @@ TV-10 & Appendices contain accurate and non-contradictory operational details \\
 
 \subsection{Deployment Verification}
 
-\begin{enumerate}[leftmargin=1.8em]
+\begin{enumerate}
 \item Bring up compose stack with production profile.
 \item Check health status for backend and database services.
 \item Validate frontend proxy access to API versioned paths.
@@ -99,7 +99,7 @@ TV-10 & Appendices contain accurate and non-contradictory operational details \\
 \begin{table}[H]
 \centering
 \caption{Submission Artifact Completeness}
-\begin{tabularx}{\textwidth}{p{0.34\textwidth}p{0.18\textwidth}X}
+\begin{tabularx}{\textwidth}{|p{0.34\textwidth}|p{0.18\textwidth}|X|}
 \toprule
 \textbf{Artifact} & \textbf{Available} & \textbf{Notes} \\
 \midrule
@@ -130,7 +130,7 @@ Presentation artifact & External & To be attached as submission companion \\
 
 \section{Evidence Mapping Matrix}
 
-\begin{longtable}{p{0.16\textwidth}p{0.30\textwidth}p{0.18\textwidth}p{0.28\textwidth}}
+\begin{longtable}{|p{0.16\textwidth}|p{0.30\textwidth}|p{0.18\textwidth}|p{0.28\textwidth}|}
 \caption{Report Claim to Artifact Evidence Mapping}\\
 \toprule
 \textbf{Claim Area} & \textbf{Evidence Artifact} & \textbf{Evidence Type} & \textbf{Verification Note} \\
@@ -162,7 +162,7 @@ Citizen timeline and escalation & Dashboard timeline screenshots & Visual eviden
 
 \subsection{Pre-Compilation Steps}
 
-\begin{enumerate}[leftmargin=1.8em]
+\begin{enumerate}
 \item Confirm all chapter files are present and referenced in \texttt{main.tex}.
 \item Place available screenshots in \texttt{docs/images/screenshots/} using expected names.
 \item Update title page institute and contributor details if required by the evaluator.
@@ -171,7 +171,7 @@ Citizen timeline and escalation & Dashboard timeline screenshots & Visual eviden
 
 \subsection{Compilation Steps}
 
-\begin{enumerate}[leftmargin=1.8em]
+\begin{enumerate}
 \item Run \texttt{pdflatex -interaction=nonstopmode main.tex}.
 \item Run the same command a second time to stabilize TOC, lists, and references.
 \item Verify generated PDF for figure/table index completeness.
@@ -180,7 +180,7 @@ Citizen timeline and escalation & Dashboard timeline screenshots & Visual eviden
 
 \subsection{Final QA Steps}
 
-\begin{enumerate}[leftmargin=1.8em]
+\begin{enumerate}
 \item Check screenshot pages for missing placeholders and replace pending files as needed.
 \item Validate references, captions, and table readability in print layout.
 \item Archive LaTeX source, PDF output, and supporting evidence pack together.

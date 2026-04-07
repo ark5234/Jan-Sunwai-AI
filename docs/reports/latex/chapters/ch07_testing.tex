@@ -6,7 +6,7 @@ Testing for Jan-Sunwai AI was designed as a layered strategy combining automated
 
 \subsection{Testing Objectives}
 
-\begin{itemize}[leftmargin=1.5em]
+\begin{itemize}
 \item Validate correctness of core APIs and role authorization boundaries.
 \item Verify AI-path behavior for valid, invalid, and failure scenarios.
 \item Confirm notification chain consistency across complaint lifecycle changes.
@@ -19,7 +19,7 @@ Testing for Jan-Sunwai AI was designed as a layered strategy combining automated
 \begin{table}[H]
 \centering
 \caption{Testing Environment Baseline}
-\begin{tabularx}{\textwidth}{p{0.27\textwidth}X}
+\begin{tabularx}{\textwidth}{|p{0.27\textwidth}|X|}
 \toprule
 \textbf{Environment Aspect} & \textbf{Configuration} \\
 \midrule
@@ -34,7 +34,7 @@ Automation tools & pytest, httpx, locust, script wrappers for platform-specific 
 
 \subsection{Coverage Matrix}
 
-\begin{longtable}{p{0.30\textwidth}p{0.24\textwidth}p{0.38\textwidth}}
+\begin{longtable}{|>{\raggedright\arraybackslash}p{0.30\textwidth}|>{\raggedright\arraybackslash}p{0.24\textwidth}|>{\raggedright\arraybackslash}p{0.38\textwidth}|}
 \caption{Testing Coverage Matrix by Suite}\\
 \toprule
 \textbf{Test Artifact} & \textbf{Type} & \textbf{Coverage Highlights} \\
@@ -64,7 +64,7 @@ Unit tests focused on isolated validation and control logic.
 \begin{table}[H]
 \centering
 \caption{Representative Unit Test Cases}
-\begin{tabularx}{\textwidth}{p{0.16\textwidth}p{0.28\textwidth}X}
+\begin{tabularx}{\textwidth}{|p{0.16\textwidth}|p{0.28\textwidth}|X|}
 \toprule
 \textbf{Case ID} & \textbf{Area} & \textbf{Expected Behavior} \\
 \midrule
@@ -81,7 +81,7 @@ UT-05 & Sanitization function & Script payload transformed to escaped safe repre
 
 Integration tests verified route composition, middleware behavior, and cross-router guarantees such as versioned aliases and headers.
 
-\begin{itemize}[leftmargin=1.5em]
+\begin{itemize}
 \item Root and liveness endpoints confirmed service online state.
 \item Versioned alias endpoints under \texttt{/api/v1} validated integration compatibility.
 \item Security headers confirmed on endpoint responses.
@@ -95,7 +95,7 @@ System testing executed end-to-end flows across authentication, analyze, complai
 \begin{table}[H]
 \centering
 \caption{System Test Scenarios}
-\begin{tabularx}{\textwidth}{p{0.13\textwidth}p{0.33\textwidth}X}
+\begin{tabularx}{\textwidth}{|p{0.13\textwidth}|p{0.33\textwidth}|X|}
 \toprule
 \textbf{Scenario} & \textbf{Workflow} & \textbf{Pass Condition} \\
 \midrule
@@ -112,7 +112,7 @@ ST-05 & CSV export & Export file generated with expected schema columns \\
 
 The UAT plan was executed through persona scripts:
 
-\begin{itemize}[leftmargin=1.5em]
+\begin{itemize}
 \item Citizen script: login, analyze, map review, submit, dashboard verification.
 \item Admin script: queue filtering, bulk actions, heatmap view, reassignment, CSV export.
 \item Feedback loop: friction capture with severity ranking and follow-up fixes.
@@ -129,7 +129,7 @@ Primary API workflows were tested against expected request/response contracts wi
 
 Negative paths were intentionally exercised:
 
-\begin{itemize}[leftmargin=1.5em]
+\begin{itemize}
 \item Invalid tokens and unauthorized role access.
 \item Corrupted/mismatched file uploads.
 \item Expired/invalid reset token paths.
@@ -140,7 +140,7 @@ Negative paths were intentionally exercised:
 
 Resilience tests simulated:
 
-\begin{itemize}[leftmargin=1.5em]
+\begin{itemize}
 \item Ollama unavailability during analyze requests.
 \item Database ping failures for readiness route validation.
 \item Corrupted payload uploads to confirm robust rejection semantics.
@@ -156,7 +156,7 @@ Load-testing scripts executed mixed endpoint traffic where read-heavy routes and
 
 Defects were classified by severity and functional impact:
 
-\begin{itemize}[leftmargin=1.5em]
+\begin{itemize}
 \item High: Breaks core flow or security boundary.
 \item Medium: Degrades key workflow but has workaround.
 \item Low: Cosmetic or minor UX issue.
@@ -164,7 +164,7 @@ Defects were classified by severity and functional impact:
 
 \subsection{Defect Log Snapshot}
 
-\begin{longtable}{p{0.11\textwidth}p{0.15\textwidth}p{0.40\textwidth}p{0.24\textwidth}}
+\begin{longtable}{|>{\raggedright\arraybackslash}p{0.11\textwidth}|>{\raggedright\arraybackslash}p{0.15\textwidth}|>{\raggedright\arraybackslash}p{0.40\textwidth}|>{\raggedright\arraybackslash}p{0.24\textwidth}|}
 \caption{Defect Log Snapshot and Resolution}\\
 \toprule
 \textbf{Defect ID} & \textbf{Severity} & \textbf{Observed Issue} & \textbf{Resolution Summary} \\
@@ -187,7 +187,7 @@ D-005 & Low & Placement of forgot-password link reduced form clarity & Repositio
 \begin{table}[H]
 \centering
 \caption{Outcome Summary by Validation Area}
-\begin{tabularx}{\textwidth}{p{0.25\textwidth}p{0.16\textwidth}X}
+\begin{tabularx}{\textwidth}{|p{0.25\textwidth}|p{0.16\textwidth}|X|}
 \toprule
 \textbf{Validation Area} & \textbf{Outcome} & \textbf{Notes} \\
 \midrule
@@ -205,7 +205,7 @@ UAT persona scripts & Pass with refinements & Minor UX adjustments applied in sa
 
 Although major paths were validated, future strengthening can include:
 
-\begin{itemize}[leftmargin=1.5em]
+\begin{itemize}
 \item Long-duration soak tests on production-equivalent infrastructure.
 \item Expanded browser matrix for UI behavior consistency.
 \item External vulnerability scanning integration in release pipeline.
@@ -214,7 +214,7 @@ Although major paths were validated, future strengthening can include:
 
 \section{Detailed UAT Case Matrix}
 
-\begin{longtable}{p{0.10\textwidth}p{0.14\textwidth}p{0.34\textwidth}p{0.12\textwidth}p{0.20\textwidth}}
+\begin{longtable}{|>{\raggedright\arraybackslash}p{0.10\textwidth}|>{\raggedright\arraybackslash}p{0.14\textwidth}|>{\raggedright\arraybackslash}p{0.34\textwidth}|>{\raggedright\arraybackslash}p{0.12\textwidth}|>{\raggedright\arraybackslash}p{0.20\textwidth}|}
 \caption{Persona-Driven UAT Matrix}\\
 \toprule
 \textbf{Case ID} & \textbf{Persona} & \textbf{Scenario} & \textbf{Priority} & \textbf{Expected Result} \\
@@ -252,7 +252,7 @@ UAT-20 & Citizen & Trigger analyze while model unavailable & High & User-friendl
 \begin{table}[H]
 \centering
 \caption{Load Profile and Acceptance Guidance}
-\begin{tabularx}{\textwidth}{p{0.16\textwidth}p{0.12\textwidth}p{0.12\textwidth}p{0.14\textwidth}X}
+\begin{tabularx}{\textwidth}{|p{0.16\textwidth}|p{0.12\textwidth}|p{0.12\textwidth}|p{0.14\textwidth}|X|}
 \toprule
 \textbf{Profile} & \textbf{Users} & \textbf{Spawn Rate} & \textbf{Duration} & \textbf{Acceptance Guidance} \\
 \midrule
@@ -265,7 +265,7 @@ Peak & 120 & 20/s & 20 min & Graceful degradation accepted for analyze path (429
 
 \section{Security Regression Matrix}
 
-\begin{longtable}{p{0.12\textwidth}p{0.34\textwidth}p{0.16\textwidth}p{0.28\textwidth}}
+\begin{longtable}{|>{\raggedright\arraybackslash}p{0.12\textwidth}|>{\raggedright\arraybackslash}p{0.34\textwidth}|>{\raggedright\arraybackslash}p{0.16\textwidth}|>{\raggedright\arraybackslash}p{0.28\textwidth}|}
 \caption{Security Regression Verification Matrix}\\
 \toprule
 \textbf{Sec ID} & \textbf{Control Under Test} & \textbf{Expected Code} & \textbf{Validation Criterion} \\
