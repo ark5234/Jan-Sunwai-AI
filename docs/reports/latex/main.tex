@@ -11,6 +11,7 @@
 \fi
 \usepackage[a4paper,left=3cm,right=2cm,top=2cm,bottom=2cm]{geometry}
 \usepackage{setspace}
+\usepackage{indentfirst}
 \usepackage{graphicx}
 \usepackage{longtable}
 \usepackage{booktabs}
@@ -44,6 +45,7 @@
 \setcounter{tocdepth}{3}
 \setlength{\headheight}{14.5pt}
 \setlength{\emergencystretch}{6em}
+\setlength{\parindent}{1.5em}
 \setlength{\tabcolsep}{4pt}
 \setlength{\arrayrulewidth}{0.5pt}
 \renewcommand{\arraystretch}{1.1}
@@ -53,41 +55,45 @@
 \renewcommand{\bottomrule}{\hline}
 \setlist[itemize,1]{leftmargin=2.0em,labelsep=0.6em,itemsep=0.35em,topsep=0.35em,parsep=0pt,partopsep=0pt}
 \setlist[enumerate,1]{leftmargin=2.2em,labelsep=0.6em,itemsep=0.35em,topsep=0.35em,parsep=0pt,partopsep=0pt}
+\definecolor{headingblue}{RGB}{0,76,153}
+\captionsetup{position=bottom,skip=6pt}
+\captionsetup[figure]{position=bottom,skip=6pt}
 \captionsetup[table]{position=bottom,skip=6pt}
+\captionsetup[longtable]{position=bottom,skip=6pt}
 \fussy
 
-\titleformat{\chapter}[hang]
-  {\bfseries\fontsize{16}{19}\selectfont}
-  {\chaptername\ \thechapter:}
-  {0.5em}
-  {\ignorespaces}
-\titleformat{name=\chapter,numberless}[hang]
-  {\bfseries\fontsize{16}{19}\selectfont\centering}
+\titleformat{\chapter}[display]
+  {\bfseries\fontsize{18}{22}\selectfont\centering\color{headingblue}}
+  {\chaptername\ \thechapter}
+  {0.35em}
+  {\centering}
+\titleformat{name=\chapter,numberless}[display]
+  {\bfseries\fontsize{18}{22}\selectfont\centering\color{headingblue}}
   {}
   {0pt}
   {}
-\titlespacing*{\chapter}{0pt}{0pt}{10pt}
+\titlespacing*{\chapter}{0pt}{8pt}{14pt}
 
 \titleformat{\section}
-  {\bfseries\fontsize{14}{17}\selectfont}
+  {\bfseries\fontsize{14}{17}\selectfont\color{headingblue}}
   {\thesection}
   {0.8em}
   {}
 \titlespacing*{\section}{0pt}{10pt}{6pt}
 
 \titleformat{\subsection}
-  {\bfseries\fontsize{13}{16}\selectfont}
+  {\bfseries\fontsize{13}{16}\selectfont\color{headingblue}}
   {\thesubsection}
   {0.8em}
   {}
-\titlespacing*{\subsection}{1.27cm}{8pt}{4pt}
+\titlespacing*{\subsection}{0pt}{8pt}{4pt}
 
 \titleformat{\subsubsection}
-  {\bfseries\fontsize{12}{14}\selectfont}
+  {\bfseries\fontsize{12}{14}\selectfont\color{headingblue}}
   {\thesubsubsection}
   {0.8em}
   {}
-\titlespacing*{\subsubsection}{2.54cm}{6pt}{3pt}
+\titlespacing*{\subsubsection}{0pt}{6pt}{3pt}
 
 \pagestyle{fancy}
 \fancyhf{}
@@ -117,7 +123,7 @@
 \begin{figure}[H]
 \centering
 \IfFileExists{#2}{
-  \includegraphics[width=0.96\textwidth,height=0.72\textheight,keepaspectratio]{#2}
+  \includegraphics[width=0.96\textwidth,height=0.82\textheight,keepaspectratio]{#2}
 }{
   \fbox{\begin{minipage}[c][0.62\textheight][c]{0.90\textwidth}
   \centering

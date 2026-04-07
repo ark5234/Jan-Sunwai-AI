@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.141592653-2.6-0.999997 (MiKTeX 25.12) (preloaded format=xelatex 2026.4.7)  7 APR 2026 20:16
+This is XeTeX, Version 3.141592653-2.6-0.999997 (MiKTeX 25.12) (preloaded format=xelatex 2026.4.7)  7 APR 2026 20:53
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -125,6 +125,9 @@ Package: ifvtex 2019/10/25 v1.7 ifvtex legacy package. Use iftex instead.
 (C:\Users\Vikra\AppData\Local\Programs\MiKTeX\tex/latex/geometry\geometry.cfg))
 (C:\Users\Vikra\AppData\Local\Programs\MiKTeX\tex/latex/setspace\setspace.sty
 Package: setspace 2022/12/04 v6.7b set line spacing
+)
+(C:\Users\Vikra\AppData\Local\Programs\MiKTeX\tex/latex/tools\indentfirst.sty
+Package: indentfirst 2023/07/02 v1.03 Indent first paragraph (DPC)
 )
 (C:\Users\Vikra\AppData\Local\Programs\MiKTeX\tex/latex/graphics\graphicx.sty
 Package: graphicx 2024/12/31 v1.2e Enhanced LaTeX Graphics (DPC,SPQR)
@@ -527,31 +530,31 @@ Package xcolor Info: Model `wave' substituted by `hsb' on input line 1372.
 ) (C:\Users\Vikra\AppData\Local\Programs\MiKTeX\tex/latex/xurl\xurl.sty
 Package: xurl 2022/01/09 v 0.10 modify URL breaks
 )
-Package hyperref Info: Option `colorlinks' set `true' on input line 40.
+Package hyperref Info: Option `colorlinks' set `true' on input line 41.
 
 (main.aux)
 \openout1 = `main.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 133.
-LaTeX Font Info:    ... okay on input line 133.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 133.
-LaTeX Font Info:    ... okay on input line 133.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 133.
-LaTeX Font Info:    ... okay on input line 133.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 133.
-LaTeX Font Info:    ... okay on input line 133.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 133.
-LaTeX Font Info:    ... okay on input line 133.
-LaTeX Font Info:    Checking defaults for TU/lmr/m/n on input line 133.
-LaTeX Font Info:    ... okay on input line 133.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 133.
-LaTeX Font Info:    ... okay on input line 133.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 133.
-LaTeX Font Info:    ... okay on input line 133.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 133.
-LaTeX Font Info:    ... okay on input line 133.
-LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 133.
-LaTeX Font Info:    ... okay on input line 133.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 139.
+LaTeX Font Info:    ... okay on input line 139.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 139.
+LaTeX Font Info:    ... okay on input line 139.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 139.
+LaTeX Font Info:    ... okay on input line 139.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 139.
+LaTeX Font Info:    ... okay on input line 139.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 139.
+LaTeX Font Info:    ... okay on input line 139.
+LaTeX Font Info:    Checking defaults for TU/lmr/m/n on input line 139.
+LaTeX Font Info:    ... okay on input line 139.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 139.
+LaTeX Font Info:    ... okay on input line 139.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 139.
+LaTeX Font Info:    ... okay on input line 139.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 139.
+LaTeX Font Info:    ... okay on input line 139.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 139.
+LaTeX Font Info:    ... okay on input line 139.
 
 Package fontspec Info: 
 (fontspec)             Adjusting the maths setup (use [no-math] to avoid
@@ -559,64 +562,64 @@ Package fontspec Info:
 
 \symlegacymaths=\mathgroup4
 LaTeX Font Info:    Overwriting symbol font `legacymaths' in version `bold'
-(Font)                  OT1/cmr/m/n --> OT1/cmr/bx/n on input line 133.
-LaTeX Font Info:    Redeclaring math accent \acute on input line 133.
-LaTeX Font Info:    Redeclaring math accent \grave on input line 133.
-LaTeX Font Info:    Redeclaring math accent \ddot on input line 133.
-LaTeX Font Info:    Redeclaring math accent \tilde on input line 133.
-LaTeX Font Info:    Redeclaring math accent \bar on input line 133.
-LaTeX Font Info:    Redeclaring math accent \breve on input line 133.
-LaTeX Font Info:    Redeclaring math accent \check on input line 133.
-LaTeX Font Info:    Redeclaring math accent \hat on input line 133.
-LaTeX Font Info:    Redeclaring math accent \dot on input line 133.
-LaTeX Font Info:    Redeclaring math accent \mathring on input line 133.
-LaTeX Font Info:    Redeclaring math symbol \Gamma on input line 133.
-LaTeX Font Info:    Redeclaring math symbol \Delta on input line 133.
-LaTeX Font Info:    Redeclaring math symbol \Theta on input line 133.
-LaTeX Font Info:    Redeclaring math symbol \Lambda on input line 133.
-LaTeX Font Info:    Redeclaring math symbol \Xi on input line 133.
-LaTeX Font Info:    Redeclaring math symbol \Pi on input line 133.
-LaTeX Font Info:    Redeclaring math symbol \Sigma on input line 133.
-LaTeX Font Info:    Redeclaring math symbol \Upsilon on input line 133.
-LaTeX Font Info:    Redeclaring math symbol \Phi on input line 133.
-LaTeX Font Info:    Redeclaring math symbol \Psi on input line 133.
-LaTeX Font Info:    Redeclaring math symbol \Omega on input line 133.
-LaTeX Font Info:    Redeclaring math symbol \mathdollar on input line 133.
-LaTeX Font Info:    Redeclaring symbol font `operators' on input line 133.
+(Font)                  OT1/cmr/m/n --> OT1/cmr/bx/n on input line 139.
+LaTeX Font Info:    Redeclaring math accent \acute on input line 139.
+LaTeX Font Info:    Redeclaring math accent \grave on input line 139.
+LaTeX Font Info:    Redeclaring math accent \ddot on input line 139.
+LaTeX Font Info:    Redeclaring math accent \tilde on input line 139.
+LaTeX Font Info:    Redeclaring math accent \bar on input line 139.
+LaTeX Font Info:    Redeclaring math accent \breve on input line 139.
+LaTeX Font Info:    Redeclaring math accent \check on input line 139.
+LaTeX Font Info:    Redeclaring math accent \hat on input line 139.
+LaTeX Font Info:    Redeclaring math accent \dot on input line 139.
+LaTeX Font Info:    Redeclaring math accent \mathring on input line 139.
+LaTeX Font Info:    Redeclaring math symbol \Gamma on input line 139.
+LaTeX Font Info:    Redeclaring math symbol \Delta on input line 139.
+LaTeX Font Info:    Redeclaring math symbol \Theta on input line 139.
+LaTeX Font Info:    Redeclaring math symbol \Lambda on input line 139.
+LaTeX Font Info:    Redeclaring math symbol \Xi on input line 139.
+LaTeX Font Info:    Redeclaring math symbol \Pi on input line 139.
+LaTeX Font Info:    Redeclaring math symbol \Sigma on input line 139.
+LaTeX Font Info:    Redeclaring math symbol \Upsilon on input line 139.
+LaTeX Font Info:    Redeclaring math symbol \Phi on input line 139.
+LaTeX Font Info:    Redeclaring math symbol \Psi on input line 139.
+LaTeX Font Info:    Redeclaring math symbol \Omega on input line 139.
+LaTeX Font Info:    Redeclaring math symbol \mathdollar on input line 139.
+LaTeX Font Info:    Redeclaring symbol font `operators' on input line 139.
 LaTeX Font Info:    Encoding `OT1' has changed to `TU' for symbol font
-(Font)              `operators' in the math version `normal' on input line 133.
+(Font)              `operators' in the math version `normal' on input line 139.
 
 LaTeX Font Info:    Overwriting symbol font `operators' in version `normal'
 (Font)                  OT1/cmr/m/n --> TU/TimesNewRoman(0)/m/n on input line 1
-33.
+39.
 LaTeX Font Info:    Encoding `OT1' has changed to `TU' for symbol font
-(Font)              `operators' in the math version `bold' on input line 133.
+(Font)              `operators' in the math version `bold' on input line 139.
 LaTeX Font Info:    Overwriting symbol font `operators' in version `bold'
 (Font)                  OT1/cmr/bx/n --> TU/TimesNewRoman(0)/m/n on input line 
-133.
+139.
 LaTeX Font Info:    Overwriting symbol font `operators' in version `normal'
 (Font)                  TU/TimesNewRoman(0)/m/n --> TU/TimesNewRoman(0)/m/n on 
-input line 133.
+input line 139.
 LaTeX Font Info:    Overwriting math alphabet `\mathit' in version `normal'
 (Font)                  OT1/cmr/m/it --> TU/TimesNewRoman(0)/m/it on input line
- 133.
+ 139.
 LaTeX Font Info:    Overwriting math alphabet `\mathbf' in version `normal'
 (Font)                  OT1/cmr/bx/n --> TU/TimesNewRoman(0)/b/n on input line 
-133.
+139.
 LaTeX Font Info:    Overwriting math alphabet `\mathsf' in version `normal'
-(Font)                  OT1/cmss/m/n --> TU/lmss/m/n on input line 133.
+(Font)                  OT1/cmss/m/n --> TU/lmss/m/n on input line 139.
 LaTeX Font Info:    Overwriting math alphabet `\mathtt' in version `normal'
-(Font)                  OT1/cmtt/m/n --> TU/lmtt/m/n on input line 133.
+(Font)                  OT1/cmtt/m/n --> TU/lmtt/m/n on input line 139.
 LaTeX Font Info:    Overwriting symbol font `operators' in version `bold'
 (Font)                  TU/TimesNewRoman(0)/m/n --> TU/TimesNewRoman(0)/b/n on 
-input line 133.
+input line 139.
 LaTeX Font Info:    Overwriting math alphabet `\mathit' in version `bold'
 (Font)                  OT1/cmr/bx/it --> TU/TimesNewRoman(0)/b/it on input lin
-e 133.
+e 139.
 LaTeX Font Info:    Overwriting math alphabet `\mathsf' in version `bold'
-(Font)                  OT1/cmss/bx/n --> TU/lmss/b/n on input line 133.
+(Font)                  OT1/cmss/bx/n --> TU/lmss/b/n on input line 139.
 LaTeX Font Info:    Overwriting math alphabet `\mathtt' in version `bold'
-(Font)                  OT1/cmtt/m/n --> TU/lmtt/b/n on input line 133.
+(Font)                  OT1/cmtt/m/n --> TU/lmtt/b/n on input line 139.
 
 *geometry* driver: auto-detecting
 *geometry* detected driver: xetex
@@ -652,20 +655,20 @@ LaTeX Font Info:    Overwriting math alphabet `\mathtt' in version `bold'
 * \@reversemarginfalse
 * (1in=72.27pt=25.4mm, 1cm=28.453pt)
 
-Package hyperref Info: Link coloring ON on input line 133.
+Package hyperref Info: Link coloring ON on input line 139.
 (main.out) (main.out)
 \@outlinefile=\write3
 \openout3 = `main.out'.
 
 Package caption Info: Begin \AtBeginDocument code.
 Package caption Info: End \AtBeginDocument code.
-LaTeX Info: Redefining \microtypecontext on input line 133.
-Package microtype Info: Applying patch `item' on input line 133.
-Package microtype Info: Applying patch `toc' on input line 133.
-Package microtype Info: Applying patch `eqnum' on input line 133.
-Package microtype Info: Applying patch `footnote' on input line 133.
-Package microtype Info: Applying patch `verbatim' on input line 133.
-LaTeX Info: Redefining \microtypesetup on input line 133.
+LaTeX Info: Redefining \microtypecontext on input line 139.
+Package microtype Info: Applying patch `item' on input line 139.
+Package microtype Info: Applying patch `toc' on input line 139.
+Package microtype Info: Applying patch `eqnum' on input line 139.
+Package microtype Info: Applying patch `footnote' on input line 139.
+Package microtype Info: Applying patch `verbatim' on input line 139.
+LaTeX Info: Redefining \microtypesetup on input line 139.
 Package microtype Info: Character protrusion enabled (level 2).
 Package microtype Info: Using default protrusion set `alltext'.
 Package microtype Info: No adjustment of tracking.
@@ -742,6 +745,12 @@ Chapter 1.
 
 
 ] [2] [3]
+Overfull \hbox (5.85384pt too wide) in paragraph at lines 122--123
+[]\TU/TimesNewRoman(0)/m/n/12 In civic applications, explainability is not opti
+onal. Decision provenance (confidence, method,
+ []
+
+
 Overfull \hbox (10.14261pt too wide) in paragraph at lines 124--125
 []\TU/TimesNewRoman(0)/m/n/12 The project design is aligned with development pr
 inciples and platform guidance from FastAPI,
@@ -749,6 +758,12 @@ inciples and platform guidance from FastAPI,
 
 ) (chapters/ch02_project_management.tex [4]
 Chapter 2.
+
+Overfull \hbox (1.27933pt too wide) in paragraph at lines 27--28
+[]\TU/TimesNewRoman(0)/m/n/12 Operational feasibility was validated by mapping 
+actual municipal personas into role-specific
+ []
+
 [5
 
 ]
@@ -781,7 +796,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 103--103
 []|\TU/TimesNewRoman(0)/m/n/12 DevOps and Deploy-
  []
 
-[7]
+[7] [8]
 Underfull \hbox (badness 10000) in paragraph at lines 169--169
 []|\TU/TimesNewRoman(0)/m/n/12 Model unavailability
  []
@@ -836,7 +851,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 176--176
 []|\TU/TimesNewRoman(0)/m/n/12 Documentation mis-
  []
 
-[8]
+ignored error: Infinite glue shrinkage found in box being split [9]
 Underfull \hbox (badness 10000) in paragraph at lines 195--196
 []|\TU/TimesNewRoman(0)/b/n/12 Management
  []
@@ -981,20 +996,19 @@ Underfull \hbox (badness 1436) in paragraph at lines 219--220
 []|\TU/TimesNewRoman(0)/m/n/12 Project lifecycle
  []
 
-ignored error: Infinite glue shrinkage found in box being split [9]
 ignored error: Infinite glue shrinkage found in box being split [10]
 Underfull \hbox (badness 10000) in paragraph at lines 239--239
 []|\TU/TimesNewRoman(0)/m/n/12 Milestone completion consis-
  []
 
-) (chapters/ch03_system_requirement_study.tex [11]
-Chapter 3.
-
-Overfull \hbox (14.87927pt too wide) in paragraph at lines 3--4
-\TU/TimesNewRoman(0)/m/n/12 existing grievance systems, observed limitations, a
-ctor expectations, and formalized functional/non-
+[11]) (chapters/ch03_system_requirement_study.tex
+Overfull \hbox (21.66168pt too wide) in paragraph at lines 254--1
+\TU/TimesNewRoman(0)/m/n/12 management, risk planning, and milestone tracking e
+nabled predictable progress toward a production-
  []
 
+[12]
+Chapter 3.
 
 Underfull \hbox (badness 4543) in paragraph at lines 36--36
 []|\TU/TimesNewRoman(0)/m/n/12 Inconsistent complaint descrip-
@@ -1025,7 +1039,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 55--55
 []|\TU/TimesNewRoman(0)/m/n/12 Governance and over-
  []
 
-[12
+[13
 
 ]
 Underfull \hbox (badness 2173) in paragraph at lines 73--74
@@ -1047,7 +1061,7 @@ Underfull \hbox (badness 4024) in paragraph at lines 86--87
 []|\TU/TimesNewRoman(0)/m/n/12 Admin shall review low-confidence com-
  []
 
-ignored error: Infinite glue shrinkage found in box being split [13]
+ignored error: Infinite glue shrinkage found in box being split [14]
 Underfull \hbox (badness 4266) in paragraph at lines 110--111
 \TU/TimesNewRoman(0)/m/n/12 and support responsive layouts for desk-
  []
@@ -1072,7 +1086,7 @@ Underfull \hbox (badness 2961) in paragraph at lines 116--117
 []|\TU/TimesNewRoman(0)/m/n/12 Validation schemas and controlled update
  []
 
-[14]
+[15]
 Underfull \hbox (badness 8189) in paragraph at lines 135--135
 []|\TU/TimesNewRoman(0)/m/n/12 Stable LAN/internet for
  []
@@ -1092,7 +1106,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 157--157
 []|\TU/TimesNewRoman(0)/m/n/12 Chromium/Firefox
  []
 
-[15] [16]
+[16] [17]
 Underfull \hbox (badness 2376) in paragraph at lines 215--215
 []|\TU/TimesNewRoman(0)/m/n/12 MongoDB instance is reachable and
  []
@@ -1182,7 +1196,7 @@ Underfull \hbox (badness 5847) in paragraph at lines 241--242
 \TU/TimesNewRoman(0)/m/n/12 fields are exposed in re-
  []
 
-ignored error: Infinite glue shrinkage found in box being split [17]
+ignored error: Infinite glue shrinkage found in box being split [18]
 Underfull \hbox (badness 10000) in paragraph at lines 259--259
 []|\TU/TimesNewRoman(0)/b/n/12 Requirement
  []
@@ -1222,9 +1236,9 @@ Underfull \hbox (badness 10000) in paragraph at lines 259--259
 \TU/TimesNewRoman(0)/m/n/12 02, NFR-06,
  []
 
-) (chapters/ch04_proposed_system_requirements.tex [18] [19]
+) (chapters/ch04_proposed_system_requirements.tex [19] [20]
 Chapter 4.
-[20
+[21
 
 ]
 Underfull \hbox (badness 10000) in paragraph at lines 54--54
@@ -1256,7 +1270,7 @@ Underfull \hbox (badness 2368) in paragraph at lines 69--70
 []|\TU/TimesNewRoman(0)/m/n/12 Improves throughput for backlog manage-
  []
 
-ignored error: Infinite glue shrinkage found in box being split [21]
+ignored error: Infinite glue shrinkage found in box being split [22]
 Underfull \hbox (badness 10000) in paragraph at lines 110--110
 []|\TU/TimesNewRoman(0)/b/n/12 Requirement
  []
@@ -1341,7 +1355,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 124--124
 []|\TU/TimesNewRoman(0)/m/n/12 Cross-cutting Plat-
  []
 
-ignored error: Infinite glue shrinkage found in box being split [22]
+ignored error: Infinite glue shrinkage found in box being split [23] [24]
 Underfull \hbox (badness 10000) in paragraph at lines 163--163
 []|\TU/TimesNewRoman(0)/m/n/12 Authentication mod-
  []
@@ -1401,7 +1415,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 171--172
 \TU/TimesNewRoman(0)/m/n/12 ness/readiness/dependency status
  []
 
-[23]
+
 Underfull \hbox (badness 1867) in paragraph at lines 190--190
 []|\TU/TimesNewRoman(0)/m/n/12 Analyze intake, dashboard
  []
@@ -1421,66 +1435,133 @@ Underfull \hbox (badness 1342) in paragraph at lines 190--190
 \TU/TimesNewRoman(0)/m/n/12 updates, transfer/escalation,
  []
 
-[24]) (chapters/ch05_system_design.tex [25]
+[25]) (chapters/ch05_system_design.tex [26]
 Chapter 5.
-[26
+[27
 
-] [27] [28] [29] [30] [31]
-ignored error: Infinite glue shrinkage found in box being split [32] [33]
+] [28] [29] [30] [31] [32]
+ignored error: Infinite glue shrinkage found in box being split [33] [34]
 File: ../../images/GUI_Wireframe.png Graphic file (type bmp)
 <../../images/GUI_Wireframe.png>
 
-[34] [35]
+[35] [36]
 File: ../../images/screenshots/S01_home_desktop.png Graphic file (type bmp)
 <../../images/screenshots/S01_home_desktop.png>
- [36
+ [37
 
 ]
 File: ../../images/screenshots/S02_login_desktop.png Graphic file (type bmp)
 <../../images/screenshots/S02_login_desktop.png>
- [37
+ [38
 
 ]
 File: ../../images/screenshots/S03_register_desktop.png Graphic file (type bmp)
 
 <../../images/screenshots/S03_register_desktop.png>
- [38
-
-] [39
-
-] [40
-
-] [41
-
-] [42
-
-] [43
-
-] [44
-
-] [45
-
-] [46
-
-] [47
-
-] [48
+ [39
 
 ]
-[49
+File: ../../images/screenshots/S04_reset_password_desktop.png Graphic file (typ
+e bmp)
+<../../images/screenshots/S04_reset_password_desktop.png>
+ [40
 
-] [50
+]
+File: ../../images/screenshots/S05_admin_dashboard_desktop.png Graphic file (ty
+pe bmp)
+<../../images/screenshots/S05_admin_dashboard_desktop.png>
+ [41
 
-] [51
+]
+File: ../../images/screenshots/S06_triage_review_desktop.png Graphic file (type
+ bmp)
+<../../images/screenshots/S06_triage_review_desktop.png>
+ [42
 
-] [52
+]
+File: ../../images/screenshots/S07_worker_assignment_panel_desktop.png Graphic 
+file (type bmp)
+<../../images/screenshots/S07_worker_assignment_panel_desktop.png>
+ [43
 
-] [53
+]
+File: ../../images/screenshots/S08_analytics_dashboard_desktop.png Graphic file
+ (type bmp)
+<../../images/screenshots/S08_analytics_dashboard_desktop.png>
+ [44
 
-] [54
+]
+File: ../../images/screenshots/S09_map_overview_satellite_desktop.png Graphic f
+ile (type bmp)
+<../../images/screenshots/S09_map_overview_satellite_desktop.png>
+ [45
 
-]) (chapters/ch06_implementation_planning.tex
-[55
+]
+File: ../../images/screenshots/S10_map_popup_detail_desktop.png Graphic file (t
+ype bmp)
+<../../images/screenshots/S10_map_popup_detail_desktop.png>
+ [46
+
+]
+File: ../../images/screenshots/S11_public_board_desktop.png Graphic file (type 
+bmp)
+<../../images/screenshots/S11_public_board_desktop.png>
+ [47
+
+]
+File: ../../images/screenshots/S12_heatmap_desktop.png Graphic file (type bmp)
+<../../images/screenshots/S12_heatmap_desktop.png>
+ [48
+
+]
+File: ../../images/screenshots/S13_profile_admin_desktop.png Graphic file (type
+ bmp)
+<../../images/screenshots/S13_profile_admin_desktop.png>
+ [49
+
+]
+File: ../../images/screenshots/S14_citizen_dashboard_desktop.png Graphic file (
+type bmp)
+<../../images/screenshots/S14_citizen_dashboard_desktop.png>
+
+[50
+
+]
+File: ../../images/screenshots/S15_notifications_panel_desktop.png Graphic file
+ (type bmp)
+<../../images/screenshots/S15_notifications_panel_desktop.png>
+ [51
+
+]
+File: ../../images/screenshots/SX1_file_complaint_upload_desktop.png Graphic fi
+le (type bmp)
+<../../images/screenshots/SX1_file_complaint_upload_desktop.png>
+ [52
+
+]
+File: ../../images/screenshots/SX2_citizen_timeline_multilingual_desktop.png Gr
+aphic file (type bmp)
+<../../images/screenshots/SX2_citizen_timeline_multilingual_desktop.png>
+ [53
+
+]
+File: ../../images/screenshots/SX3_resolved_feedback_snapshot_desktop.png Graph
+ic file (type bmp)
+<../../images/screenshots/SX3_resolved_feedback_snapshot_desktop.png>
+ [54
+
+]
+File: ../../images/screenshots/SX4_result_location_analysis_desktop.png Graphic
+ file (type bmp)
+<../../images/screenshots/SX4_result_location_analysis_desktop.png>
+ [55
+
+]
+File: ../../images/screenshots/SX5_result_grievance_description_desktop.png Gra
+phic file (type bmp)
+<../../images/screenshots/SX5_result_grievance_description_desktop.png>
+) (chapters/ch06_implementation_planning.tex
+[56
 
 ]
 Chapter 6.
@@ -1514,12 +1595,12 @@ Underfull \hbox (badness 10000) in paragraph at lines 57--58
 []|\TU/TimesNewRoman(0)/m/n/12 Unit/integration/security/resilience/load test
  []
 
-ignored error: Infinite glue shrinkage found in box being split [56
+ignored error: Infinite glue shrinkage found in box being split [57
 
-] [57]
-Overfull \hbox (6.72302pt too wide) in paragraph at lines 101--102
-\TU/TimesNewRoman(0)/m/n/12 Deliverables included classifier orchestration, mod
-el fallback strategy, rule-engine scoring, queue-
+] [58]
+Overfull \hbox (10.20845pt too wide) in paragraph at lines 117--118
+[]\TU/TimesNewRoman(0)/m/n/12 Deliverables included production compose profile,
+ deployment guides, API references, backup
  []
 
 
@@ -1537,7 +1618,7 @@ Underfull \hbox (badness 7397) in paragraph at lines 138--138
 []|\TU/TimesNewRoman(0)/m/n/12 Add security and reliability
  []
 
-[58] [59]
+[59] [60]
 Underfull \hbox (badness 4416) in paragraph at lines 194--194
 []|\TU/TimesNewRoman(0)/m/n/12 registration, login, profile
  []
@@ -1582,12 +1663,12 @@ Underfull \hbox (badness 10000) in paragraph at lines 200--201
 []|\TU/TimesNewRoman(0)/m/n/12 Needed operationally meaningful
  []
 
-ignored error: Infinite glue shrinkage found in box being split [60]
+ignored error: Infinite glue shrinkage found in box being split [61]
 Underfull \hbox (badness 10000) in paragraph at lines 242--242
 []|\TU/TimesNewRoman(0)/m/n/12 Environment readi-
  []
 
-[61]
+[62]
 Underfull \hbox (badness 10000) in paragraph at lines 268--268
 []|\TU/TimesNewRoman(0)/m/n/12 Response header
  []
@@ -1622,18 +1703,18 @@ Underfull \hbox (badness 10000) in paragraph at lines 274--274
 []|\TU/TimesNewRoman(0)/m/n/12 low-confidence com-
  []
 
-ignored error: Infinite glue shrinkage found in box being split [62])
-(chapters/ch07_testing.tex [63]
+ignored error: Infinite glue shrinkage found in box being split [63])
+(chapters/ch07_testing.tex [64]
 Chapter 7.
-ignored error: Infinite glue shrinkage found in box being split [64
+ignored error: Infinite glue shrinkage found in box being split [65
 
-] [65]
+] [66]
 Underfull \hbox (badness 1297) in paragraph at lines 108--108
 []|\TU/TimesNewRoman(0)/m/n/12 Citizen upload -> analyze ->
  []
 
-[66]
-ignored error: Infinite glue shrinkage found in box being split [67]
+[67]
+ignored error: Infinite glue shrinkage found in box being split [68]
 Underfull \hbox (badness 10000) in paragraph at lines 201--201
 []|\TU/TimesNewRoman(0)/m/n/12 Backend automated
  []
@@ -1643,15 +1724,15 @@ Underfull \hbox (badness 7851) in paragraph at lines 201--201
 []|\TU/TimesNewRoman(0)/m/n/12 Pass with re-
  []
 
-ignored error: Infinite glue shrinkage found in box being split [68]
 ignored error: Infinite glue shrinkage found in box being split [69]
+ignored error: Infinite glue shrinkage found in box being split [70]
 Underfull \hbox (badness 10000) in paragraph at lines 263--263
 []|\TU/TimesNewRoman(0)/b/n/12 Spawn
  []
 
-[70]) (chapters/ch08_limitations_future_scope.tex [71]
+[71]) (chapters/ch08_limitations_future_scope.tex [72]
 Chapter 8.
-[72
+[73
 
 ]
 Underfull \hbox (badness 10000) in paragraph at lines 93--93
@@ -1713,13 +1794,13 @@ Underfull \hbox (badness 1072) in paragraph at lines 127--127
 []|\TU/TimesNewRoman(0)/m/n/12 Predictive hotspot forecast-
  []
 
-[73]
-ignored error: Infinite glue shrinkage found in box being split [74])
-(chapters/ch09_conclusion_references.tex [75]
+[74]
+ignored error: Infinite glue shrinkage found in box being split [75])
+(chapters/ch09_conclusion_references.tex [76]
 Chapter 9.
-[76
+[77
 
-]) (chapters/ch10_appendices.tex [77
+]) (chapters/ch10_appendices.tex [78
 
 ]
 Chapter 10.
@@ -1813,20 +1894,22 @@ Underfull \hbox (badness 1142) in paragraph at lines 66--67
 []|\TU/TimesNewRoman(0)/m/n/10.95 Public anonymized com-
  []
 
-ignored error: Infinite glue shrinkage found in box being split [78
+ignored error: Infinite glue shrinkage found in box being split [79
 
 ]
 Underfull \hbox (badness 10000) in paragraph at lines 86--87
 []|\TU/TimesNewRoman(0)/m/n/10.95 Runtime mode (develop-
  []
 
-[79] [80] [81] [82] [83]
+[80]
+ignored error: Infinite glue shrinkage found in box being split [81] [82]
+[83] [84]
 Underfull \hbox (badness 3386) in paragraph at lines 308--309
 []|\TU/TimesNewRoman(0)/m/n/12 Security hardening: upload checks, sanitization,
 
  []
 
-ignored error: Infinite glue shrinkage found in box being split [84]
+ignored error: Infinite glue shrinkage found in box being split [85]
 Underfull \hbox (badness 10000) in paragraph at lines 327--327
 []|\TU/TimesNewRoman(0)/b/n/12 Validation Evi-
  []
@@ -2006,8 +2089,8 @@ Underfull \hbox (badness 10000) in paragraph at lines 355--355
 \TU/TimesNewRoman(0)/m/n/12 checks in matrix
  []
 
-ignored error: Infinite glue shrinkage found in box being split [85]
-ignored error: Infinite glue shrinkage found in box being split [86]) [87]
+ignored error: Infinite glue shrinkage found in box being split [86]
+ignored error: Infinite glue shrinkage found in box being split [87]) [88]
 (main.aux)
  ***********
 LaTeX2e <2025-11-01>
@@ -2017,12 +2100,12 @@ Package rerunfilecheck Info: File `main.out' has not changed.
 (rerunfilecheck)             Checksum: A8B09687E543A613C9B916BE70669AB1;37581.
  ) 
 Here is how much of TeX's memory you used:
- 17031 strings out of 402987
- 325154 string characters out of 5448525
- 918914 words of memory out of 5000000
- 45508 multiletter control sequences out of 15000+600000
- 632863 words of font info for 86 fonts, out of 8000000 for 9000
+ 17174 strings out of 402987
+ 333177 string characters out of 5448525
+ 919243 words of memory out of 5000000
+ 45630 multiletter control sequences out of 15000+600000
+ 632871 words of font info for 87 fonts, out of 8000000 for 9000
  1348 hyphenation exceptions out of 8191
  73i,12n,93p,1003b,654s stack positions out of 10000i,1000n,20000p,200000b,200000s
 
-Output written on main.pdf (100 pages).
+Output written on main.pdf (101 pages).
