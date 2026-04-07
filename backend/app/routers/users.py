@@ -2,8 +2,7 @@ import asyncio
 import hashlib
 import secrets
 
-from fastapi import APIRouter, HTTPException, Body, Depends, Request
-from fastapi.security import OAuth2PasswordRequestForm
+from fastapi import APIRouter, HTTPException, Body, Depends, Request, Form
 from app.database import get_database
 from app.schemas import (
     UserCreate,
@@ -109,11 +108,15 @@ async def register_user(request: Request, user: UserCreate = Body(...)):
 
 @router.post("/login")
 @limiter.limit("10/minute")
-async def login(request: Request, form_data: OAuth2PasswordRequestForm = Depends()):
+async def login(
+    request: Request,
+    username: str = Form(...),
+    password: str = Form(...),
+):
     db = get_database()
-    user = await db["users"].find_one({"username": form_data.username})
+    user = await db["users"].find_one({"username": username})
     
-    if not user or not verify_password(form_data.password, user["password"]):
+    if not user or not verify_password(password, user["password"]):
         raise HTTPException(status_code=401, detail="Invalid username or password")
         
     access_token_expires = timedelta(minutes=settings.access_token_expire_minutes)
