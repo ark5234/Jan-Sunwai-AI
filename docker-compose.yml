@@ -1,5 +1,4 @@
 services:
-  # MongoDB Database
   mongodb:
     image: mongo:7.0
     container_name: jan-sunwai-mongodb
@@ -10,32 +9,40 @@ services:
       - mongodb_data:/data/db
     environment:
       MONGO_INITDB_DATABASE: jan_sunwai_db
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping').ok"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "5"
     networks:
       - jan-sunwai-network
 
-  # Backend API
   backend:
     build:
       context: ./backend
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.prod
     container_name: jan-sunwai-backend
     restart: unless-stopped
-    ports:
-      - "8000:8000"
-    volumes:
-      - ./backend:/app
-      - backend_uploads:/app/backend/uploads
     env_file:
-      - ./backend/.env          # loads JWT_SECRET_KEY and other shared settings
+      - ./backend/.env
     environment:
-      # Docker-specific overrides (these take precedence over .env values above)
-      - MONGODB_URL=mongodb://mongodb:27017/jan_sunwai_db
-      - PYTHONUNBUFFERED=1
       - APP_ENV=${APP_ENV:-development}
       - RATE_LIMIT_ENABLED=${RATE_LIMIT_ENABLED:-false}
-      - OLLAMA_BASE_URL=http://host.docker.internal:11434
-      - OLLAMA_HOST=http://host.docker.internal:11434
+      - MONGODB_URL=${MONGODB_URL:-mongodb://mongodb:27017/jan_sunwai_db}
+      - MONGO_URL=${MONGO_URL:-mongodb://mongodb:27017/jan_sunwai_db}
+      - DB_NAME=${DB_NAME:-jan_sunwai_db}
+      - OLLAMA_BASE_URL=${OLLAMA_BASE_URL:-http://host.docker.internal:11434}
+      - OLLAMA_HOST=${OLLAMA_HOST:-http://host.docker.internal:11434}
       - ALLOWED_ORIGINS=${ALLOWED_ORIGINS:-http://localhost:5173,http://127.0.0.1:5173}
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY:-change-me-in-production}
+      - JWT_ALGORITHM=${JWT_ALGORITHM:-HS256}
+      - ACCESS_TOKEN_EXPIRE_MINUTES=${ACCESS_TOKEN_EXPIRE_MINUTES:-1440}
+      - PYTHONUNBUFFERED=1
       - VISION_MODEL=${VISION_MODEL:-qwen2.5vl:3b}
       - MID_VISION_MODEL=${MID_VISION_MODEL:-granite3.2-vision:2b}
       - FALLBACK_VISION_MODEL=${FALLBACK_VISION_MODEL:-granite3.2-vision:2b}
@@ -46,27 +53,49 @@ services:
       - MODEL_UNLOAD_TIMEOUT_SECONDS=${MODEL_UNLOAD_TIMEOUT_SECONDS:-30}
       - MODEL_UNLOAD_POLL_INTERVAL_SECONDS=${MODEL_UNLOAD_POLL_INTERVAL_SECONDS:-0.1}
       - KEEP_REASONING_MODEL_WARM=${KEEP_REASONING_MODEL_WARM:-false}
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     depends_on:
-      - mongodb
-    command: ["python", "-m", "uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "2"]
+      mongodb:
+        condition: service_healthy
+    ports:
+      - "8000:8000"
+    volumes:
+      - backend_uploads:/app/uploads
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health/live', timeout=5)"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "5"
     networks:
       - jan-sunwai-network
 
-  # Frontend (Optional - can run separately with npm)
-  # Uncomment if you want to dockerize frontend too
-  # frontend:
-  #   build:
-  #     context: ./frontend
-  #     dockerfile: Dockerfile
-  #   container_name: jan-sunwai-frontend
-  #   restart: unless-stopped
-  #   ports:
-  #     - "5173:5173"
-  #   volumes:
-  #     - ./frontend:/app
-  #     - /app/node_modules
-  #   networks:
-  #     - jan-sunwai-network
+  frontend:
+    profiles: ["prod"]
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.prod
+      args:
+        - VITE_API_URL=/api/v1
+    container_name: jan-sunwai-frontend
+    restart: unless-stopped
+    depends_on:
+      backend:
+        condition: service_healthy
+    ports:
+      - "5173:80"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "5"
+    networks:
+      - jan-sunwai-network
 
 volumes:
   mongodb_data:

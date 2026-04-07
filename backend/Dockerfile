@@ -19,8 +19,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy the entire backend application
 COPY . .
 
-# Create necessary directories
-RUN mkdir -p backend/logs backend/uploads
+# Create runtime directories used by the app
+RUN mkdir -p logs uploads
 
 # Expose port 8000
 EXPOSE 8000

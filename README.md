@@ -102,8 +102,7 @@ Jan-Sunwai-AI/
 |   |   |-- auth.py
 |   |   `-- config.py
 |   |-- tests/
-|   |-- env.local
-|   |-- env.production
+|   |-- .env
 |   `-- main.py
 |-- frontend/
 |   |-- src/
@@ -116,7 +115,6 @@ Jan-Sunwai-AI/
 |-- docs/
 |-- scripts/
 |-- docker-compose.yml
-|-- docker-compose.prod.yml
 |-- setup.ps1
 `-- setup.sh
 ```
@@ -146,7 +144,7 @@ chmod +x setup.sh scripts/system/check_gpu.sh
 1. Create and activate virtual environment.
 2. Install backend dependencies.
 3. Install frontend dependencies.
-4. Copy `backend/env.local` to `backend/.env`.
+4. Ensure `backend/.env` is configured.
 5. Start MongoDB.
 6. Start Ollama and pull models.
 
@@ -156,7 +154,7 @@ python -m venv .venv
 # Linux:   source .venv/bin/activate
 
 pip install -r backend/requirements.txt
-cp backend/env.local backend/.env
+# edit backend/.env with local values if needed
 
 docker compose up -d mongodb
 
@@ -299,10 +297,9 @@ All primary APIs are mirrored under `/api/v1`.
 
 ## Environment Variables
 
-Use one of the following templates, then edit values as needed:
+Use the unified template, then edit values as needed:
 
-- Preferred in this repository: copy `backend/env.local` to `backend/.env`.
-- Optional team pattern: copy `backend/.env.example` to `backend/.env` if your branch includes it.
+- Use `backend/.env` as the single environment file.
 
 | Variable | Default | Description |
 | --- | --- | --- |
@@ -414,8 +411,8 @@ python backend/evaluate_sorted_dataset.py --sample 20
 ## Production Compose
 
 ```bash
-cp backend/env.production backend/.env
-docker compose -f docker-compose.prod.yml up --build -d
+# set APP_ENV=production and other production values in backend/.env
+docker compose --profile prod up --build -d
 python backend/create_indexes.py
 ```
 

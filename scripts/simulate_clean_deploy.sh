@@ -19,16 +19,17 @@ require_cmd node
 require_cmd npm
 
 if [ ! -f backend/.env ]; then
-  echo "[deploy-sim] backend/.env missing; copying from env.production"
-  cp backend/env.production backend/.env
+  echo "[deploy-sim] FAIL: backend/.env is missing."
+  echo "[deploy-sim] Create backend/.env before running deployment simulation."
+  exit 1
 fi
 
 echo "[deploy-sim] validating compose config"
-docker compose -f docker-compose.prod.yml config -q
+docker compose --profile prod config -q
 
 echo "[deploy-sim] measuring cold start"
 START=$(date +%s)
-docker compose -f docker-compose.prod.yml up -d --build
+docker compose --profile prod up -d --build
 END=$(date +%s)
 ELAPSED=$((END - START))
 echo "[deploy-sim] cold-start seconds: ${ELAPSED}"

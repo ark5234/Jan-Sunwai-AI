@@ -39,14 +39,8 @@ Write-Ok "Python dependencies installed"
 
 Write-Step "Ensuring backend environment file..."
 $envFile = Join-Path $ProjectRoot "backend\.env"
-$envLocalFile = Join-Path $ProjectRoot "backend\env.local"
 if (-not (Test-Path $envFile)) {
-    if (Test-Path $envLocalFile) {
-        Copy-Item $envLocalFile $envFile
-        Write-Ok "Created backend/.env from backend/env.local"
-    } else {
-        Write-Warn "backend/env.local not found. Create backend/.env manually."
-    }
+    Write-Warn "backend/.env not found. Create backend/.env manually before running the backend."
 } else {
     Write-Ok "backend/.env already exists"
 }
@@ -73,7 +67,7 @@ if (-not $docker) {
     Write-Warn "Docker not found. Installing Docker Desktop via winget..."
     winget install -e --id Docker.DockerDesktop --silent --accept-package-agreements --accept-source-agreements
     Write-Warn "Docker Desktop installed. You may need to RESTART your machine and re-run this script."
-    Write-Warn "After restart, run: docker-compose up -d mongodb"
+    Write-Warn "After restart, run: docker compose up -d mongodb"
     Write-Host "`nPress any key to continue setup anyway..." -ForegroundColor Yellow
     $null = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
 } else {

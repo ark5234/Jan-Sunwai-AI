@@ -20,6 +20,8 @@ const PublicStatus = lazy(() => import('./pages/PublicStatus'));
 const WorkerDashboard = lazy(() => import('./pages/WorkerDashboard'));
 const WorkerRegister = lazy(() => import('./pages/WorkerRegister'));
 const GrievanceHeatmap = lazy(() => import('./pages/GrievanceHeatmap'));
+const ForgotPassword = lazy(() => import('./pages/ForgotPassword'));
+const ResetPassword = lazy(() => import('./pages/ResetPassword'));
 
 // Protected Route Component
 function ProtectedRoute({ children, allowedRoles }) {
@@ -84,6 +86,8 @@ function App() {
               <Route path="/" element={<GuestRoute><Home /></GuestRoute>} />
               <Route path="/register" element={<GuestRoute><Register /></GuestRoute>} />
               <Route path="/login" element={<GuestRoute><Login /></GuestRoute>} />
+              <Route path="/forgot-password" element={<GuestRoute><ForgotPassword /></GuestRoute>} />
+              <Route path="/reset-password" element={<GuestRoute><ResetPassword /></GuestRoute>} />
               
               {/* Protected Routes */}
               <Route 

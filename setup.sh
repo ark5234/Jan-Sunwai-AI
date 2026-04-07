@@ -37,12 +37,7 @@ ok "Python dependencies installed"
 
 step "Ensuring backend environment file..."
 if [ ! -f "$SCRIPT_DIR/backend/.env" ]; then
-    if [ -f "$SCRIPT_DIR/backend/env.local" ]; then
-        cp "$SCRIPT_DIR/backend/env.local" "$SCRIPT_DIR/backend/.env"
-        ok "Created backend/.env from backend/env.local"
-    else
-        warn "backend/env.local not found. Create backend/.env manually."
-    fi
+    warn "backend/.env not found. Create backend/.env manually before running the backend."
 else
     ok "backend/.env already exists"
 fi

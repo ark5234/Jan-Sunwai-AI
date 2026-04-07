@@ -14,11 +14,9 @@ env
 ENV
 
 # Logs
-backend/logs/*.log
 logs/
 
 # Uploads (will be mounted as volume)
-backend/uploads/*
 uploads/*
 
 # Test files

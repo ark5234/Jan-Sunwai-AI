@@ -16,7 +16,7 @@ This runbook closes production verification tasks for SPA routing, NDMC network 
 
 ## Verification Scope
 
-1. docker-compose.prod.yml boots successfully.
+1. docker-compose.yml boots successfully with `--profile prod`.
 2. Backend live endpoint responds.
 3. Frontend deep-link route returns SPA HTML shell.
 4. Backend container can reach OLLAMA_BASE_URL.

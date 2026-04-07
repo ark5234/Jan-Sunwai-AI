@@ -5,7 +5,7 @@ ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 cd "${ROOT_DIR}"
 
 echo "[prod-verify] bringing up production compose stack"
-docker compose -f docker-compose.prod.yml up -d --build
+docker compose --profile prod up -d --build
 
 echo "[prod-verify] checking backend live endpoint"
 for _ in $(seq 1 20); do
@@ -28,7 +28,7 @@ if ! grep -iq "<html" /tmp/jan_sunwai_deeplink.html; then
 fi
 
 echo "[prod-verify] checking backend-to-ollama network route"
-docker compose -f docker-compose.prod.yml exec -T backend python -c "import os,urllib.request;u=os.getenv('OLLAMA_BASE_URL','http://host.docker.internal:11434').rstrip('/')+'/api/tags';urllib.request.urlopen(u,timeout=5);print('ok')"
+docker compose --profile prod exec -T backend python -c "import os,urllib.request;u=os.getenv('OLLAMA_BASE_URL','http://host.docker.internal:11434').rstrip('/')+'/api/tags';urllib.request.urlopen(u,timeout=5);print('ok')"
 
 echo "[prod-verify] running short load smoke against production stack"
 USERS=${USERS:-20} SPAWN_RATE=${SPAWN_RATE:-5} DURATION=${DURATION:-2m} bash scripts/run_load_test.sh http://localhost:8000

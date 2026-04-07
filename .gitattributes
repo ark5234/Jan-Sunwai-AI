@@ -20,7 +20,6 @@
 *.md text eol=lf
 *.txt text eol=lf
 *.env text eol=lf
-*.env.example text eol=lf
 *.toml text eol=lf
 *.cfg text eol=lf
 *.ini text eol=lf

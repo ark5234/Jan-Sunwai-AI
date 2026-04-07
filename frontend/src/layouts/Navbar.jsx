@@ -320,6 +320,9 @@ export default function Navbar() {
                   <Link to="/login" className="px-3 py-1.5 rounded text-sm font-medium text-blue-100 hover:text-white hover:bg-white/10 transition">
                     Log In
                   </Link>
+                  <Link to="/forgot-password" className="px-3 py-1.5 rounded text-sm font-medium text-blue-100 hover:text-white hover:bg-white/10 transition">
+                    Reset Password
+                  </Link>
                   <Link to="/register" className="bg-saffron text-white px-4 py-1.5 rounded text-sm font-semibold hover:bg-saffron-light transition">
                     Register
                   </Link>
@@ -445,6 +448,9 @@ export default function Navbar() {
               <div className="flex flex-col gap-2 px-3">
                 <Link to="/login" onClick={() => setIsOpen(false)} className="block py-2 text-center rounded text-blue-100 hover:text-white hover:bg-white/10 font-medium">
                   Log In
+                </Link>
+                <Link to="/forgot-password" onClick={() => setIsOpen(false)} className="block py-2 text-center rounded text-blue-100 hover:text-white hover:bg-white/10 font-medium">
+                  Reset Password
                 </Link>
                 <Link to="/register" onClick={() => setIsOpen(false)} className="block py-2 text-center rounded bg-saffron text-white font-semibold hover:bg-saffron-light">
                   Register

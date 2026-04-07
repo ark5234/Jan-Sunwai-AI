@@ -4,7 +4,7 @@ $root = Split-Path -Parent $PSScriptRoot
 Push-Location $root
 try {
     Write-Host '[prod-verify] bringing up production compose stack'
-    docker compose -f docker-compose.prod.yml up -d --build
+    docker compose --profile prod up -d --build
 
     Write-Host '[prod-verify] checking backend live endpoint'
     $ready = $false
@@ -35,7 +35,7 @@ try {
     }
 
     Write-Host '[prod-verify] checking backend-to-ollama network route'
-    docker compose -f docker-compose.prod.yml exec -T backend python -c "import os,urllib.request;u=os.getenv('OLLAMA_BASE_URL','http://host.docker.internal:11434').rstrip('/')+'/api/tags';urllib.request.urlopen(u,timeout=5);print('ok')"
+    docker compose --profile prod exec -T backend python -c "import os,urllib.request;u=os.getenv('OLLAMA_BASE_URL','http://host.docker.internal:11434').rstrip('/')+'/api/tags';urllib.request.urlopen(u,timeout=5);print('ok')"
 
     Write-Host '[prod-verify] running short load smoke against production stack'
     $env:USERS = if ($env:USERS) { $env:USERS } else { '20' }

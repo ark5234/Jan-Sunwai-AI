@@ -1,6 +1,6 @@
 ﻿# NDMC Deployment Runbook
 
-This runbook documents the current production-style deployment path using `docker-compose.prod.yml`.
+This runbook documents the current production-style deployment path using the unified `docker-compose.yml` (with `prod` profile).
 
 ## Deployment Architecture (Current)
 
@@ -22,11 +22,7 @@ flowchart LR
 
 ## Environment Setup
 
-1. Copy production template:
-
-```bash
-cp backend/env.production backend/.env
-```
+1. Configure `backend/.env` directly on the deployment host.
 
 1. Edit required values in `backend/.env`:
 
@@ -41,7 +37,7 @@ cp backend/env.production backend/.env
 ## Start Production Stack
 
 ```bash
-docker compose -f docker-compose.prod.yml up --build -d
+docker compose --profile prod up --build -d
 ```
 
 ## NDMC Network Configuration (Container -> Ollama)
@@ -59,7 +55,7 @@ extra_hosts:
 Connectivity check from backend container:
 
 ```bash
-docker compose -f docker-compose.prod.yml exec -T backend \
+docker compose --profile prod exec -T backend \
     python -c "import os,urllib.request;u=os.getenv('OLLAMA_BASE_URL').rstrip('/')+'/api/tags';print(urllib.request.urlopen(u, timeout=5).status)"
 ```
 
@@ -108,7 +104,7 @@ sequenceDiagram
     participant DB as MongoDB
 
     Ops->>Host: Set backend/.env
-    Ops->>Compose: docker compose -f docker-compose.prod.yml up -d --build
+    Ops->>Compose: docker compose --profile prod up -d --build
     Compose->>DB: Start MongoDB + healthcheck
     Compose->>API: Start backend after DB healthy
     Compose->>Host: Start frontend Nginx container
@@ -151,6 +147,6 @@ Recommended schedule:
 
 ## Operational Notes
 
-- `docker-compose.prod.yml` already includes healthchecks and restart policies.
+- `docker-compose.yml` includes healthchecks and restart policies; enable frontend with `--profile prod`.
 - Frontend Nginx performs SPA fallback routing to `index.html`.
 - API version aliases (`/api/v1`) are active in backend and should be used for external integrations.

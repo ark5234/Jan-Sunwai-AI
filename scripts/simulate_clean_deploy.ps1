@@ -11,16 +11,15 @@ try {
     }
 
     if (-not (Test-Path 'backend/.env')) {
-        Write-Host '[deploy-sim] backend/.env missing; copying backend/env.production'
-        Copy-Item 'backend/env.production' 'backend/.env'
+        throw '[deploy-sim] backend/.env is missing. Create backend/.env before running deployment simulation.'
     }
 
     Write-Host '[deploy-sim] validating compose config'
-    docker compose -f docker-compose.prod.yml config -q
+    docker compose --profile prod config -q
 
     Write-Host '[deploy-sim] measuring cold start'
     $start = Get-Date
-    docker compose -f docker-compose.prod.yml up -d --build
+    docker compose --profile prod up -d --build
     $elapsed = (Get-Date) - $start
     Write-Host "[deploy-sim] cold-start seconds: $([math]::Round($elapsed.TotalSeconds, 2))"
 

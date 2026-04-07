@@ -12,7 +12,7 @@
 2. Frontend dependencies:
    - cd frontend && npm install
 3. Environment:
-   - copy backend/env.local to backend/.env
+   - configure backend/.env
 
 ## Quality Gates
 

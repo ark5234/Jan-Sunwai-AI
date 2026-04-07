@@ -164,4 +164,4 @@ flowchart LR
     Backend --> Ollama[Host Ollama]
 ```
 
-This is the currently supported production-style deployment in `docker-compose.prod.yml`.
+This is the currently supported production-style deployment in `docker-compose.yml` with `--profile prod`.

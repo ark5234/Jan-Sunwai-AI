@@ -58,6 +58,12 @@ export default function Home() {
                 >
                   How It Works
                 </a>
+                <Link
+                  to="/forgot-password"
+                  className="inline-flex items-center justify-center gap-2 bg-white/5 hover:bg-white/15 border border-white/20 text-blue-100 hover:text-white px-6 py-3 rounded font-medium text-base transition"
+                >
+                  Reset Password
+                </Link>
               </div>
             </div>
 
@@ -181,6 +187,12 @@ export default function Home() {
             Register Now
             <ArrowRight className="w-5 h-5" />
           </Link>
+          <div className="mt-4 text-blue-200 text-sm">
+            Already registered but locked out?{' '}
+            <Link to="/forgot-password" className="font-semibold text-saffron hover:text-saffron-light hover:underline">
+              Reset your password
+            </Link>
+          </div>
         </div>
       </section>
 
