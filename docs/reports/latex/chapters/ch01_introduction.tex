@@ -1,0 +1,128 @@
+\chapter{Introduction}
+
+Jan-Sunwai AI is an end-to-end civic grievance redressal platform built to reduce the operational gap between citizen complaint submission and departmental action. The system transforms an image upload into a structured, auditable complaint workflow, then routes the case to accountable municipal actors. Instead of requiring citizens to understand bureaucratic departments in advance, the platform performs AI-assisted classification and drafting while preserving a human-governed correction path through triage and administrative controls.
+
+The project was developed as a local-first system to satisfy practical constraints in municipal settings where cloud deployment may be restricted by policy, infrastructure, or privacy concerns. The architecture integrates a React frontend, FastAPI backend, MongoDB persistence, and locally hosted Ollama models in a hybrid inference pipeline. This deployment posture allows the platform to run in constrained institutional environments while maintaining modularity for future expansion.
+
+\section{Project Details}
+
+\begin{table}[H]
+\centering
+\caption{Project Profile}
+\begin{tabular}{p{0.30\textwidth}p{0.60\textwidth}}
+\toprule
+\textbf{Attribute} & \textbf{Value} \\
+\midrule
+Project Name & Jan-Sunwai AI \\
+Application Domain & Civic Grievance Management and Municipal Operations \\
+Problem Theme & Image-based complaint intake with authority routing and lifecycle traceability \\
+Project Duration & 28 January 2026 to 27 May 2026 \\
+Primary Users & Citizens, Workers, Department Heads, Administrators \\
+Deployment Style & Local-first, production-ready containerized stack \\
+Target Institutional Context & NDMC-style municipal governance operations \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Purpose}
+
+Traditional complaint systems rely heavily on manual typing, manual category selection, and office-level routing knowledge that many citizens do not have. This results in poor-quality submissions, delayed routing, and low trust in resolution timelines. The purpose of Jan-Sunwai AI is to build a practical, auditable, and secure system where:
+
+\begin{itemize}[leftmargin=1.5em]
+\item Citizens can submit evidence-driven complaints quickly using photos.
+\item The system auto-detects likely department categories and drafts complaint text.
+\item Authorities can monitor, assign, escalate, and resolve complaints with full history.
+\item Governance stakeholders can access analytics, public transparency views, and exports.
+\end{itemize}
+
+The objective is not to replace human decision-making but to reduce repetitive effort and routing ambiguity while strengthening accountability.
+
+\section{Scope}
+
+The implemented scope includes intake, classification, routing metadata, assignment, notifications, escalation support, and governance analytics. Specifically, the platform covers:
+
+\begin{itemize}[leftmargin=1.5em]
+\item User management with role-aware access control.
+\item AI analysis and complaint drafting from uploaded images.
+\item Complaint lifecycle actions: create, track, update, transfer, escalate, and close.
+\item Department-specific work queues and worker assignment controls.
+\item Triage process for low-confidence or ambiguous classifications.
+\item Notification chain and password reset mechanisms.
+\item Public-facing anonymized complaint listing and operational analytics.
+\end{itemize}
+
+Out-of-scope items for the current release include multilingual voice intake, direct integration with external municipal ERP systems, and predictive resource planning beyond dashboard analytics.
+
+\section{Objectives}
+
+\begin{table}[H]
+\centering
+\caption{Objectives and Expected Outcomes}
+\begin{tabularx}{\textwidth}{p{0.06\textwidth}p{0.42\textwidth}X}
+\toprule
+\textbf{No.} & \textbf{Objective} & \textbf{Expected Outcome} \\
+\midrule
+O1 & Reduce submission friction for citizens & Simplified upload-analyze-submit flow with optional draft editing \\
+O2 & Improve complaint routing quality & Canonical department taxonomy and authority mapping \\
+O3 & Ensure operational traceability & Status history, notes, comments, and audit-ready timeline \\
+O4 & Support workload distribution & Auto-assignment by department, service area, and load balancing \\
+O5 & Strengthen security posture & JWT auth, input sanitization, upload validation, and CORS/security headers \\
+O6 & Improve governance transparency & Analytics dashboard, heatmap, and public complaint feed \\
+O7 & Enable production transition & Docker-based deployment profile, environment controls, and runbooks \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\section{Technology Stack Used}
+
+\begin{table}[H]
+\centering
+\caption{Technology Stack and Role in System}
+\begin{tabularx}{\textwidth}{p{0.22\textwidth}p{0.26\textwidth}X}
+\toprule
+\textbf{Layer} & \textbf{Primary Technology} & \textbf{Usage in Project} \\
+\midrule
+Frontend & React + Vite & Role-based SPA, dashboards, analyze/result flows, authentication-aware routing \\
+Backend API & FastAPI + Python & REST endpoints, validation, business logic, authentication, and middleware \\
+Database & MongoDB & Document storage for users, complaints, notifications, and reset tokens \\
+AI Runtime & Ollama models & Vision extraction, optional reasoning, and complaint draft generation \\
+Containerization & Docker Compose & Reproducible dev/prod deployment and dependency orchestration \\
+Testing & pytest, httpx, locust & Unit/integration/security/resilience/load testing coverage \\
+Documentation & Markdown + LaTeX & Technical runbooks, architecture notes, final submission report \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\section{Problem Context and Motivation}
+
+Civic systems face a recurring quality bottleneck at intake. Complaints often contain incomplete locations, weak descriptions, or wrong category labels. This creates downstream inefficiency where staff first reinterpret the complaint before executing field actions. In high-volume departments, this translation step alone can cause significant delay.
+
+Jan-Sunwai AI addresses this bottleneck by introducing structured automation at the earliest stage while preserving administrative authority. The AI pipeline provides category and draft suggestions, but triage and role controls maintain governance oversight. This balance between automation and control is central to the system's design philosophy.
+
+\section{Literature Review}
+
+\subsection{Digital Governance and Complaint Systems}
+
+Digital grievance platforms are a recognized mechanism for increasing civic participation and service responsiveness. However, many systems remain form-driven and text-heavy, creating barriers for users with low digital literacy or limited procedural awareness. Literature and practitioner reports emphasize that complaint quality is directly linked to downstream processing quality.
+
+\subsection{Vision-Language Models in Public Workflows}
+
+Vision-language models can extract useful context from unstructured images but may struggle with highly localized civic semantics. A model can correctly describe a scene yet still infer the wrong responsible department. Prior practical studies suggest that combining AI extraction with deterministic control layers improves consistency in governance use cases.
+
+\subsection{Local Inference and Privacy Considerations}
+
+Public institutions frequently operate under constraints where sensitive citizen data should remain within controlled infrastructure boundaries. Local inference minimizes external data transfer and provides better control over model lifecycle, though it introduces operational concerns around VRAM budgeting, process health, and failover behavior. This project adopts local inference as a policy-aware technical choice rather than only a performance decision.
+
+\subsection{Hybrid Deterministic + AI Pipelines}
+
+Recent engineering patterns favor staged AI systems over monolithic generation. In this approach, computer vision extracts structured cues, deterministic rules provide stable decisions for common cases, and a lightweight reasoning model resolves ambiguity only when needed. Jan-Sunwai AI follows this pattern to reduce hallucination risk and improve repeatability.
+
+\subsection{Governance, Explainability, and Auditability}
+
+In civic applications, explainability is not optional. Decision provenance (confidence, method, timestamp, actor) enables triage, accountability, and policy audits. Therefore, the platform records status history and decision metadata, supports internal notes and comments, and surfaces traces through dashboards and logs.
+
+The project design is aligned with development principles and platform guidance from FastAPI, React, MongoDB, and OWASP security best-practice references listed in Chapter 9.
+
+\section{Chapter Summary}
+
+This chapter defined the problem setting, project intent, scope boundaries, and technology foundation. It also established the literature-aligned rationale for adopting a hybrid AI plus deterministic architecture in a governance-sensitive municipal context. The next chapter details project planning, feasibility analysis, schedules, and delivery governance.

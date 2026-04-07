@@ -1,0 +1,352 @@
+\chapter{Appendices}
+
+\section{Appendix A: API Endpoint Snapshot}
+
+This appendix summarizes the primary endpoint inventory implemented in the current release. All major endpoint groups are additionally exposed under the \texttt{/api/v1} alias path.
+
+\begin{longtable}{p{0.09\textwidth}p{0.39\textwidth}p{0.16\textwidth}p{0.28\textwidth}}
+\caption{API Endpoint Snapshot}\\
+\toprule
+\textbf{Method} & \textbf{Endpoint} & \textbf{Auth} & \textbf{Purpose} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{Method} & \textbf{Endpoint} & \textbf{Auth} & \textbf{Purpose} \\
+\midrule
+\endhead
+POST & /users/register & No & Citizen/worker self-registration \\
+POST & /users/login & No & JWT token issuance \\
+GET & /users/me & Yes & Current user profile \\
+PATCH & /users/me & Yes & Profile update \\
+POST & /users/forgot-password & No & Reset token issuance request \\
+POST & /users/reset-password & No & Password reset submission \\
+\midrule
+POST & /analyze & Yes & Image analysis and draft initiation \\
+POST & /analyze/regenerate & Yes & Regenerate complaint draft \\
+GET & /complaints/generation/\{job\_id\} & Yes & Poll queued generation status \\
+\midrule
+POST & /complaints & Yes & Create complaint \\
+GET & /complaints & Yes & Role-filtered complaint list \\
+GET & /complaints/\{complaint\_id\} & Yes & Complaint detail \\
+PATCH & /complaints/\{complaint\_id\}/status & Admin/Dept Head & Status transition \\
+PATCH & /complaints/\{complaint\_id\}/transfer & Admin/Dept Head & Department transfer \\
+POST & /complaints/\{complaint\_id\}/escalate & Admin/Dept Head & Authority escalation \\
+POST & /complaints/\{complaint\_id\}/feedback & Citizen owner & Resolution feedback \\
+POST & /complaints/\{complaint\_id\}/notes & Admin/Dept Head & Internal department notes \\
+GET & /complaints/\{complaint\_id\}/notes & Admin/Dept Head & Fetch department notes \\
+POST & /complaints/\{complaint\_id\}/comments & Yes & Add collaborative comment \\
+GET & /complaints/\{complaint\_id\}/comments & Yes & Read collaborative thread \\
+POST & /complaints/bulk/status & Admin & Bulk status updates \\
+POST & /complaints/bulk/transfer & Admin & Bulk transfer updates \\
+GET & /complaints/export/csv & Admin & CSV export \\
+\midrule
+GET & /workers/me & Worker & Worker profile and workload \\
+PATCH & /workers/me/status & Worker & Availability update \\
+PATCH & /workers/me/complaints/\{complaint\_id\}/done & Worker & Mark assigned complaint done \\
+GET & /workers & Admin & List workers (pending/all) \\
+GET & /workers/my-department & Admin/Dept Head & Department worker listing \\
+PATCH & /workers/\{worker\_id\}/approve & Admin & Approve worker \\
+DELETE & /workers/\{worker\_id\}/reject & Admin & Reject pending worker \\
+POST & /workers/\{worker\_id\}/assign/\{complaint\_id\} & Admin & Manual assignment \\
+PATCH & /workers/\{worker\_id\}/area & Admin & Update worker service area \\
+GET & /workers/assignment-debug & Admin & Assignment diagnostics \\
+POST & /workers/reassign-unassigned & Admin & Retry assignment for open queue \\
+\midrule
+GET & /notifications & Yes & Notification list \\
+GET & /notifications/unread-count & Yes & Unread badge count \\
+PATCH & /notifications/\{notification\_id\}/read & Yes & Mark single notification read \\
+PATCH & /notifications/read-all & Yes & Mark all notifications read \\
+\midrule
+GET & /triage/review-queue & Admin & Retrieve low-confidence queue \\
+POST & /triage/review-queue/decision & Admin & Apply triage decision \\
+\midrule
+GET & /analytics/overview & Admin & Overview metrics \\
+GET & /analytics/heatmap & Admin/Dept Head & Geospatial complaint distribution \\
+GET & /public/complaints & No & Public anonymized complaint feed \\
+GET & /health/live & No & Liveness probe \\
+GET & /health/ready & No & Readiness probe \\
+GET & /health/models & No & Model availability status \\
+GET & /health/gpu & No & GPU/model load status \\
+\bottomrule
+\end{longtable}
+
+\section{Appendix B: Environment Variable Catalog}
+
+\begin{longtable}{p{0.30\textwidth}p{0.20\textwidth}p{0.40\textwidth}}
+\caption{Core Backend Environment Variables}\\
+\toprule
+\textbf{Variable} & \textbf{Typical Default} & \textbf{Purpose} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{Variable} & \textbf{Typical Default} & \textbf{Purpose} \\
+\midrule
+\endhead
+APP\_ENV & development & Runtime mode (development/production) \\
+MONGODB\_URL & mongodb://localhost:27017 & Primary Mongo connection URI \\
+MONGO\_URL & mongodb://localhost:27017 & Legacy fallback connection URI \\
+DB\_NAME & jan\_sunwai\_db & Database name \\
+JWT\_SECRET\_KEY & change-me-in-production & JWT signing secret \\
+JWT\_ALGORITHM & HS256 & JWT signing algorithm \\
+ACCESS\_TOKEN\_EXPIRE\_MINUTES & 1440 (dev) / 480 (prod) & Token expiration minutes \\
+RATE\_LIMIT\_ENABLED & false (dev) & Rate-limiting toggle \\
+ALLOWED\_ORIGINS & localhost origins list & CORS allowlist \\
+OLLAMA\_BASE\_URL & http://localhost:11434 & Ollama API endpoint \\
+VISION\_MODEL & qwen2.5vl:3b & Primary vision model \\
+MID\_VISION\_MODEL & granite3.2-vision:2b & Mid-tier vision fallback \\
+FALLBACK\_VISION\_MODEL & granite3.2-vision:2b & Final vision fallback \\
+REASONING\_MODEL & llama3.2:1b & Reasoning/drafting model \\
+VISION\_TIMEOUT\_SECONDS & 240 & Vision tier timeout \\
+LLM\_INLINE\_TIMEOUT\_SECONDS & 15 & Inline generation wait time \\
+LLM\_QUEUE\_WORKERS & 2 & Background generation workers \\
+RULE\_ENGINE\_ONLY & false & Skip reasoning model when true \\
+AMBIGUITY\_THRESHOLD & 2.0 & Rule-engine ambiguity boundary \\
+UNLOAD\_AFTER\_REASONING & true & Attempt model unload after use \\
+MODEL\_UNLOAD\_TIMEOUT\_SECONDS & 30 & Model unload timeout \\
+MODEL\_UNLOAD\_POLL\_INTERVAL\_SECONDS & 0.1 & Poll interval for unload check \\
+KEEP\_REASONING\_MODEL\_WARM & false & Keep reasoning model loaded toggle \\
+COMPLAINT\_OUTPUT\_MODE & email & Draft output style mode \\
+SMTP\_HOST & empty & SMTP relay host \\
+SMTP\_PORT & 587 & SMTP relay port \\
+SMTP\_FROM & noreply@jan-sunwai.local & Sender identity for email stub/relay \\
+DEFAULT\_PAGE\_SIZE & 25 & Default pagination size \\
+MAX\_PAGE\_SIZE & 100 & Maximum pagination limit \\
+\bottomrule
+\end{longtable}
+
+\section{Appendix C: Canonical Department Taxonomy and Routing}
+
+\begin{longtable}{p{0.30\textwidth}p{0.25\textwidth}p{0.33\textwidth}}
+\caption{Department to Authority Mapping Snapshot}\\
+\toprule
+\textbf{Department Label} & \textbf{Authority ID} & \textbf{Escalation Parent} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{Department Label} & \textbf{Authority ID} & \textbf{Escalation Parent} \\
+\midrule
+\endhead
+Health Department & MUNI\_SANITATION & STATE\_CMO \\
+Civil Department & MUNI\_PWD & STATE\_CMO \\
+Horticulture & MUNI\_HORTICULTURE & STATE\_CMO \\
+Electrical Department & UTIL\_DISCOM & STATE\_CMO \\
+IT Department & STATE\_CMO & CENTRAL\_DARPG \\
+Commercial & STATE\_CMO & CENTRAL\_DARPG \\
+Enforcement & POLICE\_TRAFFIC & STATE\_CMO \\
+VBD Department & MUNI\_SANITATION & STATE\_CMO \\
+EBR Department & MUNI\_PWD & STATE\_CMO \\
+Fire Department & POLICE\_LOCAL & STATE\_CMO \\
+Uncategorized & Rule/keyword fallback & Nullable \\
+\bottomrule
+\end{longtable}
+
+\section{Appendix D: Script Inventory}
+
+\begin{longtable}{p{0.36\textwidth}p{0.52\textwidth}}
+\caption{Operational Script Inventory}\\
+\toprule
+\textbf{Script} & \textbf{Purpose} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{Script} & \textbf{Purpose} \\
+\midrule
+\endhead
+scripts/run\_backend.(bat|sh) & Start backend service in local mode \\
+scripts/run\_frontend.(bat|sh) & Start frontend service in local mode \\
+scripts/run\_tests.(bat|sh) & Execute backend test suite \\
+scripts/run\_notification\_chain\_test.(bat|sh|py) & Validate notification end-to-end behavior \\
+scripts/run\_security\_test.(bat|sh) & Trigger security-oriented automated checks \\
+scripts/run\_resilience\_test.(bat|sh) & Execute resilience and fault behavior checks \\
+scripts/run\_load\_test.(bat|sh|ps1) & Run Locust load profile with target host \\
+scripts/backup\_db.(ps1|sh) & MongoDB backup workflow \\
+scripts/verify\_prod\_stack.(ps1|sh) & Production stack verification checks \\
+scripts/simulate\_clean\_deploy.(ps1|sh) & End-to-end clean-machine deployment simulation \\
+\bottomrule
+\end{longtable}
+
+\section{Appendix E: Screenshot Asset Checklist}
+
+\begin{longtable}{p{0.12\textwidth}p{0.50\textwidth}p{0.30\textwidth}}
+\caption{Screenshot Capture Checklist}\\
+\toprule
+\textbf{ID} & \textbf{Target Screen} & \textbf{Suggested Path} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{ID} & \textbf{Target Screen} & \textbf{Suggested Path} \\
+\midrule
+\endhead
+S01 & Home hero and CTA & docs/images/screenshots/S01\_home\_desktop.png \\
+S02 & Login page & docs/images/screenshots/S02\_login\_desktop.png \\
+S03 & Register page & docs/images/screenshots/S03\_register\_desktop.png \\
+S04 & Reset password page & docs/images/screenshots/S04\_reset\_password\_desktop.png \\
+S05 & Admin dashboard overview & docs/images/screenshots/S05\_admin\_dashboard\_desktop.png \\
+S06 & Triage human review queue & docs/images/screenshots/S06\_triage\_review\_desktop.png \\
+S07 & Worker assignment panel & docs/images/screenshots/S07\_worker\_assignment\_panel\_desktop.png \\
+S08 & Analytics dashboard & docs/images/screenshots/S08\_analytics\_dashboard\_desktop.png \\
+S09 & Map overview (satellite) & docs/images/screenshots/S09\_map\_overview\_satellite\_desktop.png \\
+S10 & Map popup detail & docs/images/screenshots/S10\_map\_popup\_detail\_desktop.png \\
+S11 & Public transparency board & docs/images/screenshots/S11\_public\_board\_desktop.png \\
+S12 & Heatmap page & docs/images/screenshots/S12\_heatmap\_desktop.png \\
+S13 & Profile page (admin) & docs/images/screenshots/S13\_profile\_admin\_desktop.png \\
+S14 & Citizen dashboard with timeline & docs/images/screenshots/S14\_citizen\_dashboard\_desktop.png \\
+S15 & Notifications dropdown panel & docs/images/screenshots/S15\_notifications\_panel\_desktop.png \\
+SX1 & File complaint upload screen & docs/images/screenshots/SX1\_file\_complaint\_upload\_desktop.png \\
+SX2 & Multilingual timeline snapshot & docs/images/screenshots/SX2\_citizen\_timeline\_multilingual\_desktop.png \\
+SX3 & Resolved complaint with feedback & docs/images/screenshots/SX3\_resolved\_feedback\_snapshot\_desktop.png \\
+\bottomrule
+\end{longtable}
+
+\section{Appendix F: Sample Request and Response Payloads}
+
+\subsection{Login Request (Form Encoded)}
+
+\begin{verbatim}
+POST /users/login
+Content-Type: application/x-www-form-urlencoded
+
+username=citizen_demo&password=citizen123
+\end{verbatim}
+
+\subsection{Analyze Request (Multipart)}
+
+\begin{verbatim}
+POST /analyze
+Authorization: Bearer <jwt>
+Content-Type: multipart/form-data
+
+file=<image file>
+language=en
+\end{verbatim}
+
+\subsection{Analyze Response (Representative)}
+
+\begin{verbatim}
+{
+	"classification": {
+		"department": "Electrical Department",
+		"label": "Electrical Department",
+		"confidence": 0.88,
+		"method": "hybrid",
+		"model_used": "qwen2.5vl:3b"
+	},
+	"location": {
+		"lat": 28.6139,
+		"lon": 77.2090,
+		"address": "Connaught Place, New Delhi",
+		"source": "manual"
+	},
+	"generated_complaint": "Dear Electrical Department, ...",
+	"generation_status": "completed",
+	"image_url": "uploads/3a2b....jpg",
+	"timings": {
+		"vision_ms": 2850.22,
+		"rule_engine_ms": 2.11,
+		"reasoning_ms": 0.0,
+		"total_analyze_ms": 3310.47
+	}
+}
+\end{verbatim}
+
+\subsection{Complaint Creation Payload (Representative)}
+
+\begin{verbatim}
+{
+	"description": "Streetlight is non-functional and area is dark at night.",
+	"department": "Electrical Department",
+	"image_url": "uploads/3a2b....jpg",
+	"location": {
+		"lat": 28.6139,
+		"lon": 77.2090,
+		"address": "Connaught Place, New Delhi",
+		"source": "manual"
+	},
+	"ai_metadata": {
+		"confidence_score": 0.88,
+		"detected_department": "Electrical Department",
+		"labels": ["street light", "dark road"]
+	}
+}
+\end{verbatim}
+
+\subsection{Triage Decision Payload}
+
+\begin{verbatim}
+{
+	"image": "<complaint_id_or_image_path>",
+	"decision": "approved",
+	"corrected_label": "Civil Department",
+	"note": "Manual override after review"
+}
+\end{verbatim}
+
+\section{Appendix G: Consolidated Execution Timeline}
+
+\begin{longtable}{p{0.10\textwidth}p{0.18\textwidth}p{0.56\textwidth}}
+\caption{Execution Timeline Digest for Final Report Verification}\\
+\toprule
+\textbf{Week} & \textbf{Date Window} & \textbf{Key Completion Events} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{Week} & \textbf{Date Window} & \textbf{Key Completion Events} \\
+\midrule
+\endhead
+W1 & Jan 28--Jan 31 & Repository setup, architecture framing, initial backend bootstrap \\
+W2 & Feb 02--Feb 07 & Database connectivity, schemas, CRUD baseline, secure upload scaffolding \\
+W3 & Feb 09--Feb 14 & JWT auth integration, classifier experimentation, dependency stabilization \\
+W4 & Feb 16--Feb 21 & Geotagging and reverse-geocoding integration with analyze flow \\
+W5 & Feb 23--Feb 28 & Local model runtime setup and draft generator integration \\
+W6 & Mar 02--Mar 07 & Frontend role routing and analyze-result integration \\
+W7 & Mar 09--Mar 14 & Map UX refinement, local draft persistence, end-to-end role walkthrough \\
+W8 & Mar 16--Mar 21 & Security hardening: upload checks, sanitization, CORS, headers, indexing \\
+W9 & Mar 23--Mar 28 & Assignment service, timeline UI, analytics/heatmap, SLA and bulk features \\
+W10 & Mar 30--Apr 04 & Notification chain, email stub, forgot/reset password, profile editing \\
+W11 & Apr 06--Apr 11 & Performance optimization, graceful degradation, profiling, resilience checks \\
+W12 & Apr 13--Apr 18 & Production compose hardening and deployment docs \\
+W13 & Apr 20--Apr 25 & Expanded tests: unit, integration, security, load, responsiveness \\
+W14 & Apr 27--Apr 30 & API reference closure, repository cleanup, release candidate preparation \\
+W15 & May 04--May 09 & Production verification and clean deploy simulation \\
+W16 & May 11--May 16 & UAT execution and feedback-driven refinements \\
+W17 & May 18--May 23 & Report and presentation artifact preparation \\
+W18 & May 25--May 27 & Final submission pack and release closure \\
+\bottomrule
+\end{longtable}
+
+\section{Appendix H: Requirement-to-Test Traceability Matrix}
+
+\begin{longtable}{p{0.13\textwidth}p{0.36\textwidth}p{0.22\textwidth}p{0.21\textwidth}}
+\caption{Traceability from Functional Requirement to Validation Evidence}\\
+\toprule
+\textbf{Req ID} & \textbf{Requirement Theme} & \textbf{Validation Evidence} & \textbf{Status} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{Req ID} & \textbf{Requirement Theme} & \textbf{Validation Evidence} & \textbf{Status} \\
+\midrule
+\endhead
+FR-01 & User registration flow & Register route tests and manual registration UI checks & Verified \\
+FR-02 & Login and JWT issuance & Auth permission tests and integration smoke login path & Verified \\
+FR-03 & Profile editing & API endpoint behavior and profile page walkthrough & Verified \\
+FR-04 & Password recovery/reset & Forgot/reset endpoint implementation and UI path checks & Verified \\
+FR-05 & Upload validation & Resilience/security tests for header mismatch and size limits & Verified \\
+FR-06 & AI-assisted analysis & Analyze endpoint response contract checks and manual scenario runs & Verified \\
+FR-07 & Draft regeneration queue & Generation polling route and regeneration request flow & Verified \\
+FR-08 & Complaint creation & End-to-end citizen flow and complaint list visibility checks & Verified \\
+FR-09 & Role-filtered listing & Role-based list query behavior and dashboard checks & Verified \\
+FR-10 & Complaint detail & Complaint detail retrieval and timeline rendering checks & Verified \\
+FR-11 & Status update workflow & Notification chain tests and status history assertions & Verified \\
+FR-12 & Department transfer & Admin/dept-head transfer operation checks & Verified \\
+FR-13 & Escalation support & Escalation endpoint and timeline update behavior checks & Verified \\
+FR-14 & Worker assignment & Assignment service behavior and admin assignment controls & Verified \\
+FR-15 & Worker task completion & Worker done workflow and slot-free behavior checks & Verified \\
+FR-16 & Notification center behavior & Unread-count and mark-read chain tests & Verified \\
+FR-17 & Triage queue governance & Triage review UI and decision endpoint flow checks & Verified \\
+FR-18 & Analytics and heatmap & Admin analytics and map rendering walkthrough & Verified \\
+FR-19 & CSV export & Export endpoint execution and output schema checks & Verified \\
+FR-20 & Public board & Public feed route and UI accessibility checks & Verified \\
+FR-21 & Health probes & Live/ready/model/gpu endpoint smoke checks & Verified \\
+FR-22 & API version alias & /api/v1 integration checks in matrix tests & Verified \\
+\bottomrule
+\end{longtable}

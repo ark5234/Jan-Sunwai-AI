@@ -1,0 +1,293 @@
+\chapter{Testing}
+
+Testing for Jan-Sunwai AI was designed as a layered strategy combining automated checks, manual UAT scripts, resilience drills, and security/load validation. Because the platform supports governance-sensitive workflows, testing emphasized not only feature correctness but also operational integrity under degraded conditions.
+
+\section{Testing Plan}
+
+\subsection{Testing Objectives}
+
+\begin{itemize}[leftmargin=1.5em]
+\item Validate correctness of core APIs and role authorization boundaries.
+\item Verify AI-path behavior for valid, invalid, and failure scenarios.
+\item Confirm notification chain consistency across complaint lifecycle changes.
+\item Validate resilience behavior under model/database disruptions.
+\item Ensure production-readiness through integration, load, and UAT checks.
+\end{itemize}
+
+\subsection{Test Environment}
+
+\begin{table}[H]
+\centering
+\caption{Testing Environment Baseline}
+\begin{tabularx}{\textwidth}{p{0.27\textwidth}X}
+\toprule
+\textbf{Environment Aspect} & \textbf{Configuration} \\
+\midrule
+Backend runtime & FastAPI application with test clients and dependency overrides \\
+Database mode & MongoDB-backed flows with selective mock/fake collection tests \\
+Frontend mode & Vite build/lint validation and persona-driven manual walkthroughs \\
+Model runtime mode & Ollama available for normal flows; manually disabled for resilience checks \\
+Automation tools & pytest, httpx, locust, script wrappers for platform-specific execution \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsection{Coverage Matrix}
+
+\begin{longtable}{p{0.28\textwidth}p{0.25\textwidth}p{0.39\textwidth}}
+\caption{Testing Coverage Matrix by Suite}\\
+\toprule
+\textbf{Test Artifact} & \textbf{Type} & \textbf{Coverage Highlights} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{Test Artifact} & \textbf{Type} & \textbf{Coverage Highlights} \\
+\midrule
+\endhead
+\texttt{test\_schemas.py} & Unit Validation & GeoLocation bounds, complaint schema validity, confidence-score guardrails \\
+\texttt{test\_auth\_permissions.py} & Unit Authorization & Token claims, admin and worker/dept-head access guards \\
+\texttt{test\_api\_integration.py} & Integration Smoke & Root route, health checks, versioned aliases, lightweight CI path \\
+\texttt{test\_api\_matrix.py} & Integration Matrix & /api/v1 profile route, CORS preflight behavior, security header presence \\
+\texttt{test\_notification\_chain.py} & Integration Behavior & Status update notification creation, email hook path, mark-all-read logic \\
+\texttt{test\_resilience\_security.py} & Resilience + Security & Upload hardening, analyze degrade 503, readiness degradation, sanitization \\
+Manual UAT scripts & User Acceptance & Citizen and admin journeys, friction logging, UX verification \\
+Load scripts (locust) & Performance & Endpoint mix throughput and graceful degradation behavior \\
+\bottomrule
+\end{longtable}
+
+\section{Types of Testing}
+
+\subsection{Unit Testing}
+
+Unit tests focused on isolated validation and control logic.
+
+\begin{table}[H]
+\centering
+\caption{Representative Unit Test Cases}
+\begin{tabularx}{\textwidth}{p{0.16\textwidth}p{0.28\textwidth}X}
+\toprule
+\textbf{Case ID} & \textbf{Area} & \textbf{Expected Behavior} \\
+\midrule
+UT-01 & GeoLocation bounds & Reject latitude outside $[-90, 90]$ and longitude outside $[-180, 180]$ \\
+UT-02 & AI confidence schema & Reject confidence values outside $[0, 1]$ \\
+UT-03 & Admin role check & Non-admin caller receives HTTP 403 on admin-only dependency \\
+UT-04 & Worker approval gate & Unapproved worker cannot pass worker-only dependency path \\
+UT-05 & Sanitization function & Script payload transformed to escaped safe representation \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsection{Integration Testing}
+
+Integration tests verified route composition, middleware behavior, and cross-router guarantees such as versioned aliases and headers.
+
+\begin{itemize}[leftmargin=1.5em]
+\item Root and liveness endpoints confirmed service online state.
+\item Versioned alias endpoints under \texttt{/api/v1} validated integration compatibility.
+\item Security headers confirmed on endpoint responses.
+\item Preflight CORS behavior validated for allowed origins.
+\end{itemize}
+
+\subsection{System Testing}
+
+System testing executed end-to-end flows across authentication, analyze, complaint lifecycle, assignment, and notification propagation. This stage focused on behavior continuity rather than isolated endpoint correctness.
+
+\begin{table}[H]
+\centering
+\caption{System Test Scenarios}
+\begin{tabularx}{\textwidth}{p{0.13\textwidth}p{0.33\textwidth}X}
+\toprule
+\textbf{Scenario} & \textbf{Workflow} & \textbf{Pass Condition} \\
+\midrule
+ST-01 & Citizen upload -> analyze -> submit & Complaint record created with status history initialized \\
+ST-02 & Dept-head status update & Citizen receives notification and timeline reflects transition \\
+ST-03 & Worker marks complaint done & Complaint transitions and worker slot logic updates as expected \\
+ST-04 & Admin triage decision & Ambiguous complaint receives governed label decision path \\
+ST-05 & CSV export & Export file generated with expected schema columns \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsection{User Acceptance Testing (UAT)}
+
+The UAT plan was executed through persona scripts:
+
+\begin{itemize}[leftmargin=1.5em]
+\item Citizen script: login, analyze, map review, submit, dashboard verification.
+\item Admin script: queue filtering, bulk actions, heatmap view, reassignment, CSV export.
+\item Feedback loop: friction capture with severity ranking and follow-up fixes.
+\item Resilience check: AI service interruption and recovery behavior in UI.
+\end{itemize}
+
+\section{Testing Techniques}
+
+\subsection{Black-Box Behavioral Testing}
+
+Primary API workflows were tested against expected request/response contracts without depending on internal implementation details. This improved confidence in external behavior from a consumer perspective.
+
+\subsection{Negative Testing}
+
+Negative paths were intentionally exercised:
+
+\begin{itemize}[leftmargin=1.5em]
+\item Invalid tokens and unauthorized role access.
+\item Corrupted/mismatched file uploads.
+\item Expired/invalid reset token paths.
+\item Model/runtime failure leading to controlled error responses.
+\end{itemize}
+
+\subsection{Resilience and Fault Injection}
+
+Resilience tests simulated:
+
+\begin{itemize}[leftmargin=1.5em]
+\item Ollama unavailability during analyze requests.
+\item Database ping failures for readiness route validation.
+\item Corrupted payload uploads to confirm robust rejection semantics.
+\end{itemize}
+
+\subsection{Performance and Load Testing}
+
+Load-testing scripts executed mixed endpoint traffic where read-heavy routes and notification checks dominate, with controlled analyze pressure to assess graceful degradation behavior.
+
+\section{Defect Logging}
+
+\subsection{Defect Classification}
+
+Defects were classified by severity and functional impact:
+
+\begin{itemize}[leftmargin=1.5em]
+\item High: Breaks core flow or security boundary.
+\item Medium: Degrades key workflow but has workaround.
+\item Low: Cosmetic or minor UX issue.
+\end{itemize}
+
+\subsection{Defect Log Snapshot}
+
+\begin{longtable}{p{0.11\textwidth}p{0.15\textwidth}p{0.40\textwidth}p{0.24\textwidth}}
+\caption{Defect Log Snapshot and Resolution}\\
+\toprule
+\textbf{Defect ID} & \textbf{Severity} & \textbf{Observed Issue} & \textbf{Resolution Summary} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{Defect ID} & \textbf{Severity} & \textbf{Observed Issue} & \textbf{Resolution Summary} \\
+\midrule
+\endhead
+D-001 & High & Login dependency crash in CI due to incompatible form dependency path & Reworked login endpoint to explicit form fields and validated with full backend tests \\
+D-002 & Medium & Workflow runtime warnings from deprecated Node 20 action dependencies & Updated GitHub workflow actions to newer major versions compatible with current runtime \\
+D-003 & Medium & Upload volume misconfiguration created nested backend/backend/uploads path & Corrected compose volume target to /app/uploads and cleaned stray nested folder artifacts \\
+D-004 & Medium & Missing frontend forgot-password discoverability path & Added dedicated forgot/reset pages, route wiring, and contextual links in login/navbar/home \\
+D-005 & Low & Placement of forgot-password link reduced form clarity & Repositioned link under password field for better UX coherence \\
+\bottomrule
+\end{longtable}
+
+\section{Testing Outcomes}
+
+\begin{table}[H]
+\centering
+\caption{Outcome Summary by Validation Area}
+\begin{tabularx}{\textwidth}{p{0.25\textwidth}p{0.16\textwidth}X}
+\toprule
+\textbf{Validation Area} & \textbf{Outcome} & \textbf{Notes} \\
+\midrule
+Backend automated suite & Pass & Core suite executed successfully with latest observed run showing full pass status \\
+Security checks & Pass & Upload hardening, sanitization, and authorization boundaries validated \\
+Resilience checks & Pass & Controlled degraded responses confirmed for model/DB disruption paths \\
+Frontend lint/build & Pass & UI changes and route additions validated through build and lint cycle \\
+Compose validation & Pass & Unified compose configuration validated for default and prod profile flows \\
+UAT persona scripts & Pass with refinements & Minor UX adjustments applied in same sprint feedback loop \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\section{Residual Risks and Test Gaps}
+
+Although major paths were validated, future strengthening can include:
+
+\begin{itemize}[leftmargin=1.5em]
+\item Long-duration soak tests on production-equivalent infrastructure.
+\item Expanded browser matrix for UI behavior consistency.
+\item External vulnerability scanning integration in release pipeline.
+\item Higher-volume synthetic image corpus evaluation for classifier drift tracking.
+\end{itemize}
+
+\section{Detailed UAT Case Matrix}
+
+\begin{longtable}{p{0.10\textwidth}p{0.14\textwidth}p{0.34\textwidth}p{0.12\textwidth}p{0.20\textwidth}}
+\caption{Persona-Driven UAT Matrix}\\
+\toprule
+\textbf{Case ID} & \textbf{Persona} & \textbf{Scenario} & \textbf{Priority} & \textbf{Expected Result} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{Case ID} & \textbf{Persona} & \textbf{Scenario} & \textbf{Priority} & \textbf{Expected Result} \\
+\midrule
+\endhead
+UAT-01 & Citizen & Register new citizen account and complete first login & High & Account created and token-based session starts \\
+UAT-02 & Citizen & Submit valid image through analyze flow & High & Classification and draft payload are returned \\
+UAT-03 & Citizen & Edit draft text and submit complaint & High & Complaint record appears with initial Open status \\
+UAT-04 & Citizen & View dashboard timeline after submission & High & Status history includes creation event \\
+UAT-05 & Citizen & Open notifications panel and unread counter & Medium & Unread count and list are synchronized \\
+UAT-06 & Citizen & Forgot-password and reset-password flow & High & Password reset succeeds with valid token \\
+UAT-07 & Worker & Login as approved worker and view assigned tasks & High & Only assigned tasks and worker actions are visible \\
+UAT-08 & Worker & Mark assigned complaint as done & High & Complaint transitions and worker slot is updated \\
+UAT-09 & Dept Head & View department queue and filter by status & High & Department-scoped records only \\
+UAT-10 & Dept Head & Update complaint status with note & High & Status history and citizen notification are generated \\
+UAT-11 & Dept Head & Attempt update on foreign department complaint & High & Access denied with authorization error \\
+UAT-12 & Admin & Approve pending worker registration & High & Worker status changes to approved \\
+UAT-13 & Admin & Perform manual worker assignment & High & Assignment reflected in complaint and worker workload \\
+UAT-14 & Admin & Open triage queue and approve/reject item & High & Decision persisted and queue updates accordingly \\
+UAT-15 & Admin & Execute bulk status update & Medium & All selected complaints updated consistently \\
+UAT-16 & Admin & Export complaints as CSV & Medium & Download file with expected column structure \\
+UAT-17 & Admin & View analytics and heatmap screens & Medium & Aggregates and map points render without breakage \\
+UAT-18 & Public user & Access public board without authentication & Medium & Anonymized listing visible without sensitive fields \\
+UAT-19 & Citizen & Submit malformed image payload & High & Request rejected with safe validation message \\
+UAT-20 & Citizen & Trigger analyze while model unavailable & High & User-friendly retryable 503 response path \\
+\bottomrule
+\end{longtable}
+
+\section{Load Benchmark Profiles and Acceptance Rubric}
+
+\begin{table}[H]
+\centering
+\caption{Load Profile and Acceptance Guidance}
+\begin{tabularx}{\textwidth}{p{0.16\textwidth}p{0.12\textwidth}p{0.12\textwidth}p{0.14\textwidth}X}
+\toprule
+\textbf{Profile} & \textbf{Users} & \textbf{Spawn Rate} & \textbf{Duration} & \textbf{Acceptance Guidance} \\
+\midrule
+Smoke & 20 & 5/s & 5 min & No critical endpoint failure; stable liveness and predictable response envelopes \\
+Baseline & 70 & 10/s & 15 min & Controlled latency growth; no persistent failure mode in public and health endpoints \\
+Peak & 120 & 20/s & 20 min & Graceful degradation accepted for analyze path (429/503) while core status pages remain functional \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\section{Security Regression Matrix}
+
+\begin{longtable}{p{0.12\textwidth}p{0.34\textwidth}p{0.16\textwidth}p{0.28\textwidth}}
+\caption{Security Regression Verification Matrix}\\
+\toprule
+\textbf{Sec ID} & \textbf{Control Under Test} & \textbf{Expected Code} & \textbf{Validation Criterion} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{Sec ID} & \textbf{Control Under Test} & \textbf{Expected Code} & \textbf{Validation Criterion} \\
+\midrule
+\endhead
+SEC-01 & Invalid bearer token on protected complaint route & 401 & Unauthorized access blocked \\
+SEC-02 & Non-admin call on admin endpoint & 403 & Role boundary enforced \\
+SEC-03 & Malformed JPEG payload with .jpg extension & 400 & Header mismatch rejected \\
+SEC-04 & Oversized upload payload & 413 & Max file-size rule enforced \\
+SEC-05 & XSS payload in note/comment text & 200 with escaped output & Sanitization removes executable markup \\
+SEC-06 & Notification read on foreign ownership ID & 404 & Ownership scope preserved \\
+SEC-07 & Missing security headers check & 200 with headers present & nosniff, frame deny, CSP and policy headers included \\
+SEC-08 & CORS preflight from allowed origin & 200/204 & Allow-origin policy consistent with configuration \\
+SEC-09 & Invalid/expired reset token usage & 400 & Reset workflow rejects unsafe token state \\
+SEC-10 & Analyze under runtime failure & 503 & Controlled degrade message returned without server crash \\
+\bottomrule
+\end{longtable}
+
+\section{Chapter Summary}
+
+Testing combined automated rigor with practical operational validation. The resulting quality posture supports both technical confidence and governance readiness, while documented residual risks provide a clear roadmap for post-submission hardening.

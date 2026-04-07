@@ -1,0 +1,199 @@
+\chapter{Proposed System Requirements}
+
+This chapter describes the proposed Jan-Sunwai AI solution architecture from a requirement realization perspective. While Chapter 3 documented what is required, this chapter explains how the proposed system addresses those requirements through modular capabilities and integrated workflows.
+
+\section{Overview of Proposed System}
+
+The proposed system is a role-driven civic complaint platform that combines AI-assisted intake with deterministic governance controls. The citizen-facing side is optimized for minimal friction, while administrative and departmental flows emphasize accountability and operational throughput.
+
+The system can be summarized as a five-stage path:
+
+\begin{enumerate}[leftmargin=1.8em]
+\item Complaint Intake: Citizen uploads image and requests analysis.
+\item AI Enrichment: System extracts likely category, location hints, and draft text.
+\item Structured Submission: Citizen reviews/edits and confirms complaint payload.
+\item Operational Routing: Complaint is assigned, tracked, and escalated if needed.
+\item Governance and Transparency: Notifications, analytics, exports, and public feed support accountability.
+\end{enumerate}
+
+\section{Module Descriptions}
+
+\subsection{Authentication and User Management Module}
+
+This module handles registration, login, session identity, profile updates, and password recovery. It enforces role-oriented authorization for citizen, worker, department head, and admin personas. Key controls include JWT token issuance, role checks, and reset-token hashing.
+
+\subsection{Analyze and Complaint Intake Module}
+
+This module processes uploaded images, invokes the hybrid classifier pipeline, extracts location metadata, and orchestrates draft generation. It supports both immediate and queued generation paths and returns timing metadata for observability.
+
+\subsection{Complaint Lifecycle Module}
+
+This module persists complaints and manages state transitions, including status updates, transfer, escalation, feedback, notes, and comments. It appends status history entries for each transition to preserve decision traceability.
+
+\subsection{Assignment and Worker Operations Module}
+
+This module auto-assigns complaints to eligible workers using department matching, optional geospatial service-area checks, and load balancing by active tasks. It also provides worker status controls and completion signaling.
+
+\subsection{Notification and Communication Module}
+
+This module creates in-app notifications for complaint lifecycle events and maintains unread counters. It includes an email relay stub for deployment environments where SMTP integration is required.
+
+\subsection{Triage and Governance Module}
+
+This module supports admin review of low-confidence classifications. It enables decision actions such as approve, reject, or relabel. The triage path acts as a governance safety net against AI uncertainty.
+
+\subsection{Analytics and Public Transparency Module}
+
+This module aggregates operational statistics, trend lines, and geospatial heatmap data. It also exposes an anonymized public feed to support transparency without leaking sensitive user data.
+
+\section{System Features}
+
+\begin{longtable}{p{0.12\textwidth}p{0.30\textwidth}p{0.48\textwidth}}
+\caption{Proposed Feature Set and Operational Benefit}\\
+\toprule
+\textbf{Feature ID} & \textbf{Feature} & \textbf{Operational Benefit} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{Feature ID} & \textbf{Feature} & \textbf{Operational Benefit} \\
+\midrule
+\endhead
+PF-01 & Image-first intake & Reduces textual burden on citizen and improves evidence quality \\
+PF-02 & Hybrid category detection & Improves classification consistency through rules plus selective reasoning \\
+PF-03 & Draft complaint generation & Standardizes language quality and reduces submission ambiguity \\
+PF-04 & Role-based dashboard routing & Ensures each persona sees relevant actions and data \\
+PF-05 & Auto-assignment service & Reduces manual workload and accelerates field execution \\
+PF-06 & Status history timeline & Improves accountability and supports audit and grievance review \\
+PF-07 & Notification chain & Keeps citizens informed about progress without repeated manual follow-up \\
+PF-08 & Triage queue & Prevents low-confidence AI outputs from silently propagating \\
+PF-09 & Bulk admin actions & Improves throughput for backlog management in peak periods \\
+PF-10 & Heatmap and analytics & Supports evidence-driven supervision and resource planning \\
+PF-11 & Public complaint feed & Increases transparency and trust in civic workflow visibility \\
+PF-12 & Health endpoints and timing logs & Supports operational diagnosis and production monitoring \\
+\bottomrule
+\end{longtable}
+
+\section{Advantages of the Proposed System}
+
+\subsection{Citizen-Centric Advantages}
+
+\begin{itemize}[leftmargin=1.5em]
+\item Simplified complaint filing with image-based assistance.
+\item Better complaint quality due to generated formal drafts.
+\item Real-time feedback through status and notification channels.
+\item Reduced confusion in choosing the correct municipal department.
+\end{itemize}
+
+\subsection{Administrative and Departmental Advantages}
+
+\begin{itemize}[leftmargin=1.5em]
+\item Better routing quality and lower manual triage burden for standard cases.
+\item Strong lifecycle auditability for supervisory and escalation actions.
+\item Faster assignment and backlog control through automation and bulk operations.
+\item Structured data support for reporting and policy-level analysis.
+\end{itemize}
+
+\subsection{Institutional Advantages}
+
+\begin{itemize}[leftmargin=1.5em]
+\item Local-first inference supports stricter data residency requirements.
+\item Containerized deployment supports repeatable setup and handover.
+\item Explicit API version aliasing improves integration stability.
+\item Security hardening and validation controls reduce common exploit surfaces.
+\end{itemize}
+
+\section{Requirement Realization Matrix}
+
+\begin{longtable}{p{0.12\textwidth}p{0.26\textwidth}p{0.50\textwidth}}
+\caption{Traceability from Requirements to Proposed Modules}\\
+\toprule
+\textbf{Requirement Group} & \textbf{Primary Module} & \textbf{Realization Mechanism} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{Requirement Group} & \textbf{Primary Module} & \textbf{Realization Mechanism} \\
+\midrule
+\endhead
+Registration and Login & Auth and User Management & Register/login routes, JWT issuance, profile update API, password reset token lifecycle \\
+AI Classification and Drafting & Analyze Module + LLM Queue & Vision model cascade, rule engine scoring, optional reasoning, queued generation polling \\
+Lifecycle and Tracking & Complaint Lifecycle Module & CRUD plus status, transfer, escalate, feedback, notes, comments, status history \\
+Worker Operations & Assignment and Worker Module & Eligibility filter, geospatial check, load balancing, worker completion flow \\
+Governance and Review & Triage and Admin Controls & Low-confidence review queue and corrective decision actions \\
+Communication & Notifications Module & In-app notification events, unread counter, mark-read APIs, email stub integration \\
+Reporting and Transparency & Analytics/Public Module & Overview metrics, heatmap endpoint, anonymized public complaint feed \\
+Resilience and Security & Cross-cutting Platform Controls & Health probes, security headers, upload hardening, sanitization, rate limits, logs \\
+\bottomrule
+\end{longtable}
+
+\section{Proposed Operational Workflow}
+
+\placeholderfigure{Proposed End-to-End Workflow}{Citizen submits evidence, AI enriches payload, complaint is stored and routed, worker and department users execute actions, and governance views aggregate operational signals.}
+
+\section{Expected Impact}
+
+\begin{table}[H]
+\centering
+\caption{Expected Impact of Proposed System}
+\begin{tabularx}{\textwidth}{p{0.36\textwidth}X}
+\toprule
+\textbf{Impact Area} & \textbf{Expected Outcome} \\
+\midrule
+Complaint quality & Higher consistency through guided input and generated drafts \\
+Routing efficiency & Reduced first-hop delays due to department prediction and authority mapping \\
+Resolution governance & Better oversight through status timelines, notes, and escalation controls \\
+Citizen trust & Improved perception through notifications and transparent progress signals \\
+Operational analytics & Better planning through department trends and heatmap indicators \\
+Deployment readiness & Lower setup friction due to unified compose and environment strategy \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\section{Module Interaction Contracts}
+
+\begin{longtable}{p{0.24\textwidth}p{0.26\textwidth}p{0.42\textwidth}}
+\caption{Inter-Module Contract Summary}\\
+\toprule
+\textbf{Producer Module} & \textbf{Consumer Module} & \textbf{Interaction Contract} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{Producer Module} & \textbf{Consumer Module} & \textbf{Interaction Contract} \\
+\midrule
+\endhead
+Authentication module & All protected routers & Provides current user identity and role claims via dependency injection \\
+Analyze module & Complaint lifecycle module & Produces classification/location/draft payload used for complaint creation \\
+Complaint lifecycle module & Notification module & Emits status/registration/escalation events for user-facing notifications \\
+Complaint lifecycle module & Assignment module & Triggers auto-assignment at complaint creation and slot-free reassignments \\
+Worker module & Complaint lifecycle module & Reports completion updates that influence lifecycle and status history \\
+Triage module & Complaint lifecycle module & Applies corrected decisions for low-confidence complaint records \\
+Analytics module & Complaint data store & Executes aggregate queries for dashboard and heatmap responses \\
+Public module & Complaint data store & Exposes anonymized subset for transparency without privileged fields \\
+Health module & Database/model runtime & Publishes liveness/readiness/dependency status for operations \\
+\bottomrule
+\end{longtable}
+
+\section{Requirement Realization Detail by Persona}
+
+\begin{table}[H]
+\centering
+\caption{Persona-Oriented Realization Snapshot}
+\begin{tabularx}{\textwidth}{p{0.16\textwidth}p{0.30\textwidth}X}
+\toprule
+\textbf{Persona} & \textbf{Key Features Delivered} & \textbf{Operational Value Delivered} \\
+\midrule
+Citizen & Analyze intake, dashboard tracking, notifications, feedback, password reset & Reduced filing friction and improved visibility of complaint progress \\
+Worker & Assignment list, status updates, completion actions & Structured field execution and improved queue throughput \\
+Department Head & Department filtering, status updates, transfer/escalation, notes & Controlled supervisory governance with auditable transitions \\
+Admin & Worker approvals, triage decisions, bulk operations, analytics, exports & End-to-end operational governance and reporting capability \\
+Public Viewer & Public board access & Transparency without exposing personally identifiable records \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\section{Proposed Data and Control Flow Narrative}
+
+The proposed flow intentionally separates decision support from governance authority. AI modules suggest categories and draft text, but acceptance and lifecycle transitions remain controlled through authenticated role actions. This hybrid control plane avoids over-automation risk while still reducing manual burden in high-volume intake scenarios.
+
+\section{Chapter Summary}
+
+The proposed system translates requirement intent into integrated modules that jointly address user friction, operational traceability, and governance accountability. It deliberately combines AI assistance with deterministic controls and administrative safety nets, making it suitable for practical municipal deployment contexts.

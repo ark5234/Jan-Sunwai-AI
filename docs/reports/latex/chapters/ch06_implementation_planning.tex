@@ -1,0 +1,298 @@
+\chapter{Implementation Planning}
+
+Implementation planning for Jan-Sunwai AI focused on three parallel goals: reproducibility, maintainable module growth, and deployment readiness. The implementation strategy treated backend, frontend, AI runtime, and operational scripts as coordinated components rather than isolated code tracks.
+
+\section{Implementation Environment}
+
+\subsection{Local Development Environment}
+
+The local workflow supports rapid iteration with role-based UI validation and backend testing. Typical development topology includes:
+
+\begin{itemize}[leftmargin=1.5em]
+\item Backend running on FastAPI/Uvicorn at port 8000.
+\item Frontend development server on Vite at port 5173.
+\item MongoDB either local service or containerized dependency.
+\item Ollama runtime with configured model set on host machine.
+\end{itemize}
+
+The local setup was selected to reduce iteration latency while preserving fidelity with production behavior through shared APIs, environment variables, and health semantics.
+
+\subsection{Production-Style Container Environment}
+
+For deployment simulation and handover readiness, the project includes a unified compose configuration with a production profile. In production mode:
+
+\begin{itemize}[leftmargin=1.5em]
+\item MongoDB runs as a dedicated service with health checks.
+\item Backend runs from production Dockerfile and mounts uploads volume to \texttt{/app/uploads}.
+\item Frontend runs in Nginx container under compose profile \texttt{prod}.
+\item Health checks and log rotation policies are explicitly configured.
+\end{itemize}
+
+This ensures that local verification and deployment handover use the same operational assumptions.
+
+\section{Tools and Technologies Used}
+
+\begin{longtable}{p{0.20\textwidth}p{0.23\textwidth}p{0.49\textwidth}}
+\caption{Implementation Toolchain and Use Cases}\\
+\toprule
+\textbf{Category} & \textbf{Tool/Library} & \textbf{Implementation Use} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{Category} & \textbf{Tool/Library} & \textbf{Implementation Use} \\
+\midrule
+\endhead
+Backend Framework & FastAPI & Route definitions, dependency injection, validation, middleware pipeline \\
+Data Validation & Pydantic & Request/response schema validation and structured models \\
+Auth and Security & python-jose, passlib[bcrypt] & JWT token issuance/validation and password hashing \\
+HTTP Testing & httpx & Async API smoke and integration checks \\
+Database Driver & Motor/PyMongo stack & MongoDB async operations and collection access \\
+AI Runtime & Ollama & Local vision and reasoning model invocation \\
+Image Handling & Pillow & Upload payload validation and EXIF processing \\
+Frontend Framework & React & Role-aware SPA component and page architecture \\
+Build Tool & Vite & Fast frontend development and optimized production build \\
+Client HTTP & Axios & Frontend API communication layer \\
+Routing & react-router-dom & Protected routes and role-based navigation \\
+Containerization & Docker + Compose & Reproducible orchestration of backend/frontend/database services \\
+QA Automation & pytest, locust & Unit/integration/security/resilience/load test execution \\
+Documentation & Markdown + LaTeX & Runbooks, architecture docs, and final academic report \\
+\bottomrule
+\end{longtable}
+
+\section{Coding Standards Followed}
+
+\subsection{Backend Standards}
+
+\begin{itemize}[leftmargin=1.5em]
+\item Router-based modularization for domain isolation.
+\item Strict schema validation through typed request models.
+\item Clear HTTP semantics for validation, auth, and lifecycle errors.
+\item Service extraction for cross-cutting concerns (assignment, sanitization, storage, email).
+\item Structured logging and failure-safe response behavior.
+\end{itemize}
+
+\subsection{Frontend Standards}
+
+\begin{itemize}[leftmargin=1.5em]
+\item Role-aware route guards and dashboard redirection.
+\item Separation of pages, reusable components, layouts, and context providers.
+\item Consistent API base usage through environment variables.
+\item Explicit loading/error states for user-facing long-running operations.
+\item Responsive design checks for desktop and mobile interaction baselines.
+\end{itemize}
+
+\subsection{Configuration Standards}
+
+\begin{itemize}[leftmargin=1.5em]
+\item Single canonical backend environment file for consistency.
+\item Explicit production defaults and overrides for sensitive settings.
+\item Avoidance of duplicate compose and env artifacts to reduce drift.
+\item Documented scripts for startup, tests, deployment simulation, and verification.
+\end{itemize}
+
+\section{Implementation Work Packages}
+
+\subsection{Work Package 1: Core Backend and Data Layer}
+
+Deliverables included app bootstrap, database connection lifecycle, auth primitives, user and complaint schemas, and initial complaint CRUD operations. This package established foundational APIs and validation behavior.
+
+\subsection{Work Package 2: AI Pipeline Integration}
+
+Deliverables included classifier orchestration, model fallback strategy, rule-engine scoring, queue-based generation path, and timing metadata in analysis responses. This package transformed basic upload capability into intelligent intake flow.
+
+\subsection{Work Package 3: Frontend Role Flows}
+
+Deliverables included authentication screens, analyze/result pathway, role dashboards, notifications UI, and profile controls. Route guards and dashboard routing ensured role-appropriate user journeys.
+
+\subsection{Work Package 4: Operational Features}
+
+Deliverables included worker assignment logic, timeline/audit features, comments/notes, escalation, triage, analytics, and CSV exports. This package completed department-level and governance-level operational requirements.
+
+\subsection{Work Package 5: Security and Reliability Hardening}
+
+Deliverables included upload integrity checks, sanitization, security headers, CORS tightening, rate-limiting toggles, readiness/liveness checks, graceful AI degradation, and resilience-focused tests.
+
+\subsection{Work Package 6: Deployment and Handover Readiness}
+
+Deliverables included production compose profile, deployment guides, API references, backup scripts, and verification procedures. This package supported transition from development artifact to deployable product.
+
+\section{Implementation Sequence and Dependencies}
+
+\begin{table}[H]
+\centering
+\caption{Implementation Sequence with Dependency Notes}
+\begin{tabularx}{\textwidth}{p{0.10\textwidth}p{0.33\textwidth}X}
+\toprule
+\textbf{Step} & \textbf{Implementation Activity} & \textbf{Dependency Consideration} \\
+\midrule
+1 & Establish backend skeleton and DB connectivity & Required before auth and complaint persistence \\
+2 & Build auth/session primitives & Required before protected API and role-specific frontend routes \\
+3 & Implement analyze pipeline and storage handling & Required before citizen intake flow can be tested end-to-end \\
+4 & Build frontend analyze/result workflow & Depends on stable analyze payload and auth behavior \\
+5 & Add assignment and lifecycle controls & Depends on complaint schema maturity and worker metadata \\
+6 & Add triage/analytics and governance endpoints & Depends on reliable complaint state and metadata richness \\
+7 & Add security and reliability hardening & Should follow core flow stability to avoid hidden regressions \\
+8 & Run tests and UAT cycles & Depends on complete feature slices and stable environments \\
+9 & Prepare production profile and handover docs & Depends on validated security/performance baseline \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\section{Configuration and Secret Planning}
+
+The implementation plan emphasized explicit secret handling and runtime configurability. Important control groups include:
+
+\begin{itemize}[leftmargin=1.5em]
+\item Authentication controls: JWT secret, algorithm, token expiry.
+\item Data controls: Mongo URL and database selection.
+\item AI controls: model identifiers, timeout windows, queue worker count.
+\item Security controls: CORS origin allowlist and rate-limiter mode.
+\item Communication controls: SMTP host/port/from for notification relay.
+\end{itemize}
+
+A notable planning correction during implementation was moving to one canonical backend environment file to eliminate drift between local and production templates.
+
+\section{Quality Gates in Implementation Plan}
+
+\begin{table}[H]
+\centering
+\caption{Implementation Quality Gates}
+\begin{tabularx}{\textwidth}{p{0.27\textwidth}X}
+\toprule
+\textbf{Gate} & \textbf{Acceptance Criterion} \\
+\midrule
+Functional API baseline & Health endpoints and core auth routes return expected responses \\
+Analyze pipeline gate & Valid image upload produces structured classification and draft status output \\
+Lifecycle gate & Complaint create/update/assignment/notification chain works end-to-end \\
+Security gate & Upload hardening, sanitization, role checks, and headers validated in tests \\
+Reliability gate & Graceful fallback behavior under model/DB faults verified \\
+Deployment gate & Compose stack health checks pass and service topology is reproducible \\
+UAT gate & Citizen and admin scripts complete without blocking defects \\
+Documentation gate & Deployment, API, user manual, and report artifacts synchronized \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\section{Resource and Effort Planning}
+
+Implementation effort was distributed between development, stabilization, testing, and documentation. Rather than pushing all testing to the end, the plan incorporated recurring verification cycles after major feature groups. This reduced late-stage uncertainty and shortened defect turnaround time.
+
+\section{Detailed Module Implementation Notes}
+
+\subsection{Backend Router Implementation Notes}
+
+\begin{longtable}{p{0.22\textwidth}p{0.30\textwidth}p{0.40\textwidth}}
+\caption{Router-Level Implementation Planning Notes}\\
+\toprule
+\textbf{Router Group} & \textbf{Core Responsibilities} & \textbf{Planning/Implementation Considerations} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{Router Group} & \textbf{Core Responsibilities} & \textbf{Planning/Implementation Considerations} \\
+\midrule
+\endhead
+users & registration, login, profile update, password reset & Required generic forgot-password response to prevent account enumeration; reset tokens persisted as hashes with expiry lifecycle \\
+complaints & analyze, create, list, detail, update, transfer, escalate & Needed consistent status-history append behavior and role-aware update guards; analyze route required graceful 503 degrade path \\
+workers & assignment views, approval/rejection, service-area updates & Needed separation between worker self-actions and admin governance actions; assignment diagnostics endpoint added for ops clarity \\
+notifications & list, unread count, mark single/all read & Badge consistency required deterministic unread counter behavior and ownership checks \\
+triage & review queue and decision endpoint & Admin-only corrective path for low-confidence AI cases; decision audit notes required \\
+analytics/public & dashboards, heatmap, anonymized public listing & Query aggregation planning required pagination defaults and safe exposure model for public feed \\
+health & live/ready/models/gpu probes & Needed operationally meaningful readiness semantics and low-overhead liveness behavior \\
+\bottomrule
+\end{longtable}
+
+\subsection{Service-Layer Planning Notes}
+
+\begin{table}[H]
+\centering
+\caption{Service-Level Implementation Planning}
+\begin{tabularx}{\textwidth}{p{0.24\textwidth}X}
+\toprule
+\textbf{Service} & \textbf{Planning Note} \\
+\midrule
+Assignment service & Haversine-based distance filtering was planned with fallback behavior when location metadata is missing \\
+Storage service & Validation pipeline designed as extension + content-type + magic-number + payload decode sequence \\
+Sanitization service & Planned as reusable utility to keep payload cleaning centralized and testable \\
+LLM queue service & Introduced to absorb long-running draft generation and preserve responsive user experience \\
+Escalation loop & Planned as background process with authority parent mapping and timeline updates \\
+Email service & Implemented as environment-driven stub/relay abstraction for gradual production integration \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\section{Deployment Runbook and Rollout Plan}
+
+\subsection{Rollout Stages}
+
+\begin{table}[H]
+\centering
+\caption{Deployment Rollout Stages}
+\begin{tabularx}{\textwidth}{p{0.12\textwidth}p{0.24\textwidth}X}
+\toprule
+\textbf{Stage} & \textbf{Objective} & \textbf{Execution Checklist} \\
+\midrule
+R1 & Environment readiness & Verify host runtime versions, model availability, and environment variables \\
+R2 & Service bootstrap & Start MongoDB and backend; validate health/live and health/ready probes \\
+R3 & Frontend linkage & Start frontend/proxy path and verify API base routing behavior \\
+R4 & Functional smoke & Execute login, analyze, complaint creation, and notification badge checks \\
+R5 & Governance smoke & Validate admin triage, worker assignment controls, and export flow \\
+R6 & Hardening validation & Execute security/resilience test scripts and capture baseline metrics \\
+R7 & Handover sign-off & Archive logs, backups, and runbook evidence for deployment package \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsection{Rollback Planning}
+
+Rollback planning was included to avoid high-impact downtime during deployment changes:
+
+\begin{itemize}[leftmargin=1.5em]
+\item Preserve previous container images and compose configuration snapshots.
+\item Ensure database backup is taken before schema/index-affecting changes.
+\item Revert frontend image and backend service independently when only one tier regresses.
+\item Maintain known-good environment variable snapshot for rapid restoration.
+\end{itemize}
+
+\section{Operational Monitoring Plan}
+
+\begin{longtable}{p{0.25\textwidth}p{0.25\textwidth}p{0.38\textwidth}}
+\caption{Operational Monitoring Matrix}\\
+\toprule
+\textbf{Signal} & \textbf{Collection Source} & \textbf{Operational Interpretation} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{Signal} & \textbf{Collection Source} & \textbf{Operational Interpretation} \\
+\midrule
+\endhead
+API process time & Response header \texttt{X-Process-Time} & Detect slow endpoints and regressions after deployments \\
+Readiness status & /health/ready endpoint & Indicates dependency-level degradation, mainly database health \\
+Model availability & /health/models endpoint & Confirms runtime model inventory and inference readiness \\
+GPU/model state & /health/gpu endpoint & Indicates active model and VRAM-related load behavior \\
+Notification backlog & unread-count behavior and list volume & Detects delayed event propagation or read-state anomalies \\
+Assignment queue growth & open/unassigned complaints and worker status & Helps identify staffing bottlenecks and area mismatch \\
+Triage queue size & low-confidence complaint count & Indicates classifier uncertainty trend and review load \\
+Error logs & rotating backend logs & Captures fault signatures for rapid remediation \\
+\bottomrule
+\end{longtable}
+
+\section{Change Management and Release Strategy}
+
+\subsection{Release Checklist}
+
+\begin{enumerate}[leftmargin=1.8em]
+\item Confirm automated tests pass for backend and frontend quality gates.
+\item Verify compose validation for default and production profiles.
+\item Validate security controls: headers, CORS allowlist, upload checks, and role restrictions.
+\item Confirm migration/index scripts produce expected database state.
+\item Review documentation deltas (API, deployment, report references) before tagging release.
+\item Capture release notes with risk statements and rollback pointers.
+\end{enumerate}
+
+\subsection{Implementation Learnings}
+
+Implementation planning revealed that operational simplification tasks (for example, consolidating environment and compose artifacts) can have impact comparable to feature work. These tasks reduced recurring integration errors, made CI behavior more predictable, and improved deployment communication across stakeholders.
+
+\section{Chapter Summary}
+
+Implementation planning translated conceptual design into execution-ready work packages, sequence constraints, and quality gates. The plan successfully balanced rapid feature delivery with operational robustness, resulting in a deployable and documentable civic platform.

@@ -1,0 +1,192 @@
+\chapter{Report Verification Procedure}
+
+This chapter defines a structured verification process to ensure that the final report and associated project artifacts are consistent, reproducible, and suitable for academic and technical evaluation.
+
+\section{Verification Objectives}
+
+\begin{itemize}[leftmargin=1.5em]
+\item Verify that the report accurately reflects the implemented system.
+\item Validate consistency between codebase features, documentation, and chapter claims.
+\item Confirm reproducibility of setup, execution, and testing steps.
+\item Ensure chapter formatting and artifact completeness for final submission.
+\end{itemize}
+
+\section{Document Verification Checklist}
+
+\begin{longtable}{p{0.08\textwidth}p{0.58\textwidth}p{0.24\textwidth}}
+\caption{Document-Level Verification Checklist}\\
+\toprule
+\textbf{ID} & \textbf{Verification Item} & \textbf{Status (Y/N/NA)} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{ID} & \textbf{Verification Item} & \textbf{Status (Y/N/NA)} \\
+\midrule
+\endhead
+DV-01 & Title page contains project identity, session, and submission context \\
+DV-02 & Table of contents matches chapter order and section numbering \\
+DV-03 & Lists of figures/tables/abbreviations/definitions are present \\
+DV-04 & All eleven required chapters are present in sequence \\
+DV-05 & Figures and tables include captions and are referenced in context \\
+DV-06 & Screenshot list is aligned with required checklist items \\
+DV-07 & Literature and references are cited in proper academic style \\
+DV-08 & No contradictory statements across chapters and appendices \\
+DV-09 & Grammar and formatting consistency (font, spacing, headings) is maintained \\
+DV-10 & Final PDF metadata and hyperlinks are functioning \\
+\bottomrule
+\end{longtable}
+
+\section{Technical Verification Checklist}
+
+\begin{longtable}{p{0.08\textwidth}p{0.58\textwidth}p{0.24\textwidth}}
+\caption{Technical Consistency Verification Checklist}\\
+\toprule
+\textbf{ID} & \textbf{Verification Item} & \textbf{Status (Y/N/NA)} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{ID} & \textbf{Verification Item} & \textbf{Status (Y/N/NA)} \\
+\midrule
+\endhead
+TV-01 & API endpoint inventory in report matches implemented routers \\
+TV-02 & Role definitions in report match auth and dashboard behavior \\
+TV-03 & Database collections and indexes described match code-level setup \\
+TV-04 & Security controls listed are present in middleware/services/tests \\
+TV-05 & Deployment architecture section matches compose and Docker artifacts \\
+TV-06 & Testing chapter reflects actual test suites and scripts \\
+TV-07 & UAT narrative aligns with documented UAT plan and acceptance checks \\
+TV-08 & Known limitations section reflects current implementation boundaries \\
+TV-09 & Future scope remains realistic relative to current architecture \\
+TV-10 & Appendices contain accurate and non-contradictory operational details \\
+\bottomrule
+\end{longtable}
+
+\section{Reproducibility Procedure}
+
+\subsection{Build and Run Verification}
+
+\begin{enumerate}[leftmargin=1.8em]
+\item Verify backend environment file is configured.
+\item Start MongoDB dependency using Docker Compose.
+\item Start backend service and confirm live and ready probes.
+\item Start frontend service and confirm route accessibility.
+\item Execute a sample citizen complaint flow from upload to submission.
+\item Validate status update and notification chain behavior.
+\end{enumerate}
+
+\subsection{Test Verification}
+
+\begin{enumerate}[leftmargin=1.8em]
+\item Execute backend automated tests through provided script wrapper.
+\item Execute security and resilience test scripts.
+\item Run notification chain test script.
+\item Execute load test in baseline profile and collect key metrics.
+\item Confirm no critical failures in logs and test outputs.
+\end{enumerate}
+
+\subsection{Deployment Verification}
+
+\begin{enumerate}[leftmargin=1.8em]
+\item Bring up compose stack with production profile.
+\item Check health status for backend and database services.
+\item Validate frontend proxy access to API versioned paths.
+\item Confirm upload persistence path correctness in container volume mapping.
+\item Validate index creation and backup script execution readiness.
+\end{enumerate}
+
+\section{Artifact Completeness Checklist}
+
+\begin{table}[H]
+\centering
+\caption{Submission Artifact Completeness}
+\begin{tabularx}{\textwidth}{p{0.34\textwidth}p{0.18\textwidth}X}
+\toprule
+\textbf{Artifact} & \textbf{Available} & \textbf{Notes} \\
+\midrule
+Source code repository & Yes & Backend, frontend, scripts, docs \\
+Final report LaTeX source & Yes & Chapter-wise modular structure \\
+Compiled final report PDF & To be generated & Build from main.tex \\
+API reference document & Yes & Project documentation included \\
+Deployment guide & Yes & NDMC deployment and production verification guides \\
+Security/load/UAT runbooks & Yes & Dedicated documentation and scripts \\
+Screenshot pack & Partial/To update & Placeholders prepared; final captures can be inserted \\
+Presentation artifact & External & To be attached as submission companion \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\section{Final Sign-Off Template}
+
+\noindent
+\textbf{Verifier Name:} \rule{0.55\textwidth}{0.4pt}\\[0.6em]
+\textbf{Role:} \rule{0.69\textwidth}{0.4pt}\\[0.6em]
+\textbf{Verification Date:} \rule{0.53\textwidth}{0.4pt}\\[0.6em]
+\textbf{Overall Status:} \rule{0.56\textwidth}{0.4pt}\\[0.6em]
+\textbf{Remarks:}\\[0.4em]
+\rule{0.95\textwidth}{0.4pt}\\[1.2em]
+\rule{0.95\textwidth}{0.4pt}\\[1.2em]
+\rule{0.95\textwidth}{0.4pt}\\[1.6em]
+\textbf{Signature:} \rule{0.60\textwidth}{0.4pt}
+
+\section{Evidence Mapping Matrix}
+
+\begin{longtable}{p{0.16\textwidth}p{0.30\textwidth}p{0.18\textwidth}p{0.28\textwidth}}
+\caption{Report Claim to Artifact Evidence Mapping}\\
+\toprule
+\textbf{Claim Area} & \textbf{Evidence Artifact} & \textbf{Evidence Type} & \textbf{Verification Note} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{Claim Area} & \textbf{Evidence Artifact} & \textbf{Evidence Type} & \textbf{Verification Note} \\
+\midrule
+\endhead
+Architecture design & System architecture documentation & Technical doc & Component boundaries and flow definitions match chapter design claims \\
+Department taxonomy & Department hierarchy document & Technical doc & Canonical categories align with classifier/routing behavior \\
+Schema and indexing & Schema design document and index scripts & Technical doc + code artifact & Collections and indexes align with database design sections \\
+API surface & API reference documentation & Technical doc & Endpoint inventory aligns with appendix snapshots \\
+Auth and role controls & Auth test suite and role dependency code & Test + code artifact & Role restrictions and claims behavior validated \\
+Notification behavior & Notification chain tests and UI screenshots & Test + visual evidence & Badge update and mark-read behavior verified \\
+Security hardening & Security testing guide and resilience tests & Test documentation + code tests & Upload validation, sanitization, and headers confirmed \\
+Performance/load profile & Load-testing guide and locust scripts & Test runbook + script & Profile definitions and acceptance semantics documented \\
+UAT execution & UAT plan and persona scripts & Validation plan & Citizen/admin workflows and acceptance criteria documented \\
+Deployment readiness & Deployment and production verification docs & Ops runbook & Compose profile and environment steps reproducible \\
+Frontend recovery flow & Login/forgot/reset page screenshots & Visual evidence & Password recovery UX claims traceable \\
+Triage governance & Triage queue screenshot and endpoint behavior & Visual + API evidence & Low-confidence review path validated \\
+Analytics visibility & Analytics and heatmap screenshots & Visual evidence & Dashboard claims supported by rendered views \\
+Public transparency & Public board screenshot & Visual evidence & Anonymous status listing demonstrated \\
+Citizen timeline and escalation & Dashboard timeline screenshots & Visual evidence & Status history and escalation note rendering confirmed \\
+\bottomrule
+\end{longtable}
+
+\section{Submission-Day Verification Script}
+
+\subsection{Pre-Compilation Steps}
+
+\begin{enumerate}[leftmargin=1.8em]
+\item Confirm all chapter files are present and referenced in \texttt{main.tex}.
+\item Place available screenshots in \texttt{docs/images/screenshots/} using expected names.
+\item Update title page institute and contributor details if required by the evaluator.
+\item Re-check chapter numbering and heading consistency.
+\end{enumerate}
+
+\subsection{Compilation Steps}
+
+\begin{enumerate}[leftmargin=1.8em]
+\item Run \texttt{pdflatex -interaction=nonstopmode main.tex}.
+\item Run the same command a second time to stabilize TOC, lists, and references.
+\item Verify generated PDF for figure/table index completeness.
+\item Confirm page range target (70--100) is met and note final page count in submission log.
+\end{enumerate}
+
+\subsection{Final QA Steps}
+
+\begin{enumerate}[leftmargin=1.8em]
+\item Check screenshot pages for missing placeholders and replace pending files as needed.
+\item Validate references, captions, and table readability in print layout.
+\item Archive LaTeX source, PDF output, and supporting evidence pack together.
+\item Record final verification sign-off with date and reviewer name.
+\end{enumerate}
+
+\section{Chapter Summary}
+
+The verification procedure ensures that report claims remain aligned with implementation reality and that submission quality is traceable. By combining document checks, technical consistency checks, reproducibility checks, and sign-off structure, this chapter closes the report with a practical audit trail for evaluation.

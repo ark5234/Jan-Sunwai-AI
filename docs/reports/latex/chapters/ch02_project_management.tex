@@ -1,0 +1,254 @@
+\chapter{Project Management}
+
+Project management for Jan-Sunwai AI followed an iterative delivery approach with explicit weekly milestones, acceptance checkpoints, and operational hardening gates. The planning strategy balanced feature development with risk reduction, especially in AI reliability, security posture, and deployment reproducibility.
+
+\section{Feasibility Study}
+
+\subsection{Technical Feasibility}
+
+The selected stack (React, FastAPI, MongoDB, Ollama) was technically feasible for local-first civic deployment due to mature ecosystem support, strong documentation, and compatibility with available development infrastructure. Key feasibility observations were:
+
+\begin{itemize}[leftmargin=1.5em]
+\item FastAPI provided rapid API development, typed schemas, and OpenAPI generation.
+\item MongoDB supported flexible document structures suited to complaint histories, comments, and embedded metadata.
+\item React enabled role-specific UI composition with route guards and dashboard specialization.
+\item Ollama provided local model execution with configurable model tiers.
+\item Docker Compose enabled reproducible environment orchestration across development and production-like setups.
+\end{itemize}
+
+A major early technical risk was model reliability under constrained VRAM. This was mitigated by introducing a staged inference pipeline and avoiding simultaneous heavy model loading.
+
+\subsection{Time Schedule Feasibility}
+
+The schedule was structured over 18 weeks, progressing from foundation to hardening and final submission. Work cadence used Monday--Saturday windows with planned Sunday off-days and second/fourth Saturday breaks. This realistic scheduling improved sustainability while preserving delivery continuity.
+
+\subsection{Operational Feasibility}
+
+Operational feasibility was validated by mapping actual municipal personas into role-specific workflows:
+
+\begin{itemize}[leftmargin=1.5em]
+\item Citizen: complaint intake and tracking.
+\item Worker: assignment execution and completion updates.
+\item Department Head: queue supervision and status transitions.
+\item Admin: approvals, triage governance, analytics, and exports.
+\end{itemize}
+
+The resulting workflow matched expected governance practices where supervisory roles require both visibility and controlled override capabilities.
+
+\subsection{Implementation Feasibility}
+
+Implementation was feasible under both manual and scripted setup modes. Automation scripts were created for Windows and Linux, and production deployment was validated through containerized orchestration. Environment configuration was standardized via a single backend environment file to reduce drift and support repeatable handover.
+
+\section{Project Planning}
+
+\subsection{Development Approach and Justification}
+
+The project used an incremental and verification-driven approach with the following cycle:
+
+\begin{enumerate}[leftmargin=1.8em]
+\item Build baseline functionality for a module.
+\item Validate through unit and integration checks.
+\item Expose role workflow in UI and test end-to-end behavior.
+\item Add security/performance hardening after functional stabilization.
+\item Document operational procedures and release notes.
+\end{enumerate}
+
+This approach was chosen over a strict waterfall model because AI behavior and UX patterns required iterative calibration.
+
+\subsection{Milestones and Deliverables}
+
+\begin{longtable}{p{0.12\textwidth}p{0.25\textwidth}p{0.45\textwidth}p{0.12\textwidth}}
+\caption{Milestone Summary and Deliverables}\\
+\toprule
+\textbf{Window} & \textbf{Theme} & \textbf{Key Deliverables} & \textbf{Status} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{Window} & \textbf{Theme} & \textbf{Key Deliverables} & \textbf{Status} \\
+\midrule
+\endhead
+Weeks 1--2 & Foundation & Repo setup, environment bootstrap, backend skeleton, DB connectivity, auth schema, complaint schema, initial CRUD and upload service & Completed \\
+Weeks 3--5 & AI Pipeline & Model research, classifier iterations, geotagging, reverse geocoding, generation service, analyze endpoint integration & Completed \\
+Week 6 & Frontend Base & Routing, upload flow, analyze hook, result view, integration with backend auth and analyze pipeline & Completed \\
+Week 7 & Flow Closure & Map marker improvements, local draft persistence, error boundary, 404 route, full persona walkthrough & Completed \\
+Week 8 & Security Layer & Upload hardening, rate limiting, sanitization, CORS lockdown, security headers, index hardening & Completed \\
+Week 9 & NDMC Feature Pack & Worker panel, assignment engine, audit trail, analytics/heatmap, SLA badges, bulk actions/exports & Completed \\
+Week 10 & Notification and Communication & Navbar badge, status-triggered notifications, email stub, forgot/reset password, profile editing, E2E notification chain test & Completed \\
+Week 11 & Performance and Reliability & Image compression, lazy loading, graceful 503 degrade, profiling, resilience tests & Completed \\
+Week 12 & Production Hardening & Docker production files, compose profile, env plan, API versioning, backup strategy, UI audit & Completed \\
+Weeks 13--14 & Testing and Pre-Handover & Unit/integration/security/load tests, mobile fixes, handover guide, API reference, repository cleanup, CI workflows & Completed \\
+Weeks 15--16 & UAT and Staging Validation & Clean deploy simulation, production verification, UAT persona runs, feedback loop and polish pass & Completed \\
+Weeks 17--18 & Reporting and Submission & Technical report artifacts, screenshots, presentation, final submission hygiene and release tagging & Completed \\
+\bottomrule
+\end{longtable}
+
+\subsection{Roles and Responsibilities}
+
+\begin{table}[H]
+\centering
+\caption{Role Responsibility Matrix (Project Execution)}
+\begin{tabularx}{\textwidth}{p{0.26\textwidth}X}
+\toprule
+\textbf{Role Area} & \textbf{Responsibilities} \\
+\midrule
+Backend Engineering & API design, schema validation, business logic, role authorization, lifecycle transitions, notification hooks \\
+Frontend Engineering & Route architecture, role dashboards, analyze/result flow, user session handling, responsive behavior \\
+AI and Classification & Vision model integration, rule engine tuning, reasoning fallback, draft generation quality checks \\
+Data and Persistence & MongoDB collection design, indexes, query access paths, reset token TTL and audit metadata \\
+Security and Reliability & Input sanitization, upload hardening, CORS and headers, degrade behavior, readiness/liveness semantics \\
+Testing and QA & Unit and integration tests, resilience and security validation, load profiling, UAT scripts \\
+DevOps and Deployment & Compose consolidation, environment normalization, production verification scripts, backup runbooks \\
+Documentation and Handover & API reference, deployment guides, user manual, architecture and report compilation \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsection{Group Dependencies}
+
+The project includes cross-cutting dependencies that were managed explicitly:
+
+\begin{itemize}[leftmargin=1.5em]
+\item Backend depends on MongoDB availability and correctly configured environment variables.
+\item Analyze flow depends on file storage service and Ollama runtime health.
+\item Frontend route behavior depends on JWT session state and role claims.
+\item Assignment quality depends on worker profile completeness (department, approval, service area, status).
+\item Production readiness depends on compose health checks, proxy alignment, and secure secret configuration.
+\end{itemize}
+
+Dependency risks were controlled through health endpoints, fallback behaviors, and scripted verification routines.
+
+\section{Project Scheduling (Gantt/PERT Interpretation)}
+
+\subsection{High-Level Schedule}
+
+The schedule can be interpreted as a four-phase progression:
+
+\begin{enumerate}[leftmargin=1.8em]
+\item Foundation and Core Build (Weeks 1--6)
+\item Security and NDMC-oriented Feature Hardening (Weeks 7--14)
+\item UAT and Operational Validation (Weeks 15--16)
+\item Reporting and Submission Closure (Weeks 17--18)
+\end{enumerate}
+
+\subsection{PERT-Like Dependency Flow}
+
+\begin{table}[H]
+\centering
+\caption{PERT-Style Activity Dependencies}
+\begin{tabular}{p{0.15\textwidth}p{0.44\textwidth}p{0.30\textwidth}}
+\toprule
+\textbf{Activity ID} & \textbf{Activity} & \textbf{Depends On} \\
+\midrule
+A1 & Core backend and DB setup & None \\
+A2 & Auth and role scaffolding & A1 \\
+A3 & Analyze pipeline integration & A1, A2 \\
+A4 & Frontend role flows & A2, A3 \\
+A5 & Security hardening & A2, A3, A4 \\
+A6 & Assignment, triage, analytics & A3, A4 \\
+A7 & Notification chain and profile features & A4, A6 \\
+A8 & Reliability and load profiling & A5, A6, A7 \\
+A9 & Production deployment profile & A5, A8 \\
+A10 & UAT and acceptance validation & A8, A9 \\
+A11 & Final documentation and submission & A10 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Risk Management}
+
+\begin{longtable}{p{0.24\textwidth}p{0.15\textwidth}p{0.15\textwidth}p{0.38\textwidth}}
+\caption{Risk Register and Mitigation Plan}\\
+\toprule
+\textbf{Risk} & \textbf{Likelihood} & \textbf{Impact} & \textbf{Mitigation} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{Risk} & \textbf{Likelihood} & \textbf{Impact} & \textbf{Mitigation} \\
+\midrule
+\endhead
+Model unavailability or timeout & Medium & High & Multi-tier vision fallback, queue-based generation, retryable 503 responses \\
+Wrong department classification & Medium & High & Deterministic rule engine, triage queue, admin correction workflow \\
+Invalid/malicious uploads & Medium & High & Extension + MIME + magic number + image decode validation, max size enforcement \\
+Unauthorized route access & Low & High & JWT auth, role-gated dependencies, integration tests for permission boundaries \\
+Configuration drift across environments & Medium & Medium & Unified backend environment strategy and scripted deployment checks \\
+Notification inconsistency & Low & Medium & Automated notification-chain tests and mark-all-read verification \\
+Performance degradation under load & Medium & Medium & Profiling, timing logs, load-testing matrix, controlled fallback behavior \\
+Documentation mismatch at handover & Medium & Medium & NDMC deployment guide, API reference sync, verification procedure chapter \\
+\bottomrule
+\end{longtable}
+
+\section{Management Outcomes}
+
+The management strategy achieved three notable outcomes:
+
+\begin{itemize}[leftmargin=1.5em]
+\item Feature breadth was delivered without compromising security and reliability hardening.
+\item Delivery confidence increased through continuous testing and issue-driven iteration.
+\item Handover readiness improved through consolidated deployment/configuration artifacts and documentation alignment.
+\end{itemize}
+
+\section{Detailed Week-Wise Execution Digest}
+
+\begin{longtable}{p{0.10\textwidth}p{0.18\textwidth}p{0.46\textwidth}p{0.18\textwidth}}
+\caption{Week-by-Week Execution Summary (W1--W18)}\\
+\toprule
+\textbf{Week} & \textbf{Date Range} & \textbf{Primary Execution Focus} & \textbf{Management Outcome} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{Week} & \textbf{Date Range} & \textbf{Primary Execution Focus} & \textbf{Management Outcome} \\
+\midrule
+\endhead
+W1 & Jan 28--Jan 31 & Repository initialization, environment setup, architecture notes, backend bootstrap & Foundation controls established \\
+W2 & Feb 02--Feb 07 & Mongo connectivity, schema definitions, early CRUD and upload service & Core API baseline available \\
+W3 & Feb 09--Feb 14 & Authentication hardening and classifier exploration & Security and AI direction validated \\
+W4 & Feb 16--Feb 21 & EXIF/location extraction and reverse-geocoding integration & Analyze pipeline readiness achieved \\
+W5 & Feb 23--Feb 28 & Local model runtime setup and draft generation service & AI drafting integrated \\
+W6 & Mar 02--Mar 07 & Frontend routing, upload/result flow, end-to-end integration & Citizen flow stabilized \\
+W7 & Mar 09--Mar 14 & Map refinement, draft persistence, error boundaries, full walkthroughs & Baseline UX hardening complete \\
+W8 & Mar 16--Mar 21 & Security layer (headers, sanitizer, upload validation, limits, indexes) & Production-risk exposure reduced \\
+W9 & Mar 23--Mar 28 & Assignment engine, status timeline, analytics, SLA and bulk controls & Operational depth achieved \\
+W10 & Mar 30--Apr 04 & Notification chain, email stub, password reset, profile update & Communication workflows closed \\
+W11 & Apr 06--Apr 11 & Performance optimization, graceful degrade, profiling, resilience tests & Reliability confidence improved \\
+W12 & Apr 13--Apr 18 & Production container profile and deployment artifact maturation & Deployment readiness strengthened \\
+W13 & Apr 20--Apr 25 & Test expansion (unit/integration/security/load) and mobile fixes & Quality gates expanded \\
+W14 & Apr 27--Apr 30 & API/docs finalization, cleanup, CI/release prep & Pre-handover alignment completed \\
+W15 & May 04--May 09 & Production verification and clean-machine deployment simulation & Reproducibility confirmed \\
+W16 & May 11--May 16 & UAT persona runs, feedback loop, resilience validation & User-level acceptance confidence gained \\
+W17 & May 18--May 23 & Reporting artifacts, screenshots, user manual, presentation draft & Submission assets consolidated \\
+W18 & May 25--May 27 & Final release hygiene and submission closure & Project lifecycle completed \\
+\bottomrule
+\end{longtable}
+
+\section{Project Governance Metrics}
+
+\begin{table}[H]
+\centering
+\caption{Governance-Oriented Delivery Metrics}
+\begin{tabularx}{\textwidth}{p{0.34\textwidth}X}
+\toprule
+\textbf{Metric} & \textbf{Interpretation in This Project} \\
+\midrule
+Milestone completion consistency & Planned milestone themes were completed in sequence with controlled scope shifts and documented acceleration notes \\
+Defect turnaround behavior & High-severity defects were fixed with targeted regression verification in the same development cycle \\
+Quality gate maturity & Testing moved from smoke-only to layered validation (security, resilience, load, and UAT) \\
+Deployment reproducibility & Scripts and compose profile reduced dependency on manual environment interpretation \\
+Documentation synchronization & Technical docs, runbooks, and report artifacts were updated as implementation evolved \\
+Operational risk closure rate & Key risk classes (auth, upload security, route drift, and notification consistency) were explicitly addressed \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\section{Management Retrospective}
+
+Three management lessons were central to delivery quality:
+
+\begin{enumerate}[leftmargin=1.8em]
+\item \textbf{Early role modeling reduced rework:} Defining citizen/worker/dept-head/admin pathways early prevented significant UI and authorization redesign later.
+\item \textbf{Security and reliability should not be deferred:} Integrating these streams before final release avoided unstable late-stage merges.
+\item \textbf{Artifact consolidation is a management task:} Unifying environment and compose artifacts reduced support burden and improved handover confidence.
+\end{enumerate}
+
+\section{Chapter Summary}
+
+This chapter demonstrated that the project was not only technically implementable but also deliverable within a controlled timeline and governance framework. Feasibility, dependency management, risk planning, and milestone tracking enabled predictable progress toward a production-oriented civic platform.

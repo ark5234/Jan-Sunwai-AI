@@ -1,0 +1,264 @@
+\chapter{System Requirement Study}
+
+This chapter documents requirement analysis for Jan-Sunwai AI, including the baseline state of existing grievance systems, observed limitations, actor expectations, and formalized functional/non-functional requirements. The study was derived from implementation realities, municipal workflow assumptions, and validation through tests and user journeys.
+
+\section{Existing System Overview}
+
+Many conventional civic complaint channels depend on one or more of the following interfaces: physical counters, basic web forms, call center logging, or generic ticketing portals. While these methods can register complaints, they often suffer from weak input quality, manual routing dependency, and low traceability.
+
+Key characteristics of existing systems observed in this problem context:
+
+\begin{itemize}[leftmargin=1.5em]
+\item Citizens are expected to manually choose departments, often without sufficient guidance.
+\item Complaint narratives are text-heavy and unstructured, leading to inconsistent detail quality.
+\item Photo evidence may be accepted but is rarely integrated into routing logic.
+\item Status updates are frequently sparse or delayed.
+\item Workflow metadata (who changed what and why) is often incomplete for audits.
+\end{itemize}
+
+\section{Limitations of the Existing System}
+
+\begin{table}[H]
+\centering
+\caption{Limitations in Legacy Grievance Handling}
+\begin{tabularx}{\textwidth}{p{0.08\textwidth}p{0.35\textwidth}X}
+\toprule
+\textbf{ID} & \textbf{Observed Limitation} & \textbf{Operational Effect} \\
+\midrule
+L1 & Manual authority selection by citizens & High probability of misrouting and delayed first response \\
+L2 & Inconsistent complaint description quality & Staff time spent rewriting or clarifying cases \\
+L3 & Weak integration of visual evidence & Evidence underused in initial triage and prioritization \\
+L4 & Limited role-specific workflows & Same interface burden across very different operational personas \\
+L5 & Minimal lifecycle traceability & Difficult root-cause analysis and accountability review \\
+L6 & Low transparency in queue behavior & Citizens lose trust when progress signals are unclear \\
+L7 & Sparse analytics for administrators & Planning decisions made without stable trend and workload data \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\section{User Characteristics}
+
+The system is designed for four operational personas with distinct interaction patterns and authorization boundaries.
+
+\begin{table}[H]
+\centering
+\caption{User Characteristics and Behavioral Expectations}
+\begin{tabularx}{\textwidth}{p{0.18\textwidth}p{0.26\textwidth}X}
+\toprule
+\textbf{User Role} & \textbf{Primary Goals} & \textbf{Typical Interaction Pattern} \\
+\midrule
+Citizen & Report issues and track outcomes & Upload image, review generated draft, submit complaint, monitor notifications and status timeline \\
+Worker & Resolve assigned field tasks & View own queue, update availability, mark task completion, add resolution note \\
+Department Head & Manage departmental flow & Filter department queue, change status, add notes, transfer/escalate cases when needed \\
+Administrator & Governance and oversight & Approve workers, triage ambiguous cases, perform bulk actions, export reports, monitor analytics \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\section{Functional Requirements}
+
+\begin{longtable}{p{0.12\textwidth}p{0.30\textwidth}p{0.48\textwidth}}
+\caption{Functional Requirement Specification}\\
+\toprule
+\textbf{FR ID} & \textbf{Requirement Name} & \textbf{Requirement Description} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{FR ID} & \textbf{Requirement Name} & \textbf{Requirement Description} \\
+\midrule
+\endhead
+FR-01 & User Registration & System shall allow self-registration for citizen and worker roles with validation and duplicate checks. \\
+FR-02 & User Authentication & System shall issue JWT access tokens on successful login and protect authorized routes. \\
+FR-03 & Profile Management & Authenticated users shall update selected profile fields such as full name and phone number. \\
+FR-04 & Password Recovery & System shall support forgot-password and reset-password flows with time-bound tokens. \\
+FR-05 & Image Upload Validation & Analyze endpoint shall accept valid JPG/PNG images and reject unsupported or malformed payloads. \\
+FR-06 & AI-Assisted Analysis & System shall analyze uploaded image and return category, confidence, location metadata, and draft status. \\
+FR-07 & Draft Generation & System shall produce a complaint draft synchronously or via queued generation, with polling support. \\
+FR-08 & Complaint Creation & System shall create a complaint record from reviewed analysis payload and user-provided description edits. \\
+FR-09 & Complaint Listing & System shall provide role-filtered complaint lists with pagination and optional status filters. \\
+FR-10 & Complaint Detail View & System shall provide complete complaint detail including status history and operational metadata. \\
+FR-11 & Status Update Workflow & Department head/admin shall update complaint status with note and trigger citizen notification. \\
+FR-12 & Department Transfer & Department head/admin shall transfer complaint ownership across departments when misrouted. \\
+FR-13 & Escalation & Department head/admin shall escalate complaints to parent authorities when required. \\
+FR-14 & Worker Assignment & System shall auto-assign eligible workers and support manual override by admin. \\
+FR-15 & Worker Operations & Worker shall manage availability and mark assigned complaints as done. \\
+FR-16 & Notification Center & System shall provide list, unread count, single-read, and mark-all-read operations. \\
+FR-17 & Triage Queue & Admin shall review low-confidence complaints and approve/reject/correct labels. \\
+FR-18 & Analytics & Admin/dept-head shall access overview and geospatial heatmap summaries. \\
+FR-19 & CSV Export & Admin shall export complaint data to CSV for external reporting. \\
+FR-20 & Public Transparency Feed & System shall expose anonymized complaint records without authentication. \\
+FR-21 & Health Monitoring & System shall provide live, ready, model, and GPU health endpoints. \\
+FR-22 & API Version Alias & System shall expose major endpoints under /api/v1 for integration stability. \\
+\bottomrule
+\end{longtable}
+
+\section{Non-Functional Requirements}
+
+\begin{longtable}{p{0.12\textwidth}p{0.30\textwidth}p{0.48\textwidth}}
+\caption{Non-Functional Requirement Specification}\\
+\toprule
+\textbf{NFR ID} & \textbf{Quality Attribute} & \textbf{Requirement Description} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{NFR ID} & \textbf{Quality Attribute} & \textbf{Requirement Description} \\
+\midrule
+\endhead
+NFR-01 & Security & JWT auth, RBAC, sanitization, secure headers, and account-safe reset flow shall be enforced. \\
+NFR-02 & Reliability & API shall degrade gracefully under model or DB faults with explicit status semantics. \\
+NFR-03 & Performance & Public and health endpoints shall respond consistently under mixed read-heavy load. \\
+NFR-04 & Usability & Role-specific UI shall reduce cognitive load and support responsive layouts for desktop/mobile usage. \\
+NFR-05 & Maintainability & Modular routers/services with documented runbooks shall support iterative enhancement. \\
+NFR-06 & Observability & Process-time headers, rotating logs, and health routes shall support debugging and operations. \\
+NFR-07 & Scalability Readiness & Queue-based generation and container deployment shall support controlled scaling. \\
+NFR-08 & Portability & Project setup shall support Windows and Linux via scripts and Docker-based workflow. \\
+NFR-09 & Compliance Readiness & Local-first inference and sanitized logs shall support stricter governance deployments. \\
+NFR-10 & Data Integrity & Validation schemas and controlled update flows shall minimize malformed or inconsistent records. \\
+\bottomrule
+\end{longtable}
+
+\section{Hardware and Software Requirements}
+
+\subsection{Hardware Requirements}
+
+\begin{table}[H]
+\centering
+\caption{Hardware Requirement Baseline}
+\begin{tabular}{p{0.30\textwidth}p{0.28\textwidth}p{0.30\textwidth}}
+\toprule
+\textbf{Component} & \textbf{Minimum} & \textbf{Recommended} \\
+\midrule
+CPU & 4-core modern processor & 6 to 8-core processor \\
+System RAM & 12 GB available & 16 GB or higher \\
+GPU VRAM & 4 GB & 6 GB or higher \\
+Storage & 10 GB free & 20 GB free \\
+Network & Stable LAN/internet for maps and package fetch & Managed institutional network \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Software Requirements}
+
+\begin{table}[H]
+\centering
+\caption{Software Environment Requirements}
+\begin{tabularx}{\textwidth}{p{0.28\textwidth}p{0.24\textwidth}X}
+\toprule
+\textbf{Software Component} & \textbf{Baseline} & \textbf{Purpose} \\
+\midrule
+Operating System & Windows 10+/Linux & Development and deployment host \\
+Python Runtime & Python 3.10+ & Backend and automation scripts \\
+Node.js and npm & Current LTS range & Frontend build and tooling \\
+MongoDB & 7.x class deployment & Document persistence \\
+Ollama Runtime & Local model runtime & Vision/reasoning generation pipeline \\
+Docker Engine/Compose & Docker 24+ recommended & Containerized orchestration \\
+Browser & Chromium/Firefox class & Frontend access and UAT execution \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\section{Constraints}
+
+\subsection{UI Constraints}
+
+\begin{itemize}[leftmargin=1.5em]
+\item Role-specific pages must enforce access boundaries and clear redirection behavior.
+\item Analyze/result screens must preserve draft continuity during refresh and error conditions.
+\item Dashboard cards and maps must remain usable at mobile widths (e.g., 375 px baseline tests).
+\end{itemize}
+
+\subsection{Communication Interface}
+
+\begin{itemize}[leftmargin=1.5em]
+\item REST over HTTP(S) is the canonical communication model.
+\item JWT bearer token is mandatory for protected routes.
+\item Production frontend proxy must route API traffic to backend service with /api/v1 compatibility.
+\end{itemize}
+
+\subsection{Hardware Interface}
+
+\begin{itemize}[leftmargin=1.5em]
+\item AI response times depend on model runtime health and available VRAM.
+\item GPU contention and model load/unload latency can affect throughput.
+\item Large image uploads require strict file-size and decode constraints to avoid resource exhaustion.
+\end{itemize}
+
+\subsection{Criticality of Application}
+
+The system is governance-sensitive. Incorrect status transitions, misrouted complaints, or unauthorized updates can directly impact citizen trust and administrative accountability. Hence, status history and role checks are non-negotiable controls.
+
+\subsection{Safety and Security Considerations}
+
+\begin{itemize}[leftmargin=1.5em]
+\item Input sanitization is required for free-text fields.
+\item File intake must detect extension-header mismatches and corrupted payloads.
+\item Token reset flow must avoid account enumeration and raw token persistence.
+\item Security headers and CORS policies must remain active on both normal and error responses.
+\end{itemize}
+
+\section{Assumptions and Dependencies}
+
+\begin{table}[H]
+\centering
+\caption{Assumptions and External Dependencies}
+\begin{tabularx}{\textwidth}{p{0.10\textwidth}p{0.42\textwidth}X}
+\toprule
+\textbf{ID} & \textbf{Assumption/Dependency} & \textbf{Implication} \\
+\midrule
+A1 & MongoDB instance is reachable and healthy & Core read/write workflows remain functional \\
+A2 & Ollama runtime is available with configured models & Analyze and generation pathways remain active \\
+A3 & Environment variables are configured accurately & Auth, DB, CORS, and model endpoints behave as intended \\
+A4 & Frontend and backend URL mapping is consistent & API calls and route protection remain stable \\
+A5 & Worker profiles include valid department and status metadata & Assignment service can select candidates correctly \\
+A6 & Deployment host supports Docker where container mode is used & Production-style stack can be reproduced \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\section{Detailed Use-Case Narratives}
+
+\begin{longtable}{p{0.12\textwidth}p{0.18\textwidth}p{0.30\textwidth}p{0.30\textwidth}}
+\caption{Narrative Use-Case Requirements}\\
+\toprule
+\textbf{UC ID} & \textbf{Actor} & \textbf{Main Flow} & \textbf{Alternate/Exception Flow} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{UC ID} & \textbf{Actor} & \textbf{Main Flow} & \textbf{Alternate/Exception Flow} \\
+\midrule
+\endhead
+UC-01 & Citizen & Register account, login, access dashboard & Duplicate username/email is rejected with validation message \\
+UC-02 & Citizen & Upload image and run analyze pipeline & Unsupported/corrupt image rejected with explicit reason \\
+UC-03 & Citizen & Edit draft and submit complaint & If analyze unavailable, user submits manual complaint text after retry guidance \\
+UC-04 & Citizen & Track status and receive notifications & If no notifications available, panel remains stable with unread count zero \\
+UC-05 & Citizen & Submit feedback after complaint resolution & Duplicate feedback attempt blocked with conflict response \\
+UC-06 & Worker & View assigned complaints and update availability & Worker pending approval cannot access worker-only operations \\
+UC-07 & Worker & Mark complaint done & If assignment mismatch occurs, operation is denied by role/ownership checks \\
+UC-08 & Dept Head & Filter department complaints and update status & Dept-head cannot update complaints outside own department \\
+UC-09 & Dept Head & Add notes and transfer/escalate complaint & Invalid complaint ID or missing target yields controlled validation error \\
+UC-10 & Admin & Approve/reject worker registrations & Already-approved/rejected states handled idempotently \\
+UC-11 & Admin & Operate triage queue and analytics & Empty triage queue still returns successful response \\
+UC-12 & Public User & View anonymized complaint board & No authenticated personal fields are exposed in response payload \\
+\bottomrule
+\end{longtable}
+
+\section{Requirement Priority Classification}
+
+\begin{table}[H]
+\centering
+\caption{MoSCoW-Style Requirement Priority Mapping}
+\begin{tabularx}{\textwidth}{p{0.14\textwidth}p{0.18\textwidth}X}
+\toprule
+\textbf{Priority} & \textbf{Requirement IDs} & \textbf{Interpretation} \\
+\midrule
+Must Have & FR-01 to FR-12, FR-14, FR-16, FR-21 & Core operational viability: authentication, complaint lifecycle, role control, assignment, notifications, and service health \\
+Should Have & FR-13, FR-15, FR-17, FR-18, FR-22 & Strong governance and maintainability improvements that meaningfully increase institutional readiness \\
+Could Have & FR-19, FR-20 & Non-blocking but high-value transparency and reporting improvements \\
+Non-Functional Critical & NFR-01, NFR-02, NFR-06, NFR-10 & Security, reliability, observability, and data integrity controls required for trusted operation \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\section{Chapter Summary}
+
+The requirement study establishes the transition from a manually intensive grievance flow to a structured, secure, and auditable digital workflow. Functional and non-functional requirements were formalized in implementation-aligned terms and mapped against realistic user roles and operational constraints.
