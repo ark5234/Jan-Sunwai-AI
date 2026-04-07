@@ -25,5 +25,7 @@ Place current and future report screenshots in this folder using the exact names
 - SX1_file_complaint_upload_desktop.png
 - SX2_citizen_timeline_multilingual_desktop.png
 - SX3_resolved_feedback_snapshot_desktop.png
+- SX4_result_location_analysis_desktop.png
+- SX5_result_grievance_description_desktop.png
 
 The LaTeX report is configured to show placeholders if any file is missing.

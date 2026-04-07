@@ -34,7 +34,7 @@ Automation tools & pytest, httpx, locust, script wrappers for platform-specific 
 
 \subsection{Coverage Matrix}
 
-\begin{longtable}{p{0.28\textwidth}p{0.25\textwidth}p{0.39\textwidth}}
+\begin{longtable}{p{0.30\textwidth}p{0.24\textwidth}p{0.38\textwidth}}
 \caption{Testing Coverage Matrix by Suite}\\
 \toprule
 \textbf{Test Artifact} & \textbf{Type} & \textbf{Coverage Highlights} \\
@@ -44,12 +44,12 @@ Automation tools & pytest, httpx, locust, script wrappers for platform-specific 
 \textbf{Test Artifact} & \textbf{Type} & \textbf{Coverage Highlights} \\
 \midrule
 \endhead
-\texttt{test\_schemas.py} & Unit Validation & GeoLocation bounds, complaint schema validity, confidence-score guardrails \\
-\texttt{test\_auth\_permissions.py} & Unit Authorization & Token claims, admin and worker/dept-head access guards \\
-\texttt{test\_api\_integration.py} & Integration Smoke & Root route, health checks, versioned aliases, lightweight CI path \\
-\texttt{test\_api\_matrix.py} & Integration Matrix & /api/v1 profile route, CORS preflight behavior, security header presence \\
-\texttt{test\_notification\_chain.py} & Integration Behavior & Status update notification creation, email hook path, mark-all-read logic \\
-\texttt{test\_resilience\_security.py} & Resilience + Security & Upload hardening, analyze degrade 503, readiness degradation, sanitization \\
+\path{test_schemas.py} & Unit Validation & GeoLocation bounds, complaint schema validity, confidence-score guardrails \\
+\path{test_auth_permissions.py} & Unit Authorization & Token claims, admin and worker/dept-head access guards \\
+\path{test_api_integration.py} & Integration Smoke & Root route, health checks, versioned aliases, lightweight CI path \\
+\path{test_api_matrix.py} & Integration Matrix & /api/v1 profile route, CORS preflight behavior, security header presence \\
+\path{test_notification_chain.py} & Integration Behavior & Status update notification creation, email hook path, mark-all-read logic \\
+\path{test_resilience_security.py} & Resilience + Security & Upload hardening, analyze degrade 503, readiness degradation, sanitization \\
 Manual UAT scripts & User Acceptance & Citizen and admin journeys, friction logging, UX verification \\
 Load scripts (locust) & Performance & Endpoint mix throughput and graceful degradation behavior \\
 \bottomrule

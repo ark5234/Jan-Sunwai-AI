@@ -1,9 +1,15 @@
 \documentclass[12pt,a4paper,oneside]{report}
 
+\usepackage{iftex}
+\ifPDFTeX
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
 \usepackage{newtxtext,newtxmath}
-\usepackage[a4paper,left=1.25in,right=1in,top=1in,bottom=1in]{geometry}
+\else
+\usepackage{fontspec}
+\setmainfont{Times New Roman}
+\fi
+\usepackage[a4paper,left=3cm,right=2cm,top=2cm,bottom=2cm]{geometry}
 \usepackage{setspace}
 \usepackage{graphicx}
 \usepackage{longtable}
@@ -17,8 +23,10 @@
 \usepackage{hyperref}
 \usepackage{caption}
 \usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{microtype}
 \usepackage{xcolor}
-\usepackage{url}
+\usepackage{xurl}
 
 \hypersetup{
   colorlinks=true,
@@ -31,15 +39,59 @@
   pdfkeywords={FastAPI, React, MongoDB, Ollama, Civic AI}
 }
 
-\onehalfspacing
+\setstretch{1.15}
 \setcounter{secnumdepth}{3}
 \setcounter{tocdepth}{3}
+\setlength{\headheight}{14.5pt}
+\setlength{\emergencystretch}{6em}
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.1}
+\sloppy
+
+\titleformat{\chapter}[display]
+  {\bfseries\fontsize{16}{19}\selectfont\centering}
+  {\chaptertitlename\ \thechapter}
+  {0.4em}
+  {}
+\titleformat{name=\chapter,numberless}[display]
+  {\bfseries\fontsize{16}{19}\selectfont\centering}
+  {}
+  {0pt}
+  {}
+\titlespacing*{\chapter}{0pt}{0pt}{14pt}
+
+\titleformat{\section}
+  {\bfseries\fontsize{14}{17}\selectfont}
+  {\thesection}
+  {0.8em}
+  {}
+\titlespacing*{\section}{0pt}{10pt}{6pt}
+
+\titleformat{\subsection}
+  {\bfseries\fontsize{13}{16}\selectfont}
+  {\thesubsection}
+  {0.8em}
+  {}
+\titlespacing*{\subsection}{1.27cm}{8pt}{4pt}
+
+\titleformat{\subsubsection}
+  {\bfseries\fontsize{12}{14}\selectfont}
+  {\thesubsubsection}
+  {0.8em}
+  {}
+\titlespacing*{\subsubsection}{2.54cm}{6pt}{3pt}
 
 \pagestyle{fancy}
 \fancyhf{}
-\fancyhead[R]{\thepage}
-\fancyhead[L]{Jan-Sunwai AI}
-\renewcommand{\headrulewidth}{0.4pt}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+\fancypagestyle{plain}{%
+  \fancyhf{}
+  \fancyfoot[C]{\thepage}
+  \renewcommand{\headrulewidth}{0pt}
+  \renewcommand{\footrulewidth}{0pt}
+}
 
 \newcommand{\placeholderfigure}[2]{
 \begin{figure}[H]
@@ -62,7 +114,7 @@
   \fbox{\begin{minipage}[c][0.62\textheight][c]{0.90\textwidth}
   \centering
   \textbf{Screenshot Placeholder}\\[0.5em]
-  \small Missing file: #2
+  \small Missing file: \path{#2}
   \end{minipage}}
 }
 \caption{#3}
@@ -103,18 +155,12 @@ Institute: & \textit{Institution Name} \\
 
 \pagenumbering{roman}
 
-\chapter*{CONTENTS}
-\addcontentsline{toc}{chapter}{CONTENTS}
 \tableofcontents
 \clearpage
 
-\chapter*{List of Figures}
-\addcontentsline{toc}{chapter}{List of Figures}
 \listoffigures
 \clearpage
 
-\chapter*{List of Tables}
-\addcontentsline{toc}{chapter}{List of Tables}
 \listoftables
 \clearpage
 

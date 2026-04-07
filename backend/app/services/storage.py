@@ -7,9 +7,9 @@ from PIL import Image, UnidentifiedImageError
 
 BASE_DIR = Path(__file__).resolve().parents[2]
 UPLOAD_DIR = BASE_DIR / "uploads"
-MAX_FILE_SIZE = 5 * 1024 * 1024
-ALLOWED_EXTENSIONS = {".jpg", ".jpeg", ".png"}
-ALLOWED_CONTENT_TYPES = {"image/jpeg", "image/png", "image/jpg"}
+MAX_FILE_SIZE = 25 * 1024 * 1024
+ALLOWED_EXTENSIONS = (".jpg", ".jpeg", ".png", ".webp")
+ALLOWED_CONTENT_TYPES = {"image/jpeg", "image/png", "image/jpg", "image/webp"}
 
 MAGIC_NUMBERS = {
     "jpg": b"\xFF\xD8\xFF",
@@ -21,7 +21,17 @@ EXPECTED_FORMAT_BY_EXTENSION = {
     ".jpg": {"jpeg"},
     ".jpeg": {"jpeg"},
     ".png": {"png"},
+    ".webp": {"webp"},
 }
+
+
+def _matches_magic(header: bytes, ext: str) -> bool:
+    ext_key = ext.lstrip(".")
+    if ext_key == "webp":
+        # WEBP files are RIFF containers and encode WEBP at byte offsets 8..11
+        return len(header) >= 12 and header.startswith(b"RIFF") and header[8:12] == b"WEBP"
+    expected_magic = MAGIC_NUMBERS.get(ext_key, b"")
+    return header.startswith(expected_magic)
 
 class StorageService:
     def __init__(self, upload_dir: Path = UPLOAD_DIR):
@@ -31,13 +41,25 @@ class StorageService:
     def _validate_file(self, file: UploadFile):
         filename = file.filename or ""
         ext = os.path.splitext(filename)[1].lower()
+        content_type = (file.content_type or "").lower()
+
+        # Some browser-side compression flows can send a blob-like filename
+        # without extension. Infer extension from content type to avoid
+        # rejecting valid images.
+        if not ext and content_type in ("image/jpeg", "image/jpg"):
+            ext = ".jpg"
+        elif not ext and content_type == "image/png":
+            ext = ".png"
+        elif not ext and content_type == "image/webp":
+            ext = ".webp"
+
         if ext not in ALLOWED_EXTENSIONS:
             raise HTTPException(
                 status_code=400, 
                 detail=f"Invalid file type. Allowed types: {', '.join(ALLOWED_EXTENSIONS)}"
             )
 
-        if file.content_type and file.content_type.lower() not in ALLOWED_CONTENT_TYPES:
+        if content_type and content_type not in ALLOWED_CONTENT_TYPES:
             raise HTTPException(
                 status_code=400,
                 detail="Invalid content type. Only JPEG and PNG images are allowed.",
@@ -53,11 +75,10 @@ class StorageService:
                 detail=f"File too large. Limit is {MAX_FILE_SIZE // (1024*1024)}MB."
             )
 
-        header = file.file.read(8)
+        header = file.file.read(12)
         file.file.seek(0)
-        
-        expected_magic = MAGIC_NUMBERS.get(ext.lstrip("."), b"")
-        if not header.startswith(expected_magic):
+
+        if not _matches_magic(header, ext):
              raise HTTPException(
                 status_code=400, 
                 detail="Invalid file content (Header mismatch). Potential malware detected."

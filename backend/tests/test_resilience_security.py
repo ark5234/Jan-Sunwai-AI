@@ -4,7 +4,7 @@ import io
 import pytest
 from fastapi import HTTPException, UploadFile
 from fastapi.responses import JSONResponse
-from PIL import Image
+from PIL import Image, features
 from starlette.requests import Request
 
 from app.routers import complaints, health
@@ -24,8 +24,17 @@ def _make_png_bytes() -> bytes:
     return buf.getvalue()
 
 
-def _make_upload(filename: str, data: bytes) -> UploadFile:
-    return UploadFile(filename=filename, file=io.BytesIO(data))
+def _make_webp_bytes() -> bytes:
+    if not features.check("webp"):
+        pytest.skip("WebP codec is not available in this Pillow build")
+    buf = io.BytesIO()
+    Image.new("RGB", (24, 24), color=(80, 120, 200)).save(buf, format="WEBP")
+    return buf.getvalue()
+
+
+def _make_upload(filename: str, data: bytes, content_type: str | None = None) -> UploadFile:
+    headers = {"content-type": content_type} if content_type else None
+    return UploadFile(filename=filename, file=io.BytesIO(data), headers=headers)
 
 
 def _dummy_request() -> Request:
@@ -65,6 +74,22 @@ def test_storage_accepts_valid_png_magic_number(tmp_path):
     assert ext == ".png"
 
 
+def test_storage_accepts_valid_webp_magic_number(tmp_path):
+    service = StorageService(upload_dir=tmp_path)
+    valid_webp = _make_upload("valid.webp", _make_webp_bytes())
+
+    ext = service._validate_file(valid_webp)
+    assert ext == ".webp"
+
+
+def test_storage_accepts_missing_extension_with_jpeg_content_type(tmp_path):
+    service = StorageService(upload_dir=tmp_path)
+    blob_upload = _make_upload("blob", _make_jpeg_bytes(), "image/jpeg")
+
+    ext = service._validate_file(blob_upload)
+    assert ext == ".jpg"
+
+
 def test_storage_rejects_corrupt_jpeg_payload_with_valid_magic(tmp_path):
     service = StorageService(upload_dir=tmp_path)
     # Starts with JPEG magic bytes but not actually decodable as a JPEG image.
@@ -79,7 +104,7 @@ def test_storage_rejects_corrupt_jpeg_payload_with_valid_magic(tmp_path):
 
 def test_storage_rejects_oversized_upload(tmp_path):
     service = StorageService(upload_dir=tmp_path)
-    big_payload = b"\xff\xd8\xff" + (b"0" * (5 * 1024 * 1024 + 16))
+    big_payload = b"\xff\xd8\xff" + (b"0" * (25 * 1024 * 1024 + 16))
     oversized = _make_upload("big.jpg", big_payload)
 
     with pytest.raises(HTTPException) as exc:

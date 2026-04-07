@@ -11,11 +11,18 @@
 From this folder (`docs/reports/latex`):
 
 ```bash
-pdflatex -interaction=nonstopmode main.tex
-pdflatex -interaction=nonstopmode main.tex
+xelatex -interaction=nonstopmode main.tex
+xelatex -interaction=nonstopmode main.tex
 ```
 
 Run twice so table/figure/page references settle.
+
+If XeLaTeX is unavailable, use:
+
+```bash
+pdflatex -interaction=nonstopmode main.tex
+pdflatex -interaction=nonstopmode main.tex
+```
 
 ## Screenshot Assets
 

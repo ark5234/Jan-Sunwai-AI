@@ -28,11 +28,11 @@ export default function ImageUpload({ onImageSelect }) {
 
   const validateFile = (file) => {
     if (!file.type.startsWith('image/')) {
-      setError("Please upload an image file (JPG, PNG).");
+      setError("Please upload an image file (JPG, PNG, WEBP).");
       return false;
     }
-    if (file.size > 5 * 1024 * 1024) { // 5MB limit
-      setError("File size exceeds 5MB.");
+    if (file.size > 25 * 1024 * 1024) {
+      setError("File size exceeds 25MB.");
       return false;
     }
     return true;
@@ -149,7 +149,7 @@ export default function ImageUpload({ onImageSelect }) {
             <p className="mb-2 text-sm text-slate-500">
               <span className="font-semibold">Click to upload</span> or drag and drop
             </p>
-            <p className="text-xs text-slate-500">JPG, PNG (MAX. 5MB)</p>
+            <p className="text-xs text-slate-500">JPG, PNG, WEBP (MAX. 25MB)</p>
           </div>
         )}
       </div>

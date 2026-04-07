@@ -1,0 +1,67 @@
+\addvspace {10\p@ }
+\contentsline {table}{\numberline {1.1}{\ignorespaces Project Profile}}{1}{table.caption.7}%
+\contentsline {table}{\numberline {1.2}{\ignorespaces Objectives and Expected Outcomes}}{2}{table.caption.8}%
+\contentsline {table}{\numberline {1.3}{\ignorespaces Technology Stack and Role in System}}{3}{table.caption.9}%
+\addvspace {10\p@ }
+\contentsline {table}{\numberline {2.1}{\ignorespaces Milestone Summary and Deliverables}}{6}{table.2.1}%
+\contentsline {table}{\numberline {2.2}{\ignorespaces Role Responsibility Matrix (Project Execution)}}{8}{table.caption.10}%
+\contentsline {table}{\numberline {2.3}{\ignorespaces PERT-Style Activity Dependencies}}{9}{table.caption.11}%
+\contentsline {table}{\numberline {2.4}{\ignorespaces Risk Register and Mitigation Plan}}{9}{table.2.4}%
+\contentsline {table}{\numberline {2.5}{\ignorespaces Week-by-Week Execution Summary (W1--W18)}}{10}{table.2.5}%
+\contentsline {table}{\numberline {2.6}{\ignorespaces Governance-Oriented Delivery Metrics}}{12}{table.caption.12}%
+\addvspace {10\p@ }
+\contentsline {table}{\numberline {3.1}{\ignorespaces Limitations in Legacy Grievance Handling}}{14}{table.caption.13}%
+\contentsline {table}{\numberline {3.2}{\ignorespaces User Characteristics and Behavioral Expectations}}{14}{table.caption.14}%
+\contentsline {table}{\numberline {3.3}{\ignorespaces Functional Requirement Specification}}{15}{table.3.3}%
+\contentsline {table}{\numberline {3.4}{\ignorespaces Non-Functional Requirement Specification}}{16}{table.3.4}%
+\contentsline {table}{\numberline {3.5}{\ignorespaces Hardware Requirement Baseline}}{17}{table.caption.15}%
+\contentsline {table}{\numberline {3.6}{\ignorespaces Software Environment Requirements}}{17}{table.caption.16}%
+\contentsline {table}{\numberline {3.7}{\ignorespaces Assumptions and External Dependencies}}{19}{table.caption.17}%
+\contentsline {table}{\numberline {3.8}{\ignorespaces Narrative Use-Case Requirements}}{19}{table.3.8}%
+\contentsline {table}{\numberline {3.9}{\ignorespaces MoSCoW-Style Requirement Priority Mapping}}{20}{table.caption.18}%
+\addvspace {10\p@ }
+\contentsline {table}{\numberline {4.1}{\ignorespaces Proposed Feature Set and Operational Benefit}}{22}{table.4.1}%
+\contentsline {table}{\numberline {4.2}{\ignorespaces Traceability from Requirements to Proposed Modules}}{24}{table.4.2}%
+\contentsline {table}{\numberline {4.3}{\ignorespaces Expected Impact of Proposed System}}{25}{table.caption.20}%
+\contentsline {table}{\numberline {4.4}{\ignorespaces Inter-Module Contract Summary}}{25}{table.4.4}%
+\contentsline {table}{\numberline {4.5}{\ignorespaces Persona-Oriented Realization Snapshot}}{26}{table.caption.21}%
+\addvspace {10\p@ }
+\contentsline {table}{\numberline {5.1}{\ignorespaces Major Design Decisions and Rationale}}{28}{table.caption.24}%
+\contentsline {table}{\numberline {5.2}{\ignorespaces Data Dictionary (Core Fields)}}{33}{table.5.2}%
+\contentsline {table}{\numberline {5.3}{\ignorespaces Indexing Strategy by Collection}}{35}{table.caption.32}%
+\contentsline {table}{\numberline {5.4}{\ignorespaces GUI Areas and Purpose}}{36}{table.caption.33}%
+\addvspace {10\p@ }
+\contentsline {table}{\numberline {6.1}{\ignorespaces Implementation Toolchain and Use Cases}}{59}{table.6.1}%
+\contentsline {table}{\numberline {6.2}{\ignorespaces Implementation Sequence with Dependency Notes}}{61}{table.caption.55}%
+\contentsline {table}{\numberline {6.3}{\ignorespaces Implementation Quality Gates}}{62}{table.caption.56}%
+\contentsline {table}{\numberline {6.4}{\ignorespaces Router-Level Implementation Planning Notes}}{62}{table.6.4}%
+\contentsline {table}{\numberline {6.5}{\ignorespaces Service-Level Implementation Planning}}{63}{table.caption.57}%
+\contentsline {table}{\numberline {6.6}{\ignorespaces Deployment Rollout Stages}}{64}{table.caption.58}%
+\contentsline {table}{\numberline {6.7}{\ignorespaces Operational Monitoring Matrix}}{64}{table.6.7}%
+\addvspace {10\p@ }
+\contentsline {table}{\numberline {7.1}{\ignorespaces Testing Environment Baseline}}{66}{table.caption.59}%
+\contentsline {table}{\numberline {7.2}{\ignorespaces Testing Coverage Matrix by Suite}}{66}{table.7.2}%
+\contentsline {table}{\numberline {7.3}{\ignorespaces Representative Unit Test Cases}}{67}{table.caption.60}%
+\contentsline {table}{\numberline {7.4}{\ignorespaces System Test Scenarios}}{68}{table.caption.61}%
+\contentsline {table}{\numberline {7.5}{\ignorespaces Defect Log Snapshot and Resolution}}{69}{table.7.5}%
+\contentsline {table}{\numberline {7.6}{\ignorespaces Outcome Summary by Validation Area}}{70}{table.caption.62}%
+\contentsline {table}{\numberline {7.7}{\ignorespaces Persona-Driven UAT Matrix}}{71}{table.7.7}%
+\contentsline {table}{\numberline {7.8}{\ignorespaces Load Profile and Acceptance Guidance}}{73}{table.caption.63}%
+\contentsline {table}{\numberline {7.9}{\ignorespaces Security Regression Verification Matrix}}{73}{table.7.9}%
+\addvspace {10\p@ }
+\contentsline {table}{\numberline {8.1}{\ignorespaces Indicative Post-Submission Roadmap}}{77}{table.caption.64}%
+\contentsline {table}{\numberline {8.2}{\ignorespaces Future Backlog Prioritization Matrix}}{77}{table.8.2}%
+\addvspace {10\p@ }
+\addvspace {10\p@ }
+\contentsline {table}{\numberline {10.1}{\ignorespaces API Endpoint Snapshot}}{82}{table.10.1}%
+\contentsline {table}{\numberline {10.2}{\ignorespaces Core Backend Environment Variables}}{84}{table.10.2}%
+\contentsline {table}{\numberline {10.3}{\ignorespaces Department to Authority Mapping Snapshot}}{85}{table.10.3}%
+\contentsline {table}{\numberline {10.4}{\ignorespaces Operational Script Inventory}}{85}{table.10.4}%
+\contentsline {table}{\numberline {10.5}{\ignorespaces Screenshot Capture Checklist}}{86}{table.10.5}%
+\contentsline {table}{\numberline {10.6}{\ignorespaces Execution Timeline Digest for Final Report Verification}}{89}{table.10.6}%
+\contentsline {table}{\numberline {10.7}{\ignorespaces Traceability from Functional Requirement to Validation Evidence}}{90}{table.10.7}%
+\addvspace {10\p@ }
+\contentsline {table}{\numberline {11.1}{\ignorespaces Document-Level Verification Checklist}}{92}{table.11.1}%
+\contentsline {table}{\numberline {11.2}{\ignorespaces Technical Consistency Verification Checklist}}{93}{table.11.2}%
+\contentsline {table}{\numberline {11.3}{\ignorespaces Submission Artifact Completeness}}{94}{table.caption.66}%
+\contentsline {table}{\numberline {11.4}{\ignorespaces Report Claim to Artifact Evidence Mapping}}{95}{table.11.4}%

@@ -1,3 +1,4 @@
+% !TeX root = ../main.tex
 \chapter{System Design}
 
 System design in Jan-Sunwai AI focuses on reliable complaint orchestration in a governance-sensitive environment. The design balances modular API responsibilities, AI integration boundaries, role-specific UI behavior, and document-oriented persistence strategies.
@@ -98,7 +99,8 @@ This approach preserves operational read performance while retaining clear owner
 
 \subsection{Data Dictionary}
 
-\begin{longtable}{p{0.17\textwidth}p{0.22\textwidth}p{0.18\textwidth}p{0.33\textwidth}}
+\small
+\begin{longtable}{p{0.15\textwidth}>{\raggedright\arraybackslash}p{0.23\textwidth}p{0.16\textwidth}p{0.38\textwidth}}
 \caption{Data Dictionary (Core Fields)}\\
 \toprule
 \textbf{Collection} & \textbf{Field} & \textbf{Type} & \textbf{Purpose} \\
@@ -133,7 +135,7 @@ complaints & location & Object & Geospatial metadata and address \\
 complaints & ai\_metadata & Object & Model, confidence, labels, rationale fields \\
 complaints & routing\_confidence & Float & Routing confidence metadata \\
 complaints & escalated & Boolean & Escalation state \\
-complaints & escalation\_parent\_authority\_id & String/Null & Parent target for escalation \\
+complaints & \path{escalation_parent_authority_id} & String/Null & Parent target for escalation \\
 complaints & status\_history & Array[Object] & Lifecycle transition audit \\
 complaints & dept\_notes & Array[Object] & Internal notes for admin/head \\
 complaints & comments & Array[Object] & Shared comment thread \\
@@ -150,22 +152,23 @@ notifications & message & String & Display message \\
 notifications & is\_read & Boolean & Read-state for badge computation \\
 notifications & created\_at & Datetime & Event timestamp \\
 \midrule
-password\_resets & \_id & ObjectId & Reset record identity \\
-password\_resets & user\_id & String & Target user identity \\
-password\_resets & token\_hash & String & SHA-256 hash of reset token \\
-password\_resets & used & Boolean & Token consumed/revoked marker \\
-password\_resets & created\_at & Datetime & Token issued time \\
-password\_resets & expires\_at & Datetime & TTL-controlled expiry time \\
-password\_resets & used\_at / revoked\_at / expired\_at & Datetime/Null & Token lifecycle audit fields \\
+\path{password_resets} & \_id & ObjectId & Reset record identity \\
+\path{password_resets} & user\_id & String & Target user identity \\
+\path{password_resets} & token\_hash & String & SHA-256 hash of reset token \\
+\path{password_resets} & used & Boolean & Token consumed/revoked marker \\
+\path{password_resets} & created\_at & Datetime & Token issued time \\
+\path{password_resets} & expires\_at & Datetime & TTL-controlled expiry time \\
+\path{password_resets} & used\_at / revoked\_at / expired\_at & Datetime/Null & Token lifecycle audit fields \\
 \bottomrule
 \end{longtable}
+\normalsize
 
 \subsection{Indexing Strategy}
 
 \begin{table}[H]
 \centering
 \caption{Indexing Strategy by Collection}
-\begin{tabularx}{\textwidth}{p{0.20\textwidth}p{0.33\textwidth}X}
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{0.22\textwidth}>{\raggedright\arraybackslash}p{0.31\textwidth}X}
 \toprule
 \textbf{Collection} & \textbf{Index} & \textbf{Purpose} \\
 \midrule
@@ -176,22 +179,22 @@ complaints & (department, created\_at) & Department-level operational listing \\
 complaints & authority\_id & Escalation and authority review queries \\
 notifications & (user\_id, created\_at) & Ordered notification feed retrieval \\
 notifications & (user\_id, is\_read) & Unread badge counter queries \\
-password\_resets & unique(token\_hash) & Token lookup and collision prevention \\
-password\_resets & (user\_id, used) & Active token invalidation management \\
-password\_resets & TTL(expires\_at) & Automatic expired-token cleanup \\
+\path{password_resets} & \path{unique(token_hash)} & Token lookup and collision prevention \\
+\path{password_resets} & \path{(user_id, used)} & Active token invalidation management \\
+\path{password_resets} & \path{TTL(expires_at)} & Automatic expired-token cleanup \\
 \bottomrule
 \end{tabularx}
 \end{table}
 
 \subsection{Assignment Distance Formula}
 
-Auto-assignment uses geospatial proximity filtering where service-area radii are configured for workers. The distance calculation follows the Haversine relation:
+Auto-assignment uses geospatial proximity filtering where service-area radii are configured for workers. The distance calculation follows the Haversine relation \cite{haversine_original}:
 
-\begin{equation}
+\begin{equation}\label{eq:haversine_distance}
  d = 2R \arcsin\left(\sqrt{\sin^2\left(\frac{\phi_2-\phi_1}{2}\right) + \cos(\phi_1)\cos(\phi_2)\sin^2\left(\frac{\lambda_2-\lambda_1}{2}\right)}\right)
 \end{equation}
 
-where $R$ is Earth radius in kilometers, $(\phi_1, \lambda_1)$ is worker location, and $(\phi_2, \lambda_2)$ is complaint location.
+Equation~\eqref{eq:haversine_distance} is used for worker-to-complaint distance scoring, where $R$ is Earth radius in kilometers, $(\phi_1, \lambda_1)$ is worker location, and $(\phi_2, \lambda_2)$ is complaint location.
 
 \section{GUI Design}
 
@@ -298,6 +301,12 @@ The screenshot gallery below is designed for final submission formatting. Each f
 
 \clearpage
 \screenshotfigure{fig:sx3}{../../images/screenshots/SX3_resolved_feedback_snapshot_desktop.png}{SX3: Resolved Complaint with Citizen Feedback}
+
+\clearpage
+\screenshotfigure{fig:sx4}{../../images/screenshots/SX4_result_location_analysis_desktop.png}{SX4: Result Page with Location Context and AI Analysis}
+
+\clearpage
+\screenshotfigure{fig:sx5}{../../images/screenshots/SX5_result_grievance_description_desktop.png}{SX5: Result Page with Grievance Description Editing}
 
 \section{Chapter Summary}
 

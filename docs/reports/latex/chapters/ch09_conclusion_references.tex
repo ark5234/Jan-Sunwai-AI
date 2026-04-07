@@ -2,7 +2,7 @@
 
 \section{Conclusion}
 
-Jan-Sunwai AI demonstrates that a practical civic grievance platform can combine AI assistance with deterministic governance controls without sacrificing transparency or operational safety. The project delivered:
+Jan-Sunwai AI demonstrates that a practical civic grievance platform can combine AI assistance with deterministic governance controls without sacrificing transparency or operational safety. The technology choices and implementation baseline align with established platform documentation for FastAPI, React, MongoDB, and Docker \cite{fastapi_docs,react_docs,mongodb_docs,docker_docs}. The project delivered:
 
 \begin{itemize}[leftmargin=1.5em]
 \item A complete complaint lifecycle from image-based intake to resolution tracking.
@@ -12,9 +12,9 @@ Jan-Sunwai AI demonstrates that a practical civic grievance platform can combine
 \item Containerized deployment and documentation artifacts suitable for institutional handover.
 \end{itemize}
 
-From an engineering standpoint, the most significant contribution is the architecture pattern: use AI where it adds value, but preserve deterministic checkpoints and human governance where accountability is essential. This pattern is especially appropriate in public-service software, where explainability and auditability are as important as automation speed.
+From an engineering standpoint, the most significant contribution is the architecture pattern: use AI where it adds value, but preserve deterministic checkpoints and human governance where accountability is essential. This pattern is especially appropriate in public-service software, where explainability and auditability are as important as automation speed. Security controls for upload validation, input handling, and operational hardening were shaped by OWASP guidance \cite{owasp_top10,owasp_file_upload}.
 
-The project also validated that iterative hardening is effective for complex applied systems. Functional breadth, security controls, resilience behavior, and deployment readiness were improved incrementally, with testing and documentation integrated into delivery rather than deferred to the end.
+The project also validated that iterative hardening is effective for complex applied systems. Functional breadth, security controls, resilience behavior, and deployment readiness were improved incrementally, with testing and documentation integrated into delivery rather than deferred to the end. Performance and scenario-load behavior were evaluated using the Locust framework \cite{locust_docs}.
 
 As a final outcome, Jan-Sunwai AI is positioned as a strong foundation for municipal deployment pilots. With further scaling and policy integration, it can evolve into a wider civic operations platform supporting higher throughput, stronger compliance workflows, and richer planning intelligence.
 
@@ -23,55 +23,48 @@ As a final outcome, Jan-Sunwai AI is positioned as a strong foundation for munic
 \begin{thebibliography}{99}
 
 \bibitem{fastapi_docs}
-FastAPI Documentation.
-\newblock \url{https://fastapi.tiangolo.com}
-\newblock Accessed April 2026.
+FastAPI,
+\newblock ``FastAPI documentation,'' [Online]. Available: \url{https://fastapi.tiangolo.com}. [Accessed: Apr. 7, 2026].
 
 \bibitem{react_docs}
-React Documentation.
-\newblock \url{https://react.dev}
-\newblock Accessed April 2026.
+React,
+\newblock ``React documentation,'' [Online]. Available: \url{https://react.dev}. [Accessed: Apr. 7, 2026].
 
 \bibitem{mongodb_docs}
-MongoDB Documentation.
-\newblock \url{https://www.mongodb.com/docs}
-\newblock Accessed April 2026.
+MongoDB,
+\newblock ``MongoDB documentation,'' [Online]. Available: \url{https://www.mongodb.com/docs}. [Accessed: Apr. 7, 2026].
 
 \bibitem{pydantic_docs}
-Pydantic Documentation.
-\newblock \url{https://docs.pydantic.dev}
-\newblock Accessed April 2026.
+Pydantic,
+\newblock ``Pydantic documentation,'' [Online]. Available: \url{https://docs.pydantic.dev}. [Accessed: Apr. 7, 2026].
 
 \bibitem{ollama_docs}
-Ollama Documentation.
-\newblock \url{https://ollama.com}
-\newblock Accessed April 2026.
+Ollama,
+\newblock ``Ollama documentation,'' [Online]. Available: \url{https://ollama.com}. [Accessed: Apr. 7, 2026].
 
 \bibitem{owasp_top10}
-OWASP Foundation.
-\newblock OWASP Top 10 Web Application Security Risks.
-\newblock \url{https://owasp.org/www-project-top-ten/}
-\newblock Accessed April 2026.
+OWASP Foundation,
+\newblock ``OWASP Top 10: Web application security risks,'' [Online]. Available: \url{https://owasp.org/www-project-top-ten/}. [Accessed: Apr. 7, 2026].
 
 \bibitem{owasp_file_upload}
-OWASP Foundation.
-\newblock File Upload Security Cheat Sheet.
-\newblock \url{https://cheatsheetseries.owasp.org/cheatsheets/File_Upload_Cheat_Sheet.html}
-\newblock Accessed April 2026.
+OWASP Foundation,
+\newblock ``File upload security cheat sheet,'' [Online]. Available: \url{https://cheatsheetseries.owasp.org/cheatsheets/File_Upload_Cheat_Sheet.html}. [Accessed: Apr. 7, 2026].
 
 \bibitem{docker_docs}
-Docker Documentation.
-\newblock \url{https://docs.docker.com}
-\newblock Accessed April 2026.
+Docker,
+\newblock ``Docker documentation,'' [Online]. Available: \url{https://docs.docker.com}. [Accessed: Apr. 7, 2026].
 
 \bibitem{locust_docs}
-Locust Documentation.
-\newblock \url{https://docs.locust.io}
-\newblock Accessed April 2026.
+Locust,
+\newblock ``Locust documentation,'' [Online]. Available: \url{https://docs.locust.io}. [Accessed: Apr. 7, 2026].
+
+\bibitem{haversine_original}
+R. W. Sinnott,
+\newblock ``Virtues of the Haversine,''
+\newblock \emph{Sky and Telescope}, vol. 68, no. 2, p. 159, 1984.
 
 \bibitem{jan_sunwai_docs}
-Jan-Sunwai AI Project Documentation Set.
-\newblock API reference, architecture notes, UAT plan, security testing guide, and timeline artifacts.
-\newblock Repository-local documentation, 2026.
+Jan-Sunwai AI Project Team,
+\newblock ``Jan-Sunwai AI project documentation set (API reference, architecture notes, UAT plan, security testing guide, and timeline artifacts),'' repository documentation, 2026.
 
 \end{thebibliography}

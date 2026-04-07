@@ -26,6 +26,20 @@ export default function useAnalyze() {
       img.src = objectUrl;
     });
 
+  const getSafeUploadName = (originalName, mimeType) => {
+    const fallbackBase = 'upload';
+    const baseName = (originalName || fallbackBase).replace(/\.[^/.]+$/, '');
+    const normalizedMime = (mimeType || '').toLowerCase();
+
+    if (normalizedMime === 'image/webp') {
+      return `${baseName}.webp`;
+    }
+    if (normalizedMime === 'image/png') {
+      return `${baseName}.png`;
+    }
+    return `${baseName}.jpg`;
+  };
+
   const analyzeImage = async (file, _username = "Concerned Citizen", language = "en") => {
     setLoading(true);
     setError(null);
@@ -50,6 +64,7 @@ export default function useAnalyze() {
     }
 
     let uploadFile = file;
+    const preferredType = file.type && file.type.startsWith('image/') ? file.type : 'image/jpeg';
     try {
       // Compress to reduce upload time and backend load.
       uploadFile = await imageCompression(file, {
@@ -57,6 +72,7 @@ export default function useAnalyze() {
         maxWidthOrHeight: 1920,
         useWebWorker: true,
         initialQuality: 0.85,
+        fileType: preferredType,
       });
     } catch (compressionError) {
       void compressionError
@@ -72,7 +88,9 @@ export default function useAnalyze() {
     });
 
     const formData = new FormData();
-    formData.append('file', uploadFile);
+    const uploadMime = uploadFile.type || preferredType || 'image/jpeg';
+    const uploadName = getSafeUploadName(file.name, uploadMime);
+    formData.append('file', uploadFile, uploadName);
     formData.append('language', language);
     // Username is extracted from Token in backend now
     
