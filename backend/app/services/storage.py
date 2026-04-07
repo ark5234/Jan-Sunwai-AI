@@ -3,16 +3,24 @@ import shutil
 import uuid
 from fastapi import UploadFile, HTTPException
 from pathlib import Path
+from PIL import Image, UnidentifiedImageError
 
 BASE_DIR = Path(__file__).resolve().parents[2]
 UPLOAD_DIR = BASE_DIR / "uploads"
 MAX_FILE_SIZE = 5 * 1024 * 1024
 ALLOWED_EXTENSIONS = {".jpg", ".jpeg", ".png"}
+ALLOWED_CONTENT_TYPES = {"image/jpeg", "image/png", "image/jpg"}
 
 MAGIC_NUMBERS = {
     "jpg": b"\xFF\xD8\xFF",
     "jpeg": b"\xFF\xD8\xFF",
     "png": b"\x89\x50\x4E\x47\x0D\x0A\x1A\x0A"
+}
+
+EXPECTED_FORMAT_BY_EXTENSION = {
+    ".jpg": {"jpeg"},
+    ".jpeg": {"jpeg"},
+    ".png": {"png"},
 }
 
 class StorageService:
@@ -27,6 +35,12 @@ class StorageService:
             raise HTTPException(
                 status_code=400, 
                 detail=f"Invalid file type. Allowed types: {', '.join(ALLOWED_EXTENSIONS)}"
+            )
+
+        if file.content_type and file.content_type.lower() not in ALLOWED_CONTENT_TYPES:
+            raise HTTPException(
+                status_code=400,
+                detail="Invalid content type. Only JPEG and PNG images are allowed.",
             )
         
         file.file.seek(0, os.SEEK_END)
@@ -47,6 +61,26 @@ class StorageService:
              raise HTTPException(
                 status_code=400, 
                 detail="Invalid file content (Header mismatch). Potential malware detected."
+            )
+
+        try:
+            file.file.seek(0)
+            image = Image.open(file.file)
+            image.verify()
+            detected_format = (image.format or "").lower()
+        except (UnidentifiedImageError, OSError, ValueError):
+            raise HTTPException(
+                status_code=400,
+                detail="Invalid image payload. File is corrupted or not a real image.",
+            )
+        finally:
+            file.file.seek(0)
+
+        expected_formats = EXPECTED_FORMAT_BY_EXTENSION.get(ext, set())
+        if detected_format not in expected_formats:
+            raise HTTPException(
+                status_code=400,
+                detail="File extension does not match actual image format.",
             )
 
         return ext

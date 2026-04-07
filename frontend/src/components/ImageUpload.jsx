@@ -122,8 +122,7 @@ export default function ImageUpload({ onImageSelect }) {
               className="max-w-full max-h-full object-contain rounded"
               style={{ pointerEvents: 'none' }}
               onLoad={() => setImageLoaded(true)}
-              onError={(e) => {
-                console.error('Image load error:', e);
+              onError={() => {
                 setError('Failed to load image preview');
                 setPreview(null);
                 setImageLoaded(false);

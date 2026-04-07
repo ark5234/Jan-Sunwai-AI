@@ -18,6 +18,12 @@ def _make_jpeg_bytes() -> bytes:
     return buf.getvalue()
 
 
+def _make_png_bytes() -> bytes:
+    buf = io.BytesIO()
+    Image.new("RGB", (24, 24), color=(20, 160, 120)).save(buf, format="PNG")
+    return buf.getvalue()
+
+
 def _make_upload(filename: str, data: bytes) -> UploadFile:
     return UploadFile(filename=filename, file=io.BytesIO(data))
 
@@ -49,6 +55,38 @@ def test_storage_accepts_valid_jpeg_magic_number(tmp_path):
 
     ext = service._validate_file(valid_jpeg)
     assert ext == ".jpg"
+
+
+def test_storage_accepts_valid_png_magic_number(tmp_path):
+    service = StorageService(upload_dir=tmp_path)
+    valid_png = _make_upload("valid.png", _make_png_bytes())
+
+    ext = service._validate_file(valid_png)
+    assert ext == ".png"
+
+
+def test_storage_rejects_corrupt_jpeg_payload_with_valid_magic(tmp_path):
+    service = StorageService(upload_dir=tmp_path)
+    # Starts with JPEG magic bytes but not actually decodable as a JPEG image.
+    corrupted = _make_upload("corrupt.jpg", b"\xff\xd8\xffthis-is-not-a-valid-jpeg")
+
+    with pytest.raises(HTTPException) as exc:
+        service._validate_file(corrupted)
+
+    assert exc.value.status_code == 400
+    assert "Invalid image payload" in exc.value.detail
+
+
+def test_storage_rejects_oversized_upload(tmp_path):
+    service = StorageService(upload_dir=tmp_path)
+    big_payload = b"\xff\xd8\xff" + (b"0" * (5 * 1024 * 1024 + 16))
+    oversized = _make_upload("big.jpg", big_payload)
+
+    with pytest.raises(HTTPException) as exc:
+        service._validate_file(oversized)
+
+    assert exc.value.status_code == 413
+    assert "File too large" in exc.value.detail
 
 
 def test_analyze_returns_503_when_classifier_fails(monkeypatch):

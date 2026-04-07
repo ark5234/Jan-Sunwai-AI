@@ -38,8 +38,8 @@ export default function useAnalyze() {
         try {
             const parsed = JSON.parse(storedUser);
             token = parsed.access_token;
-        } catch (e) {
-            console.error("Failed to parse user token", e);
+      } catch (_e) {
+        // Ignore malformed local session; handled as missing token below.
         }
     }
 
@@ -59,7 +59,7 @@ export default function useAnalyze() {
         initialQuality: 0.85,
       });
     } catch (compressionError) {
-      console.warn('Image compression failed, using original file:', compressionError);
+      void compressionError
       uploadFile = file;
     }
 
@@ -88,7 +88,6 @@ export default function useAnalyze() {
       navigate('/result', { state: { result: response.data, language } });
       
     } catch (err) {
-        console.error("Analysis failed:", err);
         if (err.response?.status === 401) {
             setError("Session expired. Please log out and log back in.");
             // Clear invalid session

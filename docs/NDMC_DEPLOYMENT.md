@@ -44,6 +44,25 @@ cp backend/env.production backend/.env
 docker compose -f docker-compose.prod.yml up --build -d
 ```
 
+## NDMC Network Configuration (Container -> Ollama)
+
+- Default container route uses `host.docker.internal:11434`.
+- On Linux hosts, ensure compose uses:
+
+```yaml
+extra_hosts:
+    - "host.docker.internal:host-gateway"
+```
+
+- If NDMC uses a separate Ollama host, set `OLLAMA_BASE_URL` to the internal reachable URL.
+
+Connectivity check from backend container:
+
+```bash
+docker compose -f docker-compose.prod.yml exec -T backend \
+    python -c "import os,urllib.request;u=os.getenv('OLLAMA_BASE_URL').rstrip('/')+'/api/tags';print(urllib.request.urlopen(u, timeout=5).status)"
+```
+
 Services started:
 
 - `mongodb`

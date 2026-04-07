@@ -65,6 +65,12 @@ bash scripts/run_load_test.sh http://localhost:8000
 scripts\run_load_test.bat http://localhost:8000
 ```
 
+### Windows (PowerShell)
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts/run_load_test.ps1 http://localhost:8000
+```
+
 ### Direct Locust command
 
 ```bash
@@ -74,6 +80,10 @@ locust -f locustfile.py --host http://localhost:8000
 ```
 
 Open Locust UI at `http://localhost:8089`.
+
+Headless mode note:
+
+- Current run scripts execute locust in headless mode and save timestamped reports under `reports/load/<timestamp>/`.
 
 ## Optional Credentials
 

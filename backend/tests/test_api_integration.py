@@ -46,30 +46,21 @@ async def run_tests():
         # Configure Async Client
         transport = ASGITransport(app=app)
         async with AsyncClient(transport=transport, base_url="http://test") as client:
-            
-            print("\n[INFO] Testing Root Endpoint...")
             response = await client.get("/")
             assert response.status_code == 200
             assert response.json() == {"message": "Jan-Sunwai AI Backend Online"}
-            print("Root Check Passed.")
 
-            print("\n[INFO] Testing /health/live endpoint...")
             health = await client.get("/health/live")
             assert health.status_code == 200
             assert health.json().get("status") == "ok"
-            print("Health Check Passed.")
 
-            print("\n[INFO] Testing /api/v1/health/live endpoint...")
             versioned_health = await client.get("/api/v1/health/live")
             assert versioned_health.status_code == 200
             assert versioned_health.json().get("status") == "ok"
-            print("Versioned Health Alias Check Passed.")
 
             if CI_LIGHT:
-                print("\n[INFO] CI_LIGHT mode enabled, skipping /analyze heavy model test.")
                 return
 
-            print("\n[INFO] Testing /analyze endpoint (Integration Workflow)...")
             img_data = create_dummy_image()
             files = {"file": ("test.jpg", img_data, "image/jpeg")}
             # Removed explicit username data, now handled by dependency override
@@ -77,9 +68,6 @@ async def run_tests():
             
             # Expect 200 because we overrode the auth dependency to return a valid user
             response = await client.post("/analyze", files=files, data=data)
-            
-            print(f"Response Code: {response.status_code}")
-            print(f"Response Body: {response.json()}")
 
             assert response.status_code == 200
     
@@ -92,4 +80,3 @@ def test_api_integration_smoke():
 
 if __name__ == "__main__":
     asyncio.run(run_tests())
-    print("\nIntegration Tests Completed.")

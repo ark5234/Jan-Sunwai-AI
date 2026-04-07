@@ -61,11 +61,9 @@ export default function Navbar() {
           // Token expired — clear stale count
           setUnreadCount(0);
           setNotifications([]);
-        } else {
-          console.warn('[Navbar] notifications fetch returned', res.status);
         }
-      } catch (err) {
-        console.error('[Navbar] notifications fetch error:', err);
+      } catch (_err) {
+        // Ignore transient fetch errors; polling retries every 30s.
       } finally {
         setNotifLoading(false);
       }
@@ -161,40 +159,40 @@ export default function Navbar() {
             {/* Desktop Nav Links */}
             <div className="hidden md:flex md:items-center md:space-x-1">
               {!user && (
-                <Link to="/" className={`px-3 py-[18px] text-sm font-medium transition-colors ${isActive('/')}`}>
+                <Link to="/" className={`px-3 py-4.5 text-sm font-medium transition-colors ${isActive('/')}`}>
                   <Home className="inline-block w-4 h-4 mr-1 -mt-0.5" />
                   Home
                 </Link>
               )}
               {user && (
                 <>
-                  <Link to="/dashboard" className={`px-3 py-[18px] text-sm font-medium transition-colors ${isActive('/dashboard')}`}>
+                  <Link to="/dashboard" className={`px-3 py-4.5 text-sm font-medium transition-colors ${isActive('/dashboard')}`}>
                     <LayoutDashboard className="inline-block w-4 h-4 mr-1 -mt-0.5" />
                     Dashboard
                   </Link>
-                  <Link to="/analyze" className={`px-3 py-[18px] text-sm font-medium transition-colors ${isActive('/analyze')}`}>
+                  <Link to="/analyze" className={`px-3 py-4.5 text-sm font-medium transition-colors ${isActive('/analyze')}`}>
                     <PlusCircle className="inline-block w-4 h-4 mr-1 -mt-0.5" />
                     File Complaint
                   </Link>
                   {user.role === 'admin' && (
                     <>
-                      <Link to="/analytics" className={`px-3 py-[18px] text-sm font-medium transition-colors ${isActive('/analytics')}`}>
+                      <Link to="/analytics" className={`px-3 py-4.5 text-sm font-medium transition-colors ${isActive('/analytics')}`}>
                         <BarChart2 className="inline-block w-4 h-4 mr-1 -mt-0.5" />
                         Analytics
                       </Link>
-                      <Link to="/map" className={`px-3 py-[18px] text-sm font-medium transition-colors ${isActive('/map')}`}>
+                      <Link to="/map" className={`px-3 py-4.5 text-sm font-medium transition-colors ${isActive('/map')}`}>
                         <Map className="inline-block w-4 h-4 mr-1 -mt-0.5" />
                         Map
                       </Link>
                     </>
                   )}
                   {user.role === 'dept_head' && (
-                    <Link to="/map" className={`px-3 py-[18px] text-sm font-medium transition-colors ${isActive('/map')}`}>
+                    <Link to="/map" className={`px-3 py-4.5 text-sm font-medium transition-colors ${isActive('/map')}`}>
                       <Map className="inline-block w-4 h-4 mr-1 -mt-0.5" />
                       Map
                     </Link>
                   )}
-                  <Link to="/public" className={`px-3 py-[18px] text-sm font-medium transition-colors ${isActive('/public')}`}>
+                  <Link to="/public" className={`px-3 py-4.5 text-sm font-medium transition-colors ${isActive('/public')}`}>
                     <Globe className="inline-block w-4 h-4 mr-1 -mt-0.5" />
                     Public Board
                   </Link>

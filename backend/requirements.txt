@@ -1,27 +1,27 @@
 ﻿# ── Runtime (live API) ─────────────────────────────────────────────────────
-fastapi
-uvicorn
-gunicorn
-python-multipart
-Pillow          # EXIF geotagging + image validation
-geopy
-pymongo
-ollama
-requests
-motor
-email-validator
-python-jose[cryptography]
-passlib[bcrypt]
+fastapi==0.104.1
+uvicorn==0.24.0
+gunicorn==25.3.0
+python-multipart==0.0.6
+Pillow==11.0.0          # EXIF geotagging + image validation
+geopy==2.4.1
+pymongo==4.16.0
+ollama==0.6.1
+requests==2.32.3
+motor==3.7.1
+email-validator==2.3.0
+python-jose[cryptography]==3.5.0
+passlib[bcrypt]==1.7.4
 bcrypt==4.0.1
-pandas          # triage CSV endpoints
-tqdm
-python-dotenv
-deep-translator # post-generation translation for Indian languages
-slowapi        # request rate limiting
+pandas==3.0.1          # triage CSV endpoints
+tqdm==4.67.1
+python-dotenv==1.0.1
+deep-translator==1.11.4 # post-generation translation for Indian languages
+slowapi==0.1.9         # request rate limiting
 
 # ── Dev / Testing ──────────────────────────────────────────────────────────
-pytest
-locust         # load and stress testing
+pytest==9.0.2
+locust==2.43.4         # load and stress testing
 
 # ── Offline Scripts only (triage / training) ───────────────────────────────
 # Install separately with:  pip install -r requirements-scripts.txt

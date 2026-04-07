@@ -9,6 +9,9 @@ This folder contains the long-form documentation set aligned to the current code
 - `PROJECT_TIMELINE.md` - Project phase timeline and milestone schedule.
 - `PROJECT_SYNOPSIS.md` - Compact synopsis for academic/management review.
 - `PROJECT_REPORT.md` - Consolidated technical report with Mermaid diagrams.
+- `LITERATURE_REVIEW.md` - Supporting literature section for final report drafting.
+- `PRESENTATION_OUTLINE.md` - Slide-by-slide defense presentation structure.
+- `SCREENSHOT_CHECKLIST.md` - Required screenshot inventory and naming convention.
 
 ## Diagram Coverage Map
 
@@ -19,6 +22,9 @@ flowchart TB
     IDX --> TL[PROJECT_TIMELINE.md]
     IDX --> SY[PROJECT_SYNOPSIS.md]
     IDX --> PR[PROJECT_REPORT.md]
+    IDX --> LR[LITERATURE_REVIEW.md]
+    IDX --> PO[PRESENTATION_OUTLINE.md]
+    IDX --> SC[SCREENSHOT_CHECKLIST.md]
 
     SA --> SA1[Context and component diagrams]
     SA --> SA2[AI pipeline and lifecycle sequence]
@@ -36,6 +42,10 @@ flowchart TB
 
     PR --> PR1[Architecture and sequence diagrams]
     PR --> PR2[Use case and lifecycle diagrams]
+
+    LR --> LR1[Civic AI references and rationale]
+    PO --> PO1[Defense presentation structure]
+    SC --> SC1[Screenshot capture checklist]
 ```
 
 ## Source-of-Truth Notes

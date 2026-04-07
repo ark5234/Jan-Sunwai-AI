@@ -42,6 +42,18 @@ Run from `backend`:
 pytest tests/test_resilience_security.py tests/test_notification_chain.py -q
 ```
 
+Repository-level runners:
+
+```bash
+# Linux
+bash scripts/run_security_test.sh
+bash scripts/run_resilience_test.sh
+
+# Windows
+scripts\run_security_test.bat
+scripts\run_resilience_test.bat
+```
+
 Covered checks include:
 
 - Upload magic-number mismatch rejection.

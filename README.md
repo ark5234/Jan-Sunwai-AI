@@ -1,5 +1,9 @@
 ﻿# Jan-Sunwai AI
 
+![CI](https://img.shields.io/github/actions/workflow/status/ark5234/Jan-Sunwai-AI/ci.yml?branch=main&label=CI)
+![Release](https://img.shields.io/badge/release-v1.0--rc1-blue)
+![Stack](https://img.shields.io/badge/stack-React%20%7C%20FastAPI%20%7C%20MongoDB%20%7C%20Ollama-success)
+
 Automated visual classification, routing, and lifecycle tracking for civic grievances using local Ollama models.
 
 Jan-Sunwai AI is a full-stack platform where a citizen uploads an issue photo, the backend classifies the department, drafts a formal grievance, captures location, and routes it for departmental action. The stack is built for local-first operation with optional production deployment via Docker Compose.
@@ -36,6 +40,11 @@ flowchart LR
     API --> Notify[In-app Notifications]
     API --> Mail[SMTP Email Stub/Relay]
 ```
+
+## Screenshots
+
+- Capture checklist: docs/reports/SCREENSHOT_CHECKLIST.md
+- Wireframe reference: docs/images/GUI_Wireframe.png
 
 ## AI Pipeline
 
@@ -360,8 +369,23 @@ scripts\run_tests.bat
 ### Security/resilience tests
 
 ```bash
-cd backend
-pytest tests/test_resilience_security.py tests/test_notification_chain.py -q
+# Linux
+bash scripts/run_security_test.sh
+bash scripts/run_resilience_test.sh
+
+# Windows
+scripts\run_security_test.bat
+scripts\run_resilience_test.bat
+```
+
+### Frontend performance audit (Lighthouse)
+
+```bash
+# Linux
+bash scripts/run_lighthouse.sh
+
+# Windows
+scripts\run_lighthouse.bat
 ```
 
 ### Load testing
@@ -397,13 +421,36 @@ python backend/create_indexes.py
 
 The production frontend serves on port `5173` and proxies API routes to backend, with primary backend path compatibility under `/api/v1`.
 
+## Production Verification
+
+```bash
+# Linux
+bash scripts/verify_prod_stack.sh
+bash scripts/simulate_clean_deploy.sh
+
+# Windows
+scripts\verify_prod_stack.bat
+scripts\simulate_clean_deploy.bat
+```
+
+See docs/PRODUCTION_VERIFICATION.md for expected outputs.
+
+## Contribution
+
+Contribution workflow and quality gates are documented in CONTRIBUTING.md.
+
 ## Documentation Index
 
 - `docs/API_REFERENCE.md`
+- `docs/CODE_FREEZE.md`
 - `docs/DEPARTMENT_HIERARCHY.md`
+- `docs/FINAL_SUBMISSION_CHECKLIST.md`
 - `docs/GUI_WIREFRAMES.md`
 - `docs/LOAD_TESTING.md`
 - `docs/NDMC_DEPLOYMENT.md`
+- `docs/PRODUCTION_VERIFICATION.md`
 - `docs/PRODUCTION_DEPLOYMENT_PLAN.md`
 - `docs/SECURITY_TESTING.md`
+- `docs/UAT_PLAN.md`
+- `docs/USER_MANUAL.md`
 - `docs/reports/README.md`
