@@ -711,6 +711,7 @@ export default function Result() {
                       {[
                         { code: 'en', label: 'English' },
                         { code: 'hi', label: 'हिन्दी' },
+                        { code: 'kn', label: 'ಕನ್ನಡ' },
                         { code: 'ta', label: 'தமிழ்' },
                         { code: 'te', label: 'తెలుగు' },
                         { code: 'bn', label: 'বাংলা' },

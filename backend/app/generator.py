@@ -52,6 +52,7 @@ _CONCRETE_CIVIC_HINTS = (
 )
 
 _COMPLAINT_OUTPUT_MODES = {"paragraph", "email"}
+_TRANSLATION_CHUNK_MAX_CHARS = 420
 
 
 def _normalize_text(text: str) -> str:
@@ -375,6 +376,78 @@ def _fit_to_target_words(text: str, target_words: int = _TARGET_COMPLAINT_WORDS)
     return out
 
 
+def _split_for_translation(text: str, max_chars: int = _TRANSLATION_CHUNK_MAX_CHARS) -> list[str]:
+    """
+    Split long text into sentence/word-safe chunks suitable for translation APIs.
+    """
+    normalized = _normalize_text(text)
+    if not normalized:
+        return []
+    if len(normalized) <= max_chars:
+        return [normalized]
+
+    sentences = _split_sentences(normalized)
+    if not sentences:
+        sentences = [normalized]
+
+    chunks: list[str] = []
+    current = ""
+
+    for sentence in sentences:
+        candidate = sentence if not current else f"{current} {sentence}"
+        if len(candidate) <= max_chars:
+            current = candidate
+            continue
+
+        if current:
+            chunks.append(current)
+            current = ""
+
+        if len(sentence) <= max_chars:
+            current = sentence
+            continue
+
+        words = _tokenize_words(sentence)
+        segment = ""
+        for word in words:
+            candidate_segment = word if not segment else f"{segment} {word}"
+            if len(candidate_segment) <= max_chars:
+                segment = candidate_segment
+            else:
+                if segment:
+                    chunks.append(segment)
+                segment = word
+        if segment:
+            chunks.append(segment)
+
+    if current:
+        chunks.append(current)
+
+    return chunks
+
+
+def _translate_chunk(text: str, google_code: str) -> str | None:
+    # Primary: Google Translate
+    try:
+        from deep_translator import GoogleTranslator
+        translated = GoogleTranslator(source="en", target=google_code).translate(text)
+        if isinstance(translated, str) and translated.strip():
+            return translated.strip()
+    except Exception:
+        pass
+
+    # Fallback: MyMemory
+    try:
+        from deep_translator import MyMemoryTranslator
+        translated = MyMemoryTranslator(source="en", target=google_code).translate(text)
+        if isinstance(translated, str) and translated.strip():
+            return translated.strip()
+    except Exception:
+        pass
+
+    return None
+
+
 def _translate(text: str, target_lang: str) -> str:
     """
     Translate `text` from English to `target_lang` using deep-translator.
@@ -384,31 +457,54 @@ def _translate(text: str, target_lang: str) -> str:
     Primary:  GoogleTranslator (free, no API key, via unofficial API)
     Fallback: MyMemoryTranslator (free, 10K chars/day, no key)
     """
-    google_code = _GOOGLE_LANG_MAP.get(target_lang)
+    normalized_lang = (target_lang or "").strip().lower()
+    google_code = _GOOGLE_LANG_MAP.get(normalized_lang)
     if not google_code:
         return text  # unsupported language — return as-is
 
-    # Primary: Google Translate
-    try:
-        from deep_translator import GoogleTranslator
-        translated = GoogleTranslator(source="en", target=google_code).translate(text)
-        if isinstance(translated, str) and translated.strip():
-            print(f"[generator] Translated to {target_lang} via GoogleTranslator")
-            return translated.strip()
-    except Exception as e:
-        print(f"[generator] GoogleTranslator failed ({e}), trying MyMemory...")
+    if not isinstance(text, str) or not text.strip():
+        return text
 
-    # Fallback: MyMemory
-    try:
-        from deep_translator import MyMemoryTranslator
-        translated = MyMemoryTranslator(source="en", target=google_code).translate(text)
-        if isinstance(translated, str) and translated.strip():
-            print(f"[generator] Translated to {target_lang} via MyMemoryTranslator")
-            return translated.strip()
-    except Exception as e:
-        print(f"[generator] MyMemoryTranslator also failed ({e}), returning English text")
+    # Fast path for short single-line text.
+    if "\n" not in text and len(text) <= _TRANSLATION_CHUNK_MAX_CHARS:
+        translated = _translate_chunk(text, google_code)
+        if translated:
+            print(f"[generator] Translated to {normalized_lang} via direct translation")
+            return translated
+        print(f"[generator] Direct translation failed for {normalized_lang}, returning English text")
+        return text
 
-    return text  # both failed — return original English
+    translated_any = False
+    translated_lines: list[str] = []
+
+    # Translate line-by-line to preserve email-style structure and avoid API size caps.
+    for line in text.splitlines():
+        if not line.strip():
+            translated_lines.append("")
+            continue
+
+        chunks = _split_for_translation(line)
+        if not chunks:
+            translated_lines.append(line)
+            continue
+
+        translated_chunks: list[str] = []
+        for chunk in chunks:
+            translated_chunk = _translate_chunk(chunk, google_code)
+            if translated_chunk:
+                translated_chunks.append(translated_chunk)
+                translated_any = True
+            else:
+                translated_chunks.append(chunk)
+
+        translated_lines.append(" ".join(translated_chunks).strip())
+
+    if translated_any:
+        print(f"[generator] Translated to {normalized_lang} using chunked translation")
+        return "\n".join(translated_lines)
+
+    print(f"[generator] Translation failed for {normalized_lang}, returning English text")
+    return text
 
 
 def _get_loaded_model_names(client: ollama.Client, quiet: bool = False) -> tuple[list[str], bool]:
