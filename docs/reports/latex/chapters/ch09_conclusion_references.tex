@@ -18,7 +18,26 @@ The project also validated that iterative hardening is effective for complex app
 
 As a final outcome, Jan-Sunwai AI is positioned as a strong foundation for municipal deployment pilots. With further scaling and policy integration, it can evolve into a wider civic operations platform supporting higher throughput, stronger compliance workflows, and richer planning intelligence.
 
-\renewcommand{\bibname}{References}
+\makeatletter
+\renewenvironment{thebibliography}[1]
+     {\section{References}%
+	\@mkboth{\MakeUppercase\bibname}{\MakeUppercase\bibname}%
+	\list{\@biblabel{\@arabic\c@enumiv}}%
+	     {\settowidth\labelwidth{\@biblabel{#1}}%
+		\leftmargin\labelwidth
+		\advance\leftmargin\labelsep
+		\@openbib@code
+		\usecounter{enumiv}%
+		\let\p@enumiv\@empty
+		\renewcommand\theenumiv{\@arabic\c@enumiv}}%
+	\sloppy
+	\clubpenalty4000
+	\@clubpenalty \clubpenalty
+	\widowpenalty4000%
+	\sfcode`\.=\@m}
+     {\def\@noitemerr{\@latex@warning{Empty `thebibliography' environment}}%
+	\endlist}
+\makeatother
 
 \begin{thebibliography}{99}
 
@@ -62,9 +81,5 @@ Locust,
 R. W. Sinnott,
 \newblock ``Virtues of the Haversine,''
 \newblock \emph{Sky and Telescope}, vol. 68, no. 2, p. 159, 1984.
-
-\bibitem{jan_sunwai_docs}
-Jan-Sunwai AI Project Team,
-\newblock ``Jan-Sunwai AI project documentation set (API reference, architecture notes, UAT plan, security testing guide, and timeline artifacts),'' repository documentation, 2026.
 
 \end{thebibliography}

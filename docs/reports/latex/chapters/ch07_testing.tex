@@ -4,6 +4,8 @@ Testing for Jan-Sunwai AI was designed as a layered strategy combining automated
 
 \section{Testing Plan}
 
+The testing plan was structured to validate correctness, security, and operational resilience across the full grievance lifecycle. Instead of relying on a single test phase, verification activities were layered and repeated at key implementation checkpoints to reduce late-stage defects.
+
 \subsection{Testing Objectives}
 
 The points below highlight the most important considerations that define this subsection.
@@ -65,6 +67,8 @@ Load scripts (locust) & Performance & Endpoint mix throughput and graceful degra
 \end{longtable}
 
 \section{Types of Testing}
+
+Multiple testing types were applied because the platform combines API logic, role-sensitive workflows, AI-assisted features, and deployment constraints. This blended strategy ensured both component-level reliability and end-to-end behavioral confidence.
 
 \subsection{Unit Testing}
 
@@ -130,6 +134,8 @@ The UAT plan was executed through persona scripts:
 
 \section{Testing Techniques}
 
+Testing techniques were selected to cover expected behavior, failure behavior, and recovery behavior. This combination helped validate not only whether the system works in normal conditions, but also whether it remains safe and predictable under invalid input or dependency degradation.
+
 \subsection{Black-Box Behavioral Testing}
 
 Primary API workflows were tested against expected request/response contracts without depending on internal implementation details. This improved confidence in external behavior from a consumer perspective.
@@ -160,6 +166,8 @@ Resilience tests simulated:
 Load-testing scripts executed mixed endpoint traffic where read-heavy routes and notification checks dominate, with controlled analyze pressure to assess graceful degradation behavior.
 
 \section{Defect Logging}
+
+Defect logging was maintained as a traceable quality-control artifact linking observed failures to corrective actions. The objective was to preserve accountability in the testing cycle and to ensure that important regressions were resolved with explicit evidence.
 
 \subsection{Defect Classification}
 

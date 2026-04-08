@@ -1,10 +1,12 @@
 \chapter{Introduction}
+\label{chap:introduction}
 
 Jan-Sunwai AI is an end-to-end civic grievance redressal platform built to reduce the operational gap between citizen complaint submission and departmental action. The system transforms an image upload into a structured, auditable complaint workflow, then routes the case to accountable municipal actors. Instead of requiring citizens to understand bureaucratic departments in advance, the platform performs AI-assisted classification and drafting while preserving a human-governed correction path through triage and administrative controls.
 
 The project was developed as a local-first system to satisfy practical constraints in municipal settings where cloud deployment may be restricted by policy, infrastructure, or privacy concerns. The architecture integrates a React frontend, FastAPI backend, MongoDB persistence, and locally hosted Ollama models in a hybrid inference pipeline. This deployment posture allows the platform to run in constrained institutional environments while maintaining modularity for future expansion.
 
 \section{Project Details}
+\label{sec:project-details}
 
 \begin{table}[H]
 \centering
@@ -100,6 +102,8 @@ Civic systems face a recurring quality bottleneck at intake. Complaints often co
 Jan-Sunwai AI addresses this bottleneck by introducing structured automation at the earliest stage while preserving administrative authority. The AI pipeline provides category and draft suggestions, but triage and role controls maintain governance oversight. This balance between automation and control is central to the system's design philosophy.
 
 \section{Literature Review}
+
+The literature review for this project focuses on civic-tech complaint systems, AI-assisted classification workflows, and governance requirements such as traceability and explainability. Rather than treating model accuracy as the only success metric, the review emphasizes operational outcomes such as routing correctness, audit readiness, and response-time reliability in public-sector environments. The selected architectural direction in Jan-Sunwai AI was derived from this practical lens.
 
 \subsection{Digital Governance and Complaint Systems}
 

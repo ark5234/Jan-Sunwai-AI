@@ -4,6 +4,8 @@ Project management for Jan-Sunwai AI followed an iterative delivery approach wit
 
 \section{Feasibility Study}
 
+The feasibility study was carried out before deep implementation to ensure that the project could be delivered within academic timelines while still meeting production-oriented quality goals. Evaluation covered technical viability, institutional adoption realities, timeline sustainability, and deployment reproducibility. The findings confirmed that a local-first architecture was feasible, provided that model orchestration, security controls, and environment standardization were handled as first-class concerns.
+
 \subsection{Technical Feasibility}
 
 The selected stack (React, FastAPI, MongoDB, Ollama) was technically feasible for local-first civic deployment due to mature ecosystem support, strong documentation, and compatibility with available development infrastructure. Key feasibility observations were:
@@ -40,6 +42,8 @@ The resulting workflow matched expected governance practices where supervisory r
 Implementation was feasible under both manual and scripted setup modes. Automation scripts were created for Windows and Linux, and production deployment was validated through containerized orchestration. Environment configuration was standardized via a single backend environment file to reduce drift and support repeatable handover.
 
 \section{Project Planning}
+
+Project planning translated broad objectives into actionable delivery slices with explicit milestones, quality gates, and integration checkpoints. Planning was intentionally cross-functional, so backend APIs, frontend role flows, AI services, and deployment scripts evolved in synchronized increments rather than in isolated tracks. This structure reduced integration shocks and enabled predictable weekly review cycles.
 
 \subsection{Development Approach and Justification}
 
@@ -124,6 +128,8 @@ The project includes cross-cutting dependencies that were managed explicitly:
 Dependency risks were controlled through health endpoints, fallback behaviors, and scripted verification routines.
 
 \section{Project Scheduling (Gantt/PERT Chart)}
+
+Scheduling was built to reflect both sequence constraints and risk-driven priorities. Core dependencies were front-loaded, while reliability, security, and deployment-hardening tasks were integrated before final submission phases instead of being postponed to the end. The resulting schedule allowed parallel progress where possible and maintained clear precedence where architectural coupling required stricter ordering.
 
 \subsection{High-Level Schedule}
 

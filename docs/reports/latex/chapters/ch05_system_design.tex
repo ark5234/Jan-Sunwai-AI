@@ -5,6 +5,8 @@ System design in Jan-Sunwai AI focuses on reliable complaint orchestration in a 
 
 \section{System Architecture Design}
 
+System architecture design was developed to ensure clear separation of concerns while preserving end-to-end traceability across complaint intake, processing, and governance review. The design prioritizes predictable integration boundaries among frontend, backend, data, and AI runtime layers so that failures can be isolated and recovered without cascading disruption. This architecture also supports future scaling through modular service evolution.
+
 \subsection{Architectural Style}
 
 The platform follows a layered service architecture:
@@ -77,6 +79,8 @@ The following diagrams are aligned with the implemented module boundaries, routi
 \placeholderfigure{Deployment Diagram}{Browser clients access frontend service; frontend proxies API calls to backend service; backend communicates with MongoDB and host-level Ollama runtime.}
 
 \section{Database Design}
+
+Database design focused on lifecycle integrity, query efficiency, and auditability rather than strict relational normalization. Since complaint records evolve through multiple state transitions and actor interactions, the chosen document model keeps operationally related history close to primary complaint entities while retaining key references for role and ownership controls. This approach improves retrieval speed for dashboards, timelines, and governance reviews.
 
 \subsection{Table Design and Relationships}
 
@@ -207,6 +211,8 @@ Auto-assignment uses geospatial proximity filtering where service-area radii are
 Equation~\eqref{eq:haversine_distance} is used for worker-to-complaint distance scoring, where $R$ is Earth radius in kilometers, $(\phi_1, \lambda_1)$ is worker location, and $(\phi_2, \lambda_2)$ is complaint location.
 
 \section{GUI Design}
+
+GUI design was planned as a task-oriented interface model where each role sees only the controls and data required for its responsibilities. Visual hierarchy, workflow clarity, and responsive behavior were treated as core functional requirements because field and supervisory users interact with the platform under different device and time constraints. The resulting interface strategy emphasizes speed of action, low ambiguity, and consistent feedback.
 
 \subsection{Design Principles}
 

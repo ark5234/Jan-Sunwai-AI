@@ -18,6 +18,8 @@ The system can be summarized as a five-stage path:
 
 \section{Module Descriptions}
 
+The proposed system is organized as cooperating modules so that each operational responsibility remains isolated, testable, and maintainable. This modular decomposition also supports phased enhancement, where future upgrades can be applied to specific capability areas without destabilizing the entire platform. The subsections below summarize each major module and the role it plays in requirement realization.
+
 \subsection{Authentication and User Management Module}
 
 This module handles registration, login, session identity, profile updates, and password recovery. It enforces role-oriented authorization for citizen, worker, department head, and admin personas. Key controls include JWT token issuance, role checks, and reset-token hashing.
@@ -74,6 +76,8 @@ PF-12 & Health endpoints and timing logs & Supports operational diagnosis and pr
 \end{longtable}
 
 \section{Advantages of Proposed System}
+
+The proposed solution offers measurable value across three levels: citizen experience, administrative throughput, and institutional governance. Its primary advantage is balanced automation, where AI reduces intake friction and routing ambiguity while policy-sensitive actions remain human-governed through role controls and audit trails. This design improves both usability and accountability in the same operational framework.
 
 \subsection{Citizen-Centric Advantages}
 
