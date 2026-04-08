@@ -17,6 +17,129 @@ _GOOGLE_LANG_MAP = {
     "gu": "gu",  # Gujarati
 }
 
+_LANGUAGE_NAME_MAP = {
+    "hi": "Hindi",
+    "mr": "Marathi",
+    "ta": "Tamil",
+    "te": "Telugu",
+    "kn": "Kannada",
+    "bn": "Bengali",
+    "gu": "Gujarati",
+}
+
+_LANGUAGE_SCRIPT_GROUP = {
+    "hi": "devanagari",
+    "mr": "devanagari",
+    "bn": "bengali",
+    "gu": "gujarati",
+    "ta": "tamil",
+    "te": "telugu",
+    "kn": "kannada",
+}
+
+_SCRIPT_GROUP_PATTERNS = {
+    "devanagari": re.compile(r"[\u0900-\u097f]"),
+    "bengali": re.compile(r"[\u0980-\u09ff]"),
+    "gujarati": re.compile(r"[\u0a80-\u0aff]"),
+    "tamil": re.compile(r"[\u0b80-\u0bff]"),
+    "telugu": re.compile(r"[\u0c00-\u0c7f]"),
+    "kannada": re.compile(r"[\u0c80-\u0cff]"),
+}
+
+_LOCALIZED_COMPLAINT_TEMPLATES = {
+    "hi": {
+        "subject": "विषय: तत्काल नागरिक शिकायत - {subject_issue} के संबंध में तत्काल कार्रवाई आवश्यक",
+        "dear": "प्रिय {department},",
+        "intro": "मैं सार्वजनिक हित से जुड़ी एक तात्कालिक समस्या आपकी जानकारी में लाने के लिए लिख रहा/रही हूँ।",
+        "evidence": "संलग्न फोटोग्राफ में यह समस्या दिखाई दे रही है: {issue_phrase}।",
+        "location_known": "ध्यान देने योग्य स्थान: {location}।",
+        "location_unknown": "मेटाडेटा से सटीक स्थान की पुष्टि नहीं हो सकी, लेकिन संलग्न साक्ष्य से स्पष्ट है कि यह मामला आपके अधिकार क्षेत्र में आता है।",
+        "risk": "यदि इस पर तुरंत कार्रवाई नहीं हुई, तो {risk_hint} का जोखिम बढ़ सकता है।",
+        "action": "{action_hint}।",
+        "close": "जनहित और सार्वजनिक सुरक्षा के लिए कृपया शीघ्र हस्तक्षेप करें।",
+        "sincerely": "सादर,",
+        "citizen": "चिंतित नागरिक",
+    },
+    "mr": {
+        "subject": "विषय: तातडीची नागरी तक्रार - {subject_issue} बाबत तात्काळ कारवाई आवश्यक",
+        "dear": "प्रिय {department},",
+        "intro": "सार्वजनिक हिताशी संबंधित तातडीचा मुद्दा आपल्या निदर्शनास आणण्यासाठी मी लिहित आहे.",
+        "evidence": "जोडलेल्या छायाचित्रात ही समस्या स्पष्ट दिसत आहे: {issue_phrase}.",
+        "location_known": "लक्ष देण्याची जागा: {location}.",
+        "location_unknown": "मेटाडेटामधून अचूक स्थान निश्चित झाले नाही, परंतु जोडलेल्या पुराव्यांवरून हा मुद्दा आपल्या कार्यक्षेत्रात येतो हे स्पष्ट होते.",
+        "risk": "यावर तात्काळ कारवाई न झाल्यास {risk_hint} चा धोका वाढू शकतो.",
+        "action": "{action_hint}.",
+        "close": "जनहित आणि सार्वजनिक सुरक्षिततेच्या दृष्टीने कृपया त्वरीत हस्तक्षेप करावा.",
+        "sincerely": "आपला नम्र,",
+        "citizen": "चिंताग्रस्त नागरिक",
+    },
+    "ta": {
+        "subject": "பொருள்: அவசர குடிமக்கள் புகார் - {subject_issue} குறித்து உடனடி நடவடிக்கை தேவை",
+        "dear": "அன்புள்ள {department},",
+        "intro": "பொது நலனுடன் தொடர்புடைய அவசர பிரச்சினையை உங்கள் கவனத்திற்கு கொண்டு வர நான் எழுதுகிறேன்.",
+        "evidence": "இணைக்கப்பட்ட புகைப்படத்தில் இந்த பிரச்சினை தெளிவாக தெரிகிறது: {issue_phrase}.",
+        "location_known": "கவனம் தேவைப்படும் இடம்: {location}.",
+        "location_unknown": "மெட்டாடேட்டாவில் துல்லியமான இடம் உறுதியாகவில்லை, ஆனால் இணைக்கப்பட்ட சான்று இந்த பிரச்சினை உங்கள் அதிகார வரம்பில் உள்ளதை காட்டுகிறது.",
+        "risk": "உடனடி நடவடிக்கை எடுக்கப்படாவிட்டால் {risk_hint} என்ற ஆபத்து அதிகரிக்கலாம்.",
+        "action": "{action_hint}.",
+        "close": "பொது பாதுகாப்பும் பொதுநலனும் கருதி தயவுசெய்து விரைந்து தலையீடு செய்யவும்.",
+        "sincerely": "மரியாதையுடன்,",
+        "citizen": "கவலைப்படும் குடிமகன்",
+    },
+    "te": {
+        "subject": "విషయం: అత్యవసర పౌర ఫిర్యాదు - {subject_issue} గురించి తక్షణ చర్య అవసరం",
+        "dear": "ప్రియమైన {department},",
+        "intro": "ప్రజా ప్రయోజనానికి సంబంధించిన అత్యవసర సమస్యను మీ దృష్టికి తీసుకురావడానికి నేను ఈ లేఖ రాస్తున్నాను.",
+        "evidence": "జతచేసిన ఫోటోలో ఈ సమస్య స్పష్టంగా కనిపిస్తోంది: {issue_phrase}.",
+        "location_known": "శ్రద్ధ అవసరమైన స్థలం: {location}.",
+        "location_unknown": "మెటాడేటా ద్వారా ఖచ్చితమైన స్థానం నిర్ధారించలేకపోయినా, జతచేసిన ఆధారాల ప్రకారం ఈ విషయం మీ అధికార పరిధిలోకి వస్తుంది.",
+        "risk": "తక్షణ చర్య తీసుకోకపోతే {risk_hint} అనే ప్రమాదం పెరగవచ్చు.",
+        "action": "{action_hint}.",
+        "close": "ప్రజల భద్రత మరియు ప్రజాహితాన్ని దృష్టిలో ఉంచుకుని దయచేసి వెంటనే జోక్యం చేసుకోండి.",
+        "sincerely": "వినయపూర్వకం,",
+        "citizen": "ఆందోళన చెందిన పౌరుడు",
+    },
+    "kn": {
+        "subject": "ವಿಷಯ: ತುರ್ತು ನಾಗರಿಕ ದೂರು - {subject_issue} ಕುರಿತು ತಕ್ಷಣ ಕ್ರಮ ಅಗತ್ಯ",
+        "dear": "ಮಾನ್ಯ {department},",
+        "intro": "ಸಾರ್ವಜನಿಕ ಹಿತಾಸಕ್ತಿಗೆ ಸಂಬಂಧಿಸಿದ ತುರ್ತು ವಿಷಯವನ್ನು ನಿಮ್ಮ ಗಮನಕ್ಕೆ ತರಲು ನಾನು ಬರೆಯುತ್ತಿದ್ದೇನೆ.",
+        "evidence": "ಲಗತ್ತಿಸಲಾದ ಫೋಟೋದಲ್ಲಿ ಈ ಸಮಸ್ಯೆ ಸ್ಪಷ್ಟವಾಗಿ ಕಾಣುತ್ತಿದೆ: {issue_phrase}.",
+        "location_known": "ಗಮನಿಸಬೇಕಾದ ಸ್ಥಳ: {location}.",
+        "location_unknown": "ಮೆಟಾಡೇಟಾದಿಂದ ನಿಖರ ಸ್ಥಳ ದೃಢಪಡಿಸಲಾಗಲಿಲ್ಲ, ಆದರೆ ಲಗತ್ತಿಸಲಾದ ಸಾಕ್ಷ್ಯದಿಂದ ಇದು ನಿಮ್ಮ ವ್ಯಾಪ್ತಿಯ ವಿಷಯವೆಂದು ತಿಳಿಯುತ್ತದೆ.",
+        "risk": "ಇದನ್ನು ತಕ್ಷಣ ಸರಿಪಡಿಸದಿದ್ದರೆ {risk_hint} ಎಂಬ ಅಪಾಯ ಹೆಚ್ಚಾಗಬಹುದು.",
+        "action": "{action_hint}.",
+        "close": "ಸಾರ್ವಜನಿಕ ಸುರಕ್ಷತೆ ಮತ್ತು ಜನಹಿತದ ದೃಷ್ಟಿಯಿಂದ ದಯವಿಟ್ಟು ಶೀಘ್ರ ಕ್ರಮ ಕೈಗೊಳ್ಳಿ.",
+        "sincerely": "ವಂದನೆಗಳೊಂದಿಗೆ,",
+        "citizen": "ಚಿಂತೆಗೊಂಡ ನಾಗರಿಕ",
+    },
+    "bn": {
+        "subject": "বিষয়: জরুরি নাগরিক অভিযোগ - {subject_issue} সম্পর্কে অবিলম্বে ব্যবস্থা প্রয়োজন",
+        "dear": "প্রিয় {department},",
+        "intro": "জনস্বার্থের সঙ্গে যুক্ত একটি জরুরি বিষয় আপনার নজরে আনার জন্য আমি লিখছি।",
+        "evidence": "সংযুক্ত ছবিতে এই সমস্যাটি স্পষ্টভাবে দেখা যাচ্ছে: {issue_phrase}।",
+        "location_known": "যে স্থানে দ্রুত নজর প্রয়োজন: {location}।",
+        "location_unknown": "মেটাডেটা থেকে সুনির্দিষ্ট অবস্থান নিশ্চিত করা যায়নি, তবে সংযুক্ত প্রমাণ থেকে বোঝা যায় বিষয়টি আপনার এখতিয়ারের মধ্যে পড়ে।",
+        "risk": "দ্রুত ব্যবস্থা না নিলে {risk_hint} এর ঝুঁকি বাড়তে পারে।",
+        "action": "{action_hint}।",
+        "close": "জননিরাপত্তা ও জনস্বার্থে দয়া করে দ্রুত হস্তক্ষেপ করুন।",
+        "sincerely": "শ্রদ্ধাসহ,",
+        "citizen": "উদ্বিগ্ন নাগরিক",
+    },
+    "gu": {
+        "subject": "વિષય: તાત્કાલિક નાગરિક ફરિયાદ - {subject_issue} અંગે તાત્કાલિક કાર્યવાહી જરૂરી",
+        "dear": "પ્રિય {department},",
+        "intro": "હું જાહેર હિત સાથે જોડાયેલી તાત્કાલિક સમસ્યાની જાણ કરવા માટે લખી રહ્યો/રહી છું.",
+        "evidence": "જોડાયેલ ફોટોગ્રાફમાં નીચેની સમસ્યા સ્પષ્ટ દેખાય છે: {issue_phrase}.",
+        "location_known": "ધ્યાન આપવાની જગ્યા: {location}.",
+        "location_unknown": "મેટાડેટાથી ચોક્કસ સ્થાનની પુષ્ટિ થઈ શકી નથી, પરંતુ જોડાયેલ પુરાવાથી સ્પષ્ટ છે કે આ મુદ્દો તમારા અધિકાર ક્ષેત્રમાં આવે છે.",
+        "risk": "જો તાત્કાલિક કાર્યવાહી નહીં થાય, તો {risk_hint} નો જોખમ વધી શકે છે.",
+        "action": "{action_hint}.",
+        "close": "જાહેર સુરક્ષા અને જનહિત માટે કૃપા કરીને તરત જ હસ્તક્ષેપ કરો.",
+        "sincerely": "આપનો વિશ્વાસુ,",
+        "citizen": "ચિંતિત નાગરિક",
+    },
+}
+
 _TARGET_COMPLAINT_WORDS = 67
 _TARGET_MIN_WORDS = 62
 _TARGET_MAX_WORDS = 72
@@ -448,6 +571,222 @@ def _translate_chunk(text: str, google_code: str) -> str | None:
     return None
 
 
+def _translation_model_name() -> str:
+    preferred = getattr(settings, "translation_model", "")
+    model_name = (preferred or settings.reasoning_model).strip()
+    return model_name or settings.reasoning_model
+
+
+def _ollama_translation_fallback_enabled() -> bool:
+    return bool(getattr(settings, "enable_ollama_translation_fallback", False))
+
+
+def _clean_translation_output(text: str) -> str:
+    out = (text or "").strip()
+    if out.startswith("```"):
+        out = re.sub(r"^```[a-zA-Z0-9_-]*\s*", "", out)
+        out = re.sub(r"\s*```$", "", out)
+    if (out.startswith('"') and out.endswith('"')) or (out.startswith("'") and out.endswith("'")):
+        out = out[1:-1].strip()
+    return out
+
+
+def _looks_like_translated_text(source_text: str, translated_text: str, target_lang: str) -> bool:
+    translated = _normalize_text(translated_text or "")
+    if not translated:
+        return False
+
+    source = _normalize_text(source_text or "")
+    if source and translated.lower() == source.lower():
+        return False
+
+    normalized_lang = (target_lang or "").strip().lower()
+    target_group = _LANGUAGE_SCRIPT_GROUP.get(normalized_lang)
+    if not target_group:
+        return False
+
+    target_pattern = _SCRIPT_GROUP_PATTERNS.get(target_group)
+    if not target_pattern:
+        return False
+
+    target_count = len(target_pattern.findall(translated))
+    if target_count < 6:
+        return False
+
+    group_counts = {
+        group: len(pattern.findall(translated))
+        for group, pattern in _SCRIPT_GROUP_PATTERNS.items()
+    }
+    total_indic = sum(group_counts.values())
+    if total_indic and (target_count / total_indic) < 0.78:
+        return False
+
+    for group, count in group_counts.items():
+        if group == target_group or count == 0:
+            continue
+        if total_indic and (count / total_indic) > 0.22:
+            return False
+
+    return True
+
+
+def _translation_is_effective(source_text: str, translated_text: str) -> bool:
+    src = _normalize_text(source_text or "")
+    dst = _normalize_text(translated_text or "")
+    if not dst:
+        return False
+    if not src:
+        return True
+    return src.lower() != dst.lower()
+
+
+def _has_excessive_repetition(text: str) -> bool:
+    normalized = _normalize_text(text)
+    if not normalized:
+        return True
+
+    lines = [ln.strip() for ln in text.splitlines() if ln.strip()]
+    if len(lines) >= 4 and len(set(lines)) <= max(1, len(lines) // 2):
+        return True
+
+    words = [w.strip(".,;:!?()[]{}\"'").lower() for w in normalized.split()]
+    words = [w for w in words if w]
+    if len(words) < 16:
+        return False
+
+    n = 4
+    counts: dict[tuple[str, ...], int] = {}
+    for idx in range(0, len(words) - n + 1):
+        key = tuple(words[idx: idx + n])
+        counts[key] = counts.get(key, 0) + 1
+        if counts[key] >= 3:
+            return True
+
+    return False
+
+
+def _contains_translation_meta(text: str) -> bool:
+    lowered = (text or "").lower()
+    markers = (
+        "target language",
+        "text to translate",
+        "translated text",
+        "rules:",
+        "translation:",
+    )
+    return any(marker in lowered for marker in markers)
+
+
+def _translation_quality_ok(source_text: str, translated_text: str, target_lang: str) -> bool:
+    if not _translation_is_effective(source_text, translated_text):
+        return False
+    if not _looks_like_translated_text(source_text, translated_text, target_lang):
+        return False
+    if _contains_translation_meta(translated_text):
+        return False
+    if _has_excessive_repetition(translated_text):
+        return False
+    return True
+
+
+def _compose_localized_template_fallback(
+    issue_text: str,
+    category: str,
+    address: str,
+    target_lang: str,
+    output_mode: str,
+) -> str | None:
+    normalized_lang = (target_lang or "").strip().lower()
+    template = _LOCALIZED_COMPLAINT_TEMPLATES.get(normalized_lang)
+    if not template:
+        return None
+
+    issue_phrase = _refine_issue_phrase(issue_text, category)
+    department = (category or "").strip() or "Concerned Department"
+    salutation_department = _salutation_department(department)
+    risk_hint = _department_risk_hint(f"{department} {issue_phrase}")
+    action_hint = _department_action_hint(department).strip().rstrip(". ")
+    subject_issue = issue_phrase[:1].upper() + issue_phrase[1:] if issue_phrase else "Civic Hazard"
+
+    location_sentence = (
+        template["location_unknown"]
+        if _is_unknown_location(address)
+        else template["location_known"].format(location=_compact_location(address))
+    )
+
+    if output_mode == "email":
+        return (
+            f"{template['subject'].format(subject_issue=subject_issue)}\n\n"
+            f"{template['dear'].format(department=salutation_department)}\n\n"
+            f"{template['intro']}\n"
+            f"{template['evidence'].format(issue_phrase=issue_phrase)} {location_sentence}\n\n"
+            f"{template['risk'].format(risk_hint=risk_hint)} {template['action'].format(action_hint=action_hint)}\n\n"
+            f"{template['close']}\n\n"
+            f"{template['sincerely']}\n"
+            f"{template['citizen']}"
+        )
+
+    localized_paragraph = (
+        f"{template['dear'].format(department=salutation_department)} "
+        f"{template['evidence'].format(issue_phrase=issue_phrase)} "
+        f"{location_sentence} "
+        f"{template['risk'].format(risk_hint=risk_hint)} "
+        f"{template['action'].format(action_hint=action_hint)} "
+        f"{template['close']}"
+    )
+    return _normalize_text(localized_paragraph)
+
+
+def _translate_chunk_offline(
+    text: str,
+    target_lang: str,
+    client: ollama.Client | None = None,
+) -> str | None:
+    normalized_lang = (target_lang or "").strip().lower()
+    language_name = _LANGUAGE_NAME_MAP.get(normalized_lang)
+    if not language_name:
+        return None
+
+    llm_client = client or ollama.Client(host=settings.ollama_base_url)
+
+    system_prompt = (
+        "You are an expert translator for Indian civic grievances. "
+        "Translate accurately from English into the requested target language."
+    )
+    prompt = (
+        f"Target language: {language_name} ({normalized_lang})\n"
+        "Rules:\n"
+        "1. Return only translated text.\n"
+        "2. Preserve original meaning and tone exactly.\n"
+        "3. Preserve punctuation, numbers, and proper nouns where appropriate.\n"
+        "4. Use the native script of the target language (no Latin transliteration).\n\n"
+        "Text to translate:\n"
+        f"{text}"
+    )
+
+    try:
+        response = llm_client.generate(
+            model=_translation_model_name(),
+            prompt=prompt,
+            system=system_prompt,
+            options={"temperature": 0.1},
+        )
+    except Exception:
+        return None
+
+    raw = ""
+    if isinstance(response, dict):
+        raw = str(response.get("response", ""))
+    elif hasattr(response, "response"):
+        raw = str(getattr(response, "response"))
+    translated = _clean_translation_output(raw)
+
+    if _looks_like_translated_text(text, translated, normalized_lang):
+        return translated
+
+    return None
+
+
 def _translate(text: str, target_lang: str) -> str:
     """
     Translate `text` from English to `target_lang` using deep-translator.
@@ -456,6 +795,7 @@ def _translate(text: str, target_lang: str) -> str:
 
     Primary:  GoogleTranslator (free, no API key, via unofficial API)
     Fallback: MyMemoryTranslator (free, 10K chars/day, no key)
+    Optional fallback: local Ollama reasoning model (disabled by default)
     """
     normalized_lang = (target_lang or "").strip().lower()
     google_code = _GOOGLE_LANG_MAP.get(normalized_lang)
@@ -471,11 +811,22 @@ def _translate(text: str, target_lang: str) -> str:
         if translated:
             print(f"[generator] Translated to {normalized_lang} via direct translation")
             return translated
+
+        if _ollama_translation_fallback_enabled():
+            offline_translated = _translate_chunk_offline(text, normalized_lang)
+            if offline_translated:
+                print(f"[generator] Translated to {normalized_lang} via offline Ollama fallback")
+                return offline_translated
+
         print(f"[generator] Direct translation failed for {normalized_lang}, returning English text")
         return text
 
     translated_any = False
+    used_offline_fallback = False
     translated_lines: list[str] = []
+    offline_client: ollama.Client | None = None
+    offline_client_unavailable = False
+    offline_fallback_enabled = _ollama_translation_fallback_enabled()
 
     # Translate line-by-line to preserve email-style structure and avoid API size caps.
     for line in text.splitlines():
@@ -491,6 +842,18 @@ def _translate(text: str, target_lang: str) -> str:
         translated_chunks: list[str] = []
         for chunk in chunks:
             translated_chunk = _translate_chunk(chunk, google_code)
+            if not translated_chunk and offline_fallback_enabled:
+                if offline_client is None and not offline_client_unavailable:
+                    try:
+                        offline_client = ollama.Client(host=settings.ollama_base_url)
+                    except Exception:
+                        offline_client_unavailable = True
+
+                if offline_client is not None:
+                    translated_chunk = _translate_chunk_offline(chunk, normalized_lang, client=offline_client)
+                    if translated_chunk:
+                        used_offline_fallback = True
+
             if translated_chunk:
                 translated_chunks.append(translated_chunk)
                 translated_any = True
@@ -500,7 +863,10 @@ def _translate(text: str, target_lang: str) -> str:
         translated_lines.append(" ".join(translated_chunks).strip())
 
     if translated_any:
-        print(f"[generator] Translated to {normalized_lang} using chunked translation")
+        if used_offline_fallback and offline_fallback_enabled:
+            print(f"[generator] Translated to {normalized_lang} using chunked translation with offline fallback")
+        else:
+            print(f"[generator] Translated to {normalized_lang} using chunked translation")
         return "\n".join(translated_lines)
 
     print(f"[generator] Translation failed for {normalized_lang}, returning English text")
@@ -684,7 +1050,19 @@ def generate_complaint(image_path, classification_result, user_details, location
 
             # ── Step 2: Post-translate if a non-English language was requested ──
             if language and language != "en":
-                english_text = _translate(english_text, target_lang=language)
+                translated_text = _translate(english_text, target_lang=language)
+                if not _translation_quality_ok(english_text, translated_text, language):
+                    localized_fallback = _compose_localized_template_fallback(
+                        source_issue,
+                        category,
+                        address,
+                        language,
+                        output_mode,
+                    )
+                    if localized_fallback:
+                        print(f"[generator] Translation fallback used deterministic template for {language}")
+                        translated_text = localized_fallback
+                english_text = translated_text
 
             return english_text
 
@@ -697,5 +1075,17 @@ def generate_complaint(image_path, classification_result, user_details, location
                 fallback = _compose_official_mail_text(fallback_source, category, address)
                 fallback = _fit_to_target_words(fallback)
             if language and language != "en":
-                fallback = _translate(fallback, target_lang=language)
+                translated_fallback = _translate(fallback, target_lang=language)
+                if not _translation_quality_ok(fallback, translated_fallback, language):
+                    localized_fallback = _compose_localized_template_fallback(
+                        fallback_source,
+                        category,
+                        address,
+                        language,
+                        output_mode,
+                    )
+                    if localized_fallback:
+                        print(f"[generator] Exception-path translation fallback used deterministic template for {language}")
+                        translated_fallback = localized_fallback
+                fallback = translated_fallback
             return fallback

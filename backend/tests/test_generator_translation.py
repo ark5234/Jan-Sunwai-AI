@@ -36,6 +36,7 @@ def test_translate_returns_original_when_translation_fails(monkeypatch):
         return None
 
     monkeypatch.setattr(generator, "_translate_chunk", fake_translate_chunk)
+    monkeypatch.setattr(generator, "_ollama_translation_fallback_enabled", lambda: False)
 
     source = "Subject: Civic issue\n\nDear Department,\nPlease resolve urgently."
     translated = generator._translate(source, "hi")
@@ -51,3 +52,19 @@ def test_translate_normalizes_target_language(monkeypatch):
 
     translated = generator._translate("Please act immediately.", " HI ")
     assert translated == "[HI]Please act immediately."
+
+
+def test_translate_uses_offline_fallback_when_enabled(monkeypatch):
+    def fake_translate_chunk(_text: str, _google_code: str):
+        return None
+
+    def fake_translate_chunk_offline(text: str, target_lang: str, client=None):
+        assert target_lang == "hi"
+        return f"[OFFLINE-HI]{text}"
+
+    monkeypatch.setattr(generator, "_translate_chunk", fake_translate_chunk)
+    monkeypatch.setattr(generator, "_translate_chunk_offline", fake_translate_chunk_offline)
+    monkeypatch.setattr(generator, "_ollama_translation_fallback_enabled", lambda: True)
+
+    translated = generator._translate("Please act immediately.", "hi")
+    assert translated == "[OFFLINE-HI]Please act immediately."

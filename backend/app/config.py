@@ -44,6 +44,8 @@ class Settings:
     mid_vision_model: str = os.getenv("MID_VISION_MODEL", "granite3.2-vision:2b")
     fallback_vision_model: str = os.getenv("FALLBACK_VISION_MODEL", "granite3.2-vision:2b")
     reasoning_model: str = os.getenv("REASONING_MODEL", "llama3.2:1b")
+    translation_model: str = os.getenv("TRANSLATION_MODEL", "").strip()
+    enable_ollama_translation_fallback: bool = os.getenv("ENABLE_OLLAMA_TRANSLATION_FALLBACK", "false").lower() in ("true", "1", "yes")
     vision_timeout_seconds: float = float(os.getenv("VISION_TIMEOUT_SECONDS", "240"))
     llm_inline_timeout_seconds: float = float(os.getenv("LLM_INLINE_TIMEOUT_SECONDS", "15"))
     llm_queue_workers: int = int(os.getenv("LLM_QUEUE_WORKERS", "2"))
