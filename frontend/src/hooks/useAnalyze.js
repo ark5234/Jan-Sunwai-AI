@@ -40,7 +40,7 @@ export default function useAnalyze() {
     return `${baseName}.jpg`;
   };
 
-  const analyzeImage = async (file, _username = "Concerned Citizen", language = "en") => {
+  const analyzeImage = async (file, _username = "Concerned Citizen", language = "en", userGrievanceText = "") => {
     setLoading(true);
     setError(null);
     setUploadMetrics(null);
@@ -92,6 +92,10 @@ export default function useAnalyze() {
     const uploadName = getSafeUploadName(file.name, uploadMime);
     formData.append('file', uploadFile, uploadName);
     formData.append('language', language);
+    const normalizedUserText = typeof userGrievanceText === 'string' ? userGrievanceText.trim() : '';
+    if (normalizedUserText.length > 0) {
+      formData.append('user_grievance_text', normalizedUserText);
+    }
     // Username is extracted from Token in backend now
     
     try {

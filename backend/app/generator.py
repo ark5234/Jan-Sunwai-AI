@@ -2,8 +2,21 @@ import ollama
 import os
 import re
 import time
+import importlib
 from app.config import settings
 from app.llm_lock import ollama_lock
+
+def _load_optional_nltk_tokenizers():
+    try:
+        tokenize_module = importlib.import_module("nltk.tokenize")
+        punkt_module = importlib.import_module("nltk.tokenize.punkt")
+        toktok_cls = getattr(tokenize_module, "ToktokTokenizer", None)
+        punkt_cls = getattr(punkt_module, "PunktSentenceTokenizer", None)
+        if toktok_cls is None or punkt_cls is None:
+            return None, None
+        return toktok_cls(), punkt_cls()
+    except Exception:
+        return None, None
 
 # deep-translator language codes for Indian languages
 # GoogleTranslator uses BCP-47 / ISO 639-1 codes matching what we already store.
@@ -45,6 +58,9 @@ _SCRIPT_GROUP_PATTERNS = {
     "telugu": re.compile(r"[\u0c00-\u0c7f]"),
     "kannada": re.compile(r"[\u0c80-\u0cff]"),
 }
+
+_TOKEN_CONTENT_PATTERN = re.compile(r"[A-Za-z0-9\u0900-\u0D7F]")
+_NLTK_WORD_TOKENIZER, _NLTK_SENTENCE_TOKENIZER = _load_optional_nltk_tokenizers()
 
 _LOCALIZED_COMPLAINT_TEMPLATES = {
     "hi": {
@@ -186,13 +202,37 @@ def _normalize_text(text: str) -> str:
 
 
 def _tokenize_words(text: str) -> list[str]:
-    return re.findall(r"\S+", text)
+    normalized = _normalize_text(text)
+    if not normalized:
+        return []
+
+    if _NLTK_WORD_TOKENIZER is not None:
+        try:
+            tokens = [
+                token for token in _NLTK_WORD_TOKENIZER.tokenize(normalized)
+                if _TOKEN_CONTENT_PATTERN.search(token)
+            ]
+            if tokens:
+                return tokens
+        except Exception:
+            pass
+
+    return re.findall(r"\S+", normalized)
 
 
 def _split_sentences(text: str) -> list[str]:
     normalized = _normalize_text(text)
     if not normalized:
         return []
+
+    if _NLTK_SENTENCE_TOKENIZER is not None:
+        try:
+            sentences = [part.strip() for part in _NLTK_SENTENCE_TOKENIZER.tokenize(normalized) if part.strip()]
+            if sentences:
+                return sentences
+        except Exception:
+            pass
+
     return [part.strip() for part in re.split(r"(?<=[.!?])\s+", normalized) if part.strip()]
 
 
@@ -363,12 +403,12 @@ def _compose_structured_email_text(issue_text: str, category: str, address: str)
     subject_issue = issue_phrase[:1].upper() + issue_phrase[1:] if issue_phrase else "Civic Hazard"
 
     return (
-        f"Subject: Urgent Civic Grievance - Immediate Action Required regarding {subject_issue}\n\n"
-        f"Dear {salutation_department},\n\n"
+        f"Subject: Urgent Civic Grievance - Immediate Action Required regarding **{subject_issue}**\n\n"
+        f"Dear **{salutation_department}**,\n\n"
         "I am writing to formally bring to your attention a matter of public concern that requires urgent resolution. "
-        f"The attached photographic evidence indicates {issue_phrase}. {location_sentence}\n\n"
-        f"If left unaddressed, this issue poses a significant risk of {risk_hint}. "
-        f"{action_hint}.\n\n"
+        f"The attached photographic evidence indicates **{issue_phrase}**. **{location_sentence}**\n\n"
+        f"If left unaddressed, this issue poses a significant risk of **{risk_hint}**. "
+        f"**{action_hint}**.\n\n"
         "Your prompt intervention in this matter is requested in the interest of public safety.\n\n"
         "Sincerely,\n"
         "Concerned Citizen"
@@ -939,8 +979,10 @@ def generate_complaint(image_path, classification_result, user_details, location
     """
 
     category = classification_result.get("department") or classification_result.get("label", "Civic Issue")
+    reported_issue_text = _normalize_text(str((user_details or {}).get("reported_issue_text", ""))).strip()
     description = (
-        classification_result.get("vision_description")
+        reported_issue_text
+        or classification_result.get("vision_description")
         or classification_result.get("label", "")
         or "A civic issue requiring attention"
     )
@@ -1041,7 +1083,8 @@ def generate_complaint(image_path, classification_result, user_details, location
 
             english_text = clean if clean else raw
             english_text = _align_with_observed_issue(english_text, description)
-            source_issue = description if len(_tokenize_words(description)) >= 6 else english_text
+            preferred_issue_text = reported_issue_text or description
+            source_issue = preferred_issue_text if len(_tokenize_words(preferred_issue_text)) >= 2 else english_text
             if output_mode == "email":
                 english_text = _compose_structured_email_text(source_issue, category, address)
             else:
@@ -1068,7 +1111,8 @@ def generate_complaint(image_path, classification_result, user_details, location
 
         except Exception as e:
             print(f"[generator] Draft generation failed ({e}); using deterministic complaint template")
-            fallback_source = description if len(_tokenize_words(description)) >= 6 else "A civic issue requiring attention"
+            preferred_issue_text = reported_issue_text or description
+            fallback_source = preferred_issue_text if len(_tokenize_words(preferred_issue_text)) >= 2 else "A civic issue requiring attention"
             if output_mode == "email":
                 fallback = _compose_structured_email_text(fallback_source, category, address)
             else:

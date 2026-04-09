@@ -5,6 +5,7 @@ import {
   Power, Activity, AlertCircle, Zap, BarChart2, Shield,
 } from 'lucide-react';
 import ComplaintComments from '../components/ComplaintComments';
+import FormattedComplaintText from '../components/FormattedComplaintText';
 
 const API = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
@@ -52,7 +53,7 @@ function TaskCard({ complaint, onDone, doneLoading }) {
           </div>
 
           <p className="mt-2 text-sm text-gray-600 line-clamp-3">
-            {complaint.description}
+            <FormattedComplaintText text={complaint.description} />
           </p>
 
           <div className="mt-2 flex flex-col sm:flex-row sm:items-center text-sm text-gray-500 gap-2">
@@ -109,7 +110,9 @@ function HistoryCard({ complaint }) {
               </span>
             </div>
           </div>
-          <p className="mt-2 text-sm text-gray-600 line-clamp-2">{complaint.description}</p>
+          <p className="mt-2 text-sm text-gray-600 line-clamp-2">
+            <FormattedComplaintText text={complaint.description} />
+          </p>
           <div className="mt-2 flex flex-col sm:flex-row sm:items-center text-sm text-gray-500 gap-2">
             <div className="flex items-center">
               <MapPin className="h-4 w-4 mr-1 shrink-0" />

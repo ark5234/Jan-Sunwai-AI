@@ -17,6 +17,7 @@ pandas==3.0.1          # triage CSV endpoints
 tqdm==4.67.1
 python-dotenv==1.0.1
 deep-translator==1.11.4 # post-generation translation for Indian languages
+nltk==3.9.4             # optional tokenization/sentence-splitting enhancements
 slowapi==0.1.9         # request rate limiting
 
 # ── Dev / Testing ──────────────────────────────────────────────────────────

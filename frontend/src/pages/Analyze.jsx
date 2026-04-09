@@ -19,6 +19,7 @@ const LANGUAGES = [
 export default function Analyze() {
   const [selectedImage, setSelectedImage] = useState(null);
   const [language, setLanguage] = useState('en');
+  const [userGrievanceText, setUserGrievanceText] = useState('');
   const { analyzeImage, loading, error, uploadMetrics } = useAnalyze();
   const { user } = useAuth();
 
@@ -32,7 +33,7 @@ export default function Analyze() {
   const handleAnalysis = async () => {
     if (!selectedImage) return;
     if (!user) return;
-    await analyzeImage(selectedImage, user.username, language);
+    await analyzeImage(selectedImage, user.username, language, userGrievanceText);
   };
 
   if (!user || !user.access_token) {
@@ -69,6 +70,22 @@ export default function Analyze() {
         {/* Upload Card */}
         <div className="bg-white p-6 sm:p-8 rounded-lg shadow-sm border border-gray-200">
           <ImageUpload onImageSelect={setSelectedImage} />
+
+          <div className="mt-5">
+            <label className="block text-xs text-gray-500 font-medium mb-1.5">
+              Optional: Describe the issue in your own words
+            </label>
+            <textarea
+              value={userGrievanceText}
+              onChange={(e) => setUserGrievanceText(e.target.value)}
+              placeholder="Example: Major pothole near Sector 12 bus stop causing two-wheeler accidents"
+              className="w-full min-h-24 p-3 text-sm border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-400"
+              maxLength={1200}
+            />
+            <p className="mt-1 text-[11px] text-gray-400">
+              If AI misreads the photo context, this helps route your complaint to the right department.
+            </p>
+          </div>
           
           {error && (
             <div className="mt-4 p-3 bg-red-50 text-danger text-sm rounded border border-red-200 flex items-center">

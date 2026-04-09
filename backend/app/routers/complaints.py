@@ -48,6 +48,48 @@ def fix_id(doc):
     return doc
 
 
+def _normalize_optional_user_grievance(text: str) -> str:
+    if not isinstance(text, str):
+        return ""
+    cleaned = sanitize_text(text or "", max_len=1200).strip()
+    # Ignore ultra-short hints; they are often noise and degrade routing quality.
+    if len(cleaned) < 8:
+        return ""
+    return cleaned
+
+
+def _apply_user_text_routing_override(classification: dict, user_text_result: dict) -> dict:
+    resolved = dict(classification or {})
+    resolved["routing_source"] = "image"
+    resolved["image_department"] = resolved.get("department")
+    resolved["image_confidence"] = resolved.get("confidence")
+    resolved["user_text_department"] = user_text_result.get("department")
+    resolved["user_text_confidence"] = user_text_result.get("confidence")
+    resolved["user_text_method"] = user_text_result.get("method")
+    resolved["user_text_rationale"] = user_text_result.get("rationale")
+    resolved["user_text_used_for_routing"] = False
+
+    image_marked_non_civic = bool(resolved.get("is_non_civic", False))
+    user_text_is_valid = bool(user_text_result.get("is_valid", False))
+
+    if user_text_is_valid and not image_marked_non_civic:
+        resolved["department"] = user_text_result.get("department")
+        resolved["confidence"] = float(user_text_result.get("confidence", 0.0))
+        resolved["is_valid"] = True
+        resolved["is_non_civic"] = False
+        resolved["raw_category"] = user_text_result.get("department")
+        resolved["method"] = f"{resolved.get('method', 'vision')}+user_text_override"
+        resolved["rationale"] = (
+            f"{resolved.get('rationale', '')}; overridden using user grievance text"
+        ).strip(" ;")
+        resolved["routing_source"] = "user_text"
+        resolved["user_text_used_for_routing"] = True
+    elif image_marked_non_civic:
+        resolved["user_text_override_blocked_reason"] = "image_marked_non_civic"
+
+    return resolved
+
+
 async def await_generation(job_id: str, timeout_seconds: float) -> dict:
     elapsed = 0.0
     sleep_interval = 0.2
@@ -65,10 +107,12 @@ async def analyze_complaint(
     request: Request,
     file: UploadFile = File(...),
     language: str = Form("en"),
+    user_grievance_text: str = Form(""),
     current_user: dict = Depends(get_current_user)
 ):
     analyze_start = time.perf_counter()
     username = current_user["username"]
+    normalized_user_grievance = _normalize_optional_user_grievance(user_grievance_text)
 
     # 1. Save file and resolve absolute path
     file_path = await storage_service.save_file(file)
@@ -89,6 +133,15 @@ async def analyze_complaint(
             },
         )
 
+    # Optional user-text routing assist: if user provides a clear grievance hint,
+    # use deterministic text classification to improve department selection.
+    if normalized_user_grievance:
+        user_text_result = await asyncio.to_thread(
+            classifier.classify_user_description,
+            normalized_user_grievance,
+        )
+        classification = _apply_user_text_routing_override(classification, user_text_result)
+
     # 3. Extract Location — open from the saved file on disk (avoids re-reading HTTP body)
     image = Image.open(absolute_file_path)
     location = extract_location(image)
@@ -105,7 +158,13 @@ async def analyze_complaint(
     ) or classification.get("method") in ("non_civic_guard", "error")
 
     if not is_truly_non_civic:
-        job_id = await llm_queue_service.enqueue(absolute_file_path, classification, {"name": username}, location, language)
+        job_id = await llm_queue_service.enqueue(
+            absolute_file_path,
+            classification,
+            {"name": username, "reported_issue_text": normalized_user_grievance},
+            location,
+            language,
+        )
         result = await await_generation(job_id, settings.llm_inline_timeout_seconds)
         if result.get("status") == "completed":
             generated_text = result.get("generated_complaint", "")
@@ -137,6 +196,7 @@ async def analyze_complaint(
         "generated_complaint": generated_text,
         "generation_status": generation_status,
         "generation_job_id": job_id,
+        "user_grievance_text": normalized_user_grievance,
         "image_url": file_path, # Return the path so frontend can pass it to /complaints
         "timings": {
             "vision_ms": classification.get("timings", {}).get("vision_ms", 0.0),
@@ -170,13 +230,25 @@ async def regenerate_complaint(
     location       = payload.get("location", {})
     image_url      = payload.get("image_url", "")
     language       = payload.get("language", "en")
+    user_hint      = _normalize_optional_user_grievance(payload.get("user_grievance_text", ""))
+
+    if user_hint:
+        user_text_result = await asyncio.to_thread(
+            classifier.classify_user_description,
+            user_hint,
+        )
+        classification = _apply_user_text_routing_override(classification, user_text_result)
 
     absolute_file_path = storage_service.resolve_path(image_url)
 
     job_id = await llm_queue_service.enqueue(
-        absolute_file_path, classification, {"name": username}, location, language
+        absolute_file_path,
+        classification,
+        {"name": username, "reported_issue_text": user_hint},
+        location,
+        language,
     )
-    return {"job_id": job_id, "status": "queued"}
+    return {"job_id": job_id, "status": "queued", "classification": classification}
 
 
 
@@ -192,6 +264,13 @@ async def create_complaint(
     # 2. Prepare Data
     complaint_dict = complaint.model_dump()
     complaint_dict["description"] = sanitize_text(complaint_dict.get("description", ""), max_len=3000)
+    if complaint_dict.get("user_grievance_text"):
+        complaint_dict["user_grievance_text"] = sanitize_text(
+            complaint_dict.get("user_grievance_text", ""),
+            max_len=1200,
+        )
+        if len(complaint_dict["user_grievance_text"]) < 8:
+            complaint_dict["user_grievance_text"] = None
     if len(complaint_dict["description"]) < 10:
         raise HTTPException(status_code=400, detail="Complaint description is too short after sanitization")
     if isinstance(complaint_dict.get("location"), dict) and complaint_dict["location"].get("address"):
@@ -200,12 +279,41 @@ async def create_complaint(
             max_len=300,
         )
     
-    # Resolve Authority routing metadata
-    routing = route_authority(complaint.department)
+    resolved_department = complaint_dict.get("department") or complaint.department
+    user_text_result = None
 
-    # Compute AI-derived priority
+    if complaint_dict.get("user_grievance_text"):
+        user_text_result = await asyncio.to_thread(
+            classifier.classify_user_description,
+            complaint_dict.get("user_grievance_text", ""),
+        )
+        if bool(user_text_result.get("is_valid", False)):
+            resolved_department = str(user_text_result.get("department") or resolved_department)
+
+    complaint_dict["department"] = resolved_department
+
+    if isinstance(complaint_dict.get("ai_metadata"), dict):
+        complaint_dict["ai_metadata"]["detected_department"] = resolved_department
+        if user_text_result and bool(user_text_result.get("is_valid", False)):
+            try:
+                existing_conf = float(complaint_dict["ai_metadata"].get("confidence_score", 0.0) or 0.0)
+                user_conf = float(user_text_result.get("confidence", 0.0) or 0.0)
+                complaint_dict["ai_metadata"]["confidence_score"] = max(existing_conf, user_conf)
+            except Exception:
+                pass
+
+    # Resolve Authority routing metadata
+    routing = route_authority(resolved_department)
+
+    # Compute priority using final complaint text plus optional user context.
+    priority_input_text = complaint_dict.get("description", "")
+    if complaint_dict.get("user_grievance_text"):
+        priority_input_text = (
+            f"{priority_input_text}\n{complaint_dict.get('user_grievance_text', '')}"
+        ).strip()
+
     priority = compute_priority(
-        complaint_dict.get("description", ""),
+        priority_input_text,
         complaint_dict.get("department", ""),
     )
 
@@ -213,7 +321,7 @@ async def create_complaint(
     thirty_days_ago = datetime.utcnow() - timedelta(days=30)
     dup_query: dict = {
         "user_id": user_id,
-        "department": complaint.department,
+        "department": resolved_department,
         "created_at": {"$gte": thirty_days_ago},
         "status": {"$nin": [ComplaintStatus.REJECTED]},
     }
@@ -256,7 +364,7 @@ async def create_complaint(
         user_id=user_id,
         notification_type=NotificationType.STATUS_CHANGE,
         title="Grievance Registered",
-        message=f"Your grievance has been registered and routed to {complaint.department}. Current status: Open.",
+        message=f"Your grievance has been registered and routed to {resolved_department}. Current status: Open.",
         complaint_id=complaint_dict["_id"],
         status_from=None,
         status_to=ComplaintStatus.OPEN.value,
@@ -266,7 +374,7 @@ async def create_complaint(
     location_data = complaint_dict.get("location")
     await auto_assign(
         complaint_id=complaint_dict["_id"],
-        department=complaint.department,
+        department=resolved_department,
         complaint_location=location_data,
         db=db,
     )

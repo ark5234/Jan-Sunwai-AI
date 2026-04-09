@@ -126,6 +126,11 @@ class StatusHistoryItem(BaseModel):
 class ComplaintBase(BaseModel):
     description: str = Field(..., min_length=10, description="The complaint text (AI generated or edited)")
     department: str
+    user_grievance_text: Optional[str] = Field(
+        None,
+        max_length=1200,
+        description="Optional user-provided issue hint used to improve department routing",
+    )
 
 class ComplaintCreate(ComplaintBase):
     # This is what comes from the Frontend (after AI analysis + User edit)

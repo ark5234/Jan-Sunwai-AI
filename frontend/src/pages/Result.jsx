@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useLocation, Link, useNavigate } from 'react-router-dom';
-import { MapPin, FileText, CheckCircle, AlertTriangle, ArrowLeft, Shield, Copy, Edit3, Navigation, Search, RefreshCw, Map as MapIcon, X, Layers } from 'lucide-react';
+import { MapPin, FileText, CheckCircle, AlertTriangle, ArrowLeft, Shield, Copy, Edit3, Navigation, Search, RefreshCw, Map as MapIcon, X, Layers, ChevronDown, ChevronRight } from 'lucide-react';
 import Map, { Marker as MapMarker, NavigationControl } from 'react-map-gl/maplibre';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { useAuth } from '../context/AuthContext';
+import FormattedComplaintText from '../components/FormattedComplaintText';
 
 // Map tile sources. Set VITE_MAPPLS_API_KEY for official GoI-compliant tiles.
 const _MAPPLS_KEY = import.meta.env.VITE_MAPPLS_API_KEY;
@@ -57,6 +58,10 @@ export default function Result() {
   const navigate = useNavigate();
   const result = state?.result;
   const language = state?.language || 'en';
+  const [classificationState, setClassificationState] = useState(result?.classification || {});
+  const [userContextText, setUserContextText] = useState((result?.user_grievance_text || '').trim());
+  const [showContextEditor, setShowContextEditor] = useState(true);
+  const [showComplaintEditor, setShowComplaintEditor] = useState(false);
   
   const [complaintText, setComplaintText] = useState(result?.generated_complaint || '');
   const [generationStatus, setGenerationStatus] = useState(result?.generation_status || 'completed');
@@ -283,7 +288,7 @@ export default function Result() {
     );
   }
 
-  const { classification, location, generated_complaint, image_url } = result;
+  const { location, image_url } = result;
   
   const handleSubmit = async () => {
     if (!isLocationValid) {
@@ -307,9 +312,11 @@ export default function Result() {
     
     try {
       const loc = getEffectiveLocation();
+      const userHint = userContextText.trim();
       const complaintData = {
         description: complaintText,
-        department: classification.department,
+        department: classificationState.department,
+        user_grievance_text: userHint || null,
         image_url: image_url,
         location: {
           lat: loc.lat,
@@ -318,11 +325,11 @@ export default function Result() {
           source: loc.source,
         },
         ai_metadata: {
-          model_used: classification.model_used || 'qwen2.5vl:3b',
-          confidence_score: classification.confidence,
-          detected_department: classification.department,
-          detected_issue: classification.label,
-          labels: classification.all_scores?.map(s => s.label) || [classification.label]
+          model_used: classificationState.model_used || 'qwen2.5vl:3b',
+          confidence_score: classificationState.confidence,
+          detected_department: classificationState.department,
+          detected_issue: classificationState.label,
+          labels: classificationState.all_scores?.map(s => s.label) || [classificationState.label]
         },
         language: language,
       };
@@ -362,18 +369,24 @@ export default function Result() {
     setRegenerating(true);
     setShowRegenLang(false);
     try {
+      const userHint = userContextText.trim();
       const res = await axios.post(
         `${API_BASE_URL}/analyze/regenerate`,
         {
-          classification,
+          classification: classificationState,
           location: result?.location || {},
           image_url,
           language: regenLang,
+          user_grievance_text: userHint,
         },
         { headers: { Authorization: `Bearer ${user?.access_token}` } }
       );
       const { job_id } = res.data;
+      if (res.data?.classification) {
+        setClassificationState(res.data.classification);
+      }
       setComplaintText('');
+      setShowComplaintEditor(false);
       setGenerationJobId(job_id);
       setGenerationStatus('queued');
     } catch (err) {
@@ -384,12 +397,21 @@ export default function Result() {
     }
   };
 
+  const handleApplyContextAndRegenerate = async () => {
+    if (!userContextText.trim()) {
+      setRegenerateError('Please enter corrected image context first.');
+      return;
+    }
+    await handleRegenerate();
+  };
+
   const cleanPath = image_url.replace(/\\/g, '/');
   const fullImageUrl = `${API_BASE_URL}/${cleanPath}`;
 
-  const confidence = (classification.confidence * 100).toFixed(1);
-  const isHighConfidence = classification.confidence > 0.8;
-  const isInvalid = ['Invalid Content', 'Uncertain'].includes(classification.department);
+  const confidenceValue = Number(classificationState?.confidence || 0);
+  const confidence = (confidenceValue * 100).toFixed(1);
+  const isHighConfidence = confidenceValue > 0.8;
+  const isInvalid = ['Invalid Content', 'Uncertain'].includes(classificationState?.department);
   const isGenerating = ['queued', 'processing'].includes(generationStatus);
   const canSubmit = !isInvalid && isLocationValid && complaintText.trim().length > 0 && !isGenerating;
 
@@ -451,10 +473,10 @@ export default function Result() {
               <p className="text-[10px] text-gray-400 uppercase tracking-wider font-semibold mb-1">Issue Detected</p>
               <p className="text-sm text-gray-900">
                 {(() => {
-                  const raw = classification.label || '';
+                  const raw = classificationState.label || '';
                   // Hide garbled/raw JSON output from the model
                   const isGarbled = !raw || raw.trim().startsWith('{') || raw.trim().startsWith('[') || raw.length < 4;
-                  return isGarbled ? (classification.vision_description || classification.department || 'Civic issue detected') : raw;
+                  return isGarbled ? (classificationState.vision_description || classificationState.department || 'Civic issue detected') : raw;
                 })()}
               </p>
             </div>
@@ -463,9 +485,14 @@ export default function Result() {
               <span className={`inline-block px-3 py-1 text-xs font-bold text-white rounded ${
                 isInvalid ? 'bg-danger' : 'bg-primary'
               }`}>
-                {classification.department}
+                {classificationState.department}
               </span>
             </div>
+            {classificationState?.routing_source === 'user_text' && userContextText.trim() && (
+              <div className="p-2.5 bg-indigo-50 border border-indigo-200 rounded text-xs text-indigo-700">
+                Routing used your optional grievance hint to refine department detection.
+              </div>
+            )}
           </div>
         </div>
 
@@ -729,10 +756,20 @@ export default function Result() {
                             setRegenerating(true);
                             axios.post(
                               `${API_BASE_URL}/analyze/regenerate`,
-                              { classification, location: result?.location || {}, image_url, language: code },
+                              {
+                                classification: classificationState,
+                                location: result?.location || {},
+                                image_url,
+                                language: code,
+                                user_grievance_text: userContextText,
+                              },
                               { headers: { Authorization: `Bearer ${user?.access_token}` } }
                             ).then(res => {
+                              if (res.data?.classification) {
+                                setClassificationState(res.data.classification);
+                              }
                               setComplaintText('');
+                              setShowComplaintEditor(false);
                               setGenerationJobId(res.data.job_id);
                               setGenerationStatus('queued');
                             }).catch(() => {
@@ -770,28 +807,99 @@ export default function Result() {
                 </div>
                 <div className="bg-gray-50 rounded p-3 border border-gray-100">
                   <div className="text-[10px] text-gray-400 uppercase tracking-wider font-semibold mb-0.5">Routed To</div>
-                  <div className="text-sm font-medium text-gray-800">{classification.department}</div>
+                  <div className="text-sm font-medium text-gray-800">{classificationState.department}</div>
                 </div>
+              </div>
+
+              <div>
+                <div className="flex items-center justify-between mb-1.5">
+                  <label className="flex items-center gap-1.5 text-xs font-semibold text-gray-600 uppercase tracking-wide">
+                    <Edit3 className="w-3 h-3" />
+                    Optional: Correct Image Context For Routing
+                  </label>
+                  <button
+                    type="button"
+                    onClick={() => setShowContextEditor((v) => !v)}
+                    className="text-xs font-medium text-primary hover:text-primary-light flex items-center gap-1"
+                  >
+                    {showContextEditor ? <ChevronDown className="w-3.5 h-3.5" /> : <ChevronRight className="w-3.5 h-3.5" />}
+                    {showContextEditor ? 'Collapse' : 'Expand'}
+                  </button>
+                </div>
+
+                {showContextEditor && (
+                  <>
+                    <textarea
+                      className="w-full min-h-24 p-3 text-gray-700 bg-white border border-gray-300 rounded focus:ring-2 focus:ring-primary focus:border-transparent outline-none resize-y text-sm leading-relaxed"
+                      value={userContextText}
+                      onChange={(e) => {
+                        setUserContextText(e.target.value);
+                        if (regenerateError) setRegenerateError(null);
+                      }}
+                      onKeyDown={(e) => {
+                        if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+                          e.preventDefault();
+                          void handleApplyContextAndRegenerate();
+                        }
+                      }}
+                      placeholder="Example: Fractured footpath slab along road edge near crossing; pedestrian trip hazard"
+                      maxLength={1200}
+                    />
+                    <div className="mt-2 flex flex-wrap items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={handleApplyContextAndRegenerate}
+                        disabled={!userContextText.trim() || isGenerating || regenerating}
+                        className="px-3 py-1.5 text-xs font-semibold text-white rounded bg-primary hover:bg-primary-light disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        {isGenerating || regenerating ? 'Applying…' : 'Apply Context & Regenerate'}
+                      </button>
+                      <span className="text-[11px] text-gray-500">
+                        Tip: press Ctrl+Enter after editing context.
+                      </span>
+                    </div>
+                    <p className="mt-1 text-[11px] text-gray-500">
+                      Use the button above to update Issue Details from your corrected context.
+                    </p>
+                  </>
+                )}
               </div>
 
               {/* Editable complaint description */}
               <div>
-                <label className="flex items-center gap-1.5 text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1.5">
-                  <Edit3 className="w-3 h-3" />
-                  Issue Details (AI-generated — edit if needed)
-                  {['queued', 'processing'].includes(generationStatus) && (
-                    <span className="ml-2 text-[10px] text-primary animate-pulse font-normal normal-case tracking-normal">Generating…</span>
-                  )}
-                </label>
-                <textarea 
-                  className={`w-full min-h-44 p-4 text-gray-700 bg-white border border-gray-300 rounded focus:ring-2 focus:ring-primary focus:border-transparent outline-none resize-y text-sm leading-relaxed ${
-                    ['queued', 'processing'].includes(generationStatus) ? 'opacity-60 cursor-wait' : ''
-                  }`}
-                  value={complaintText}
-                  onChange={(e) => setComplaintText(e.target.value)}
-                  placeholder={['queued', 'processing'].includes(generationStatus) ? 'Generating complaint draft…' : 'Describe the issue in detail...'}
-                  disabled={['queued', 'processing'].includes(generationStatus)}
-                />
+                <div className="flex items-center justify-between mb-1.5">
+                  <label className="flex items-center gap-1.5 text-xs font-semibold text-gray-600 uppercase tracking-wide">
+                    <Edit3 className="w-3 h-3" />
+                    Issue Details (AI-generated — edit if needed)
+                    {['queued', 'processing'].includes(generationStatus) && (
+                      <span className="ml-2 text-[10px] text-primary animate-pulse font-normal normal-case tracking-normal">Generating…</span>
+                    )}
+                  </label>
+                  <button
+                    type="button"
+                    onClick={() => setShowComplaintEditor((v) => !v)}
+                    disabled={['queued', 'processing'].includes(generationStatus)}
+                    className="text-xs font-medium text-primary hover:text-primary-light disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {showComplaintEditor ? 'Hide Editor' : 'Edit Text'}
+                  </button>
+                </div>
+                <div className="mb-2">
+                  <div className="w-full max-h-48 overflow-y-auto p-3 text-gray-700 bg-gray-50 border border-gray-200 rounded text-sm leading-relaxed">
+                    <FormattedComplaintText text={complaintText} />
+                  </div>
+                </div>
+                {showComplaintEditor && (
+                  <textarea 
+                    className={`w-full min-h-44 p-4 text-gray-700 bg-white border border-gray-300 rounded focus:ring-2 focus:ring-primary focus:border-transparent outline-none resize-y text-sm leading-relaxed ${
+                      ['queued', 'processing'].includes(generationStatus) ? 'opacity-60 cursor-wait' : ''
+                    }`}
+                    value={complaintText}
+                    onChange={(e) => setComplaintText(e.target.value)}
+                    placeholder={['queued', 'processing'].includes(generationStatus) ? 'Generating complaint draft…' : 'Describe the issue in detail...'}
+                    disabled={['queued', 'processing'].includes(generationStatus)}
+                  />
+                )}
               </div>
             </div>
 

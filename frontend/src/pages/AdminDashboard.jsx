@@ -5,6 +5,7 @@ import { FileText, MapPin, Calendar, Filter, Users, Building, ArrowRightLeft, Do
 import axios from 'axios';
 import SLABadge from '../components/SLABadge';
 import ComplaintComments from '../components/ComplaintComments';
+import FormattedComplaintText from '../components/FormattedComplaintText';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
@@ -689,7 +690,7 @@ const AdminDashboard = () => {
                         </div>
                       </div>
                       <p className="mt-2 text-sm text-gray-600">
-                        {complaint.description}
+                        <FormattedComplaintText text={complaint.description} />
                       </p>
                       <div className="mt-2 flex flex-col sm:flex-row sm:items-center text-sm text-gray-500 gap-2">
                         <div className="flex items-center">

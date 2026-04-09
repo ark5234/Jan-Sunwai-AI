@@ -341,6 +341,72 @@ class CivicClassifier:
         except Exception:
             pass  # best-effort; server may not support keep_alive
 
+    def classify_user_description(self, user_text: str) -> dict:
+        """
+        Classify an optional user-provided grievance description for routing.
+
+        This is deterministic (rule engine + keyword fallback) and does not
+        invoke any additional LLM model.
+        """
+        normalized = " ".join(str(user_text or "").split()).strip()
+        if not normalized:
+            return {
+                "department": "Uncategorized",
+                "label": "",
+                "confidence": 0.0,
+                "is_valid": False,
+                "is_non_civic": False,
+                "method": "user_text_empty",
+                "rationale": "empty user grievance text",
+            }
+
+        normalized_lower = normalized.lower()
+        if any(kw in normalized_lower for kw in _NEGATIVE_KEYWORDS):
+            return {
+                "department": "Uncategorized",
+                "label": normalized,
+                "confidence": 0.2,
+                "is_valid": False,
+                "is_non_civic": True,
+                "method": "user_text_non_civic",
+                "rationale": "user grievance text appears out-of-scope/non-civic",
+            }
+
+        payload = parse_vision_text_to_payload(normalized)
+        rule_result = classify_by_rules(
+            payload,
+            ambiguity_threshold=1.2,
+            confidence_gap_threshold=0.75,
+        )
+        canonical = canonicalize_label(str(rule_result.get("category", "Uncategorized")))
+        confidence = float(rule_result.get("confidence", 0.0))
+        method = f"user_text_{rule_result.get('method', 'rule_engine')}"
+        rationale = "rule engine over user grievance text"
+
+        if canonical == "Uncategorized":
+            keyword_result = canonicalize_label(_keyword_fallback(normalized))
+            if keyword_result != "Uncategorized":
+                canonical = keyword_result
+                confidence = max(confidence, 0.62)
+                method = "user_text_keyword_fallback"
+                rationale = "keyword fallback over user grievance text"
+
+        is_valid = canonical != "Uncategorized"
+        if is_valid:
+            confidence = max(confidence, 0.6)
+        else:
+            confidence = max(confidence * 0.5, 0.1)
+
+        return {
+            "department": canonical,
+            "label": normalized,
+            "confidence": round(confidence, 3),
+            "is_valid": is_valid,
+            "is_non_civic": False,
+            "method": method,
+            "rationale": rationale,
+        }
+
     def classify(self, image_path: str) -> dict:
         timings = {
             "vision_ms": 0.0,
