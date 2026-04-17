@@ -1,4 +1,4 @@
-﻿# Jan-Sunwai AI API Reference
+# Jan-Sunwai AI API Reference
 
 This document reflects the current FastAPI implementation in `backend/main.py` and `backend/app/routers/*`.
 
@@ -200,7 +200,7 @@ flowchart LR
 POST /users/login
 Content-Type: application/x-www-form-urlencoded
 
-username=citizen_demo&password=citizen123
+username=<your_username>&password=<your_password>
 ```
 
 ### Analyze
@@ -273,6 +273,9 @@ language=en
 
 ## Notes for Integrators
 
-- Set `VITE_API_URL=/api/v1` in production frontend to use versioned routes.
-- Nginx must proxy `/api/*` to backend service.
+- `VITE_API_URL` in `frontend/.env` defaults to `http://localhost:8000/api/v1` for local development.
+- In production Docker builds, override via `--build-arg VITE_API_URL=/api/v1` (relative URL, routed through nginx).
+- Nginx must proxy `/api/*` to the backend service AND serve `/uploads/*` from the backend static mount.
+- Static uploaded images are served at `/uploads/<filename>` — **not** under `/api/v1`.
 - Worker registration does not auto-login; worker must be approved by admin first.
+- Bold markers (`**text**`) in generated complaint emails are rendered by `FormattedComplaintText.jsx` as `<strong>` for all supported languages including translated output.
