@@ -9,6 +9,8 @@ import StatusTimeline from '../components/StatusTimeline';
 import FormattedComplaintText from '../components/FormattedComplaintText';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1';
+// Static files (uploads/) are served at the root — not under /api/v1
+const STATIC_BASE_URL = API_BASE_URL.replace(/\/api\/v1\/?$/, '').replace(/\/$/, '');
 
 // Inline star-rating feedback widget
 function FeedbackWidget({ complaintId, token, onSubmitted }) {
@@ -313,7 +315,7 @@ const CitizenDashboard = () => {
                     {complaint.image_url && (
                       <div className="sm:ml-4 shrink-0">
                         <img
-                          src={`${API_BASE_URL}/${complaint.image_url}`}
+                          src={`${STATIC_BASE_URL}/${complaint.image_url.replace(/^\//,'')}`}
                           alt="Complaint"
                           className="h-24 w-24 sm:h-20 sm:w-20 object-cover rounded"
                         />

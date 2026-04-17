@@ -8,6 +8,7 @@ import ComplaintComments from '../components/ComplaintComments';
 import FormattedComplaintText from '../components/FormattedComplaintText';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1';
+const STATIC_BASE_URL = API_BASE_URL.replace(/\/api\/v1\/?$/, '').replace(/\/$/, '');
 
 const DeptHeadDashboard = () => {
   const { user } = useAuth();
@@ -485,7 +486,7 @@ const DeptHeadDashboard = () => {
                     {complaint.image_url && (
                       <div className="sm:ml-4 flex-shrink-0">
                         <img
-                          src={`${API_BASE_URL}/${complaint.image_url}`}
+                          src={`${STATIC_BASE_URL}/${complaint.image_url.replace(/^\//,'')}`}
                           alt="Complaint"
                           className="h-32 w-32 sm:h-32 sm:w-32 object-cover rounded"
                         />
