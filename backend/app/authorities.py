@@ -122,6 +122,9 @@ AUTHORITIES_DB = [
     )
 ]
 
+# Dict-keyed registry for O(1) lookups — imported by escalation service
+AUTHORITY_REGISTRY: dict[str, Authority] = {auth.id: auth for auth in AUTHORITIES_DB}
+
 def get_authority_by_id(auth_id: str) -> Optional[Authority]:
     for auth in AUTHORITIES_DB:
         if auth.id == auth_id:
