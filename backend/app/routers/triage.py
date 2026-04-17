@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Optional
 
@@ -11,6 +11,7 @@ from pydantic import BaseModel
 
 from app.auth import get_current_admin
 from app.database import get_database
+from app.schemas import ComplaintStatus
 
 
 router = APIRouter(prefix="/triage", tags=["Triage"])
@@ -44,7 +45,7 @@ async def get_review_queue(skip: int = 0, limit: int = 50, _: dict = Depends(get
     db = get_database()
     query = {
         "ai_metadata.confidence_score": {"$lt": CONFIDENCE_THRESHOLD},
-        "status": {"$nin": ["Rejected"]},
+        "status": {"$nin": [ComplaintStatus.REJECTED.value]},
         "triage_decision": {"$exists": False},  # hide already-reviewed ones
     }
     total = await db["complaints"].count_documents(query)
@@ -78,7 +79,7 @@ async def submit_review_decision(payload: ReviewDecision, current_user: dict = D
     update = {
         "triage_decision": payload.decision,
         "triage_reviewed_by": current_user.get("username"),
-        "triage_reviewed_at": datetime.utcnow(),
+        "triage_reviewed_at": datetime.now(timezone.utc),
     }
     if payload.corrected_label:
         update["department"] = payload.corrected_label
@@ -104,7 +105,7 @@ async def submit_review_decision(payload: ReviewDecision, current_user: dict = D
             "corrected_label": payload.corrected_label,
             "note": payload.note,
             "reviewed_by": current_user.get("username"),
-            "reviewed_at": datetime.utcnow().isoformat(),
+            "reviewed_at": datetime.now(timezone.utc).isoformat(),
         }
         if REVIEW_DECISIONS_CSV.exists():
             existing = pd.read_csv(REVIEW_DECISIONS_CSV)
