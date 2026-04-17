@@ -419,6 +419,8 @@ class CivicClassifier:
                 "label": "Image file not found",
                 "confidence": 0.0,
                 "is_valid": False,
+                "error": "resolved upload file does not exist",
+                "details": "resolved upload file does not exist",
                 "method": "error",
                 "rationale": "file not found",
                 "raw_json": "",

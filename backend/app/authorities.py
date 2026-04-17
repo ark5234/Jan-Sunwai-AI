@@ -126,10 +126,8 @@ AUTHORITIES_DB = [
 AUTHORITY_REGISTRY: dict[str, Authority] = {auth.id: auth for auth in AUTHORITIES_DB}
 
 def get_authority_by_id(auth_id: str) -> Optional[Authority]:
-    for auth in AUTHORITIES_DB:
-        if auth.id == auth_id:
-            return auth
-    return None
+    # P3-F: use the pre-built O(1) registry instead of O(n) linear scan
+    return AUTHORITY_REGISTRY.get(auth_id)
 
 def get_authorities_by_level(level: AuthorityLevel) -> list[Authority]:
     return [auth for auth in AUTHORITIES_DB if auth.level == level]

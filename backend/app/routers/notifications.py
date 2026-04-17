@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 
 from bson import ObjectId
 from fastapi import APIRouter, Depends, HTTPException, Body
@@ -40,7 +40,7 @@ async def create_notification(
         "status_from": status_from,
         "status_to": status_to,
         "is_read": False,
-        "created_at": datetime.utcnow(),
+        "created_at": datetime.now(timezone.utc),
     }
     await db["notifications"].insert_one(doc)
 

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import asyncio
 import logging
 import smtplib
 from email.message import EmailMessage
@@ -21,6 +22,10 @@ if not _logger.handlers:
 
 
 def _try_send_smtp(to_email: str, subject: str, body: str) -> bool:
+    """
+    P1-G: Send via SMTP with STARTTLS + optional authentication.
+    Returns True on success, False if SMTP not configured.
+    """
     if not settings.smtp_host:
         return False
 
@@ -31,6 +36,11 @@ def _try_send_smtp(to_email: str, subject: str, body: str) -> bool:
     msg.set_content(body)
 
     with smtplib.SMTP(settings.smtp_host, settings.smtp_port, timeout=10) as smtp:
+        smtp.ehlo()
+        smtp.starttls()  # P1-G: upgrade to encrypted channel before any auth/data
+        smtp.ehlo()      # re-identify after STARTTLS
+        if settings.smtp_username and settings.smtp_password:
+            smtp.login(settings.smtp_username, settings.smtp_password)
         smtp.send_message(msg)
     return True
 
@@ -52,13 +62,13 @@ def send_status_update_email(
 
     try:
         if _try_send_smtp(to_email, subject, body):
-            _logger.info("SMTP_SENT status_update to=%s complaint=%s", to_email, complaint_id)
+            _logger.info("SMTP_SENT status_update complaint=%s", complaint_id)
             return
     except Exception as exc:
-        _logger.warning("SMTP_SEND_FAILED status_update to=%s complaint=%s err=%s", to_email, complaint_id, exc)
+        _logger.warning("SMTP_SEND_FAILED status_update complaint=%s err=%s", complaint_id, exc)
 
-    # Stub log: omit body to avoid PII/message content in log files
-    _logger.info("STUB_EMAIL status_update to=%s subject=%s", to_email, subject)
+    # BL-03: Stub log — omit PII (email address, full subject, message body)
+    _logger.info("STUB_EMAIL type=status_update complaint=%s status=%s", complaint_id, status_to)
 
 
 def send_password_reset_email(to_email: str, reset_token: str) -> None:
@@ -72,10 +82,10 @@ def send_password_reset_email(to_email: str, reset_token: str) -> None:
 
     try:
         if _try_send_smtp(to_email, subject, body):
-            _logger.info("SMTP_SENT password_reset to=%s", to_email)
+            _logger.info("SMTP_SENT password_reset [recipient_omitted]")
             return
     except Exception as exc:
-        _logger.warning("SMTP_SEND_FAILED password_reset to=%s err=%s", to_email, exc)
+        _logger.warning("SMTP_SEND_FAILED password_reset err=%s", exc)
 
-    # Stub log: never log reset token — treat as credential
-    _logger.info("STUB_EMAIL password_reset to=%s [token_omitted]", to_email)
+    # BL-03: Never log reset token or email — treat both as credentials
+    _logger.info("STUB_EMAIL type=password_reset [recipient_and_token_omitted]")

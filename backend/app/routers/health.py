@@ -1,10 +1,29 @@
-from fastapi import APIRouter
-import ollama
+import asyncio
+
 import requests
 
 from app.config import settings
 from app.database import get_database
 
+import logging
+
+logger = logging.getLogger("JanSunwaiAI.health")
+
+router_import_done = False
+
+try:
+    from fastapi import APIRouter
+    router = APIRouter(prefix="/health", tags=["Health"])
+    router_import_done = True
+except Exception:
+    pass
+
+if not router_import_done:
+    from fastapi import APIRouter
+    router = APIRouter(prefix="/health", tags=["Health"])
+
+
+from fastapi import APIRouter
 
 router = APIRouter(prefix="/health", tags=["Health"])
 
@@ -16,29 +35,37 @@ async def live_check():
 
 @router.get("/ready")
 async def ready_check():
+    """
+    P3-E: Returns only boolean DB status — never exposes raw exception text.
+    DB error is logged server-side for operators.
+    """
     db_ok = True
-    db_error = None
     try:
         db = get_database()
         await db.command("ping")
     except Exception as exc:
         db_ok = False
-        db_error = str(exc)
+        logger.warning("DB readiness check failed: %s", exc)  # server log only
 
     return {
         "status": "ready" if db_ok else "degraded",
-        "database": {"ok": db_ok, "error": db_error},
+        "database": {"ok": db_ok},
+        # P3-E: error string removed from response — was leaking DB topology/credentials
     }
 
 
 @router.get("/models")
 async def model_health():
+    """P3-C: Ollama SDK call wrapped in asyncio.to_thread — no longer blocks event loop."""
+    import ollama
+
     ollama_ok = True
     ollama_error = None
     models = []
     try:
         client = ollama.Client(host=settings.ollama_base_url)
-        response = client.list()
+        # P3-C: was a blocking sync call inside async handler — fixed with to_thread
+        response = await asyncio.to_thread(client.list)
         models = response.get("models", []) if isinstance(response, dict) else []
     except Exception as exc:
         ollama_ok = False
@@ -62,7 +89,11 @@ async def gpu_check():
     A model with size_vram > 0 is running on GPU.
     """
     try:
-        resp = requests.get(f"{settings.ollama_base_url}/api/ps", timeout=5)
+        resp = await asyncio.to_thread(
+            requests.get,
+            f"{settings.ollama_base_url}/api/ps",
+            timeout=5,
+        )
         resp.raise_for_status()
         data = resp.json()
         running_models = data.get("models", [])

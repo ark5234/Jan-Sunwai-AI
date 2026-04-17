@@ -135,9 +135,18 @@ class StorageService:
         including absolute paths and directory traversal sequences (../../).
         """
         # Never allow absolute paths from untrusted input
-        path = Path(relative_or_absolute_path)
+        normalized = str(relative_or_absolute_path or "").replace("\\", "/").lstrip("/")
+        path = Path(normalized)
         if path.is_absolute():
             raise HTTPException(status_code=400, detail="Absolute paths are not permitted.")
+
+        # Allow callers to pass either "uploads/<file>" or just "<file>".
+        # upload_dir already points at .../uploads, so keep only the inner path.
+        if path.parts and path.parts[0] == self.upload_dir.name:
+            path = Path(*path.parts[1:]) if len(path.parts) > 1 else Path("")
+
+        if str(path) in ("", "."):
+            raise HTTPException(status_code=400, detail="Invalid upload path.")
 
         resolved = (self.upload_dir / path).resolve()
         # Ensure the resolved path stays inside upload_dir

@@ -1,7 +1,7 @@
-from pydantic import BaseModel, EmailStr, Field
+from pydantic import BaseModel, EmailStr, Field, field_validator
 from typing import Optional, List
 from enum import Enum
-from datetime import datetime
+from datetime import datetime, timezone
 
 class UserRole(str, Enum):
     CITIZEN = "citizen"
@@ -30,15 +30,30 @@ class UserBase(BaseModel):
     job_title: Optional[str] = Field(None, description="Official job title (e.g., 'Chief engineer', 'Sanitary inspector')")
 
 class UserCreate(UserBase):
-    password: str = Field(..., min_length=6, description="Password must be at least 6 characters")
+    password: str = Field(
+        ...,
+        min_length=10,
+        max_length=128,
+        description="Password must be at least 10 characters with uppercase and digit",
+    )
     role: UserRole = UserRole.CITIZEN
     # Worker-only registration extras (ignored for other roles)
     service_area: Optional[ServiceArea] = None
 
+    # P2-E: Enforce complexity — uppercase letter + at least one digit
+    @field_validator("password")
+    @classmethod
+    def password_complexity(cls, v: str) -> str:
+        if not any(c.isupper() for c in v):
+            raise ValueError("Password must contain at least one uppercase letter")
+        if not any(c.isdigit() for c in v):
+            raise ValueError("Password must contain at least one digit")
+        return v
+
 class UserInDB(UserBase):
     id: Optional[str] = Field(None, alias="_id")
     role: UserRole
-    created_at: datetime = Field(default_factory=datetime.utcnow)
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     # Worker-only fields
     worker_status: Optional[WorkerStatus] = None
     active_complaint_ids: List[str] = Field(default_factory=list)
@@ -119,7 +134,7 @@ class AIMetadata(BaseModel):
 class StatusHistoryItem(BaseModel):
     """Tracks the lifecycle of a complaint"""
     status: ComplaintStatus
-    timestamp: datetime = Field(default_factory=datetime.utcnow)
+    timestamp: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     changed_by_user_id: Optional[str] = Field(None, description="ID of the Admin/User who changed the status")
     note: Optional[str] = None
 
@@ -147,8 +162,8 @@ class ComplaintInDB(ComplaintCreate):
     escalation_parent_authority_id: Optional[str] = None
     priority: Optional[PriorityLevel] = PriorityLevel.MEDIUM
     status: ComplaintStatus = ComplaintStatus.OPEN
-    created_at: datetime = Field(default_factory=datetime.utcnow)
-    updated_at: datetime = Field(default_factory=datetime.utcnow)
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     status_history: list[StatusHistoryItem] = []
     feedback: Optional[dict] = None
     dept_notes: List[dict] = []

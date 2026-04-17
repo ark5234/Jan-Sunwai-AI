@@ -1,68 +1,77 @@
 import os
-from dataclasses import dataclass
-
-try:
-    from dotenv import load_dotenv
-    load_dotenv()
-except Exception:
-    pass
+from pydantic_settings import BaseSettings
+from pydantic import Field, field_validator
 
 
 def _parse_origins(value: str) -> list[str]:
     return [item.strip() for item in value.split(",") if item.strip()]
 
 
-def _default_access_token_expiry_minutes() -> int:
-    explicit = os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES")
-    if explicit:
-        return int(explicit)
-    app_env = os.getenv("APP_ENV", "development").lower()
-    # NDMC-facing default: shorter TTL in production.
-    return 480 if app_env == "production" else 1440
+class Settings(BaseSettings):
+    """
+    Typed application settings loaded from environment variables / .env file.
+    P4-B: Migrated from dataclass + os.getenv() to pydantic-settings for
+    proper validation, type coercion, and test-override support.
+    """
 
+    # App
+    app_env: str = Field(default="development", alias="APP_ENV")
 
-def _default_rate_limit_enabled() -> bool:
-    explicit = os.getenv("RATE_LIMIT_ENABLED")
-    if explicit is not None:
-        return explicit.strip().lower() in ("true", "1", "yes", "on")
-    # Local/dev should work even without optional dependencies.
-    return os.getenv("APP_ENV", "development").lower() == "production"
+    # Database
+    mongodb_url: str = Field(default="mongodb://localhost:27017", alias="MONGODB_URL")
+    db_name: str = Field(default="jan_sunwai_db", alias="DB_NAME")
 
+    # JWT
+    jwt_secret_key: str = Field(default="change-me-in-production", alias="JWT_SECRET_KEY")
+    jwt_algorithm: str = Field(default="HS256", alias="JWT_ALGORITHM")
+    access_token_expire_minutes: int = Field(default=1440, alias="ACCESS_TOKEN_EXPIRE_MINUTES")
 
-@dataclass(frozen=True)
-class Settings:
-    app_env: str = os.getenv("APP_ENV", "development")
-    mongodb_url: str = os.getenv("MONGODB_URL") or os.getenv("MONGO_URL") or "mongodb://localhost:27017"
-    db_name: str = os.getenv("DB_NAME", "jan_sunwai_db")
-    jwt_secret_key: str = os.getenv("JWT_SECRET_KEY", "change-me-in-production")
-    jwt_algorithm: str = os.getenv("JWT_ALGORITHM", "HS256")
-    access_token_expire_minutes: int = _default_access_token_expiry_minutes()
-    enable_rate_limiting: bool = _default_rate_limit_enabled()
-    allowed_origins_raw: str = os.getenv("ALLOWED_ORIGINS", "http://localhost:5173,http://127.0.0.1:5173")
-    ollama_base_url: str = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
-    vision_model: str = os.getenv("VISION_MODEL", "qwen2.5vl:3b")
-    mid_vision_model: str = os.getenv("MID_VISION_MODEL", "granite3.2-vision:2b")
-    fallback_vision_model: str = os.getenv("FALLBACK_VISION_MODEL", "granite3.2-vision:2b")
-    reasoning_model: str = os.getenv("REASONING_MODEL", "llama3.2:1b")
-    translation_model: str = os.getenv("TRANSLATION_MODEL", "").strip()
-    enable_ollama_translation_fallback: bool = os.getenv("ENABLE_OLLAMA_TRANSLATION_FALLBACK", "false").lower() in ("true", "1", "yes")
-    vision_timeout_seconds: float = float(os.getenv("VISION_TIMEOUT_SECONDS", "240"))
-    llm_inline_timeout_seconds: float = float(os.getenv("LLM_INLINE_TIMEOUT_SECONDS", "15"))
-    llm_queue_workers: int = int(os.getenv("LLM_QUEUE_WORKERS", "2"))
-    default_page_size: int = int(os.getenv("DEFAULT_PAGE_SIZE", "25"))
-    max_page_size: int = int(os.getenv("MAX_PAGE_SIZE", "100"))
+    # CORS
+    allowed_origins_raw: str = Field(
+        default="http://localhost:5173,http://127.0.0.1:5173",
+        alias="ALLOWED_ORIGINS",
+    )
 
-    rule_engine_only: bool = os.getenv("RULE_ENGINE_ONLY", "false").lower() in ("true", "1", "yes")
-    ambiguity_threshold: float = float(os.getenv("AMBIGUITY_THRESHOLD", "2.0"))
-    unload_after_reasoning: bool = os.getenv("UNLOAD_AFTER_REASONING", "true").lower() in ("true", "1", "yes")
-    model_unload_timeout_seconds: float = float(os.getenv("MODEL_UNLOAD_TIMEOUT_SECONDS", "30"))
-    model_unload_poll_interval_seconds: float = float(os.getenv("MODEL_UNLOAD_POLL_INTERVAL_SECONDS", "0.1"))
-    keep_reasoning_model_warm: bool = os.getenv("KEEP_REASONING_MODEL_WARM", "false").lower() in ("true", "1", "yes")
-    complaint_output_mode: str = os.getenv("COMPLAINT_OUTPUT_MODE", "email").strip().lower()
+    # Rate limiting
+    rate_limit_enabled: bool = Field(default=False, alias="RATE_LIMIT_ENABLED")
 
-    smtp_host: str = os.getenv("SMTP_HOST", "")
-    smtp_port: int = int(os.getenv("SMTP_PORT", "587"))
-    smtp_from: str = os.getenv("SMTP_FROM", "noreply@jan-sunwai.local")
+    # LLM / Ollama
+    ollama_base_url: str = Field(default="http://localhost:11434", alias="OLLAMA_BASE_URL")
+    vision_model: str = Field(default="qwen2.5vl:3b", alias="VISION_MODEL")
+    mid_vision_model: str = Field(default="granite3.2-vision:2b", alias="MID_VISION_MODEL")
+    fallback_vision_model: str = Field(default="granite3.2-vision:2b", alias="FALLBACK_VISION_MODEL")
+    reasoning_model: str = Field(default="llama3.2:1b", alias="REASONING_MODEL")
+    translation_model: str = Field(default="", alias="TRANSLATION_MODEL")
+    enable_ollama_translation_fallback: bool = Field(
+        default=False, alias="ENABLE_OLLAMA_TRANSLATION_FALLBACK"
+    )
+    vision_timeout_seconds: float = Field(default=240.0, alias="VISION_TIMEOUT_SECONDS")
+    llm_inline_timeout_seconds: float = Field(default=8.0, alias="LLM_INLINE_TIMEOUT_SECONDS")
+    llm_queue_workers: int = Field(default=2, alias="LLM_QUEUE_WORKERS")
+
+    # Classifier / Rule engine
+    rule_engine_only: bool = Field(default=False, alias="RULE_ENGINE_ONLY")
+    ambiguity_threshold: float = Field(default=2.0, alias="AMBIGUITY_THRESHOLD")
+    unload_after_reasoning: bool = Field(default=True, alias="UNLOAD_AFTER_REASONING")
+    model_unload_timeout_seconds: float = Field(default=30.0, alias="MODEL_UNLOAD_TIMEOUT_SECONDS")
+    model_unload_poll_interval_seconds: float = Field(
+        default=0.1, alias="MODEL_UNLOAD_POLL_INTERVAL_SECONDS"
+    )
+    keep_reasoning_model_warm: bool = Field(default=False, alias="KEEP_REASONING_MODEL_WARM")
+    complaint_output_mode: str = Field(default="email", alias="COMPLAINT_OUTPUT_MODE")
+
+    # Email / SMTP — P1-G: adds username/password for STARTTLS auth
+    smtp_host: str = Field(default="", alias="SMTP_HOST")
+    smtp_port: int = Field(default=587, alias="SMTP_PORT")
+    smtp_from: str = Field(default="noreply@jan-sunwai.local", alias="SMTP_FROM")
+    smtp_username: str = Field(default="", alias="SMTP_USERNAME")
+    smtp_password: str = Field(default="", alias="SMTP_PASSWORD")
+
+    # Pagination
+    default_page_size: int = Field(default=25, alias="DEFAULT_PAGE_SIZE")
+    max_page_size: int = Field(default=100, alias="MAX_PAGE_SIZE")
+
+    # ── derived ──────────────────────────────────────────────────────────────
 
     @property
     def allowed_origins(self) -> list[str]:
@@ -71,6 +80,40 @@ class Settings:
     @property
     def is_production(self) -> bool:
         return self.app_env.lower() == "production"
+
+    @property
+    def enable_rate_limiting(self) -> bool:
+        """Alias kept for backwards compat with rate_limiter.py."""
+        return self.rate_limit_enabled
+
+    # ── pydantic-settings config ──────────────────────────────────────────────
+
+    model_config = {  # type: ignore[misc]
+        "env_file": ".env",
+        "env_file_encoding": "utf-8",
+        "populate_by_name": True,
+        "extra": "ignore",
+        "protected_namespaces": ("settings_",),
+    }
+
+    @field_validator("mongodb_url", mode="before")
+    @classmethod
+    def _coerce_mongo_url(cls, v: str | None) -> str:
+        """Accept MONGODB_URL or MONGO_URL (legacy alias)."""
+        if not v:
+            mongo_url = os.getenv("MONGO_URL", "")
+            if mongo_url:
+                return mongo_url
+            return "mongodb://localhost:27017"
+        return v
+
+    @field_validator("access_token_expire_minutes", mode="before")
+    @classmethod
+    def _default_token_expiry(cls, v: int | str | None) -> int:
+        if v is None or v == "":
+            app_env = os.getenv("APP_ENV", "development").lower()
+            return 480 if app_env == "production" else 1440
+        return int(v)
 
 
 settings = Settings()

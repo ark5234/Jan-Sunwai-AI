@@ -1,4 +1,4 @@
-﻿# ── Runtime (live API) ─────────────────────────────────────────────────────
+# ── Runtime (live API) ─────────────────────────────────────────────────────
 fastapi==0.104.1
 uvicorn==0.24.0
 gunicorn==25.3.0
@@ -19,6 +19,7 @@ python-dotenv==1.0.1
 deep-translator==1.11.4 # post-generation translation for Indian languages
 nltk==3.9.4             # optional tokenization/sentence-splitting enhancements
 slowapi==0.1.9         # request rate limiting
+pydantic-settings==2.2.1  # P4-B: typed settings from env vars
 
 # ── Dev / Testing ──────────────────────────────────────────────────────────
 pytest==9.0.2

@@ -4,7 +4,7 @@ from passlib.context import CryptContext
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
-async def test():
+async def run_check():
     client = AsyncIOMotorClient('mongodb://localhost:27017')
     db = client['jan_sunwai_db']
     user = await db['users'].find_one({'username': 'health_cmo'})
@@ -19,4 +19,4 @@ async def test():
         print(f"Is Approved: {user.get('is_approved')}")
 
 if __name__ == '__main__':
-    asyncio.run(test())
+    asyncio.run(run_check())
