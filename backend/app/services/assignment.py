@@ -16,9 +16,11 @@ It then re-queues any nearby Open+Unassigned complaints in that area.
 
 import math
 import logging
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Optional
 from bson import ObjectId
+
+from app.schemas import ComplaintStatus
 
 logger = logging.getLogger("JanSunwaiAI.assignment")
 
@@ -41,43 +43,67 @@ def _haversine_km(lat1: float, lon1: float, lat2: float, lon2: float) -> float:
 # Core assign / free helpers
 # ---------------------------------------------------------------------------
 
+MAX_ACTIVE_TASKS = 5  # hard cap per worker
+
+
 async def _do_assign(db, worker: dict, complaint_id: str) -> None:
-    """Atomically push a complaint onto a worker's active list, set worker busy,
-    and advance the complaint status to In Progress."""
+    """Atomically assign a complaint to a worker, enforcing MAX_ACTIVE_TASKS.
+
+    Uses a conditional filter on the worker update so the write is a no-op
+    if the worker already has MAX_ACTIVE_TASKS — preventing race conditions
+    where two concurrent requests both read the same worker as 'available'.
+    """
     worker_id = str(worker["_id"])
-    await db["users"].update_one(
-        {"_id": ObjectId(worker_id)},
+    now = datetime.now(timezone.utc)
+
+    # Atomic conditional: only proceed if active_complaint_ids size < MAX_ACTIVE_TASKS
+    result = await db["users"].update_one(
+        {
+            "_id": ObjectId(worker_id),
+            f"active_complaint_ids.{MAX_ACTIVE_TASKS - 1}": {"$exists": False},  # array length < MAX
+        },
         {
             "$addToSet": {"active_complaint_ids": complaint_id},
             "$set": {
                 "worker_status": "busy",
-                "updated_at": datetime.utcnow(),
+                "updated_at": now,
             },
         },
     )
+
+    if result.matched_count == 0:
+        logger.warning(
+            "Assignment skipped: worker %s (%s) already at MAX_ACTIVE_TASKS=%d or no longer exists",
+            worker.get("username"),
+            worker_id,
+            MAX_ACTIVE_TASKS,
+        )
+        return
+
     await db["complaints"].update_one(
         {"_id": ObjectId(complaint_id)},
         {
             "$set": {
                 "assigned_to": worker_id,
-                "status": "In Progress",
-                "updated_at": datetime.utcnow(),
+                "status": ComplaintStatus.IN_PROGRESS,
+                "updated_at": now,
             },
             "$push": {
                 "status_history": {
-                    "status": "In Progress",
-                    "timestamp": datetime.utcnow(),
-                    "changed_by_user_id": worker_id,
+                    "status": ComplaintStatus.IN_PROGRESS,
+                    "timestamp": now,
+                    "changed_by_user_id": "system",
                     "note": f"Auto-assigned to field worker {worker.get('username', worker_id)}",
                 }
             },
         },
     )
     logger.info(
-        "Complaint %s assigned to worker %s (%s) → status set to In Progress",
+        "Complaint %s assigned to worker %s (%s) → status: %s",
         complaint_id,
         worker.get("username"),
         worker_id,
+        ComplaintStatus.IN_PROGRESS,
     )
 
 
@@ -135,10 +161,13 @@ async def free_worker_slot(worker_id: str, complaint_id: str, db) -> None:
     """
     Remove a complaint from the worker's active list.
     If the list becomes empty, restore worker status to 'available'.
-    Then try to assign any unassigned Open complaints in the worker's area.
+    Then try to assign at most ONE unassigned Open complaint in the worker's area
+    to avoid overwhelming the worker immediately after freeing.
     """
+    now = datetime.now(timezone.utc)
     worker = await db["users"].find_one({"_id": ObjectId(worker_id)})
     if not worker:
+        logger.warning("free_worker_slot: worker %s not found", worker_id)
         return
 
     active = [c for c in worker.get("active_complaint_ids", []) if c != complaint_id]
@@ -150,22 +179,19 @@ async def free_worker_slot(worker_id: str, complaint_id: str, db) -> None:
             "$set": {
                 "active_complaint_ids": active,
                 "worker_status": new_status,
-                "updated_at": datetime.utcnow(),
+                "updated_at": now,
             }
         },
     )
     logger.info(
-        "Worker %s freed from complaint %s. Status → %s. Active tasks: %d",
+        "Worker %s freed from complaint %s → status: %s  active_tasks: %d",
         worker_id,
         complaint_id,
         new_status,
         len(active),
     )
 
-    # -----------------------------------------------------------------------
-    # Re-run assignment for any Open+Unassigned complaints in the worker's
-    # department that overlap with this worker's service area.
-    # -----------------------------------------------------------------------
+    # Reassign at most ONE pending complaint to avoid overwhelming the worker.
     if new_status == "available":
         department = worker.get("department")
         sa = worker.get("service_area")
@@ -173,14 +199,13 @@ async def free_worker_slot(worker_id: str, complaint_id: str, db) -> None:
         if not department:
             return
 
-        # Find up to 5 unassigned Open complaints in the same department
         unassigned_cursor = db["complaints"].find(
             {
                 "department": department,
-                "status": "Open",
+                "status": ComplaintStatus.OPEN,
                 "$or": [{"assigned_to": None}, {"assigned_to": {"$exists": False}}],
             }
-        ).sort("created_at", 1).limit(5)
+        ).sort("created_at", 1).limit(10)  # fetch a few to allow area filtering
 
         async for complaint in unassigned_cursor:
             cid = str(complaint["_id"])
@@ -193,5 +218,12 @@ async def free_worker_slot(worker_id: str, complaint_id: str, db) -> None:
                     dist = _haversine_km(sa["lat"], sa["lon"], c_lat, c_lon)
                     if dist > sa.get("radius_km", 5.0):
                         continue
+            # Assign the first matching complaint and stop
             await _do_assign(db, worker, cid)
-            logger.info("Re-assigned queued complaint %s to freed worker %s", cid, worker_id)
+            logger.info(
+                "Re-assigned complaint %s to freed worker %s (%s)",
+                cid,
+                worker.get("username"),
+                worker_id,
+            )
+            break  # at most ONE reassignment

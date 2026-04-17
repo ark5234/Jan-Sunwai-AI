@@ -129,10 +129,24 @@ class StorageService:
         return f"uploads/{unique_filename}"
 
     def resolve_path(self, relative_or_absolute_path: str) -> str:
+        """Resolve a path and ensure it is jailed inside upload_dir.
+
+        Raises HTTPException 400 for any path that escapes the upload directory,
+        including absolute paths and directory traversal sequences (../../).
+        """
+        # Never allow absolute paths from untrusted input
         path = Path(relative_or_absolute_path)
         if path.is_absolute():
-            return str(path)
-        return str((BASE_DIR / path).resolve())
+            raise HTTPException(status_code=400, detail="Absolute paths are not permitted.")
+
+        resolved = (self.upload_dir / path).resolve()
+        # Ensure the resolved path stays inside upload_dir
+        try:
+            resolved.relative_to(self.upload_dir.resolve())
+        except ValueError:
+            raise HTTPException(status_code=400, detail="Path traversal detected.")
+
+        return str(resolved)
 
     def delete_file(self, file_path: str):
         path = Path(file_path)

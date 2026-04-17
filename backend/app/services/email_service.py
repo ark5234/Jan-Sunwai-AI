@@ -57,7 +57,8 @@ def send_status_update_email(
     except Exception as exc:
         _logger.warning("SMTP_SEND_FAILED status_update to=%s complaint=%s err=%s", to_email, complaint_id, exc)
 
-    _logger.info("STUB_EMAIL status_update to=%s subject=%s body=%s", to_email, subject, body)
+    # Stub log: omit body to avoid PII/message content in log files
+    _logger.info("STUB_EMAIL status_update to=%s subject=%s", to_email, subject)
 
 
 def send_password_reset_email(to_email: str, reset_token: str) -> None:
@@ -76,4 +77,5 @@ def send_password_reset_email(to_email: str, reset_token: str) -> None:
     except Exception as exc:
         _logger.warning("SMTP_SEND_FAILED password_reset to=%s err=%s", to_email, exc)
 
-    _logger.info("STUB_EMAIL password_reset to=%s subject=%s body=%s", to_email, subject, body)
+    # Stub log: never log reset token — treat as credential
+    _logger.info("STUB_EMAIL password_reset to=%s [token_omitted]", to_email)

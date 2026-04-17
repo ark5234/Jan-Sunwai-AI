@@ -2,21 +2,44 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 
 const AuthContext = createContext(null);
 
+/**
+ * Decode JWT payload without verifying signature (signature is verified by server).
+ * Returns the exp field in seconds, or 0 if not present.
+ */
+function getTokenExpiry(token: string): number {
+  try {
+    const payload = token.split('.')[1];
+    const decoded = JSON.parse(atob(payload.replace(/-/g, '+').replace(/_/g, '/')));
+    return decoded.exp || 0;
+  } catch {
+    return 0;
+  }
+}
+
+function isTokenExpired(token: string): boolean {
+  const exp = getTokenExpiry(token);
+  if (!exp) return true; // no expiry = treat as expired
+  return Date.now() / 1000 > exp;
+}
+
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Check localStorage on load
     const storedUser = localStorage.getItem('jan_sunwai_user');
     if (storedUser) {
       try {
         const parsed = JSON.parse(storedUser);
-        // Validate that the stored user has an access_token (JWT implementation)
         if (parsed && parsed.access_token) {
-          setUser(parsed);
+          // Check token expiry on page load — clear stale sessions immediately
+          if (isTokenExpired(parsed.access_token)) {
+            console.warn('Stored session token expired — clearing.');
+            localStorage.removeItem('jan_sunwai_user');
+          } else {
+            setUser(parsed);
+          }
         } else {
-          // Old session format, clear it
           console.warn('Invalid session format detected. Please log in again.');
           localStorage.removeItem('jan_sunwai_user');
         }
@@ -39,7 +62,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, loading }}>
+    <AuthContext.Provider value={{ user, login, logout, loading, isTokenExpired }}>
       {children}
     </AuthContext.Provider>
   );
