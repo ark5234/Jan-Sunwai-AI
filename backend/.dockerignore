@@ -19,7 +19,7 @@ logs/
 # Uploads (will be mounted as volume)
 uploads/*
 
-# Test files
+# Test files (host-only strategy: CI runs tests on the runner, not in runtime image)
 tests/
 *.csv
 sorted_dataset/

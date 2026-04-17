@@ -195,6 +195,19 @@ bash scripts/run_frontend.sh
 
 Open `http://localhost:5173`.
 
+## Testing Strategy
+
+- Backend tests are host-only by design.
+- `backend/tests/` is intentionally excluded from the backend runtime image via `backend/.dockerignore`.
+- CI runs backend tests on the runner using `python -m pytest backend/tests -q`.
+- For local checks, use `scripts/run_tests.sh` (Linux) or `scripts/run_tests.bat` (Windows).
+
+## Local Docker JWT Configuration
+
+- For Docker Compose local runs, backend JWT configuration is sourced from `backend/.env` through `env_file`.
+- `docker-compose.yml` no longer forces `JWT_SECRET_KEY` from shell interpolation, which avoids accidental blank secrets.
+- Changing `JWT_SECRET_KEY` invalidates existing login sessions/tokens, but does not change user accounts or password hashes.
+
 ## Health Checks
 
 | Endpoint | Purpose |

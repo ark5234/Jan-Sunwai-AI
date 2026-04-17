@@ -29,7 +29,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r backend/requirements.txt
 
-      - name: Run backend test suite
+      - name: Run backend test suite (host-only)
         env:
           CI_LIGHT: '1'
           MONGODB_URL: mongodb://localhost:27017

@@ -34,7 +34,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r backend/requirements.txt
 
-      - name: Run backend tests
+      - name: Run backend tests (host-only)
         env:
           CI_LIGHT: '1'
           MONGODB_URL: mongodb://localhost:27017

@@ -4,11 +4,15 @@ services:
     container_name: jan-sunwai-mongodb
     restart: unless-stopped
     ports:
-      - "27017:27017"
+      # P1-E: bind to localhost only — not reachable from the network
+      - "127.0.0.1:27017:27017"
     volumes:
       - mongodb_data:/data/db
     environment:
       MONGO_INITDB_DATABASE: jan_sunwai_db
+      # P1-E: Set strong credentials before deploying. Use Docker Secrets in prod.
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_ROOT_USERNAME:-jan_sunwai_admin}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD:-CHANGE_ME_STRONG_PASSWORD}
     healthcheck:
       test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping').ok"]
       interval: 30s
@@ -39,6 +43,7 @@ services:
       - OLLAMA_BASE_URL=${OLLAMA_BASE_URL:-http://host.docker.internal:11434}
       - OLLAMA_HOST=${OLLAMA_HOST:-http://host.docker.internal:11434}
       - ALLOWED_ORIGINS=${ALLOWED_ORIGINS:-http://localhost:5173,http://127.0.0.1:5173}
+      # JWT secret for local Docker runs is sourced from ./backend/.env via env_file.
       - JWT_ALGORITHM=${JWT_ALGORITHM:-HS256}
       - ACCESS_TOKEN_EXPIRE_MINUTES=${ACCESS_TOKEN_EXPIRE_MINUTES:-1440}
       - PYTHONUNBUFFERED=1
