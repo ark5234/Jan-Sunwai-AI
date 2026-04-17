@@ -3,7 +3,7 @@ import { useAuth } from '../context/AuthContext';
 import { Link, useNavigate } from 'react-router-dom';
 import { Bell, CheckCircle2, Clock, AlertCircle, ArrowUpRight, ArrowLeft, Loader2, CheckCheck } from 'lucide-react';
 
-const API = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+const API = import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1';
 
 export default function Notifications() {
   const { user } = useAuth();

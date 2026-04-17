@@ -19,7 +19,7 @@ from app.services.sanitization import sanitize_text, sanitize_phone_number
 from app.services.email_service import send_password_reset_email
 from passlib.context import CryptContext
 from bson import ObjectId
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 router = APIRouter()
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -62,7 +62,7 @@ async def register_user(request: Request, user: UserCreate = Body(...)):
     if user_doc.get("phone_number"):
         user_doc["phone_number"] = sanitize_phone_number(str(user_doc["phone_number"]))
     user_doc["password"] = hashed_password
-    user_doc["created_at"] = datetime.utcnow()
+    user_doc["created_at"] = datetime.now(timezone.utc)
 
     # Worker-specific setup
     if user.role == UserRole.WORKER:
@@ -157,7 +157,7 @@ async def update_users_me(
     if not updates:
         return current_user
 
-    updates["updated_at"] = datetime.utcnow()
+    updates["updated_at"] = datetime.now(timezone.utc)
     updated = await db["users"].find_one_and_update(
         {"_id": ObjectId(current_user["_id"])},
         {"$set": updates},
@@ -185,7 +185,7 @@ async def forgot_password(request: Request, payload: ForgotPasswordRequest = Bod
 
     await db["password_resets"].update_many(
         {"user_id": str(user["_id"]), "used": False},
-        {"$set": {"used": True, "revoked_at": datetime.utcnow()}},
+        {"$set": {"used": True, "revoked_at": datetime.now(timezone.utc)}},
     )
 
     reset_token = secrets.token_urlsafe(32)
@@ -194,8 +194,8 @@ async def forgot_password(request: Request, payload: ForgotPasswordRequest = Bod
             "user_id": str(user["_id"]),
             "token_hash": _hash_reset_token(reset_token),
             "used": False,
-            "created_at": datetime.utcnow(),
-            "expires_at": datetime.utcnow() + timedelta(minutes=30),
+            "created_at": datetime.now(timezone.utc),
+            "expires_at": datetime.now(timezone.utc) + timedelta(minutes=30),
         }
     )
 
@@ -215,10 +215,10 @@ async def reset_password(request: Request, payload: ResetPasswordRequest = Body(
     if not reset_doc:
         raise HTTPException(status_code=400, detail="Invalid or expired reset token")
 
-    if reset_doc.get("expires_at") and reset_doc["expires_at"] < datetime.utcnow():
+    if reset_doc.get("expires_at") and reset_doc["expires_at"] < datetime.now(timezone.utc):
         await db["password_resets"].update_one(
             {"_id": reset_doc["_id"]},
-            {"$set": {"used": True, "expired_at": datetime.utcnow()}},
+            {"$set": {"used": True, "expired_at": datetime.now(timezone.utc)}},
         )
         raise HTTPException(status_code=400, detail="Invalid or expired reset token")
 
@@ -228,11 +228,11 @@ async def reset_password(request: Request, payload: ResetPasswordRequest = Body(
 
     await db["users"].update_one(
         {"_id": ObjectId(user_id)},
-        {"$set": {"password": get_password_hash(payload.new_password), "updated_at": datetime.utcnow()}},
+        {"$set": {"password": get_password_hash(payload.new_password), "updated_at": datetime.now(timezone.utc)}},
     )
     await db["password_resets"].update_one(
         {"_id": reset_doc["_id"]},
-        {"$set": {"used": True, "used_at": datetime.utcnow()}},
+        {"$set": {"used": True, "used_at": datetime.now(timezone.utc)}},
     )
 
     return {"message": "Password reset successful"}

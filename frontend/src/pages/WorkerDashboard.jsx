@@ -7,7 +7,7 @@ import {
 import ComplaintComments from '../components/ComplaintComments';
 import FormattedComplaintText from '../components/FormattedComplaintText';
 
-const API = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+const API = import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1';
 
 const PRIORITY_COLORS = {
   Critical: 'bg-red-100 text-red-700',

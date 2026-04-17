@@ -49,7 +49,9 @@ const _SATELLITE_STYLE = {
 };
 import axios from 'axios';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1';
+// Static files (uploads/) are served at the root, not under /api/v1
+const STATIC_BASE_URL = API_BASE_URL.replace(/\/api\/v1\/?$/, '').replace(/\/$/, '');
 
 
 export default function Result() {
@@ -87,13 +89,13 @@ export default function Result() {
     return () => document.removeEventListener('mousedown', handler);
   }, []);
 
-  // Poll the backend for the complaint generation result when the job is still running.
   useEffect(() => {
     if (!generationJobId || !['queued', 'processing'].includes(generationStatus)) return;
 
     const POLL_INTERVAL_MS = 3000;
     const MAX_ATTEMPTS = 60; // give up after ~3 minutes
     let attempts = 0;
+    let cancelled = false;
 
     const intervalId = setInterval(async () => {
       attempts += 1;
@@ -102,6 +104,7 @@ export default function Result() {
           `${API_BASE_URL}/complaints/generation/${generationJobId}`,
           { headers: { Authorization: `Bearer ${user?.access_token}` } }
         );
+        if (cancelled) return;
         const data = res.data;
         if (data.status === 'completed') {
           setComplaintText(data.generated_complaint || '');
@@ -116,12 +119,16 @@ export default function Result() {
           clearInterval(intervalId);
         }
       } catch (err) {
+        if (cancelled) return;
         console.error('Generation polling error:', err);
         if (attempts >= MAX_ATTEMPTS) clearInterval(intervalId);
       }
     }, POLL_INTERVAL_MS);
 
-    return () => clearInterval(intervalId);
+    return () => {
+      cancelled = true;
+      clearInterval(intervalId);
+    };
   }, [generationJobId, generationStatus, user?.access_token]);
 
   // Location state — editable if EXIF not found
@@ -405,8 +412,8 @@ export default function Result() {
     await handleRegenerate();
   };
 
-  const cleanPath = image_url.replace(/\\/g, '/');
-  const fullImageUrl = `${API_BASE_URL}/${cleanPath}`;
+  const cleanPath = image_url.replace(/\\/g, '/').replace(/^\/+/, '');
+  const fullImageUrl = `${STATIC_BASE_URL}/${cleanPath}`;
 
   const confidenceValue = Number(classificationState?.confidence || 0);
   const confidence = (confidenceValue * 100).toFixed(1);

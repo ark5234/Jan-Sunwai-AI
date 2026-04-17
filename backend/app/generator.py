@@ -482,9 +482,13 @@ def _fit_to_target_words(text: str, target_words: int = _TARGET_COMPLAINT_WORDS)
 
     if len(words) > max_words:
         words = words[:max_words]
-        # Avoid clipped sentence fragments at the boundary.
-        while words and words[-1][-1] not in ".!?":
+        # Never pop below half the limit — avoids emptying the list entirely.
+        floor = max(max_words // 2, 1)
+        while len(words) > floor and words[-1][-1] not in ".!?":
             words.pop()
+        # Last-resort: if still no terminal punctuation, just keep what we have.
+        if not words:
+            words = _tokenize_words(_normalize_text(text))[:max_words]
 
     # If we're still short and there is an unselected sentence, consume part of it
     # before using generic filler so output stays content-rich.
@@ -757,10 +761,12 @@ def _compose_localized_template_fallback(
     if output_mode == "email":
         return (
             f"{template['subject'].format(subject_issue=subject_issue)}\n\n"
-            f"{template['dear'].format(department=salutation_department)}\n\n"
+            f"{template['dear'].format(department=f'**{salutation_department}**')}\n\n"
             f"{template['intro']}\n"
-            f"{template['evidence'].format(issue_phrase=issue_phrase)} {location_sentence}\n\n"
-            f"{template['risk'].format(risk_hint=risk_hint)} {template['action'].format(action_hint=action_hint)}\n\n"
+            f"{template['evidence'].format(issue_phrase=f'**{issue_phrase}**')} "
+            f"**{location_sentence}**\n\n"
+            f"{template['risk'].format(risk_hint=f'**{risk_hint}**')} "
+            f"**{template['action'].format(action_hint=action_hint)}**\n\n"
             f"{template['close']}\n\n"
             f"{template['sincerely']}\n"
             f"{template['citizen']}"

@@ -8,7 +8,7 @@ import ComplaintComments from '../components/ComplaintComments';
 import StatusTimeline from '../components/StatusTimeline';
 import FormattedComplaintText from '../components/FormattedComplaintText';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1';
 
 // Inline star-rating feedback widget
 function FeedbackWidget({ complaintId, token, onSubmitted }) {

@@ -3,7 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Home, Menu, X, LogOut, User, LayoutDashboard, PlusCircle, UserCircle, Bell, CheckCircle2, ArrowUpRight, Clock, AlertCircle, BarChart2, Map, Globe } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
-const API = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+const API = import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1';
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = React.useState(false);
@@ -136,11 +136,11 @@ export default function Navbar() {
             {/* Brand / Emblem */}
             <div className="flex items-center">
               <Link to={user ? "/dashboard" : "/"} className="flex items-center gap-3">
-                {/* National Emblem */}
+                {/* National Emblem of India */}
                 <img 
-                  src="/emblem.svg" 
-                  alt="National Emblem" 
-                  className="h-10 w-10 opacity-90"
+                  src="/Emblem_of_India_(gold).svg" 
+                  alt="National Emblem of India" 
+                  className="h-11 w-11"
                 />
                 <div className="hidden sm:block">
                   <div className="text-white font-bold text-lg tracking-tight leading-tight">

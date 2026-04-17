@@ -8,7 +8,7 @@ import { useAuth } from '../context/AuthContext';
 window.L = window.L || L;
 import 'leaflet.heat/dist/leaflet-heat.js';
 
-const API = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+const API = import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1';
 
 const DEPARTMENTS = [
   'All',

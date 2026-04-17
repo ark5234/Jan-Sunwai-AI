@@ -3,7 +3,7 @@ import axios from 'axios';
 import { Link, useSearchParams } from 'react-router-dom';
 import { KeyRound, Lock, AlertCircle, CheckCircle2 } from 'lucide-react';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1';
 
 export default function ResetPassword() {
   const [searchParams] = useSearchParams();

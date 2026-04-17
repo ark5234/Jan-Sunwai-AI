@@ -5,6 +5,7 @@ __pycache__/
 *.so
 .env
 !backend/.env
+*.env.prod
 venv/
 .venv/
 env/
@@ -30,8 +31,9 @@ backend/uploads/
 backend/triage_output/
 backend/triage_output/**
 
-# Test credentials and account creation scripts
+# Test credentials and account creation scripts (NEVER commit passwords)
 TEST_ACCOUNTS_CREDENTIALS.txt
+docs/TEST_ACCOUNTS_CREDENTIALS.txt
 backend/create_test_users.py
 create_test_users.py
 
