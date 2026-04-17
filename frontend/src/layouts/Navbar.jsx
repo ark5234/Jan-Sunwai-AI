@@ -140,7 +140,7 @@ export default function Navbar() {
                 <img 
                   src="/Emblem_of_India_(gold).svg" 
                   alt="National Emblem of India" 
-                  className="h-11 w-11"
+                  className="h-8 w-8"
                 />
                 <div className="hidden sm:block">
                   <div className="text-white font-bold text-lg tracking-tight leading-tight">

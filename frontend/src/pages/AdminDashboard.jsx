@@ -11,7 +11,7 @@ const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api/
 const STATIC_BASE_URL = API_BASE_URL.replace(/\/api\/v1\/?$/, '').replace(/\/$/, '');
 
 const AdminDashboard = () => {
-  const { user } = useAuth();
+  const { user, handleAuthError } = useAuth();
   const [complaints, setComplaints] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -80,10 +80,10 @@ const AdminDashboard = () => {
     } catch (err) {
       console.error('Error fetching complaints:', err);
       if (err.response?.status === 401) {
-        setError('Session expired. Please log out and log back in.');
-      } else {
-        setError('Failed to load complaints');
+        handleAuthError(); // token invalid — clear session and redirect to login
+        return;
       }
+      setError('Failed to load complaints');
     } finally {
       setLoading(false);
     }

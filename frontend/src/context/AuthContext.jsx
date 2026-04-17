@@ -1,12 +1,9 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const AuthContext = createContext(null);
 
-/**
- * Decode JWT payload without verifying signature (signature is verified by server).
- * Returns the exp field in seconds, or 0 if not present.
- */
-function getTokenExpiry(token: string): number {
+function getTokenExpiry(token) {
   try {
     const payload = token.split('.')[1];
     const decoded = JSON.parse(atob(payload.replace(/-/g, '+').replace(/_/g, '/')));
@@ -16,9 +13,9 @@ function getTokenExpiry(token: string): number {
   }
 }
 
-function isTokenExpired(token: string): boolean {
+function isTokenExpired(token) {
   const exp = getTokenExpiry(token);
-  if (!exp) return true; // no expiry = treat as expired
+  if (!exp) return true;
   return Date.now() / 1000 > exp;
 }
 
@@ -32,7 +29,6 @@ export const AuthProvider = ({ children }) => {
       try {
         const parsed = JSON.parse(storedUser);
         if (parsed && parsed.access_token) {
-          // Check token expiry on page load — clear stale sessions immediately
           if (isTokenExpired(parsed.access_token)) {
             console.warn('Stored session token expired — clearing.');
             localStorage.removeItem('jan_sunwai_user');
@@ -61,8 +57,16 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem('jan_sunwai_user');
   };
 
+  // Call this whenever an API returns 401 — clears session and redirects to login.
+  // Works without useNavigate by relying on window.location for simplicity.
+  const handleAuthError = useCallback(() => {
+    setUser(null);
+    localStorage.removeItem('jan_sunwai_user');
+    window.location.href = '/login';
+  }, []);
+
   return (
-    <AuthContext.Provider value={{ user, login, logout, loading, isTokenExpired }}>
+    <AuthContext.Provider value={{ user, login, logout, loading, isTokenExpired, handleAuthError }}>
       {children}
     </AuthContext.Provider>
   );
