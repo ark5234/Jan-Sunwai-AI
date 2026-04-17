@@ -5,6 +5,7 @@ Returns anonymised complaint data (no user ID, description, or image URL).
 from fastapi import APIRouter
 
 from app.database import get_database
+from app.schemas import ComplaintStatus
 
 router = APIRouter(prefix="/public", tags=["Public"])
 
@@ -19,7 +20,16 @@ async def public_complaints():
     cursor = (
         db["complaints"]
         .find(
-            {"status": {"$in": ["Open", "In Progress", "Resolved", "Rejected"]}},
+            {
+                "status": {
+                    "$in": [
+                        ComplaintStatus.OPEN.value,
+                        ComplaintStatus.IN_PROGRESS.value,
+                        ComplaintStatus.RESOLVED.value,
+                        ComplaintStatus.REJECTED.value,
+                    ]
+                }
+            },
             {
                 "_id": 1,
                 "department": 1,

@@ -2,12 +2,13 @@
 Analytics endpoints — admin only.
 Provides aggregated statistics for the admin dashboard.
 """
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 from fastapi import APIRouter, Depends
 
 from app.auth import get_current_admin, get_current_admin_or_dept_head
 from app.database import get_database
+from app.schemas import ComplaintStatus
 
 router = APIRouter(prefix="/analytics", tags=["Analytics"])
 
@@ -36,7 +37,7 @@ async def analytics_overview(current_user: dict = Depends(get_current_admin)):
             by_department.append({"department": doc["_id"], "count": doc["count"]})
 
     # --- monthly trend (last 6 months) ---
-    six_months_ago = datetime.utcnow() - timedelta(days=180)
+    six_months_ago = datetime.now(timezone.utc) - timedelta(days=180)
     monthly_cursor = db["complaints"].aggregate([
         {"$match": {"created_at": {"$gte": six_months_ago}}},
         {"$group": {
@@ -55,7 +56,7 @@ async def analytics_overview(current_user: dict = Depends(get_current_admin)):
 
     # --- average resolution time by dept (in days) ---
     resolution_cursor = db["complaints"].aggregate([
-        {"$match": {"status": "Resolved", "updated_at": {"$exists": True}}},
+        {"$match": {"status": ComplaintStatus.RESOLVED.value, "updated_at": {"$exists": True}}},
         {"$project": {
             "department": 1,
             "resolution_days": {
@@ -92,7 +93,7 @@ async def analytics_overview(current_user: dict = Depends(get_current_admin)):
 
     # --- summary stats ---
     total = sum(by_status.values())
-    resolved = by_status.get("Resolved", 0)
+    resolved = by_status.get(ComplaintStatus.RESOLVED.value, 0)
 
     return {
         "total_complaints": total,

@@ -1,5 +1,5 @@
 import asyncio
-from datetime import datetime
+from datetime import datetime, timezone
 
 from httpx import ASGITransport, AsyncClient
 
@@ -18,7 +18,7 @@ async def _override_user():
         "department": None,
         "job_title": None,
         "role": "citizen",
-        "created_at": datetime.utcnow(),
+        "created_at": datetime.now(timezone.utc),
         "worker_status": None,
         "active_complaint_ids": [],
         "service_area": None,
@@ -36,23 +36,25 @@ async def _run_matrix_checks() -> None:
             assert root.status_code == 200
             assert root.json().get("message") == "Jan-Sunwai AI Backend Online"
 
-            for path in ["/health/live", "/api/v1/health/live"]:
-                resp = await client.get(path)
-                assert resp.status_code == 200
-                assert resp.json().get("status") == "ok"
+            resp = await client.get("/api/v1/health/live")
+            assert resp.status_code == 200
+            assert resp.json().get("status") == "ok"
+
+            legacy_resp = await client.get("/health/live")
+            assert legacy_resp.status_code == 404
 
             me = await client.get("/api/v1/users/me")
             assert me.status_code == 200
             assert me.json().get("username") == "matrix_user"
 
-            secured = await client.get("/health/live")
+            secured = await client.get("/api/v1/health/live")
             assert secured.headers.get("x-content-type-options") == "nosniff"
             assert secured.headers.get("x-frame-options") == "DENY"
             assert "content-security-policy" in secured.headers
 
             origin = settings.allowed_origins[0] if settings.allowed_origins else "http://localhost:5173"
             preflight = await client.options(
-                "/health/live",
+                "/api/v1/health/live",
                 headers={
                     "Origin": origin,
                     "Access-Control-Request-Method": "GET",

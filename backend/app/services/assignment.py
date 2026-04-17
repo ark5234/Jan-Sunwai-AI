@@ -20,7 +20,7 @@ from datetime import datetime, timezone
 from typing import Optional
 from bson import ObjectId
 
-from app.schemas import ComplaintStatus
+from app.schemas import ComplaintStatus, UserRole, WorkerStatus
 
 logger = logging.getLogger("JanSunwaiAI.assignment")
 
@@ -65,7 +65,7 @@ async def _do_assign(db, worker: dict, complaint_id: str) -> None:
         {
             "$addToSet": {"active_complaint_ids": complaint_id},
             "$set": {
-                "worker_status": "busy",
+                "worker_status": WorkerStatus.BUSY.value,
                 "updated_at": now,
             },
         },
@@ -121,10 +121,10 @@ async def auto_assign(
     """
     # Build query for eligible workers
     query: dict = {
-        "role": "worker",
+        "role": UserRole.WORKER.value,
         "is_approved": True,
         "department": department,
-        "worker_status": {"$ne": "offline"},
+        "worker_status": {"$ne": WorkerStatus.OFFLINE.value},
     }
 
     # Fetch all candidate workers (small collections — fine to load all)
@@ -161,40 +161,51 @@ async def free_worker_slot(worker_id: str, complaint_id: str, db) -> None:
     """
     Remove a complaint from the worker's active list.
     If the list becomes empty, restore worker status to 'available'.
-    Then try to assign at most ONE unassigned Open complaint in the worker's area
-    to avoid overwhelming the worker immediately after freeing.
+    Then try to assign at most ONE unassigned Open complaint in the worker's area.
+
+    P2-A: Replaced read-modify-write with atomic $pull to eliminate TOCTOU race.
+    The old pattern read active_complaint_ids in Python, filtered, then wrote back —
+    a concurrent request between read and write would silently overwrite updates.
     """
     now = datetime.now(timezone.utc)
-    worker = await db["users"].find_one({"_id": ObjectId(worker_id)})
-    if not worker:
-        logger.warning("free_worker_slot: worker %s not found", worker_id)
-        return
 
-    active = [c for c in worker.get("active_complaint_ids", []) if c != complaint_id]
-    new_status = "available" if not active else "busy"
-
+    # P2-A: Atomic $pull — no read required; eliminates race condition entirely.
     await db["users"].update_one(
         {"_id": ObjectId(worker_id)},
         {
-            "$set": {
-                "active_complaint_ids": active,
-                "worker_status": new_status,
-                "updated_at": now,
-            }
+            "$pull": {"active_complaint_ids": complaint_id},
+            "$set": {"updated_at": now},
         },
+    )
+
+    # Re-read just the active list to decide new status
+    refreshed = await db["users"].find_one(
+        {"_id": ObjectId(worker_id)},
+        {"active_complaint_ids": 1, "department": 1, "service_area": 1, "username": 1},
+    )
+    if not refreshed:
+        logger.warning("free_worker_slot: worker %s not found after pull", worker_id)
+        return
+
+    remaining = refreshed.get("active_complaint_ids", [])
+    new_status = WorkerStatus.AVAILABLE.value if not remaining else WorkerStatus.BUSY.value
+
+    await db["users"].update_one(
+        {"_id": ObjectId(worker_id)},
+        {"$set": {"worker_status": new_status}},
     )
     logger.info(
         "Worker %s freed from complaint %s → status: %s  active_tasks: %d",
         worker_id,
         complaint_id,
         new_status,
-        len(active),
+        len(remaining),
     )
 
     # Reassign at most ONE pending complaint to avoid overwhelming the worker.
-    if new_status == "available":
-        department = worker.get("department")
-        sa = worker.get("service_area")
+    if new_status == WorkerStatus.AVAILABLE.value:
+        department = refreshed.get("department")
+        sa = refreshed.get("service_area")
 
         if not department:
             return
@@ -219,11 +230,11 @@ async def free_worker_slot(worker_id: str, complaint_id: str, db) -> None:
                     if dist > sa.get("radius_km", 5.0):
                         continue
             # Assign the first matching complaint and stop
-            await _do_assign(db, worker, cid)
+            await _do_assign(db, refreshed, cid)
             logger.info(
                 "Re-assigned complaint %s to freed worker %s (%s)",
                 cid,
-                worker.get("username"),
+                refreshed.get("username"),
                 worker_id,
             )
             break  # at most ONE reassignment

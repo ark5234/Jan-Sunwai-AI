@@ -3,16 +3,18 @@ import hashlib
 import secrets
 
 from fastapi import APIRouter, HTTPException, Body, Depends, Request, Form
+from fastapi.responses import JSONResponse
 from app.database import get_database
 from app.schemas import (
     UserCreate,
     UserResponse,
     UserRole,
+    WorkerStatus,
     ForgotPasswordRequest,
     ResetPasswordRequest,
     ProfileUpdateRequest,
 )
-from app.auth import create_access_token, get_current_user
+from app.auth import create_access_token, get_current_user, set_auth_cookie, clear_auth_cookie
 from app.config import settings
 from app.rate_limiter import limiter
 from app.services.sanitization import sanitize_text, sanitize_phone_number
@@ -67,7 +69,7 @@ async def register_user(request: Request, user: UserCreate = Body(...)):
     # Worker-specific setup
     if user.role == UserRole.WORKER:
         user_doc["is_approved"] = False
-        user_doc["worker_status"] = "offline"
+        user_doc["worker_status"] = WorkerStatus.OFFLINE.value
         user_doc["active_complaint_ids"] = []
         # Persist service_area if provided
         if user.service_area:
@@ -97,13 +99,17 @@ async def register_user(request: Request, user: UserCreate = Body(...)):
         expires_delta=access_token_expires
     )
 
-    return {
+    # P4-E: Issue httpOnly cookie + return token in body (body kept for 3-month compat window)
+    response_body = {
         "access_token": access_token,
         "token_type": "bearer",
         "username": created_user["username"],
         "role": created_user.get("role", "citizen"),
         "department": created_user.get("department")
     }
+    response = JSONResponse(content=response_body)
+    set_auth_cookie(response, access_token)
+    return response
 
 
 @router.post("/login")
@@ -125,13 +131,25 @@ async def login(
         expires_delta=access_token_expires
     )
     
-    return {
-        "access_token": access_token, 
+    # P4-E: Issue httpOnly cookie + return token in body (body kept for 3-month compat window)
+    response_body = {
+        "access_token": access_token,
         "token_type": "bearer",
-        "username": user["username"], 
+        "username": user["username"],
         "role": user.get("role", "citizen"),
         "department": user.get("department")
     }
+    response = JSONResponse(content=response_body)
+    set_auth_cookie(response, access_token)
+    return response
+
+
+@router.post("/logout")
+async def logout(request: Request):
+    """P4-E: Clear the httpOnly auth cookie on logout."""
+    response = JSONResponse(content={"message": "Logged out successfully"})
+    clear_auth_cookie(response)
+    return response
 
 
 @router.get("/me", response_model=UserResponse)

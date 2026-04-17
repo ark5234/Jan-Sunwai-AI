@@ -48,9 +48,9 @@ async def run_tests():
         async with AsyncClient(transport=transport, base_url="http://test") as client:
             response = await client.get("/")
             assert response.status_code == 200
-            assert response.json() == {"message": "Jan-Sunwai AI Backend Online"}
+            assert response.json().get("message") == "Jan-Sunwai AI Backend Online"
 
-            health = await client.get("/health/live")
+            health = await client.get("/api/v1/health/live")
             assert health.status_code == 200
             assert health.json().get("status") == "ok"
 
@@ -67,7 +67,7 @@ async def run_tests():
             data = {} 
             
             # Expect 200 because we overrode the auth dependency to return a valid user
-            response = await client.post("/analyze", files=files, data=data)
+            response = await client.post("/api/v1/analyze", files=files, data=data)
 
             assert response.status_code == 200
     

@@ -18,12 +18,12 @@ Endpoints:
 from fastapi import APIRouter, HTTPException, Depends, Body
 from app.auth import get_current_worker, get_current_admin, get_current_admin_or_dept_head
 from app.database import get_database
-from app.schemas import WorkerStatus, ServiceAreaUpdate, UserRole
+from app.schemas import WorkerStatus, ServiceAreaUpdate, UserRole, ComplaintStatus
 from app.services.assignment import free_worker_slot, _do_assign, auto_assign
 from app.routers.notifications import create_notification
 from app.schemas import NotificationType
 from bson import ObjectId
-from datetime import datetime
+from datetime import datetime, timezone
 
 router = APIRouter()
 
@@ -53,7 +53,7 @@ async def get_my_profile(current_user: dict = Depends(get_current_worker)):
 
     # Resolved history (last 10)
     history_cursor = db["complaints"].find(
-        {"assigned_to": str(current_user["_id"]), "status": "Resolved"}
+        {"assigned_to": str(current_user["_id"]), "status": ComplaintStatus.RESOLVED.value}
     ).sort("updated_at", -1).limit(10)
     history = [_fix(doc) async for doc in history_cursor]
 
@@ -78,7 +78,7 @@ async def update_my_status(
     db = get_database()
     await db["users"].update_one(
         {"_id": ObjectId(str(current_user["_id"]))},
-        {"$set": {"worker_status": worker_status.value, "updated_at": datetime.utcnow()}},
+        {"$set": {"worker_status": worker_status.value, "updated_at": datetime.now(timezone.utc)}},
     )
     return {"message": f"Status updated to {worker_status.value}"}
 
@@ -103,17 +103,17 @@ async def mark_task_done(
     if not complaint:
         raise HTTPException(status_code=404, detail="Complaint not found")
 
-    old_status = complaint.get("status", "Open")
+    old_status = complaint.get("status", ComplaintStatus.OPEN.value)
 
     # Resolve the complaint
     await db["complaints"].update_one(
         {"_id": ObjectId(complaint_id)},
         {
-            "$set": {"status": "Resolved", "updated_at": datetime.utcnow()},
+            "$set": {"status": ComplaintStatus.RESOLVED.value, "updated_at": datetime.now(timezone.utc)},
             "$push": {
                 "status_history": {
-                    "status": "Resolved",
-                    "timestamp": datetime.utcnow(),
+                    "status": ComplaintStatus.RESOLVED.value,
+                    "timestamp": datetime.now(timezone.utc),
                     "changed_by_user_id": worker_id,
                     "note": "Marked as done by assigned field worker",
                 }
@@ -131,7 +131,7 @@ async def mark_task_done(
             message=f"Your grievance ({complaint.get('department', '')}) has been resolved by the field worker.",
             complaint_id=complaint_id,
             status_from=old_status,
-            status_to="Resolved",
+            status_to=ComplaintStatus.RESOLVED.value,
         )
 
     # Free the slot and attempt re-assignment of queued complaints
@@ -156,7 +156,7 @@ async def assignment_debug(
 
     unassigned = []
     async for c in db["complaints"].find({
-        "status": {"$in": ["Open", "In Progress"]},
+        "status": {"$in": [ComplaintStatus.OPEN.value, ComplaintStatus.IN_PROGRESS.value]},
         "$or": [{"assigned_to": None}, {"assigned_to": {"$exists": False}}],
     }).sort("created_at", 1):
         unassigned.append({
@@ -167,7 +167,7 @@ async def assignment_debug(
         })
 
     available_workers = []
-    async for w in db["users"].find({"role": "worker", "is_approved": True}):
+    async for w in db["users"].find({"role": UserRole.WORKER.value, "is_approved": True}):
         available_workers.append({
             "id": str(w["_id"]),
             "username": w.get("username"),
@@ -199,7 +199,7 @@ async def reassign_unassigned(
     # Include BOTH Open and In Progress complaints with no worker assigned
     cursor = db["complaints"].find(
         {
-            "status": {"$in": ["Open", "In Progress"]},
+            "status": {"$in": [ComplaintStatus.OPEN.value, ComplaintStatus.IN_PROGRESS.value]},
             "$or": [{"assigned_to": None}, {"assigned_to": {"$exists": False}}],
         }
     ).sort("created_at", 1)
@@ -306,8 +306,8 @@ async def approve_worker(
         {
             "$set": {
                 "is_approved": True,
-                "worker_status": WorkerStatus.AVAILABLE,
-                "updated_at": datetime.utcnow(),
+                "worker_status": WorkerStatus.AVAILABLE.value,
+                "updated_at": datetime.now(timezone.utc),
             }
         },
     )
@@ -393,7 +393,7 @@ async def update_service_area(
     db = get_database()
     result = await db["users"].update_one(
         {"_id": ObjectId(worker_id), "role": UserRole.WORKER},
-        {"$set": {"service_area": payload.service_area.model_dump(), "updated_at": datetime.utcnow()}},
+        {"$set": {"service_area": payload.service_area.model_dump(), "updated_at": datetime.now(timezone.utc)}},
     )
     if result.matched_count == 0:
         raise HTTPException(status_code=404, detail="Worker not found")

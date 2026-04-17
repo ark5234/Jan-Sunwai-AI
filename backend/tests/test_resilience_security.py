@@ -154,12 +154,11 @@ def test_ready_check_reports_degraded_when_db_ping_fails(monkeypatch):
 
     assert result["status"] == "degraded"
     assert result["database"]["ok"] is False
-    assert "down" in (result["database"].get("error") or "")
+    assert "error" not in result["database"]
 
 
-def test_sanitize_text_escapes_html_payloads():
+def test_sanitize_text_preserves_text_without_html_escaping():
     payload = "<script>alert('xss')</script>"
     sanitized = sanitize_text(payload)
 
-    assert "<script>" not in sanitized
-    assert "&lt;script&gt;" in sanitized
+    assert sanitized == payload

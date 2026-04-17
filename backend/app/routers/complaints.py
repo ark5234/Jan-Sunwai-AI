@@ -35,7 +35,7 @@ from app.services.sanitization import sanitize_text
 from app.services.email_service import send_status_update_email
 from app.rate_limiter import limiter
 from PIL import Image
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from bson import ObjectId
 
 router = APIRouter()
@@ -318,7 +318,7 @@ async def create_complaint(
     )
 
     # Duplicate detection: same user + same department + similar location within 30 days
-    thirty_days_ago = datetime.utcnow() - timedelta(days=30)
+    thirty_days_ago = datetime.now(timezone.utc) - timedelta(days=30)
     dup_query: dict = {
         "user_id": user_id,
         "department": resolved_department,
@@ -345,11 +345,11 @@ async def create_complaint(
         "dept_notes": [],
         "comments": [],
         "feedback": None,
-        "created_at": datetime.utcnow(),
-        "updated_at": datetime.utcnow(),
+        "created_at": datetime.now(timezone.utc),
+        "updated_at": datetime.now(timezone.utc),
         "status_history": [{
             "status": ComplaintStatus.OPEN,
-            "timestamp": datetime.utcnow(),
+            "timestamp": datetime.now(timezone.utc),
             "changed_by_user_id": user_id,
             "note": "Complaint created"
         }]
@@ -402,7 +402,7 @@ async def list_complaints(
     
     user_role = current_user.get("role")
     user_id = str(current_user["_id"])
-    
+
     # Apply role-based filters
     if user_role == UserRole.CITIZEN:
         # Citizens only see their own complaints
@@ -415,10 +415,16 @@ async def list_complaints(
         else:
             # If dept head has no department assigned, show nothing
             query["_id"] = {"$exists": False}
+    elif user_role == UserRole.WORKER:
+        # H-09: Workers may only see complaints assigned to them — not all dept complaints
+        query["assigned_to"] = user_id
     elif user_role == UserRole.ADMIN:
         # Admin can filter by department if provided
         if department:
             query["department"] = department
+    else:
+        # Unknown role — show nothing for safety
+        query["_id"] = {"$exists": False}
     
     # Filter by status if provided
     if status:
@@ -443,6 +449,11 @@ async def export_complaints_csv(
     status: ComplaintStatus | None = None,
     department: str | None = None,
 ):
+    """
+    H-05: True async streaming CSV export.
+    The old version loaded the entire collection into io.StringIO in memory.
+    This generator yields rows as they come from the cursor — O(1) memory.
+    """
     db = get_database()
     query: dict = {}
     if status:
@@ -450,51 +461,71 @@ async def export_complaints_csv(
     if department:
         query["department"] = department
 
-    cursor = db["complaints"].find(query).sort("created_at", -1)
+    fieldnames = [
+        "id", "department", "status", "priority", "description",
+        "location", "created_at", "updated_at", "escalated", "user_id",
+    ]
 
-    output = io.StringIO()
-    writer = csv.DictWriter(
-        output,
-        fieldnames=[
-            "id", "department", "status", "priority", "description",
-            "location", "created_at", "updated_at", "escalated", "user_id",
-        ],
-        extrasaction="ignore",
-    )
-    writer.writeheader()
+    async def _csv_stream():
+        import csv as _csv
+        import io as _io
 
-    async for doc in cursor:
-        writer.writerow({
-            "id": str(doc["_id"]),
-            "department": doc.get("department", ""),
-            "status": doc.get("status", ""),
-            "priority": doc.get("priority", ""),
-            "description": doc.get("description", ""),
-            "location": doc.get("location", ""),
-            "created_at": doc.get("created_at", ""),
-            "updated_at": doc.get("updated_at", ""),
-            "escalated": doc.get("escalated", False),
-            "user_id": doc.get("user_id", ""),
-        })
+        buf = _io.StringIO()
+        writer = _csv.DictWriter(buf, fieldnames=fieldnames, extrasaction="ignore")
+        writer.writeheader()
+        yield buf.getvalue()
+        buf.truncate(0)
+        buf.seek(0)
 
-    output.seek(0)
+        async for doc in db["complaints"].find(query).sort("created_at", -1):
+            writer.writerow({
+                "id": str(doc["_id"]),
+                "department": doc.get("department", ""),
+                "status": doc.get("status", ""),
+                "priority": doc.get("priority", ""),
+                "description": doc.get("description", ""),
+                "location": doc.get("location", ""),
+                "created_at": doc.get("created_at", ""),
+                "updated_at": doc.get("updated_at", ""),
+                "escalated": doc.get("escalated", False),
+                "user_id": doc.get("user_id", ""),
+            })
+            yield buf.getvalue()
+            buf.truncate(0)
+            buf.seek(0)
+
     return StreamingResponse(
-        iter([output.read()]),
+        _csv_stream(),
         media_type="text/csv",
         headers={"Content-Disposition": "attachment; filename=complaints_export.csv"},
     )
 
 @router.get("/complaints/{complaint_id}", response_model=ComplaintResponse)
-async def get_complaint(complaint_id: str):
+async def get_complaint(
+    complaint_id: str,
+    current_user: dict = Depends(get_current_user),  # C-04: was unauthenticated
+):
     if not ObjectId.is_valid(complaint_id):
         raise HTTPException(status_code=400, detail="Invalid ID format")
-        
+
     db = get_database()
     doc = await db["complaints"].find_one({"_id": ObjectId(complaint_id)})
-    
+
     if not doc:
         raise HTTPException(status_code=404, detail="Complaint not found")
-        
+
+    # C-04: Role-based ownership check — citizens can only read their own complaints
+    role = current_user.get("role")
+    user_id = str(current_user["_id"])
+    if role == UserRole.CITIZEN and doc.get("user_id") != user_id:
+        raise HTTPException(status_code=403, detail="Not your complaint")
+    elif role == UserRole.WORKER and doc.get("assigned_to") != user_id:
+        raise HTTPException(status_code=403, detail="Not your assigned complaint")
+    elif role == UserRole.DEPT_HEAD:
+        user_dept = current_user.get("department")
+        if not user_dept or doc.get("department") != user_dept:
+            raise HTTPException(status_code=403, detail="Complaint is not in your department")
+
     return fix_id(doc)
 
 @router.patch("/complaints/{complaint_id}/status", response_model=ComplaintResponse)
@@ -523,13 +554,13 @@ async def update_complaint_status(
     # Update Query
     update_data = {
         "$set": {
-            "status": status, 
-            "updated_at": datetime.utcnow()
+            "status": status,
+            "updated_at": datetime.now(timezone.utc)
         },
         "$push": {
             "status_history": {
                 "status": status,
-                "timestamp": datetime.utcnow(),
+                "timestamp": datetime.now(timezone.utc),
                 "changed_by_user_id": str(current_user.get("_id")),
                 "note": safe_note,
             }
@@ -617,12 +648,12 @@ async def escalate_complaint(complaint_id: str, current_user: dict = Depends(get
     update_data = {
         "$set": {
             "authority_id": parent_id,
-            "updated_at": datetime.utcnow(),
+            "updated_at": datetime.now(timezone.utc),
         },
         "$push": {
             "status_history": {
                 "status": complaint.get("status", ComplaintStatus.OPEN),
-                "timestamp": datetime.utcnow(),
+                "timestamp": datetime.now(timezone.utc),
                 "changed_by_user_id": str(current_user.get("_id")),
                 "note": f"Escalated from {current_authority} to {parent_id}",
             }
@@ -679,11 +710,11 @@ async def submit_feedback(
     feedback_doc = {
         "rating": payload.rating,
         "comment": sanitize_text(payload.comment, max_len=500) if payload.comment else None,
-        "submitted_at": datetime.utcnow(),
+        "submitted_at": datetime.now(timezone.utc),
     }
     updated = await db["complaints"].find_one_and_update(
         {"_id": ObjectId(complaint_id)},
-        {"$set": {"feedback": feedback_doc, "updated_at": datetime.utcnow()}},
+        {"$set": {"feedback": feedback_doc, "updated_at": datetime.now(timezone.utc)}},
         return_document=True,
     )
     return fix_id(updated)
@@ -715,11 +746,11 @@ async def add_dept_note(
     note_doc = {
         "note": sanitize_text(payload.note, max_len=1000),
         "created_by": current_user.get("username"),
-        "created_at": datetime.utcnow(),
+        "created_at": datetime.now(timezone.utc),
     }
     updated = await db["complaints"].find_one_and_update(
         {"_id": ObjectId(complaint_id)},
-        {"$push": {"dept_notes": note_doc}, "$set": {"updated_at": datetime.utcnow()}},
+        {"$push": {"dept_notes": note_doc}, "$set": {"updated_at": datetime.now(timezone.utc)}},
         return_document=True,
     )
     return fix_id(updated)
@@ -771,11 +802,11 @@ async def add_comment(
         "author_id": str(current_user["_id"]),
         "author_name": current_user.get("username"),
         "author_role": role,
-        "created_at": datetime.utcnow(),
+        "created_at": datetime.now(timezone.utc),
     }
     await db["complaints"].update_one(
         {"_id": ObjectId(complaint_id)},
-        {"$push": {"comments": comment_doc}, "$set": {"updated_at": datetime.utcnow()}},
+        {"$push": {"comments": comment_doc}, "$set": {"updated_at": datetime.now(timezone.utc)}},
     )
     return {"message": "Comment added", "comment": comment_doc}
 
@@ -819,17 +850,29 @@ async def bulk_update_status(
 
     history_entry = {
         "status": payload.status,
-        "timestamp": datetime.utcnow(),
+        "timestamp": datetime.now(timezone.utc),
         "changed_by_user_id": str(current_user["_id"]),
         "note": payload.note or "Bulk status update",
     }
     result = await db["complaints"].update_many(
         {"_id": {"$in": valid_ids}},
         {
-            "$set": {"status": payload.status, "updated_at": datetime.utcnow()},
+            "$set": {"status": payload.status, "updated_at": datetime.now(timezone.utc)},
             "$push": {"status_history": history_entry},
         },
     )
+
+    # P2-C: If setting status to Resolved, free each worker's slot.
+    if payload.status == ComplaintStatus.RESOLVED:
+        resolved_docs = db["complaints"].find(
+            {"_id": {"$in": valid_ids}, "assigned_to": {"$ne": None}},
+            {"assigned_to": 1}
+        )
+        async for resolved_doc in resolved_docs:
+            worker_id = resolved_doc.get("assigned_to")
+            if worker_id:
+                await free_worker_slot(worker_id, str(resolved_doc["_id"]), db)
+
     return {"updated": result.modified_count}
 
 
@@ -862,12 +905,12 @@ async def bulk_transfer(
                 "authority_id": routing.get("authority_id"),
                 "routing_confidence": routing.get("confidence"),
                 "escalation_parent_authority_id": routing.get("escalation_parent_authority_id"),
-                "updated_at": datetime.utcnow(),
+                "updated_at": datetime.now(timezone.utc),
             },
             "$push": {
                 "status_history": {
                     "status": ComplaintStatus.OPEN,
-                    "timestamp": datetime.utcnow(),
+                    "timestamp": datetime.now(timezone.utc),
                     "changed_by_user_id": str(current_user["_id"]),
                     "note": note,
                 }
@@ -930,12 +973,12 @@ async def transfer_complaint(
             "authority_id": routing.get("authority_id"),
             "routing_confidence": routing.get("confidence"),
             "escalation_parent_authority_id": routing.get("escalation_parent_authority_id"),
-            "updated_at": datetime.utcnow(),
+            "updated_at": datetime.now(timezone.utc),
         },
         "$push": {
             "status_history": {
                 "status": complaint.get("status", ComplaintStatus.OPEN),
-                "timestamp": datetime.utcnow(),
+                "timestamp": datetime.now(timezone.utc),
                 "changed_by_user_id": str(current_user.get("_id")),
                 "note": transfer_note,
             }

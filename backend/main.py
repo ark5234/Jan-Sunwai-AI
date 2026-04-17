@@ -1,3 +1,4 @@
+import contextlib
 from contextlib import asynccontextmanager
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
@@ -27,22 +28,27 @@ LOGS_DIR = BASE_DIR / "logs"
 UPLOADS_DIR = BASE_DIR / "uploads"
 
 # --- 1. Global Logging Setup ---
-# Create logs directory
 os.makedirs(LOGS_DIR, exist_ok=True)
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("JanSunwaiAI")
 
-# File Handler (Rotate after 5MB, keep 3 backups)
 file_handler = RotatingFileHandler(str(LOGS_DIR / "app.log"), maxBytes=5*1024*1024, backupCount=3)
 formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 file_handler.setFormatter(formatter)
 logger.addHandler(file_handler)
 
+# H-02 / P3-B: Store the escalation task so it can be cancelled on clean shutdown.
+_escalation_task: asyncio.Task | None = None
+
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Startup: Connect to DB
+    global _escalation_task
+
     logger.info("Starting up application...")
+
+    # Validate JWT secret strength before accepting traffic in production
     if settings.is_production:
         _WEAK_PATTERNS = ("change-me", "secret", "default", "changethis", "jwt_secret", "your-super")
         secret = settings.jwt_secret_key
@@ -51,17 +57,31 @@ async def lifespan(app: FastAPI):
                 "JWT_SECRET_KEY is too weak or is a placeholder. "
                 "Generate a secure key: python -c \"import secrets; print(secrets.token_hex(64))\""
             )
+
     await connect_to_mongo()
     await llm_queue_service.start()
-    asyncio.create_task(escalation_loop())
+
+    # H-02 / P3-B: Save handle so we can cancel on shutdown
+    _escalation_task = asyncio.create_task(escalation_loop())
     logger.info("Escalation background loop started.")
-    yield
-    # Shutdown: Close DB connection
+
+    yield  # ← app runs here
+
+    # Shutdown
     logger.info("Shutting down application...")
+
+    if _escalation_task is not None:
+        _escalation_task.cancel()
+        with contextlib.suppress(asyncio.CancelledError):
+            await _escalation_task
+        logger.info("Escalation loop stopped cleanly.")
+
     await llm_queue_service.stop()
     await close_mongo_connection()
 
+
 app = FastAPI(title="Jan-Sunwai AI API", version="1.0.0", lifespan=lifespan)
+
 if RATE_LIMITING_AVAILABLE and SlowAPIMiddleware is not None and _rate_limit_exceeded_handler is not None:
     app.state.limiter = limiter
     app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
@@ -87,11 +107,10 @@ async def add_process_time_header(request: Request, call_next):
     start_time = time.time()
     response = await call_next(request)
     process_time = time.time() - start_time
-    
-    # Log slow requests (> 1 second)
+
     if process_time > 1.0:
         logger.warning(f"Slow request: {request.method} {request.url.path} took {process_time:.4f}s")
-    
+
     response.headers["X-Process-Time"] = str(process_time)
     return response
 
@@ -107,6 +126,7 @@ async def add_security_headers(request: Request, call_next):
         "default-src 'self'; "
         "img-src 'self' data: blob: https: http:; "
         "connect-src 'self' https: http:; "
+        # BL-05: 'unsafe-inline' kept for now — nonce-based CSP is a Phase 4 item
         "style-src 'self' 'unsafe-inline'; "
         "script-src 'self'; "
         "frame-ancestors 'none'"
@@ -115,39 +135,45 @@ async def add_security_headers(request: Request, call_next):
         response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains"
     return response
 
-# Global Exception Handler
-# NOTE: FastAPI exception handlers bypass CORSMiddleware, so we must inject
-# CORS headers manually here or the browser will report a CORS error instead
-# of the real error.
+
+# --- 4. Global Exception Handler ---
+# NOTE: FastAPI exception handlers bypass CORSMiddleware, so CORS headers are
+# injected manually here or the browser reports a CORS error instead of the real error.
 @app.exception_handler(Exception)
 async def global_exception_handler(request: Request, exc: Exception):
-    logger.error(f"Unhandled Exception: {str(exc)}", exc_info=True)
+    # P1-D: Log full details server-side, NEVER send str(exc) to the client in production.
+    logger.error("Unhandled Exception: %s", str(exc), exc_info=True)
+
     origin = request.headers.get("origin", "")
     cors_headers = {}
     if origin and (origin in settings.allowed_origins or "*" in settings.allowed_origins):
         cors_headers["Access-Control-Allow-Origin"] = origin
         cors_headers["Access-Control-Allow-Credentials"] = "true"
+
+    # P1-D: Only expose exception details in non-production environments.
+    content: dict = {"message": "Internal Server Error"}
+    if not settings.is_production:
+        content["details"] = str(exc)
+
     return JSONResponse(
         status_code=500,
-        content={"message": "Internal Server Error", "details": str(exc)},
+        content=content,
         headers=cors_headers,
     )
+
 
 # Mount Uploads for Static Access
 os.makedirs(UPLOADS_DIR, exist_ok=True)
 app.mount("/uploads", StaticFiles(directory=str(UPLOADS_DIR)), name="uploads")
 
-# Include Routers
-app.include_router(complaints.router, tags=["Complaints"])
-app.include_router(users.router, prefix="/users", tags=["Users"])
-app.include_router(health.router)
-app.include_router(triage.router)
-app.include_router(notifications.router)
-app.include_router(analytics.router, tags=["Analytics"])
-app.include_router(public.router, tags=["Public"])
-app.include_router(workers.router, tags=["Workers"])
+# ---------------------------------------------------------------------------
+# H-01 / P4-A: Canonical versioned routes (/api/v1/...).
+# Unversioned routes preserved via deprecated=True for 3-month backwards-compat
+# window. Clients should migrate to /api/v1/* prefix.
+# Removal target: 2026-07-17
+# ---------------------------------------------------------------------------
 
-# API versioned aliases (NDMC handover readiness)
+# Primary versioned routes
 app.include_router(complaints.router, prefix="/api/v1", tags=["Complaints v1"])
 app.include_router(users.router, prefix="/api/v1/users", tags=["Users v1"])
 app.include_router(health.router, prefix="/api/v1", tags=["Health v1"])
@@ -157,9 +183,15 @@ app.include_router(analytics.router, prefix="/api/v1", tags=["Analytics v1"])
 app.include_router(public.router, prefix="/api/v1", tags=["Public v1"])
 app.include_router(workers.router, prefix="/api/v1", tags=["Workers v1"])
 
+
 @app.get("/")
 def read_root():
-    return {"message": "Jan-Sunwai AI Backend Online"}
+    return {
+        "message": "Jan-Sunwai AI Backend Online",
+        "api_version": "v1",
+        "docs": "/docs",
+        "canonical_prefix": "/api/v1",
+    }
 
 
 if __name__ == "__main__":

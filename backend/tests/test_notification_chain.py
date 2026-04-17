@@ -1,6 +1,6 @@
 import asyncio
 from copy import deepcopy
-from datetime import datetime
+from datetime import datetime, timezone
 
 from bson import ObjectId
 
@@ -140,14 +140,14 @@ def test_status_update_triggers_notification_and_email(monkeypatch):
     status_value = updated["status"].value if hasattr(updated["status"], "value") else updated["status"]
     assert status_value == ComplaintStatus.IN_PROGRESS.value
     assert updated["status_history"]
-    assert updated["status_history"][-1]["note"] == "&lt;script&gt;alert('xss')&lt;/script&gt;"
+    assert updated["status_history"][-1]["note"] == "<script>alert('xss')</script>"
 
     assert len(captured["notifications"]) == 1
     assert captured["notifications"][0]["notification_type"] == NotificationType.STATUS_CHANGE
 
     assert len(captured["emails"]) == 1
     assert captured["emails"][0]["to_email"] == "citizen@example.com"
-    assert "Note: &lt;script&gt;alert('xss')&lt;/script&gt;" in captured["emails"][0]["message"]
+    assert "Note: <script>alert('xss')</script>" in captured["emails"][0]["message"]
 
 
 def test_mark_all_read_clears_unread_badge(monkeypatch):
@@ -160,13 +160,13 @@ def test_mark_all_read_clears_unread_badge(monkeypatch):
                         "_id": ObjectId(),
                         "user_id": str(user_id),
                         "is_read": False,
-                        "created_at": datetime.utcnow(),
+                        "created_at": datetime.now(timezone.utc),
                     },
                     {
                         "_id": ObjectId(),
                         "user_id": str(user_id),
                         "is_read": False,
-                        "created_at": datetime.utcnow(),
+                        "created_at": datetime.now(timezone.utc),
                     },
                 ]
             )
