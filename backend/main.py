@@ -130,6 +130,8 @@ async def global_exception_handler(request: Request, exc: Exception):
 # Mount Uploads for Static Access
 os.makedirs(UPLOADS_DIR, exist_ok=True)
 app.mount("/uploads", StaticFiles(directory=str(UPLOADS_DIR)), name="uploads")
+# Backward-compatible alias for clients that prepend API version to static paths.
+app.mount("/api/v1/uploads", StaticFiles(directory=str(UPLOADS_DIR)), name="uploads_v1")
 
 # Include Routers
 app.include_router(complaints.router, tags=["Complaints"])
