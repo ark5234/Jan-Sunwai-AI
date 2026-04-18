@@ -41,8 +41,79 @@ from bson import ObjectId
 router = APIRouter()
 classifier = CivicClassifier()
 
+
+def _normalize_legacy_location(location_value: object) -> dict | None:
+    if not isinstance(location_value, dict):
+        return None
+
+    if "lat" in location_value and "lon" in location_value:
+        normalized = dict(location_value)
+        if not normalized.get("source"):
+            normalized["source"] = "manual"
+        return normalized
+
+    coords = location_value.get("coordinates")
+    if isinstance(coords, dict):
+        lat = coords.get("lat")
+        lon = coords.get("lon")
+        if lat is not None and lon is not None:
+            try:
+                lat_value = float(lat)
+                lon_value = float(lon)
+            except (TypeError, ValueError):
+                return None
+
+            return {
+                "lat": lat_value,
+                "lon": lon_value,
+                "address": location_value.get("address") or "Unknown Location",
+                "source": "manual",
+            }
+
+    return None
+
+
+def _normalize_legacy_ai_metadata(ai_metadata_value: object, department: str | None) -> dict | None:
+    if not isinstance(ai_metadata_value, dict):
+        return None
+
+    normalized = dict(ai_metadata_value)
+
+    confidence_value = normalized.get("confidence")
+    if normalized.get("confidence_score") is None and confidence_value is not None:
+        try:
+            normalized["confidence_score"] = float(confidence_value)
+        except (TypeError, ValueError):
+            pass
+
+    if not normalized.get("detected_department"):
+        normalized["detected_department"] = department or "Unknown"
+
+    if normalized.get("confidence_score") is None:
+        normalized["confidence_score"] = 0.0
+
+    if not isinstance(normalized.get("labels"), list):
+        normalized["labels"] = []
+
+    if not normalized.get("model_used"):
+        normalized["model_used"] = "legacy"
+
+    return normalized
+
+
 # Helper to fix ObjectId serialization
 def fix_id(doc):
+    if not doc:
+        return doc
+
+    location_value = doc.get("location")
+    if location_value is not None:
+        doc["location"] = _normalize_legacy_location(location_value)
+
+    ai_metadata_value = doc.get("ai_metadata")
+    if ai_metadata_value is not None:
+        doc["ai_metadata"] = _normalize_legacy_ai_metadata(ai_metadata_value, doc.get("department"))
+
     if doc and "_id" in doc:
         doc["_id"] = str(doc["_id"])
     return doc
