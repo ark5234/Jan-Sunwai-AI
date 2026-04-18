@@ -13,18 +13,16 @@ export default function Notifications() {
   const [filter, setFilter] = useState('all'); // all | unread
 
   useEffect(() => {
-    if (!user?.access_token) return;
+    if (!user) return;
     fetchNotifications();
-  }, [user?.access_token, filter]);
+  }, [user, filter]);
 
   const fetchNotifications = async () => {
     setLoading(true);
     try {
       const params = new URLSearchParams({ limit: '50' });
       if (filter === 'unread') params.append('unread_only', 'true');
-      const res = await fetch(`${API}/notifications?${params}`, {
-        headers: { Authorization: `Bearer ${user.access_token}` },
-      });
+      const res = await fetch(`${API}/notifications?${params}`);
       if (res.ok) setNotifications(await res.json());
     } catch (err) {
       console.error('Failed to fetch notifications', err);
@@ -37,7 +35,6 @@ export default function Notifications() {
     try {
       await fetch(`${API}/notifications/${id}/read`, {
         method: 'PATCH',
-        headers: { Authorization: `Bearer ${user.access_token}` },
       });
       setNotifications(prev => prev.map(n => n._id === id ? { ...n, is_read: true } : n));
     } catch { /* ignore */ }
@@ -47,7 +44,6 @@ export default function Notifications() {
     try {
       await fetch(`${API}/notifications/read-all`, {
         method: 'PATCH',
-        headers: { Authorization: `Bearer ${user.access_token}` },
       });
       setNotifications(prev => prev.map(n => ({ ...n, is_read: true })));
     } catch { /* ignore */ }

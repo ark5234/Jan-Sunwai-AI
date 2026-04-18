@@ -8,10 +8,11 @@ who submitted a complaint would silently lose their AI-generated draft. Now job
 state survives and the frontend can poll reliably.
 """
 import asyncio
+import logging
 import time
 import uuid
-from dataclasses import dataclass, field
-from datetime import datetime, timezone, timedelta
+from dataclasses import dataclass
+from datetime import datetime, timezone
 from typing import Any
 
 from app.config import settings
@@ -51,15 +52,20 @@ class LLMQueueService:
         """Persist job state to MongoDB. Non-fatal on error."""
         try:
             db = self._get_db()
-            doc.setdefault("created_at", datetime.now(timezone.utc))
-            await db["llm_jobs"].replace_one({"_id": job_id}, {**doc, "_id": job_id}, upsert=True)
+            await db["llm_jobs"].update_one(
+                {"_id": job_id},
+                {
+                    "$set": doc,
+                    "$setOnInsert": {"created_at": datetime.now(timezone.utc)},
+                },
+                upsert=True,
+            )
         except Exception as exc:
-            import logging
             logging.getLogger("JanSunwaiAI.llm_queue").warning(
                 "Failed to persist job %s to DB: %s", job_id, exc
             )
 
-    async def _db_get(self, job_id: str) -> dict | None:
+    async def _db_get(self, job_id: str, include_private: bool = False) -> dict | None:
         """Read job from MongoDB (fallback when not in cache)."""
         try:
             db = self._get_db()
@@ -67,6 +73,8 @@ class LLMQueueService:
             if doc:
                 doc.pop("_id", None)
                 doc.pop("created_at", None)
+                if not include_private:
+                    doc.pop("owner_id", None)
                 return doc
         except Exception:
             pass
@@ -114,10 +122,23 @@ class LLMQueueService:
         while True:
             job = await self.queue.get()
             self._evict()
+            owner_id = str(job.user_details.get("user_id", "") or "")
 
-            initial = {"status": "processing", "worker_id": worker_id, "_mono": time.monotonic()}
+            initial = {
+                "status": "processing",
+                "worker_id": worker_id,
+                "owner_id": owner_id,
+                "_mono": time.monotonic(),
+            }
             self._cache[job.job_id] = initial
-            await self._db_upsert(job.job_id, {"status": "processing", "worker_id": worker_id})
+            await self._db_upsert(
+                job.job_id,
+                {
+                    "status": "processing",
+                    "worker_id": worker_id,
+                    "owner_id": owner_id,
+                },
+            )
 
             try:
                 text = await asyncio.to_thread(
@@ -131,18 +152,37 @@ class LLMQueueService:
                 result = {
                     "status": "completed",
                     "generated_complaint": text,
+                    "owner_id": owner_id,
                     "_mono": time.monotonic(),
                 }
                 self._cache[job.job_id] = result
-                await self._db_upsert(job.job_id, {"status": "completed", "generated_complaint": text})
+                await self._db_upsert(
+                    job.job_id,
+                    {
+                        "status": "completed",
+                        "generated_complaint": text,
+                        "owner_id": owner_id,
+                    },
+                )
             except Exception as exc:
+                logging.getLogger("JanSunwaiAI.llm_queue").exception(
+                    "LLM generation failed for job %s", job.job_id
+                )
                 result = {
                     "status": "failed",
-                    "error": str(exc),
+                    "error": "generation_failed",
+                    "owner_id": owner_id,
                     "_mono": time.monotonic(),
                 }
                 self._cache[job.job_id] = result
-                await self._db_upsert(job.job_id, {"status": "failed", "error": str(exc)})
+                await self._db_upsert(
+                    job.job_id,
+                    {
+                        "status": "failed",
+                        "error": "generation_failed",
+                        "owner_id": owner_id,
+                    },
+                )
             finally:
                 self.queue.task_done()
 
@@ -159,10 +199,11 @@ class LLMQueueService:
         language: str = "en",
     ) -> str:
         job_id = str(uuid.uuid4())
+        owner_id = str(user_details.get("user_id", "") or "")
         self._evict()
-        queued = {"status": "queued", "_mono": time.monotonic()}
+        queued = {"status": "queued", "owner_id": owner_id, "_mono": time.monotonic()}
         self._cache[job_id] = queued
-        await self._db_upsert(job_id, {"status": "queued"})
+        await self._db_upsert(job_id, {"status": "queued", "owner_id": owner_id})
         await self.queue.put(
             LLMJob(
                 job_id=job_id,
@@ -183,16 +224,19 @@ class LLMQueueService:
         """
         cached = self._cache.get(job_id)
         if cached:
-            out = {k: v for k, v in cached.items() if k not in ("_mono",)}
+            out = {k: v for k, v in cached.items() if k not in ("_mono", "owner_id")}
             return out or None
         return None
 
-    async def get_result_async(self, job_id: str) -> dict[str, Any] | None:
+    async def get_result_async(self, job_id: str, include_private: bool = False) -> dict[str, Any] | None:
         """Async version — checks cache first, then falls back to DB."""
-        cached = self.get_result(job_id)
+        cached = self._cache.get(job_id)
         if cached:
-            return cached
-        return await self._db_get(job_id)
+            if include_private:
+                return {k: v for k, v in cached.items() if k not in ("_mono",)}
+            out = {k: v for k, v in cached.items() if k not in ("_mono", "owner_id")}
+            return out or None
+        return await self._db_get(job_id, include_private=include_private)
 
 
 llm_queue_service = LLMQueueService()

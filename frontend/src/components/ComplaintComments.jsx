@@ -79,7 +79,7 @@ export default function ComplaintComments({ complaintId, currentRole }) {
           <div className="space-y-2 max-h-48 overflow-y-auto">
             {comments.map((c, i) => (
               <div key={i} className="flex gap-2">
-                <div className="flex-shrink-0 mt-0.5">
+                <div className="shrink-0 mt-0.5">
                   <span
                     className={`text-[10px] font-semibold px-1.5 py-0.5 rounded ${
                       ROLE_COLOR[c.author_role] || "bg-slate-100 text-slate-600"

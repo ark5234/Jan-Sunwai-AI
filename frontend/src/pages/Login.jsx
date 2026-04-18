@@ -70,7 +70,8 @@ export default function Login() {
 
             'Content-Type': 'application/x-www-form-urlencoded'
 
-        }
+        },
+        withCredentials: true,
 
       });
 

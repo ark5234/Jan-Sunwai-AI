@@ -26,8 +26,13 @@ export default function ResetPassword() {
       return;
     }
 
-    if (newPassword.length < 6) {
-      setError('New password must be at least 6 characters.');
+    if (newPassword.length < 10) {
+      setError('New password must be at least 10 characters.');
+      return;
+    }
+
+    if (!/[A-Z]/.test(newPassword) || !/[0-9]/.test(newPassword)) {
+      setError('Password must include at least one uppercase letter and one digit.');
       return;
     }
 
@@ -101,7 +106,7 @@ export default function ResetPassword() {
                   type="password"
                   required
                   className="pl-10 w-full p-2.5 border border-gray-300 rounded focus:ring-2 focus:ring-primary focus:border-primary transition text-sm"
-                  placeholder="At least 6 characters"
+                  placeholder="At least 10 chars, 1 uppercase, 1 digit"
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
                 />

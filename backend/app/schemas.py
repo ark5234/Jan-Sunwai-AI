@@ -3,6 +3,14 @@ from typing import Optional, List
 from enum import Enum
 from datetime import datetime, timezone
 
+
+def _validate_strong_password(v: str) -> str:
+    if not any(c.isupper() for c in v):
+        raise ValueError("Password must contain at least one uppercase letter")
+    if not any(c.isdigit() for c in v):
+        raise ValueError("Password must contain at least one digit")
+    return v
+
 class UserRole(str, Enum):
     CITIZEN = "citizen"
     DEPT_HEAD = "dept_head"
@@ -44,11 +52,7 @@ class UserCreate(UserBase):
     @field_validator("password")
     @classmethod
     def password_complexity(cls, v: str) -> str:
-        if not any(c.isupper() for c in v):
-            raise ValueError("Password must contain at least one uppercase letter")
-        if not any(c.isdigit() for c in v):
-            raise ValueError("Password must contain at least one digit")
-        return v
+        return _validate_strong_password(v)
 
 class UserInDB(UserBase):
     id: Optional[str] = Field(None, alias="_id")
@@ -93,7 +97,17 @@ class ForgotPasswordRequest(BaseModel):
 
 class ResetPasswordRequest(BaseModel):
     token: str = Field(..., min_length=12, max_length=256)
-    new_password: str = Field(..., min_length=6, max_length=128)
+    new_password: str = Field(
+        ...,
+        min_length=10,
+        max_length=128,
+        description="Password must be at least 10 characters with uppercase and digit",
+    )
+
+    @field_validator("new_password")
+    @classmethod
+    def password_complexity(cls, v: str) -> str:
+        return _validate_strong_password(v)
 
 
 class ProfileUpdateRequest(BaseModel):
@@ -152,6 +166,12 @@ class ComplaintCreate(ComplaintBase):
     image_url: str
     location: GeoLocation
     ai_metadata: AIMetadata
+    analysis_token: Optional[str] = Field(
+        None,
+        min_length=20,
+        max_length=1024,
+        description="Server-issued token that binds analysis payload to user and uploaded image",
+    )
 
 class ComplaintInDB(ComplaintCreate):
     id: Optional[str] = Field(None, alias="_id")

@@ -6,12 +6,12 @@ This guide reflects currently implemented controls and testable behaviors in the
 
 | Control Area | Current Implementation |
 | --- | --- |
-| Authentication | JWT bearer via OAuth2 password flow |
+| Authentication | httpOnly cookie session (primary) + JWT bearer compatibility |
 | Authorization | Role-gated dependencies (`citizen`, `worker`, `dept_head`, `admin`) |
 | Password Storage | bcrypt hash via passlib |
 | Reset Tokens | SHA-256 hashed token storage + TTL index |
 | Upload Security | Extension allowlist + max size + magic number check |
-| Input Sanitization | HTML escaping and text sanitization on user-provided fields |
+| Input Sanitization | Text sanitization + frontend-safe rendering (no raw HTML execution) |
 | Headers | CSP, X-Frame-Options, Referrer-Policy, HSTS (prod), etc. |
 | CORS | Configurable allowlist from env |
 | Rate Limiting | Optional slowapi integration (`RATE_LIMIT_ENABLED`) |
@@ -48,10 +48,12 @@ Repository-level runners:
 # Linux
 bash scripts/run_security_test.sh
 bash scripts/run_resilience_test.sh
+bash scripts/run_cookie_smoke_test.sh
 
 # Windows
 scripts\run_security_test.bat
 scripts\run_resilience_test.bat
+scripts\run_cookie_smoke_test.bat
 ```
 
 Covered checks include:
@@ -65,20 +67,30 @@ Covered checks include:
 
 ## Manual Security Probes
 
-## 1) JWT Validation
+## 1) Session and Token Validation
+
+No auth cookie or token:
 
 ```bash
-curl -H "Authorization: Bearer invalid.token.here" http://localhost:8000/complaints
+curl -i http://localhost:8000/api/v1/complaints
+```
+
+Expected: `401`
+
+Invalid bearer token:
+
+```bash
+curl -i -H "Authorization: Bearer invalid.token.here" http://localhost:8000/api/v1/complaints
 ```
 
 Expected: `401`
 
 ## 2) Role Access Enforcement
 
-Try admin-only endpoint with non-admin token:
+Try admin-only endpoint with non-admin session/token:
 
 ```bash
-curl -H "Authorization: Bearer <citizen-token>" http://localhost:8000/workers
+curl -i -H "Authorization: Bearer <citizen-token>" http://localhost:8000/api/v1/workers
 ```
 
 Expected: `403`
@@ -98,7 +110,7 @@ Expected: `400` with header mismatch message.
 
 ## 4) XSS Sanitization
 
-Inject script payload in complaint note or comment body and verify escaped output is returned (for example `&lt;script&gt;`).
+Inject script payload in complaint note or comment body and verify script text is displayed as plain text (no JavaScript execution in UI).
 
 ## 5) Notification Ownership
 

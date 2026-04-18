@@ -6,6 +6,8 @@
 - Frontend lint/build pass: cd frontend && npm run lint && npm run build
 - Security suite pass: scripts/run_security_test
 - Resilience suite pass: scripts/run_resilience_test
+- Cookie-session smoke pass: scripts/run_cookie_smoke_test
+- Notification chain pass: scripts/run_notification_chain_test
 
 ## Operations
 

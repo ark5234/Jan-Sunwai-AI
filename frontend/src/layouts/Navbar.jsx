@@ -27,12 +27,11 @@ export default function Navbar() {
 
   // Fetch unread count periodically
   useEffect(() => {
-    if (!user?.access_token) return;
-    const headers = { Authorization: `Bearer ${user.access_token}` };
+    if (!user) return;
 
     const fetchCount = async () => {
       try {
-        const res = await fetch(`${API}/notifications/unread-count`, { headers });
+        const res = await fetch(`${API}/notifications/unread-count`);
         if (res.ok) {
           const data = await res.json();
           setUnreadCount(data.count);
@@ -43,17 +42,16 @@ export default function Navbar() {
     fetchCount();
     const interval = setInterval(fetchCount, 30000); // poll every 30s
     return () => clearInterval(interval);
-  }, [user?.access_token]);
+  }, [user]);
 
   // Fetch recent notifications when dropdown opens
   useEffect(() => {
-    if (!showNotifications || !user?.access_token) return;
-    const headers = { Authorization: `Bearer ${user.access_token}` };
+    if (!showNotifications || !user) return;
 
     (async () => {
       setNotifLoading(true);
       try {
-        const res = await fetch(`${API}/notifications?limit=10`, { headers });
+        const res = await fetch(`${API}/notifications?limit=10`);
         if (res.ok) {
           const data = await res.json();
           setNotifications(data);
@@ -68,7 +66,7 @@ export default function Navbar() {
         setNotifLoading(false);
       }
     })();
-  }, [showNotifications, user?.access_token]);
+  }, [showNotifications, user]);
 
   // Close dropdown on outside click
   useEffect(() => {
@@ -85,11 +83,10 @@ export default function Navbar() {
   }, []);
 
   const markAsRead = async (id) => {
-    if (!user?.access_token) return;
+    if (!user) return;
     try {
       await fetch(`${API}/notifications/${id}/read`, {
         method: 'PATCH',
-        headers: { Authorization: `Bearer ${user.access_token}` },
       });
       setNotifications(prev => prev.map(n => n._id === id ? { ...n, is_read: true } : n));
       setUnreadCount(prev => Math.max(0, prev - 1));
@@ -97,11 +94,10 @@ export default function Navbar() {
   };
 
   const markAllRead = async () => {
-    if (!user?.access_token) return;
+    if (!user) return;
     try {
       await fetch(`${API}/notifications/read-all`, {
         method: 'PATCH',
-        headers: { Authorization: `Bearer ${user.access_token}` },
       });
       setNotifications(prev => prev.map(n => ({ ...n, is_read: true })));
       setUnreadCount(0);

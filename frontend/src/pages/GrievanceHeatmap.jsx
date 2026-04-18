@@ -106,16 +106,14 @@ export default function GrievanceHeatmap() {
   const [loading, setLoading] = useState(true);
   const [viewMode, setViewMode] = useState('heat'); // 'heat' | 'circles'
 
-  const headers = { Authorization: `Bearer ${user?.access_token}` };
-
   const fetchHeatmap = async () => {
-    if (!user?.access_token) return;
+    if (!user) return;
     setLoading(true);
     try {
       const params = new URLSearchParams();
       if (department !== 'All') params.set('department', department);
       if (status !== 'All') params.set('status', status);
-      const res = await fetch(`${API}/analytics/heatmap?${params}`, { headers });
+      const res = await fetch(`${API}/analytics/heatmap?${params}`);
       if (!res.ok) throw new Error('Failed to fetch heatmap data');
       const data = await res.json();
       const validPoints = (data.points || []).filter(p => p.lat != null && p.lon != null);

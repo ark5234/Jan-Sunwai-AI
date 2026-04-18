@@ -13,16 +13,25 @@ This plan completes the UAT setup, citizen/admin execution scripts, and feedback
 
 ## Seed Accounts
 
-- Citizen: citizen1 / citizen123
-- Dept Head: dept_head1 / depthead123
-- Admin: admin1 / admin123
+- Citizen: citizen_demo / citizen123
+- Dept Head: department-specific account from hierarchy (example: health_moh / health123)
+- Admin: admin_demo / admin123
 - Worker pool seeded using backend/create_test_users.py
 
 ## Pre-flight
 
 1. Run scripts/simulate_clean_deploy.bat (Windows) or bash scripts/simulate_clean_deploy.sh.
 2. Run scripts/run_tests.bat (Windows) or bash scripts/run_tests.sh.
-3. Run scripts/run_notification_chain_test.bat (Windows) or bash scripts/run_notification_chain_test.sh.
+3. Run scripts/run_cookie_smoke_test.bat (Windows) or bash scripts/run_cookie_smoke_test.sh.
+4. Run scripts/run_notification_chain_test.bat (Windows) or bash scripts/run_notification_chain_test.sh.
+
+For notification-chain script on local demo data, set env vars before running:
+
+- `API_BASE_URL=http://localhost:8000/api/v1`
+- `CITIZEN_USERNAME=citizen_demo`
+- `CITIZEN_PASSWORD=citizen123`
+- `DEPT_HEAD_USERNAME=admin_demo`
+- `DEPT_HEAD_PASSWORD=admin123`
 
 ## 2. Citizen Persona Script (May 12)
 

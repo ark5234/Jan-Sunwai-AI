@@ -25,6 +25,10 @@ class Settings(BaseSettings):
     jwt_secret_key: str = Field(default="change-me-in-production", alias="JWT_SECRET_KEY")
     jwt_algorithm: str = Field(default="HS256", alias="JWT_ALGORITHM")
     access_token_expire_minutes: int = Field(default=1440, alias="ACCESS_TOKEN_EXPIRE_MINUTES")
+    return_access_token_in_response: bool = Field(
+        default=False,
+        alias="RETURN_ACCESS_TOKEN_IN_RESPONSE",
+    )
 
     # CORS
     allowed_origins_raw: str = Field(

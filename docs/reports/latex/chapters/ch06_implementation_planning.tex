@@ -46,7 +46,7 @@ This ensures that local verification and deployment handover use the same operat
 \endhead
 Backend Framework & FastAPI & Route definitions, dependency injection, validation, middleware pipeline \\ \hline
 Data Validation & Pydantic & Request/response schema validation and structured models \\ \hline
-Auth and Security & python-jose, passlib[bcrypt] & JWT token issuance/validation and password hashing \\ \hline
+Auth and Security & python-jose, passlib[bcrypt] & Cookie-session auth, JWT compatibility support, and password hashing \\ \hline
 HTTP Testing & httpx & Async API smoke and integration checks \\ \hline
 Database Driver & Motor/PyMongo stack & MongoDB async operations and collection access \\ \hline
 AI Runtime & Ollama & Local vision and reasoning model invocation \\ \hline
@@ -156,7 +156,7 @@ Deliverables included the production compose profile, deployment guides, and API
 The implementation plan emphasized explicit secret handling and runtime configurability. Important control groups include:
 
 \begin{itemize}
-\item Authentication controls: JWT secret, algorithm, token expiry.
+\item Authentication controls: cookie-session settings, JWT secret/algorithm, token expiry, compatibility mode.
 \item Data controls: Mongo URL and database selection.
 \item AI controls: model identifiers, timeout windows, queue worker count.
 \item Security controls: CORS origin allowlist and rate-limiter mode.

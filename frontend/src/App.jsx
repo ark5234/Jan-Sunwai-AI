@@ -25,7 +25,11 @@ const ResetPassword = lazy(() => import('./pages/ResetPassword'));
 
 // Protected Route Component
 function ProtectedRoute({ children, allowedRoles }) {
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
+
+  if (loading) {
+    return null;
+  }
   
   if (!user) {
     return <Navigate to="/login" replace />;
@@ -40,7 +44,10 @@ function ProtectedRoute({ children, allowedRoles }) {
 
 // Guest-only Route — logged-in users are sent straight to their dashboard
 function GuestRoute({ children }) {
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
+  if (loading) {
+    return null;
+  }
   if (user) {
     return <Navigate to="/dashboard" replace />;
   }
@@ -49,7 +56,11 @@ function GuestRoute({ children }) {
 
 // Dashboard Router - redirects to appropriate dashboard based on role
 function DashboardRouter() {
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
+
+  if (loading) {
+    return null;
+  }
   
   if (!user) {
     return <Navigate to="/login" replace />;

@@ -46,6 +46,19 @@ async def public_complaints():
     )
     results = []
     async for doc in cursor:
+        loc = doc.get("location") or {}
+        try:
+            lat = float(loc.get("lat"))
+            lon = float(loc.get("lon"))
+            coarse_location = {
+                "lat": round(lat, 2),
+                "lon": round(lon, 2),
+                "source": loc.get("source"),
+            }
+        except (TypeError, ValueError):
+            coarse_location = {"source": loc.get("source")}
+
         doc["_id"] = str(doc["_id"])
+        doc["location"] = coarse_location
         results.append(doc)
     return results

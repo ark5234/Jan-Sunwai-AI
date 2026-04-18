@@ -1,11 +1,13 @@
 ﻿# Jan-Sunwai AI - Daily Project Report & Plan
 
 > **Font:** Times New Roman throughout all printed / PDF versions of this document.
-> **Last Updated:** 06 April 2026
-> **Current Status:** Security/performance hardening, password reset/profile editing, API versioning, production compose artifacts, and deployment docs are implemented. Remaining work is full UAT/load/security audit and release operations.
+> **Last Updated:** 18 April 2026
+> **Current Status:** Cookie-first auth migration, security/resilience regression passes, and integration smoke scripts are complete. Remaining work is final UAT sign-off and release packaging.
 
 **Project Duration:** January 28, 2026 - May 27, 2026
 **Schedule Logic:** Monday to Saturday work weeks. Sundays are always OFF. 2nd & 4th Saturdays are OFF.
+
+> Historical note: early entries intentionally capture JWT-bearer and localStorage phases as they happened at that time. Current runtime behavior is cookie-first (`js_access_token`) with bearer compatibility for non-browser clients.
 
 ---
 

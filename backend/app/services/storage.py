@@ -62,7 +62,7 @@ class StorageService:
         if content_type and content_type not in ALLOWED_CONTENT_TYPES:
             raise HTTPException(
                 status_code=400,
-                detail="Invalid content type. Only JPEG and PNG images are allowed.",
+                detail="Invalid content type. Only JPEG, PNG, and WEBP images are allowed.",
             )
         
         file.file.seek(0, os.SEEK_END)

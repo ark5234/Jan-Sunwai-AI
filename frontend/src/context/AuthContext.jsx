@@ -29,43 +29,39 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const storedUser = localStorage.getItem('jan_sunwai_user');
-    if (storedUser) {
+    let cancelled = false;
+
+    const bootstrapSession = async () => {
       try {
-        const parsed = JSON.parse(storedUser);
-        if (parsed && parsed.access_token) {
-          if (isTokenExpired(parsed.access_token)) {
-            console.warn('Stored session token expired — clearing.');
-            localStorage.removeItem('jan_sunwai_user');
-          } else {
-            setUser(parsed);
-          }
-        } else {
-          console.warn('Invalid session format detected. Please log in again.');
-          localStorage.removeItem('jan_sunwai_user');
+        const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1';
+        const res = await fetch(`${API_BASE}/users/me`, {
+          method: 'GET',
+          credentials: 'include',
+        });
+        if (!cancelled && res.ok) {
+          const me = await res.json();
+          // Compatibility shim for components still checking user.access_token.
+          setUser({ ...me, access_token: '__cookie__' });
         }
-      } catch (e) {
-        console.error('Failed to parse stored user', e);
-        localStorage.removeItem('jan_sunwai_user');
+      } catch {
+        // no-op: unauthenticated startup is expected for guests
+      } finally {
+        if (!cancelled) {
+          setLoading(false);
+        }
       }
-    }
-    setLoading(false);
+    };
+
+    bootstrapSession();
+
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
-  /**
-   * P4-E: login() still stores the token in localStorage for backwards compat
-   * with all existing components that read user.access_token for the
-   * Authorization: Bearer header. The httpOnly cookie is now ALSO issued by
-   * the server on every login response — so any request made with
-   * credentials: 'include' (see api.js) will automatically carry the cookie.
-   *
-   * Migration path: once all axios calls are migrated to credentials:include
-   * and read from cookie, remove the localStorage write and Authorization header.
-   * Target: 2026-07-17 (same as route deprecation window).
-   */
   const login = (userData) => {
-    setUser(userData);
-    localStorage.setItem('jan_sunwai_user', JSON.stringify(userData));
+    // Compatibility shim for components still checking user.access_token.
+    setUser({ ...userData, access_token: '__cookie__' });
   };
 
   const logout = useCallback(async () => {
@@ -80,7 +76,6 @@ export const AuthProvider = ({ children }) => {
       // Non-fatal — clear client state regardless
     }
     setUser(null);
-    localStorage.removeItem('jan_sunwai_user');
   }, []);
 
   /**
@@ -98,7 +93,6 @@ export const AuthProvider = ({ children }) => {
       // Non-fatal
     }
     setUser(null);
-    localStorage.removeItem('jan_sunwai_user');
     window.location.href = '/login';
   }, []);
 

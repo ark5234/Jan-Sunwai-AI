@@ -10,6 +10,14 @@ import FormattedComplaintText from '../components/FormattedComplaintText';
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1';
 const STATIC_BASE_URL = API_BASE_URL.replace(/\/api\/v1\/?$/, '').replace(/\/$/, '');
 
+const toImageUrl = (imagePath) => {
+  const raw = typeof imagePath === 'string' ? imagePath.trim() : '';
+  if (!raw) return '';
+  if (/^https?:\/\//i.test(raw) || raw.startsWith('data:')) return raw;
+  const cleanPath = raw.replace(/\\/g, '/').replace(/^\/+/, '');
+  return cleanPath ? `${STATIC_BASE_URL}/${encodeURI(cleanPath)}` : '';
+};
+
 const AdminDashboard = () => {
   const { user, handleAuthError } = useAuth();
   const [complaints, setComplaints] = useState([]);
@@ -50,7 +58,7 @@ const AdminDashboard = () => {
   ];
 
   useEffect(() => {
-    if (user?.access_token) {
+    if (user) {
       fetchAllComplaints();
       fetchWorkers();
       fetchUnassigned();
@@ -58,7 +66,7 @@ const AdminDashboard = () => {
   }, [statusFilter, departmentFilter, user]);
 
   const fetchAllComplaints = async () => {
-    if (!user?.access_token) return;
+    if (!user) return;
     try {
       setLoading(true);
       const params = {};
@@ -69,12 +77,7 @@ const AdminDashboard = () => {
         params.department = departmentFilter;
       }
       
-      const response = await axios.get(`${API_BASE_URL}/complaints`, {
-        headers: {
-          Authorization: `Bearer ${user.access_token}`
-        },
-        params
-      });
+      const response = await axios.get(`${API_BASE_URL}/complaints`, { params });
       setComplaints(response.data);
       setError(null);
     } catch (err) {
@@ -90,12 +93,10 @@ const AdminDashboard = () => {
   };
 
   const fetchWorkers = async () => {
-    if (!user?.access_token) return;
+    if (!user) return;
     setWorkersLoading(true);
     try {
-      const res = await axios.get(`${API_BASE_URL}/workers`, {
-        headers: { Authorization: `Bearer ${user.access_token}` },
-      });
+      const res = await axios.get(`${API_BASE_URL}/workers`);
       setWorkers(res.data);
     } catch (err) {
       console.error('Error fetching workers:', err);
@@ -105,10 +106,9 @@ const AdminDashboard = () => {
   };
 
   const fetchUnassigned = async () => {
-    if (!user?.access_token) return;
+    if (!user) return;
     try {
       const res = await axios.get(`${API_BASE_URL}/complaints`, {
-        headers: { Authorization: `Bearer ${user.access_token}` },
         params: { status: 'Open', limit: 200 },
       });
       setUnassignedComplaints(res.data.filter(c => !c.assigned_to));
@@ -119,11 +119,7 @@ const AdminDashboard = () => {
     setReassignLoading(true);
     setReassignResult(null);
     try {
-      const res = await axios.post(
-        `${API_BASE_URL}/workers/reassign-unassigned`,
-        {},
-        { headers: { Authorization: `Bearer ${user.access_token}` } }
-      );
+      const res = await axios.post(`${API_BASE_URL}/workers/reassign-unassigned`, {});
       setReassignResult(res.data);
       fetchWorkers();
       fetchAllComplaints();
@@ -138,11 +134,7 @@ const AdminDashboard = () => {
   const handleManualAssign = async (workerId, complaintId) => {
     if (!complaintId) return;
     try {
-      await axios.post(
-        `${API_BASE_URL}/workers/${workerId}/assign/${complaintId}`,
-        {},
-        { headers: { Authorization: `Bearer ${user.access_token}` } }
-      );
+      await axios.post(`${API_BASE_URL}/workers/${workerId}/assign/${complaintId}`, {});
       setWorkerActionMsg('Complaint assigned successfully!');
       setTimeout(() => setWorkerActionMsg(''), 3000);
       setAssignPanel(prev => { const n = { ...prev }; delete n[workerId]; return n; });
@@ -156,9 +148,7 @@ const AdminDashboard = () => {
 
   const handleApproveWorker = async (workerId) => {
     try {
-      await axios.patch(`${API_BASE_URL}/workers/${workerId}/approve`, {},
-        { headers: { Authorization: `Bearer ${user.access_token}` } }
-      );
+      await axios.patch(`${API_BASE_URL}/workers/${workerId}/approve`, {});
       setWorkerActionMsg('Worker approved!');
       setTimeout(() => setWorkerActionMsg(''), 3000);
       fetchWorkers();
@@ -171,7 +161,6 @@ const AdminDashboard = () => {
     if (!window.confirm('Permanently reject and delete this worker registration?')) return;
     try {
       await axios.delete(`${API_BASE_URL}/workers/${workerId}/reject`, {
-        headers: { Authorization: `Bearer ${user.access_token}` },
         data: { reason: 'Rejected by admin' },
       });
       setWorkerActionMsg('Registration rejected.');
@@ -185,16 +174,7 @@ const AdminDashboard = () => {
   const updateComplaintStatus = async (complaintId, newStatus) => {
     setUpdateError(null);
     try {
-      await axios.patch(
-        `${API_BASE_URL}/complaints/${complaintId}/status`,
-        { status: newStatus },
-        {
-          headers: {
-            Authorization: `Bearer ${user.access_token}`,
-            'Content-Type': 'application/json'
-          }
-        }
-      );
+      await axios.patch(`${API_BASE_URL}/complaints/${complaintId}/status`, { status: newStatus });
       fetchAllComplaints();
     } catch (err) {
       console.error('Error updating status:', err);
@@ -217,8 +197,7 @@ const AdminDashboard = () => {
     if (!selected.size) return;
     try {
       await axios.post(`${API_BASE_URL}/complaints/bulk/status`,
-        { complaint_ids: [...selected], status: bulkStatus },
-        { headers: { Authorization: `Bearer ${user.access_token}`, 'Content-Type': 'application/json' } }
+        { complaint_ids: [...selected], status: bulkStatus }
       );
       setSelected(new Set()); setBulkModal(null); fetchAllComplaints();
     } catch (err) {
@@ -231,8 +210,7 @@ const AdminDashboard = () => {
     if (!selected.size || !bulkDept) return;
     try {
       await axios.post(`${API_BASE_URL}/complaints/bulk/transfer`,
-        { complaint_ids: [...selected], new_department: bulkDept, reason: bulkReason || undefined },
-        { headers: { Authorization: `Bearer ${user.access_token}`, 'Content-Type': 'application/json' } }
+        { complaint_ids: [...selected], new_department: bulkDept, reason: bulkReason || undefined }
       );
       setSelected(new Set()); setBulkModal(null); setBulkReason(''); fetchAllComplaints();
     } catch (err) {
@@ -247,7 +225,6 @@ const AdminDashboard = () => {
       if (statusFilter !== 'all') params.status = statusFilter;
       if (departmentFilter !== 'all') params.department = departmentFilter;
       const r = await axios.get(`${API_BASE_URL}/complaints/export/csv`, {
-        headers: { Authorization: `Bearer ${user.access_token}` },
         params,
         responseType: 'blob',
       });
@@ -280,13 +257,7 @@ const AdminDashboard = () => {
     try {
       await axios.patch(
         `${API_BASE_URL}/complaints/${complaintId}/transfer`,
-        { new_department: panel.dept, reason: panel.reason || undefined },
-        {
-          headers: {
-            Authorization: `Bearer ${user.access_token}`,
-            'Content-Type': 'application/json'
-          }
-        }
+        { new_department: panel.dept, reason: panel.reason || undefined }
       );
       closeTransferPanel(complaintId);
       fetchAllComplaints();
@@ -477,7 +448,7 @@ const AdminDashboard = () => {
                             {w.worker_status === 'offline' ? (
                               <span className="text-xs text-gray-400">Worker offline</span>
                             ) : assignPanel[w._id] !== undefined ? (
-                              <div className="flex flex-col gap-1.5 min-w-[200px]">
+                              <div className="flex flex-col gap-1.5 min-w-50">
                                 <select
                                   value={assignPanel[w._id]}
                                   onChange={e => setAssignPanel(prev => ({ ...prev, [w._id]: e.target.value }))}
@@ -658,7 +629,9 @@ const AdminDashboard = () => {
             )}
           </div>
           <ul className="divide-y divide-gray-200">
-            {complaints.map((complaint) => (
+            {complaints.map((complaint) => {
+              const complaintImageUrl = toImageUrl(complaint.image_url);
+              return (
               <li key={complaint._id} className="hover:bg-gray-50">
                 <div className="px-4 sm:px-6 py-4">
                   <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
@@ -814,20 +787,21 @@ const AdminDashboard = () => {
                         )}
                       </div>
                     </div>
-                    {complaint.image_url && (
+                    {complaintImageUrl && (
                       <div className="ml-4">
                         <img
-                          src={`${STATIC_BASE_URL}/${complaint.image_url.replace(/^\//,'')}`}
+                          src={complaintImageUrl}
                           alt="Complaint"
                           className="h-32 w-32 object-cover rounded cursor-pointer"
-                          onClick={() => window.open(`${STATIC_BASE_URL}/${complaint.image_url.replace(/^\//,'')}`, '_blank')}
+                          onClick={() => window.open(complaintImageUrl, '_blank')}
                         />
                       </div>
                     )}
                   </div>
                 </div>
               </li>
-            ))}
+            );
+            })}
           </ul>
         </div>
       )}

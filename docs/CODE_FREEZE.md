@@ -33,3 +33,4 @@ This repository is now in code-freeze mode for release readiness.
 - Frontend: cd frontend && npm run lint && npm run build
 - Security: scripts/run_security_test.bat (Windows) or bash scripts/run_security_test.sh
 - Resilience: scripts/run_resilience_test.bat (Windows) or bash scripts/run_resilience_test.sh
+- Integration smoke: scripts/run_cookie_smoke_test.bat (Windows) or bash scripts/run_cookie_smoke_test.sh

@@ -306,7 +306,7 @@ Conventional grievance systems rely on manual categorization and text-heavy comp
 
 ### 3.5 Non-Functional Requirements
 
-- Security: RBAC, JWT, sanitization, upload checks.
+- Security: RBAC, cookie-session auth (with JWT compatibility), sanitization, upload checks.
 - Reliability: graceful fallback and readiness probes.
 - Performance: acceptable response behavior under load.
 
@@ -325,7 +325,7 @@ Role-gated routes and responsive layouts must remain consistent across dashboard
 
 #### 3.7.2 Communication Interface
 
-REST endpoints over HTTP(S), JWT-based auth, and proxied API routing in production.
+REST endpoints over HTTP(S), cookie-first auth with JWT compatibility, and proxied API routing in production.
 
 #### 3.7.3 Hardware Interface
 

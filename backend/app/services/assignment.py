@@ -46,7 +46,7 @@ def _haversine_km(lat1: float, lon1: float, lat2: float, lon2: float) -> float:
 MAX_ACTIVE_TASKS = 5  # hard cap per worker
 
 
-async def _do_assign(db, worker: dict, complaint_id: str) -> None:
+async def _do_assign(db, worker: dict, complaint_id: str) -> bool:
     """Atomically assign a complaint to a worker, enforcing MAX_ACTIVE_TASKS.
 
     Uses a conditional filter on the worker update so the write is a no-op
@@ -78,7 +78,7 @@ async def _do_assign(db, worker: dict, complaint_id: str) -> None:
             worker_id,
             MAX_ACTIVE_TASKS,
         )
-        return
+        return False
 
     await db["complaints"].update_one(
         {"_id": ObjectId(complaint_id)},
@@ -105,6 +105,7 @@ async def _do_assign(db, worker: dict, complaint_id: str) -> None:
         worker_id,
         ComplaintStatus.IN_PROGRESS,
     )
+    return True
 
 
 async def auto_assign(
@@ -153,8 +154,10 @@ async def auto_assign(
     candidates.sort(key=lambda w: len(w.get("active_complaint_ids", [])))
     best = candidates[0]
 
-    await _do_assign(db, best, complaint_id)
-    return str(best["_id"])
+    assigned = await _do_assign(db, best, complaint_id)
+    if assigned:
+        return str(best["_id"])
+    return None
 
 
 async def free_worker_slot(worker_id: str, complaint_id: str, db) -> None:
@@ -230,11 +233,12 @@ async def free_worker_slot(worker_id: str, complaint_id: str, db) -> None:
                     if dist > sa.get("radius_km", 5.0):
                         continue
             # Assign the first matching complaint and stop
-            await _do_assign(db, refreshed, cid)
-            logger.info(
-                "Re-assigned complaint %s to freed worker %s (%s)",
-                cid,
-                refreshed.get("username"),
-                worker_id,
-            )
-            break  # at most ONE reassignment
+            reassigned = await _do_assign(db, refreshed, cid)
+            if reassigned:
+                logger.info(
+                    "Re-assigned complaint %s to freed worker %s (%s)",
+                    cid,
+                    refreshed.get("username"),
+                    worker_id,
+                )
+                break  # at most ONE reassignment

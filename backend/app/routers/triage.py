@@ -84,17 +84,19 @@ async def submit_review_decision(payload: ReviewDecision, current_user: dict = D
     if payload.corrected_label:
         update["department"] = payload.corrected_label
 
-    try:
-        await db["complaints"].update_one(
-            {"$or": [
-                {"_id": ObjectId(payload.image)},
-                {"image_url": payload.image},
-            ]},
-            {"$set": update},
-        )
-    except Exception:
-        # fallback: image field might be a path string not an ObjectId
-        pass
+    filters = [{"image_url": payload.image}]
+    if ObjectId.is_valid(payload.image):
+        filters.insert(0, {"_id": ObjectId(payload.image)})
+
+    updated_any = False
+    for flt in filters:
+        result = await db["complaints"].update_one(flt, {"$set": update})
+        if result.matched_count > 0:
+            updated_any = True
+            break
+
+    if not updated_any:
+        raise HTTPException(status_code=404, detail="Complaint not found for supplied image/id")
 
     # Also persist to CSV for audit trail
     if pd is not None:
@@ -113,4 +115,4 @@ async def submit_review_decision(payload: ReviewDecision, current_user: dict = D
         else:
             pd.DataFrame([row]).to_csv(REVIEW_DECISIONS_CSV, index=False)
 
-    return {"message": "Decision saved"}
+    return {"message": "Decision saved", "updated": True}

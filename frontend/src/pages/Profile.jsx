@@ -23,14 +23,12 @@ export default function Profile() {
   });
 
   const fetchData = async () => {
-    if (!user?.access_token) return;
+    if (!user) return;
     try {
       setLoading(true);
-      const headers = { Authorization: `Bearer ${user.access_token}` };
-
       const [profileRes, complaintsRes] = await Promise.all([
-        fetch(`${API}/users/me`, { headers }),
-        fetch(`${API}/complaints`, { headers }),
+        fetch(`${API}/users/me`),
+        fetch(`${API}/complaints`),
       ]);
 
       if (profileRes.ok) {
@@ -62,14 +60,13 @@ export default function Profile() {
   }, [profile]);
 
   const saveProfile = async () => {
-    if (!user?.access_token) return;
+    if (!user) return;
     setSavingProfile(true);
     setProfileMessage(null);
     try {
       const response = await fetch(`${API}/users/me`, {
         method: 'PATCH',
         headers: {
-          Authorization: `Bearer ${user.access_token}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({

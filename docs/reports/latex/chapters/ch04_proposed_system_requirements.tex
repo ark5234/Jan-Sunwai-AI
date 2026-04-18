@@ -22,7 +22,7 @@ The proposed system is organized as cooperating modules so that each operational
 
 \subsection{Authentication and User Management Module}
 
-This module handles registration, login, session identity, profile updates, and password recovery. It enforces role-oriented authorization for citizen, worker, department head, and admin personas. Key controls include JWT token issuance, role checks, and reset-token hashing.
+This module handles registration, login, session identity, profile updates, and password recovery. It enforces role-oriented authorization for citizen, worker, department head, and admin personas. Key controls include secure cookie-session issuance, role checks, JWT compatibility for API clients, and reset-token hashing.
 
 \subsection{Analyze and Complaint Intake Module}
 
@@ -127,7 +127,7 @@ The points below highlight the most important considerations that define this su
 \textbf{Requirement Group} & \textbf{Primary Module} & \textbf{Realization Mechanism} \\ \hline
 \midrule
 \endhead
-Registration and Login & Auth and User Management & Register/login routes, JWT issuance, profile update API, password reset token lifecycle \\ \hline
+Registration and Login & Auth and User Management & Register/login routes, cookie-session issuance, JWT compatibility mode, profile update API, password reset token lifecycle \\ \hline
 AI Classification and Drafting & Analyze Module + LLM Queue & Vision model cascade, rule engine scoring, optional reasoning, queued generation polling \\ \hline
 Lifecycle and Tracking & Complaint Lifecycle Module & CRUD plus status, transfer, escalate, feedback, notes, comments, status history \\ \hline
 Worker Operations & Assignment and Worker Module & Eligibility filter, geospatial check, load balancing, worker completion flow \\ \hline

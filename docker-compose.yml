@@ -35,8 +35,8 @@ services:
     env_file:
       - ./backend/.env
     environment:
-      - APP_ENV=${APP_ENV:-development}
-      - RATE_LIMIT_ENABLED=${RATE_LIMIT_ENABLED:-false}
+      - APP_ENV=${APP_ENV:-production}
+      - RATE_LIMIT_ENABLED=${RATE_LIMIT_ENABLED:-true}
       - MONGODB_URL=${MONGODB_URL:-mongodb://mongodb:27017/jan_sunwai_db}
       - MONGO_URL=${MONGO_URL:-mongodb://mongodb:27017/jan_sunwai_db}
       - DB_NAME=${DB_NAME:-jan_sunwai_db}

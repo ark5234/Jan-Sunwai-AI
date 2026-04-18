@@ -77,11 +77,7 @@ export default function AnalyticsDashboard() {
   }, []);
 
   const handleExport = () => {
-    // Opens CSV download in a new tab — browser handles the download
-    const raw = localStorage.getItem("jan_sunwai_user");
-    const token = raw ? JSON.parse(raw).access_token : "";
-    // Use a form POST trick to pass auth header, or direct link with token param
-    // Since our API uses Authorization header (not cookie), we fetch and create blob
+    // Export uses the shared axios instance, which sends auth cookies automatically.
     api
       .get("/complaints/export/csv", { responseType: "blob" })
       .then((r) => {

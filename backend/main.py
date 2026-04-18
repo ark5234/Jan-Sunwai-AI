@@ -57,6 +57,13 @@ async def lifespan(app: FastAPI):
                 "JWT_SECRET_KEY is too weak or is a placeholder. "
                 "Generate a secure key: python -c \"import secrets; print(secrets.token_hex(64))\""
             )
+        if not settings.enable_rate_limiting:
+            raise RuntimeError("RATE_LIMIT_ENABLED must be true in production")
+        if not RATE_LIMITING_AVAILABLE:
+            raise RuntimeError(
+                "Rate limiting is required in production but slowapi is unavailable. "
+                "Install slowapi and restart."
+            )
 
     await connect_to_mongo()
     await llm_queue_service.start()
@@ -118,14 +125,15 @@ async def add_process_time_header(request: Request, call_next):
 @app.middleware("http")
 async def add_security_headers(request: Request, call_next):
     response = await call_next(request)
+    img_connect_sources = "https:" if settings.is_production else "https: http:"
     response.headers["X-Content-Type-Options"] = "nosniff"
     response.headers["X-Frame-Options"] = "DENY"
     response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
     response.headers["Permissions-Policy"] = "geolocation=(), microphone=(), camera=()"
     response.headers["Content-Security-Policy"] = (
         "default-src 'self'; "
-        "img-src 'self' data: blob: https: http:; "
-        "connect-src 'self' https: http:; "
+        f"img-src 'self' data: blob: {img_connect_sources}; "
+        f"connect-src 'self' {img_connect_sources}; "
         # BL-05: 'unsafe-inline' kept for now — nonce-based CSP is a Phase 4 item
         "style-src 'self' 'unsafe-inline'; "
         "script-src 'self'; "

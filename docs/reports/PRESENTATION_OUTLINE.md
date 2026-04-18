@@ -40,7 +40,7 @@
 
 ## Slide 7: Security and Reliability
 
-- JWT and RBAC
+- Cookie-session auth (httpOnly) + JWT compatibility + RBAC
 - Upload validation and sanitization
 - Rate limiting and graceful degradation
 

@@ -1,10 +1,13 @@
 import asyncio
 import csv
 import io
+import logging
 import time
+from pathlib import Path
 
 from fastapi import APIRouter, File, Form, UploadFile, HTTPException, Body, Depends, Request
 from fastapi.responses import StreamingResponse, JSONResponse
+from jose import JWTError, jwt
 from app.classifier import CivicClassifier
 from app.geotagging import extract_location
 from app.database import get_database
@@ -33,6 +36,7 @@ from app.services.priority import compute_priority
 from app.services.assignment import auto_assign, free_worker_slot
 from app.services.sanitization import sanitize_text
 from app.services.email_service import send_status_update_email
+from app.category_utils import canonicalize_label
 from app.rate_limiter import limiter
 from PIL import Image
 from datetime import datetime, timedelta, timezone
@@ -40,12 +44,61 @@ from bson import ObjectId
 
 router = APIRouter()
 classifier = CivicClassifier()
+logger = logging.getLogger("JanSunwaiAI.complaints")
+
+ANALYSIS_TOKEN_TTL_MINUTES = 30
 
 # Helper to fix ObjectId serialization
 def fix_id(doc):
     if doc and "_id" in doc:
         doc["_id"] = str(doc["_id"])
     return doc
+
+
+def _build_analysis_token(*, user_id: str, image_url: str) -> str:
+    payload = {
+        "type": "analysis_bind",
+        "sub": user_id,
+        "img": image_url,
+        "exp": datetime.now(timezone.utc) + timedelta(minutes=ANALYSIS_TOKEN_TTL_MINUTES),
+    }
+    return jwt.encode(payload, settings.jwt_secret_key, algorithm=settings.jwt_algorithm)
+
+
+def _verify_analysis_token(token: str, *, user_id: str, image_url: str) -> bool:
+    try:
+        payload = jwt.decode(token, settings.jwt_secret_key, algorithms=[settings.jwt_algorithm])
+    except JWTError:
+        return False
+    return (
+        payload.get("type") == "analysis_bind"
+        and payload.get("sub") == user_id
+        and payload.get("img") == image_url
+    )
+
+
+def _public_generation_payload(result: dict | None) -> dict | None:
+    if not result:
+        return None
+    return {k: v for k, v in result.items() if k != "owner_id"}
+
+
+def _assert_complaint_access(current_user: dict, complaint: dict) -> None:
+    role = current_user.get("role")
+    user_id = str(current_user.get("_id"))
+
+    if role == UserRole.ADMIN:
+        return
+    if role == UserRole.CITIZEN and complaint.get("user_id") == user_id:
+        return
+    if role == UserRole.WORKER and complaint.get("assigned_to") == user_id:
+        return
+    if role == UserRole.DEPT_HEAD:
+        user_dept = current_user.get("department")
+        if user_dept and complaint.get("department") == user_dept:
+            return
+
+    raise HTTPException(status_code=403, detail="You are not allowed to access this complaint")
 
 
 def _normalize_optional_user_grievance(text: str) -> str:
@@ -94,7 +147,7 @@ async def await_generation(job_id: str, timeout_seconds: float) -> dict:
     elapsed = 0.0
     sleep_interval = 0.2
     while elapsed < timeout_seconds:
-        result = llm_queue_service.get_result(job_id)
+        result = await llm_queue_service.get_result_async(job_id)
         if result and result.get("status") in ["completed", "failed"]:
             return result
         await asyncio.sleep(sleep_interval)
@@ -112,10 +165,12 @@ async def analyze_complaint(
 ):
     analyze_start = time.perf_counter()
     username = current_user["username"]
+    user_id = str(current_user["_id"])
     normalized_user_grievance = _normalize_optional_user_grievance(user_grievance_text)
 
     # 1. Save file and resolve absolute path
     file_path = await storage_service.save_file(file)
+    analysis_token = _build_analysis_token(user_id=user_id, image_url=file_path)
     absolute_file_path = storage_service.resolve_path(file_path)
 
     # 2. Classify — offload sync model inference so the event loop stays responsive
@@ -128,7 +183,8 @@ async def analyze_complaint(
             status_code=503,
             content={
                 "message": "AI analysis unavailable — please try again in a few minutes.",
-                "details": classification.get("error", "Model pipeline unavailable"),
+                "details": "Model pipeline unavailable",
+                "error_code": "MODEL_PIPELINE_UNAVAILABLE",
                 "retryable": True,
             },
         )
@@ -161,7 +217,11 @@ async def analyze_complaint(
         job_id = await llm_queue_service.enqueue(
             absolute_file_path,
             classification,
-            {"name": username, "reported_issue_text": normalized_user_grievance},
+            {
+                "name": username,
+                "user_id": user_id,
+                "reported_issue_text": normalized_user_grievance,
+            },
             location,
             language,
         )
@@ -196,6 +256,7 @@ async def analyze_complaint(
         "generated_complaint": generated_text,
         "generation_status": generation_status,
         "generation_job_id": job_id,
+        "analysis_token": analysis_token,
         "user_grievance_text": normalized_user_grievance,
         "image_url": file_path, # Return the path so frontend can pass it to /complaints
         "timings": {
@@ -209,10 +270,17 @@ async def analyze_complaint(
 
 @router.get("/complaints/generation/{job_id}")
 async def get_generation_result(job_id: str, current_user: dict = Depends(get_current_user)):
-    result = llm_queue_service.get_result(job_id)
+    result = await llm_queue_service.get_result_async(job_id, include_private=True)
     if not result:
         raise HTTPException(status_code=404, detail="Generation job not found")
-    return result
+
+    current_user_id = str(current_user.get("_id"))
+    role = current_user.get("role")
+    owner_id = str(result.get("owner_id") or "")
+    if role != UserRole.ADMIN and (not owner_id or owner_id != current_user_id):
+        raise HTTPException(status_code=403, detail="You are not allowed to view this generation job")
+
+    return _public_generation_payload(result)
 
 
 @router.post("/analyze/regenerate")
@@ -226,6 +294,7 @@ async def regenerate_complaint(
     Returns:  { job_id, status } — poll /complaints/generation/{job_id}
     """
     username = current_user["username"]
+    user_id = str(current_user["_id"])
     classification = payload.get("classification", {})
     location       = payload.get("location", {})
     image_url      = payload.get("image_url", "")
@@ -244,11 +313,20 @@ async def regenerate_complaint(
     job_id = await llm_queue_service.enqueue(
         absolute_file_path,
         classification,
-        {"name": username, "reported_issue_text": user_hint},
+        {
+            "name": username,
+            "user_id": user_id,
+            "reported_issue_text": user_hint,
+        },
         location,
         language,
     )
-    return {"job_id": job_id, "status": "queued", "classification": classification}
+    return {
+        "job_id": job_id,
+        "status": "queued",
+        "classification": classification,
+        "analysis_token": _build_analysis_token(user_id=user_id, image_url=image_url),
+    }
 
 
 
@@ -263,6 +341,23 @@ async def create_complaint(
     
     # 2. Prepare Data
     complaint_dict = complaint.model_dump()
+    analysis_token = str(complaint_dict.pop("analysis_token", "") or "").strip()
+
+    # Validate image path from untrusted payload before persisting anything.
+    raw_image_url = str(complaint_dict.get("image_url", "") or "").strip()
+    if not raw_image_url:
+        raise HTTPException(status_code=400, detail="Missing image_url in complaint payload")
+
+    if settings.is_production and not analysis_token:
+        raise HTTPException(status_code=400, detail="analysis_token is required")
+    if analysis_token and not _verify_analysis_token(analysis_token, user_id=user_id, image_url=raw_image_url):
+        raise HTTPException(status_code=400, detail="Invalid or expired analysis token")
+
+    resolved_image_path = storage_service.resolve_path(raw_image_url)
+    if not Path(resolved_image_path).exists():
+        raise HTTPException(status_code=400, detail="Referenced uploaded image was not found")
+    complaint_dict["image_url"] = f"uploads/{Path(resolved_image_path).name}"
+
     complaint_dict["description"] = sanitize_text(complaint_dict.get("description", ""), max_len=3000)
     if complaint_dict.get("user_grievance_text"):
         complaint_dict["user_grievance_text"] = sanitize_text(
@@ -279,7 +374,9 @@ async def create_complaint(
             max_len=300,
         )
     
-    resolved_department = complaint_dict.get("department") or complaint.department
+    resolved_department = canonicalize_label(
+        str(complaint_dict.get("department") or complaint.department or "")
+    )
     user_text_result = None
 
     if complaint_dict.get("user_grievance_text"):
@@ -288,19 +385,39 @@ async def create_complaint(
             complaint_dict.get("user_grievance_text", ""),
         )
         if bool(user_text_result.get("is_valid", False)):
-            resolved_department = str(user_text_result.get("department") or resolved_department)
+            resolved_department = canonicalize_label(
+                str(user_text_result.get("department") or resolved_department)
+            )
 
     complaint_dict["department"] = resolved_department
 
-    if isinstance(complaint_dict.get("ai_metadata"), dict):
-        complaint_dict["ai_metadata"]["detected_department"] = resolved_department
-        if user_text_result and bool(user_text_result.get("is_valid", False)):
-            try:
-                existing_conf = float(complaint_dict["ai_metadata"].get("confidence_score", 0.0) or 0.0)
-                user_conf = float(user_text_result.get("confidence", 0.0) or 0.0)
-                complaint_dict["ai_metadata"]["confidence_score"] = max(existing_conf, user_conf)
-            except Exception:
-                pass
+    incoming_ai = complaint_dict.get("ai_metadata") if isinstance(complaint_dict.get("ai_metadata"), dict) else {}
+    safe_labels: list[str] = []
+    for label in incoming_ai.get("labels", []):
+        clean_label = sanitize_text(str(label), max_len=80).strip()
+        if clean_label:
+            safe_labels.append(clean_label)
+        if len(safe_labels) >= 8:
+            break
+
+    try:
+        existing_conf = float(incoming_ai.get("confidence_score", 0.0) or 0.0)
+    except (TypeError, ValueError):
+        existing_conf = 0.0
+
+    if user_text_result and bool(user_text_result.get("is_valid", False)):
+        try:
+            user_conf = float(user_text_result.get("confidence", 0.0) or 0.0)
+            existing_conf = max(existing_conf, user_conf)
+        except (TypeError, ValueError):
+            pass
+
+    complaint_dict["ai_metadata"] = {
+        "model_used": sanitize_text(str(incoming_ai.get("model_used") or "ollama"), max_len=120),
+        "confidence_score": max(0.0, min(existing_conf, 1.0)),
+        "detected_department": resolved_department,
+        "labels": safe_labels or [resolved_department],
+    }
 
     # Resolve Authority routing metadata
     routing = route_authority(resolved_department)
@@ -327,7 +444,15 @@ async def create_complaint(
     }
     location_val = complaint_dict.get("location")
     if location_val:
-        dup_query["location"] = location_val
+        try:
+            lat = float(location_val.get("lat"))
+            lon = float(location_val.get("lon"))
+            tolerance = 0.0008  # approx ~90m latitude; good practical duplicate radius
+            dup_query["location.lat"] = {"$gte": lat - tolerance, "$lte": lat + tolerance}
+            dup_query["location.lon"] = {"$gte": lon - tolerance, "$lte": lon + tolerance}
+        except (TypeError, ValueError):
+            if location_val.get("address"):
+                dup_query["location.address"] = location_val.get("address")
     duplicate = await db["complaints"].find_one(dup_query)
     is_duplicate = bool(duplicate)
 
@@ -514,17 +639,7 @@ async def get_complaint(
     if not doc:
         raise HTTPException(status_code=404, detail="Complaint not found")
 
-    # C-04: Role-based ownership check — citizens can only read their own complaints
-    role = current_user.get("role")
-    user_id = str(current_user["_id"])
-    if role == UserRole.CITIZEN and doc.get("user_id") != user_id:
-        raise HTTPException(status_code=403, detail="Not your complaint")
-    elif role == UserRole.WORKER and doc.get("assigned_to") != user_id:
-        raise HTTPException(status_code=403, detail="Not your assigned complaint")
-    elif role == UserRole.DEPT_HEAD:
-        user_dept = current_user.get("department")
-        if not user_dept or doc.get("department") != user_dept:
-            raise HTTPException(status_code=403, detail="Complaint is not in your department")
+    _assert_complaint_access(current_user, doc)
 
     return fix_id(doc)
 
@@ -738,10 +853,7 @@ async def add_dept_note(
     if not complaint:
         raise HTTPException(status_code=404, detail="Complaint not found")
 
-    if current_user.get("role") == UserRole.DEPT_HEAD:
-        user_dept = current_user.get("department")
-        if not user_dept or complaint.get("department") != user_dept:
-            raise HTTPException(status_code=403, detail="Cannot add notes to complaints outside your department")
+    _assert_complaint_access(current_user, complaint)
 
     note_doc = {
         "note": sanitize_text(payload.note, max_len=1000),
@@ -767,10 +879,12 @@ async def get_dept_notes(
     db = get_database()
     complaint = await db["complaints"].find_one(
         {"_id": ObjectId(complaint_id)},
-        {"dept_notes": 1},
+        {"dept_notes": 1, "department": 1, "user_id": 1, "assigned_to": 1},
     )
     if not complaint:
         raise HTTPException(status_code=404, detail="Complaint not found")
+
+    _assert_complaint_access(current_user, complaint)
 
     return complaint.get("dept_notes", [])
 
@@ -793,15 +907,13 @@ async def add_comment(
     if not complaint:
         raise HTTPException(status_code=404, detail="Complaint not found")
 
-    role = current_user.get("role")
-    if role == UserRole.CITIZEN and complaint.get("user_id") != str(current_user["_id"]):
-        raise HTTPException(status_code=403, detail="Not your complaint")
+    _assert_complaint_access(current_user, complaint)
 
     comment_doc = {
         "text": sanitize_text(payload.text, max_len=1000),
         "author_id": str(current_user["_id"]),
         "author_name": current_user.get("username"),
-        "author_role": role,
+        "author_role": current_user.get("role"),
         "created_at": datetime.now(timezone.utc),
     }
     await db["complaints"].update_one(
@@ -827,9 +939,7 @@ async def get_comments(
     if not complaint:
         raise HTTPException(status_code=404, detail="Complaint not found")
 
-    role = current_user.get("role")
-    if role == UserRole.CITIZEN and complaint.get("user_id") != str(current_user["_id"]):
-        raise HTTPException(status_code=403, detail="Not your complaint")
+    _assert_complaint_access(current_user, complaint)
 
     return complaint.get("comments", [])
 

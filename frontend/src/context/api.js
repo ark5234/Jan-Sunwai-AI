@@ -1,11 +1,14 @@
 /**
  * Shared axios instance for new components/pages.
- * Automatically injects the JWT token from localStorage.
+ * Uses secure cookie-based auth transport with credentials included.
  */
 import axios from "axios";
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8000/api/v1";
-const api = axios.create({ baseURL: API_BASE_URL });
+
+// Ensure every axios call in the app includes cookies for auth.
+axios.defaults.withCredentials = true;
+const api = axios.create({ baseURL: API_BASE_URL, withCredentials: true });
 
 let global401InterceptorInstalled = false;
 
@@ -21,11 +24,10 @@ function isAuthEndpoint(url = "") {
 }
 
 function clearSessionAndRedirectToLogin() {
-  try {
-    localStorage.removeItem("jan_sunwai_user");
-  } catch {
-    // no-op in edge cases
-  }
+  // Attempt backend logout so cookie is cleared server-side too.
+  fetch(`${API_BASE_URL}/users/logout`, { method: "POST", credentials: "include" }).catch(() => {
+    // no-op
+  });
 
   const currentPath = window.location.pathname || "";
   const isAlreadyOnAuthPage = ["/login", "/register", "/forgot-password", "/reset-password"].some(
@@ -55,18 +57,5 @@ export function installGlobalAxios401Interceptor() {
 
   global401InterceptorInstalled = true;
 }
-
-api.interceptors.request.use((config) => {
-  try {
-    const raw = localStorage.getItem("jan_sunwai_user");
-    if (raw) {
-      const { access_token } = JSON.parse(raw);
-      if (access_token) config.headers.Authorization = `Bearer ${access_token}`;
-    }
-  } catch (_) {
-    // ignore parse errors
-  }
-  return config;
-});
 
 export default api;

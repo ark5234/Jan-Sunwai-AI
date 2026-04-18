@@ -36,7 +36,7 @@ export default function Analyze() {
     await analyzeImage(selectedImage, user.username, language, userGrievanceText);
   };
 
-  if (!user || !user.access_token) {
+  if (!user) {
       return (
           <div className="max-w-md mx-auto mt-20 text-center px-4">
               <div className="bg-amber-50 border border-amber-200 rounded-lg p-6">

@@ -12,8 +12,10 @@ Every major router is exposed both unversioned and under `/api/v1`.
 
 ## Authentication Model
 
-- Auth scheme: Bearer JWT
+- Auth scheme: httpOnly cookie session (primary) with Bearer JWT compatibility (fallback).
 - Login endpoint uses OAuth2 password form fields (`username`, `password`).
+- Login sets `js_access_token` cookie; API clients may still send `Authorization: Bearer <jwt>`.
+- Logout endpoint clears the auth cookie.
 - Self-registration is allowed for:
   - `citizen`
   - `worker` (pending admin approval)
@@ -36,10 +38,11 @@ flowchart LR
     direction TB
     U["/users"] --> U1["POST /users/register"]
     U --> U2["POST /users/login"]
-    U --> U3["GET /users/me"]
-    U --> U4["PATCH /users/me"]
-    U --> U5["POST /users/forgot-password"]
-    U --> U6["POST /users/reset-password"]
+    U --> U3["POST /users/logout"]
+    U --> U4["GET /users/me"]
+    U --> U5["PATCH /users/me"]
+    U --> U6["POST /users/forgot-password"]
+    U --> U7["POST /users/reset-password"]
   end
 
   subgraph Analyze
@@ -116,6 +119,7 @@ flowchart LR
 | --- | --- | --- | --- |
 | `POST` | `/users/register` | No | Registers `citizen` or `worker` only |
 | `POST` | `/users/login` | No | OAuth2 form login |
+| `POST` | `/users/logout` | No | Clears auth cookie if present |
 | `GET` | `/users/me` | Yes | Returns current user profile |
 | `PATCH` | `/users/me` | Yes | Updates `full_name` and/or `phone_number` |
 | `POST` | `/users/forgot-password` | No | Always generic response; no account enumeration |
@@ -133,7 +137,7 @@ flowchart LR
 
 | Method | Endpoint | Auth | Notes |
 | --- | --- | --- | --- |
-| `POST` | `/complaints` | Yes | Creates complaint from analyzed payload |
+| `POST` | `/complaints` | Yes | Creates complaint from analyzed payload (supports `analysis_token`) |
 | `GET` | `/complaints` | Yes | Role-filtered listing |
 | `GET` | `/complaints/{complaint_id}` | Yes | Complaint details |
 | `PATCH` | `/complaints/{complaint_id}/status` | Admin/Dept Head | Appends `status_history` and triggers notification/email |
@@ -207,11 +211,26 @@ username=<your_username>&password=<your_password>
 
 ```http
 POST /analyze
-Authorization: Bearer <jwt>
 Content-Type: multipart/form-data
 
 file=<image>
 language=en
+```
+
+### Authentication Usage
+
+Browser clients should use the cookie session set by `/users/login`.
+
+```http
+GET /complaints
+Cookie: js_access_token=<jwt>
+```
+
+API clients can still use the compatibility bearer header:
+
+```http
+GET /complaints
+Authorization: Bearer <jwt>
 ```
 
 ### Create Complaint
@@ -232,7 +251,8 @@ language=en
     "confidence_score": 0.88,
     "detected_department": "Electrical Department",
     "labels": ["street light", "dark road"]
-  }
+  },
+  "analysis_token": "<optional-analysis-bind-token>"
 }
 ```
 
@@ -241,7 +261,7 @@ language=en
 ```json
 {
   "image": "<complaint_id_or_image_path>",
-  "decision": "approved",
+  "decision": "approve",
   "corrected_label": "Civil Department",
   "note": "Manual override after review"
 }
@@ -256,6 +276,7 @@ language=en
 - `generated_complaint`: drafted text, queued placeholder, or fallback text
 - `generation_status`: `completed`, `queued`, `failed`, or `skipped`
 - `generation_job_id`: poll key for queued generation
+- `analysis_token`: binding token for secure `/complaints` creation flow
 - `timings`: `vision_ms`, `rule_engine_ms`, `reasoning_ms`, `total_analyze_ms`
 
 ## Error Semantics
@@ -277,5 +298,6 @@ language=en
 - In production Docker builds, override via `--build-arg VITE_API_URL=/api/v1` (relative URL, routed through nginx).
 - Nginx must proxy `/api/*` to the backend service AND serve `/uploads/*` from the backend static mount.
 - Static uploaded images are served at `/uploads/<filename>` — **not** under `/api/v1`.
+- New browser integrations should rely on cookie auth; bearer headers are compatibility-only.
 - Worker registration does not auto-login; worker must be approved by admin first.
 - Bold markers (`**text**`) in generated complaint emails are rendered by `FormattedComplaintText.jsx` as `<strong>` for all supported languages including translated output.

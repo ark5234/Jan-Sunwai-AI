@@ -120,7 +120,7 @@ The project includes cross-cutting dependencies that were managed explicitly:
 \begin{itemize}
 \item Backend depends on MongoDB availability and correctly configured environment variables.
 \item Analyze flow depends on file storage service and Ollama runtime health.
-\item Frontend route behavior depends on JWT session state and role claims.
+\item Frontend route behavior depends on cookie-session state and role claims.
 \item Assignment quality depends on worker profile completeness (department, approval, service area, status).
 \item Production readiness depends on compose health checks, proxy alignment, and secure secret configuration.
 \end{itemize}
@@ -184,7 +184,7 @@ A11 & Final documentation and submission & A10 \\ \hline
 Model unavailability or timeout & Medium & High & Multi-tier vision fallback, queue-based generation, retryable 503 responses \\ \hline
 Wrong department classification & Medium & High & Deterministic rule engine, triage queue, admin correction workflow \\ \hline
 Invalid/malicious uploads & Medium & High & Extension + MIME + magic number + image decode validation, max size enforcement \\ \hline
-Unauthorized route access & Low & High & JWT auth, role-gated dependencies, integration tests for permission boundaries \\ \hline
+Unauthorized route access & Low & High & Cookie-session auth (JWT compatibility), role-gated dependencies, integration tests for permission boundaries \\ \hline
 Configuration drift across environments & Medium & Medium & Unified backend environment strategy and scripted deployment checks \\ \hline
 Notification inconsistency & Low & Medium & Automated notification-chain tests and mark-all-read verification \\ \hline
 Performance degradation under load & Medium & Medium & Profiling, timing logs, load-testing matrix, controlled fallback behavior \\ \hline

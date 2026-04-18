@@ -37,6 +37,19 @@ def _hash_reset_token(token: str) -> str:
     return hashlib.sha256(token.encode("utf-8")).hexdigest()
 
 
+def _build_auth_response_payload(*, access_token: str, username: str, role: str, department: str | None) -> dict:
+    payload = {
+        "token_type": "bearer",
+        "username": username,
+        "role": role,
+        "department": department,
+    }
+    # Compatibility switch: can be enabled temporarily for legacy clients.
+    if settings.return_access_token_in_response:
+        payload["access_token"] = access_token
+    return payload
+
+
 @router.post("/register")
 @limiter.limit("5/minute")
 async def register_user(request: Request, user: UserCreate = Body(...)):
@@ -99,14 +112,12 @@ async def register_user(request: Request, user: UserCreate = Body(...)):
         expires_delta=access_token_expires
     )
 
-    # P4-E: Issue httpOnly cookie + return token in body (body kept for 3-month compat window)
-    response_body = {
-        "access_token": access_token,
-        "token_type": "bearer",
-        "username": created_user["username"],
-        "role": created_user.get("role", "citizen"),
-        "department": created_user.get("department")
-    }
+    response_body = _build_auth_response_payload(
+        access_token=access_token,
+        username=created_user["username"],
+        role=created_user.get("role", "citizen"),
+        department=created_user.get("department"),
+    )
     response = JSONResponse(content=response_body)
     set_auth_cookie(response, access_token)
     return response
@@ -131,14 +142,12 @@ async def login(
         expires_delta=access_token_expires
     )
     
-    # P4-E: Issue httpOnly cookie + return token in body (body kept for 3-month compat window)
-    response_body = {
-        "access_token": access_token,
-        "token_type": "bearer",
-        "username": user["username"],
-        "role": user.get("role", "citizen"),
-        "department": user.get("department")
-    }
+    response_body = _build_auth_response_payload(
+        access_token=access_token,
+        username=user["username"],
+        role=user.get("role", "citizen"),
+        department=user.get("department"),
+    )
     response = JSONResponse(content=response_body)
     set_auth_cookie(response, access_token)
     return response

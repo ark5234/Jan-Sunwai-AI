@@ -274,14 +274,6 @@ INPUT c:/texlive/2026/texmf-dist/fonts/tfm/public/newtx/ntx-Bold-tlf-t1.tfm
 INPUT c:/texlive/2026/texmf-dist/fonts/tfm/public/newtx/ntx-Bold-tlf-t1.tfm
 INPUT c:/texlive/2026/texmf-dist/fonts/tfm/public/newtx/ntx-Regular-tlf-t1.tfm
 INPUT c:/texlive/2026/texmf-dist/fonts/tfm/public/newtx/ntx-Bold-tlf-t1.tfm
-INPUT ./main.lof
-INPUT ./main.lof
-INPUT main.lof
-OUTPUT main.lof
-INPUT ./main.lot
-INPUT ./main.lot
-INPUT main.lot
-OUTPUT main.lot
 INPUT ./frontmatter/abbreviations.tex
 INPUT ./frontmatter/abbreviations.tex
 INPUT ./frontmatter/abbreviations.tex
@@ -353,6 +345,7 @@ INPUT ./chapters/ch04_proposed_system_requirements.tex
 INPUT ./chapters/ch04_proposed_system_requirements.tex
 INPUT ./chapters/ch04_proposed_system_requirements.tex
 INPUT chapters/ch04_proposed_system_requirements.tex
+INPUT c:/texlive/2026/texmf-dist/fonts/tfm/public/newtx/ntx-Regular-tlf-t1.tfm
 INPUT ./chapters/ch05_system_design.tex
 INPUT ./chapters/ch05_system_design.tex
 INPUT ./chapters/ch05_system_design.tex
@@ -469,7 +462,6 @@ INPUT ./chapters/ch07_testing.tex
 INPUT ./chapters/ch07_testing.tex
 INPUT ./chapters/ch07_testing.tex
 INPUT chapters/ch07_testing.tex
-INPUT c:/texlive/2026/texmf-dist/fonts/tfm/public/newtx/ntx-Regular-tlf-t1.tfm
 INPUT ./chapters/ch08_limitations_future_scope.tex
 INPUT ./chapters/ch08_limitations_future_scope.tex
 INPUT ./chapters/ch08_limitations_future_scope.tex

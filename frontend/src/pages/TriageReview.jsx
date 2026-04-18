@@ -11,13 +11,10 @@ const TriageReview = () => {
   const [error, setError] = useState(null);
 
   const fetchQueue = async () => {
+    if (!user) return;
     try {
       setLoading(true);
-      const response = await axios.get(`${API_BASE}/triage/review-queue`, {
-        headers: {
-          Authorization: `Bearer ${user.access_token}`
-        }
-      });
+      const response = await axios.get(`${API_BASE}/triage/review-queue`);
       setItems(response.data.items || []);
       setError(null);
     } catch (err) {
@@ -28,8 +25,8 @@ const TriageReview = () => {
   };
 
   useEffect(() => {
-    fetchQueue();
-  }, []);
+    if (user) fetchQueue();
+  }, [user]);
 
   const submitDecision = async (item, decision) => {
     try {
@@ -40,11 +37,6 @@ const TriageReview = () => {
           decision,
           corrected_label: item.final_label,
           note: 'Reviewed in admin panel'
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${user.access_token}`
-          }
         }
       );
       setItems(prev => prev.filter(row => (row.id || row.image) !== (item.id || item.image)));

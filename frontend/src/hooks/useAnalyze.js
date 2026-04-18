@@ -45,24 +45,6 @@ export default function useAnalyze() {
     setError(null);
     setUploadMetrics(null);
 
-    // Get Token
-    const storedUser = localStorage.getItem('jan_sunwai_user');
-    let token = null;
-    if (storedUser) {
-        try {
-            const parsed = JSON.parse(storedUser);
-            token = parsed.access_token;
-      } catch (_e) {
-        // Ignore malformed local session; handled as missing token below.
-        }
-    }
-
-    if (!token) {
-        setError("Session invalid or expired. Please log out and log back in to get a new token.");
-        setLoading(false);
-        return;
-    }
-
     let uploadFile = file;
     const preferredType = file.type && file.type.startsWith('image/') ? file.type : 'image/jpeg';
     try {
@@ -102,8 +84,8 @@ export default function useAnalyze() {
       const response = await axios.post(`${API_BASE_URL}/analyze`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
-          'Authorization': `Bearer ${token}`
         },
+        withCredentials: true,
       });
       
       // Success! Navigate to results page with data
@@ -111,9 +93,7 @@ export default function useAnalyze() {
       
     } catch (err) {
         if (err.response?.status === 401) {
-            setError("Session expired. Please log out and log back in.");
-            // Clear invalid session
-            localStorage.removeItem('jan_sunwai_user');
+            setError("Session expired. Please sign in again.");
         } else if (err.response?.status === 503) {
           setError(err.response?.data?.message || "AI analysis unavailable — please try again in a few minutes.");
         } else {

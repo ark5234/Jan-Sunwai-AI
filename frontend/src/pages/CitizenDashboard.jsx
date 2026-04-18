@@ -12,8 +12,16 @@ const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api/
 // Static files (uploads/) are served at the root — not under /api/v1
 const STATIC_BASE_URL = API_BASE_URL.replace(/\/api\/v1\/?$/, '').replace(/\/$/, '');
 
+const toImageUrl = (imagePath) => {
+  const raw = typeof imagePath === 'string' ? imagePath.trim() : '';
+  if (!raw) return '';
+  if (/^https?:\/\//i.test(raw) || raw.startsWith('data:')) return raw;
+  const cleanPath = raw.replace(/\\/g, '/').replace(/^\/+/, '');
+  return cleanPath ? `${STATIC_BASE_URL}/${encodeURI(cleanPath)}` : '';
+};
+
 // Inline star-rating feedback widget
-function FeedbackWidget({ complaintId, token, onSubmitted }) {
+function FeedbackWidget({ complaintId, onSubmitted }) {
   const [rating, setRating] = useState(0);
   const [hover, setHover] = useState(0);
   const [comment, setComment] = useState('');
@@ -26,8 +34,7 @@ function FeedbackWidget({ complaintId, token, onSubmitted }) {
     try {
       await axios.post(
         `${API_BASE_URL}/complaints/${complaintId}/feedback`,
-        { rating, comment: comment.trim() || undefined },
-        { headers: { Authorization: `Bearer ${token}` } }
+        { rating, comment: comment.trim() || undefined }
       );
       setDone(true);
       onSubmitted?.();
@@ -89,20 +96,16 @@ const CitizenDashboard = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    if (user?.access_token) {
+    if (user) {
       fetchMyComplaints();
     }
   }, [user]);
 
   const fetchMyComplaints = async () => {
-    if (!user?.access_token) return;
+    if (!user) return;
     try {
       setLoading(true);
-      const response = await axios.get(`${API_BASE_URL}/complaints`, {
-        headers: {
-          Authorization: `Bearer ${user.access_token}`
-        }
-      });
+      const response = await axios.get(`${API_BASE_URL}/complaints`);
       setComplaints(response.data);
       setError(null);
     } catch (err) {
@@ -235,7 +238,9 @@ const CitizenDashboard = () => {
       ) : (
         <div className="bg-white shadow overflow-hidden sm:rounded-lg">
           <ul className="divide-y divide-gray-200">
-            {complaints.map((complaint) => (
+            {complaints.map((complaint) => {
+              const complaintImageUrl = toImageUrl(complaint.image_url);
+              return (
               <li key={complaint._id} className="hover:bg-gray-50">
                 <div className="px-4 sm:px-6 py-4">
                   <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -293,7 +298,6 @@ const CitizenDashboard = () => {
                       {complaint.status === 'Resolved' && !complaint.feedback && (
                         <FeedbackWidget
                           complaintId={complaint._id}
-                          token={user.access_token}
                           onSubmitted={fetchMyComplaints}
                         />
                       )}
@@ -312,10 +316,10 @@ const CitizenDashboard = () => {
                       <StatusTimeline items={complaint.status_history || []} />
                       <ComplaintComments complaintId={complaint._id} currentRole="citizen" />
                     </div>
-                    {complaint.image_url && (
+                    {complaintImageUrl && (
                       <div className="sm:ml-4 shrink-0">
                         <img
-                          src={`${STATIC_BASE_URL}/${complaint.image_url.replace(/^\//,'')}`}
+                          src={complaintImageUrl}
                           alt="Complaint"
                           className="h-24 w-24 sm:h-20 sm:w-20 object-cover rounded"
                         />
@@ -324,7 +328,8 @@ const CitizenDashboard = () => {
                   </div>
                 </div>
               </li>
-            ))}
+            );
+            })}
           </ul>
         </div>
       )}

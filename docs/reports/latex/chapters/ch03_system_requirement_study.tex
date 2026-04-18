@@ -68,10 +68,10 @@ Administrator & Governance and oversight & Approve workers, triage ambiguous cas
 \midrule
 \endhead
 FR-01 & User Registration & System shall allow self-registration for citizen and worker roles with validation and duplicate checks. \\ \hline
-FR-02 & User Authentication & System shall issue JWT access tokens on successful login and protect authorized routes. \\ \hline
+FR-02 & User Authentication & System shall establish secure cookie-session authentication on successful login and protect authorized routes, with JWT compatibility for API clients. \\ \hline
 FR-03 & Profile Management & Authenticated users shall update selected profile fields such as full name and phone number. \\ \hline
 FR-04 & Password Recovery & System shall support forgot-password and reset-password flows with time-bound tokens. \\ \hline
-FR-05 & Image Upload Validation & Analyze endpoint shall accept valid JPG/PNG images and reject unsupported or malformed payloads. \\ \hline
+FR-05 & Image Upload Validation & Analyze endpoint shall accept valid JPG/PNG/WEBP images and reject unsupported or malformed payloads. \\ \hline
 FR-06 & AI-Assisted Analysis & System shall analyze uploaded image and return category, confidence, location metadata, and draft status. \\ \hline
 FR-07 & Draft Generation & System shall produce a complaint draft synchronously or via queued generation, with polling support. \\ \hline
 FR-08 & Complaint Creation & System shall create a complaint record from reviewed analysis payload and user-provided description edits. \\ \hline
@@ -104,7 +104,7 @@ FR-22 & API Version Alias & System shall expose major endpoints under /api/v1 fo
 \textbf{NFR ID} & \textbf{Quality Attribute} & \textbf{Requirement Description} \\ \hline
 \midrule
 \endhead
-NFR-01 & Security & JWT auth, RBAC, sanitization, secure headers, and account-safe reset flow shall be enforced. \\ \hline
+NFR-01 & Security & Cookie-session auth (with JWT compatibility), RBAC, sanitization, secure headers, and account-safe reset flow shall be enforced. \\ \hline
 NFR-02 & Reliability & API shall degrade gracefully under model or DB faults with explicit status semantics. \\ \hline
 NFR-03 & Performance & Public and health endpoints shall respond consistently under mixed read-heavy load. \\ \hline
 NFR-04 & Usability & Role-specific UI shall reduce cognitive load and support responsive layouts for desktop/mobile usage. \\ \hline
@@ -185,7 +185,7 @@ The points below highlight the most important considerations that define this su
 
 \begin{itemize}
 \item REST over HTTP(S) is the canonical communication model.
-\item JWT bearer token is mandatory for protected routes.
+\item Protected routes require authenticated cookie session or compatibility bearer token.
 \item Production frontend proxy must route API traffic to backend service with /api/v1 compatibility.
 \end{itemize}
 

@@ -44,12 +44,11 @@ async def get_my_profile(current_user: dict = Depends(get_current_worker)):
     db = get_database()
 
     active_ids = current_user.get("active_complaint_ids", [])
+    valid_active_ids = [ObjectId(cid) for cid in active_ids if ObjectId.is_valid(cid)]
     active_complaints = []
-    for cid in active_ids:
-        if ObjectId.is_valid(cid):
-            doc = await db["complaints"].find_one({"_id": ObjectId(cid)})
-            if doc:
-                active_complaints.append(_fix(doc))
+    if valid_active_ids:
+        cursor = db["complaints"].find({"_id": {"$in": valid_active_ids}})
+        active_complaints = [_fix(doc) async for doc in cursor]
 
     # Resolved history (last 10)
     history_cursor = db["complaints"].find(

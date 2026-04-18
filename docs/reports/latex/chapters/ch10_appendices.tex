@@ -16,7 +16,8 @@ This appendix summarizes the primary endpoint inventory implemented in the curre
 \midrule
 \endhead
 POST & \path|/users/register| & No & Citizen/worker self-registration \\ \hline
-POST & \path|/users/login| & No & JWT token issuance \\ \hline
+POST & \path|/users/login| & No & Cookie-session login (JWT compatibility optional) \\ \hline
+POST & \path|/users/logout| & No & Clear auth cookie/session \\ \hline
 GET & \path|/users/me| & Yes & Current user profile \\ \hline
 PATCH & \path|/users/me| & Yes & Profile update \\ \hline
 POST & \path|/users/forgot-password| & No & Reset token issuance request \\ \hline
@@ -218,7 +219,9 @@ username=citizen_demo&password=citizen123
 
 \begin{verbatim}
 POST /analyze
-Authorization: Bearer <jwt>
+Cookie: js_access_token=<jwt>
+# For API clients, compatibility header is also supported:
+# Authorization: Bearer <jwt>
 Content-Type: multipart/form-data
 
 file=<image file>
@@ -271,7 +274,8 @@ language=en
 		"confidence_score": 0.88,
 		"detected_department": "Electrical Department",
 		"labels": ["street light", "dark road"]
-	}
+	},
+	"analysis_token": "<optional-analysis-bind-token>"
 }
 \end{verbatim}
 
@@ -280,7 +284,7 @@ language=en
 \begin{verbatim}
 {
 	"image": "<complaint_id>",
-	"decision": "approved",
+	"decision": "approve",
 	"corrected_label": "Civil Department",
 	"note": "Manual override after review"
 }
@@ -300,7 +304,7 @@ language=en
 \endhead
 W1 & Jan 28--Jan 31 & Repository setup, architecture framing, initial backend bootstrap \\ \hline
 W2 & Feb 02--Feb 07 & Database connectivity, schemas, CRUD baseline, secure upload scaffolding \\ \hline
-W3 & Feb 09--Feb 14 & JWT auth integration, classifier experimentation, dependency stabilization \\ \hline
+W3 & Feb 09--Feb 14 & Auth integration baseline, classifier experimentation, dependency stabilization \\ \hline
 W4 & Feb 16--Feb 21 & Geotagging and reverse-geocoding integration with analyze flow \\ \hline
 W5 & Feb 23--Feb 28 & Local model runtime setup and draft generator integration \\ \hline
 W6 & Mar 02--Mar 07 & Frontend role routing and analyze-result integration \\ \hline
@@ -332,7 +336,7 @@ W18 & May 25--May 27 & Final submission pack and release closure \\ \hline
 \midrule
 \endhead
 FR-01 & User registration flow & Register route tests and manual registration UI checks & Verified \\ \hline
-FR-02 & Login and JWT issuance & Auth permission tests and integration smoke login path & Verified \\ \hline
+FR-02 & Login and cookie-session issuance (JWT compatibility) & Auth permission tests and integration smoke login path & Verified \\ \hline
 FR-03 & Profile editing & API endpoint behavior and profile page walkthrough & Verified \\ \hline
 FR-04 & Password recovery/reset & Forgot/reset endpoint implementation and UI path checks & Verified \\ \hline
 FR-05 & Upload validation & Resilience/security tests for header mismatch and size limits & Verified \\ \hline

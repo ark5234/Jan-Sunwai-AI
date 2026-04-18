@@ -10,6 +10,14 @@ import FormattedComplaintText from '../components/FormattedComplaintText';
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1';
 const STATIC_BASE_URL = API_BASE_URL.replace(/\/api\/v1\/?$/, '').replace(/\/$/, '');
 
+const toImageUrl = (imagePath) => {
+  const raw = typeof imagePath === 'string' ? imagePath.trim() : '';
+  if (!raw) return '';
+  if (/^https?:\/\//i.test(raw) || raw.startsWith('data:')) return raw;
+  const cleanPath = raw.replace(/\\/g, '/').replace(/^\/+/, '');
+  return cleanPath ? `${STATIC_BASE_URL}/${encodeURI(cleanPath)}` : '';
+};
+
 const DeptHeadDashboard = () => {
   const { user } = useAuth();
   const [complaints, setComplaints] = useState([]);
@@ -38,14 +46,14 @@ const DeptHeadDashboard = () => {
   ];
 
   useEffect(() => {
-    if (user?.access_token) {
+    if (user) {
       fetchDepartmentComplaints();
       fetchDeptWorkers();
     }
   }, [statusFilter, user]);
 
   const fetchDepartmentComplaints = async () => {
-    if (!user?.access_token) return;
+    if (!user) return;
     try {
       setLoading(true);
       const params = {};
@@ -53,12 +61,7 @@ const DeptHeadDashboard = () => {
         params.status = statusFilter;
       }
       
-      const response = await axios.get(`${API_BASE_URL}/complaints`, {
-        headers: {
-          Authorization: `Bearer ${user.access_token}`
-        },
-        params
-      });
+      const response = await axios.get(`${API_BASE_URL}/complaints`, { params });
       setComplaints(response.data);
       setError(null);
     } catch (err) {
@@ -75,9 +78,7 @@ const DeptHeadDashboard = () => {
 
   const fetchDeptWorkers = async () => {
     try {
-      const res = await axios.get(`${API_BASE_URL}/workers/my-department`, {
-        headers: { Authorization: `Bearer ${user.access_token}` },
-      });
+      const res = await axios.get(`${API_BASE_URL}/workers/my-department`);
       const myDept = user.department;
       setDeptWorkers(res.data.filter(w => w.is_approved && (!myDept || w.department === myDept)));
     } catch {
@@ -88,16 +89,7 @@ const DeptHeadDashboard = () => {
   const updateComplaintStatus = async (complaintId, newStatus) => {
     setUpdateError(null);
     try {
-      await axios.patch(
-        `${API_BASE_URL}/complaints/${complaintId}/status`,
-        { status: newStatus },
-        {
-          headers: {
-            Authorization: `Bearer ${user.access_token}`,
-            'Content-Type': 'application/json'
-          }
-        }
-      );
+      await axios.patch(`${API_BASE_URL}/complaints/${complaintId}/status`, { status: newStatus });
       fetchDepartmentComplaints();
     } catch (err) {
       console.error('Error updating status:', err);
@@ -112,8 +104,7 @@ const DeptHeadDashboard = () => {
     try {
       await axios.post(
         `${API_BASE_URL}/complaints/${complaintId}/notes`,
-        { note },
-        { headers: { Authorization: `Bearer ${user.access_token}`, 'Content-Type': 'application/json' } }
+        { note }
       );
       setNoteText(prev => ({ ...prev, [complaintId]: '' }));
       fetchDepartmentComplaints();
@@ -146,13 +137,7 @@ const DeptHeadDashboard = () => {
     try {
       await axios.patch(
         `${API_BASE_URL}/complaints/${complaintId}/transfer`,
-        { new_department: panel.dept, reason: panel.reason || undefined },
-        {
-          headers: {
-            Authorization: `Bearer ${user.access_token}`,
-            'Content-Type': 'application/json'
-          }
-        }
+        { new_department: panel.dept, reason: panel.reason || undefined }
       );
       closeTransferPanel(complaintId);
       fetchDepartmentComplaints();
@@ -321,7 +306,9 @@ const DeptHeadDashboard = () => {
       ) : (
         <div className="bg-white shadow overflow-hidden sm:rounded-lg">
           <ul className="divide-y divide-gray-200">
-            {complaints.map((complaint) => (
+            {complaints.map((complaint) => {
+              const complaintImageUrl = toImageUrl(complaint.image_url);
+              return (
               <li key={complaint._id} className="hover:bg-gray-50">
                 <div className="px-4 sm:px-6 py-4">
                   <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
@@ -349,11 +336,11 @@ const DeptHeadDashboard = () => {
                       </p>
                       <div className="mt-2 flex flex-col sm:flex-row sm:items-center text-sm text-gray-500 gap-2">
                         <div className="flex items-center">
-                          <MapPin className="h-4 w-4 mr-1 flex-shrink-0" />
+                          <MapPin className="h-4 w-4 mr-1 shrink-0" />
                           <span className="truncate">{complaint.location?.address || 'Location not available'}</span>
                         </div>
                         <div className="flex items-center">
-                          <Calendar className="h-4 w-4 sm:ml-4 mr-1 flex-shrink-0" />
+                          <Calendar className="h-4 w-4 sm:ml-4 mr-1 shrink-0" />
                           <span>{new Date(complaint.created_at).toLocaleDateString()}</span>
                         </div>
                       </div>
@@ -483,10 +470,10 @@ const DeptHeadDashboard = () => {
                         )}
                       </div>
                     </div>
-                    {complaint.image_url && (
-                      <div className="sm:ml-4 flex-shrink-0">
+                    {complaintImageUrl && (
+                      <div className="sm:ml-4 shrink-0">
                         <img
-                          src={`${STATIC_BASE_URL}/${complaint.image_url.replace(/^\//,'')}`}
+                          src={complaintImageUrl}
                           alt="Complaint"
                           className="h-32 w-32 sm:h-32 sm:w-32 object-cover rounded"
                         />
@@ -495,7 +482,8 @@ const DeptHeadDashboard = () => {
                   </div>
                 </div>
               </li>
-            ))}
+            );
+            })}
           </ul>
         </div>
       )}

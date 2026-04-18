@@ -1,29 +1,11 @@
 import asyncio
-
 import requests
-
+from fastapi import APIRouter
 from app.config import settings
 from app.database import get_database
-
 import logging
 
 logger = logging.getLogger("JanSunwaiAI.health")
-
-router_import_done = False
-
-try:
-    from fastapi import APIRouter
-    router = APIRouter(prefix="/health", tags=["Health"])
-    router_import_done = True
-except Exception:
-    pass
-
-if not router_import_done:
-    from fastapi import APIRouter
-    router = APIRouter(prefix="/health", tags=["Health"])
-
-
-from fastapi import APIRouter
 
 router = APIRouter(prefix="/health", tags=["Health"])
 
@@ -60,7 +42,6 @@ async def model_health():
     import ollama
 
     ollama_ok = True
-    ollama_error = None
     models = []
     try:
         client = ollama.Client(host=settings.ollama_base_url)
@@ -69,13 +50,13 @@ async def model_health():
         models = response.get("models", []) if isinstance(response, dict) else []
     except Exception as exc:
         ollama_ok = False
-        ollama_error = str(exc)
+        logger.warning("Model health check failed: %s", exc)
 
     return {
         "status": "ok" if ollama_ok else "degraded",
         "ollama": {
             "ok": ollama_ok,
-            "error": ollama_error,
+            "error": None if ollama_ok else "unavailable",
             "models": models,
         },
     }
@@ -125,8 +106,9 @@ async def gpu_check():
             ],
         }
     except Exception as exc:
+        logger.warning("GPU health check failed: %s", exc)
         return {
             "gpu_active": False,
-            "error": str(exc),
+            "error": "unavailable",
             "note": "Ollama may not be running, or no model is currently loaded.",
         }

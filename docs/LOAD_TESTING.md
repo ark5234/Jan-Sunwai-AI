@@ -32,7 +32,7 @@ Task weights in `locustfile.py`:
 
 - `4` -> `GET /public/complaints`
 - `3` -> `GET /health/live`
-- `2` -> `GET /notifications/unread-count` (with bearer token)
+- `2` -> `GET /notifications/unread-count` (authenticated request)
 - `1` -> `POST /analyze` (multipart image upload)
 
 ## Acceptance Rules in Locust Script
@@ -91,6 +91,11 @@ Set environment variables if default credentials are different:
 
 - `LOCUST_CITIZEN_USERNAME`
 - `LOCUST_CITIZEN_PASSWORD`
+
+Note:
+
+- The application is cookie-first for browser clients, but the current locust script still uses bearer compatibility from login response.
+- If your runtime does not return `access_token` in login responses, either enable compatibility (`RETURN_ACCESS_TOKEN_IN_RESPONSE=true`) for load runs, or update `backend/locustfile.py` to use cookie sessions only.
 
 Example:
 

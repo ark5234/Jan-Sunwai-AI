@@ -75,6 +75,10 @@ export default function WorkerRegister() {
       setError('Passwords do not match');
       return;
     }
+    if (!/[A-Z]/.test(formData.password) || !/[0-9]/.test(formData.password)) {
+      setError('Password must include at least one uppercase letter and one digit.');
+      return;
+    }
     if (!formData.department) {
       setError('Please select your department.');
       return;
@@ -110,7 +114,9 @@ export default function WorkerRegister() {
         ...(service_area ? { service_area } : {}),
       };
 
-      await axios.post(`${API_BASE_URL}/users/register`, payload);
+      await axios.post(`${API_BASE_URL}/users/register`, payload, {
+        withCredentials: true,
+      });
 
       setSuccess('Registration submitted! Your account is pending admin approval. You will be redirected to login shortly…');
       setTimeout(() => navigate('/login'), 3500);
@@ -262,9 +268,9 @@ export default function WorkerRegister() {
               <div className="relative">
                 <Lock className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
                 <input
-                  type="password" name="password" required minLength={6}
+                  type="password" name="password" required minLength={10}
                   className="pl-10 w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-primary focus:border-primary text-sm"
-                  placeholder="••••••••"
+                  placeholder="At least 10 chars, 1 uppercase, 1 digit"
                   value={formData.password} onChange={handleChange}
                 />
               </div>

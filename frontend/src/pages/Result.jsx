@@ -53,6 +53,14 @@ const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api/
 // Static files (uploads/) are served at the root, not under /api/v1
 const STATIC_BASE_URL = API_BASE_URL.replace(/\/api\/v1\/?$/, '').replace(/\/$/, '');
 
+const toImageUrl = (imagePath) => {
+  const raw = typeof imagePath === 'string' ? imagePath.trim() : '';
+  if (!raw) return '';
+  if (/^https?:\/\//i.test(raw) || raw.startsWith('data:')) return raw;
+  const cleanPath = raw.replace(/\\/g, '/').replace(/^\/+/, '');
+  return cleanPath ? `${STATIC_BASE_URL}/${encodeURI(cleanPath)}` : '';
+};
+
 
 export default function Result() {
   const { state } = useLocation();
@@ -61,6 +69,7 @@ export default function Result() {
   const result = state?.result;
   const language = state?.language || 'en';
   const [classificationState, setClassificationState] = useState(result?.classification || {});
+  const [analysisToken, setAnalysisToken] = useState(result?.analysis_token || '');
   const [userContextText, setUserContextText] = useState((result?.user_grievance_text || '').trim());
   const [showContextEditor, setShowContextEditor] = useState(true);
   const [showComplaintEditor, setShowComplaintEditor] = useState(false);
@@ -100,10 +109,7 @@ export default function Result() {
     const intervalId = setInterval(async () => {
       attempts += 1;
       try {
-        const res = await axios.get(
-          `${API_BASE_URL}/complaints/generation/${generationJobId}`,
-          { headers: { Authorization: `Bearer ${user?.access_token}` } }
-        );
+        const res = await axios.get(`${API_BASE_URL}/complaints/generation/${generationJobId}`);
         if (cancelled) return;
         const data = res.data;
         if (data.status === 'completed') {
@@ -129,7 +135,7 @@ export default function Result() {
       cancelled = true;
       clearInterval(intervalId);
     };
-  }, [generationJobId, generationStatus, user?.access_token]);
+  }, [generationJobId, generationStatus, user]);
 
   // Location state — editable if EXIF not found
   const hasExifLocation = !!result?.location?.coordinates;
@@ -303,7 +309,7 @@ export default function Result() {
       return;
     }
 
-    if (!user?.access_token) {
+    if (!user) {
       setSubmitError('Please login to submit a complaint');
       setTimeout(() => navigate('/login'), 2000);
       return;
@@ -338,18 +344,13 @@ export default function Result() {
           detected_issue: classificationState.label,
           labels: classificationState.all_scores?.map(s => s.label) || [classificationState.label]
         },
+        analysis_token: analysisToken || null,
         language: language,
       };
       
       const response = await axios.post(
         `${API_BASE_URL}/complaints`,
-        complaintData,
-        {
-          headers: {
-            'Authorization': `Bearer ${user.access_token}`,
-            'Content-Type': 'application/json'
-          }
-        }
+        complaintData
       );
       
       setSubmitSuccess(true);
@@ -385,12 +386,14 @@ export default function Result() {
           image_url,
           language: regenLang,
           user_grievance_text: userHint,
-        },
-        { headers: { Authorization: `Bearer ${user?.access_token}` } }
+        }
       );
       const { job_id } = res.data;
       if (res.data?.classification) {
         setClassificationState(res.data.classification);
+      }
+      if (res.data?.analysis_token) {
+        setAnalysisToken(res.data.analysis_token);
       }
       setComplaintText('');
       setShowComplaintEditor(false);
@@ -412,8 +415,7 @@ export default function Result() {
     await handleRegenerate();
   };
 
-  const cleanPath = image_url.replace(/\\/g, '/').replace(/^\/+/, '');
-  const fullImageUrl = `${STATIC_BASE_URL}/${cleanPath}`;
+  const fullImageUrl = toImageUrl(image_url);
 
   const confidenceValue = Number(classificationState?.confidence || 0);
   const confidence = (confidenceValue * 100).toFixed(1);
@@ -550,7 +552,7 @@ export default function Result() {
                     type="button"
                     onClick={handleDetectLocation}
                     disabled={detectingGPS}
-                    className="w-full flex items-center justify-center gap-2.5 px-4 py-3.5 rounded-xl bg-gradient-to-r from-primary to-indigo-600 text-white text-sm font-semibold shadow-sm hover:shadow-md hover:from-indigo-700 hover:to-indigo-700 active:scale-[0.98] transition-all duration-150 disabled:opacity-60 disabled:cursor-not-allowed"
+                    className="w-full flex items-center justify-center gap-2.5 px-4 py-3.5 rounded-xl bg-linear-to-r from-primary to-indigo-600 text-white text-sm font-semibold shadow-sm hover:shadow-md hover:from-indigo-700 hover:to-indigo-700 active:scale-[0.98] transition-all duration-150 disabled:opacity-60 disabled:cursor-not-allowed"
                   >
                     {detectingGPS ? (
                       <>
@@ -740,7 +742,7 @@ export default function Result() {
                     {'\u25be'} {regenLang !== language && <span className="ml-0.5 text-primary font-semibold">{regenLang.toUpperCase()}</span>}
                   </button>
                   {showRegenLang && (
-                    <div className="absolute right-0 top-full mt-1.5 z-50 bg-white border border-gray-200 rounded-xl shadow-lg overflow-hidden min-w-[130px]">
+                    <div className="absolute right-0 top-full mt-1.5 z-50 bg-white border border-gray-200 rounded-xl shadow-lg overflow-hidden min-w-32.5">
                       <div className="px-3 py-1.5 text-[10px] font-semibold text-gray-400 uppercase tracking-wide border-b border-gray-100">Regenerate in…</div>
                       {[
                         { code: 'en', label: 'English' },
@@ -769,11 +771,13 @@ export default function Result() {
                                 image_url,
                                 language: code,
                                 user_grievance_text: userContextText,
-                              },
-                              { headers: { Authorization: `Bearer ${user?.access_token}` } }
+                              }
                             ).then(res => {
                               if (res.data?.classification) {
                                 setClassificationState(res.data.classification);
+                              }
+                              if (res.data?.analysis_token) {
+                                setAnalysisToken(res.data.analysis_token);
                               }
                               setComplaintText('');
                               setShowComplaintEditor(false);

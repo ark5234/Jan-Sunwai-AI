@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { useAuth } from '../context/AuthContext';
 import {
   MapPin, Calendar, CheckCircle2, Target, ClipboardList,
   Power, Activity, AlertCircle, Zap, BarChart2, Shield,
@@ -135,7 +134,6 @@ function HistoryCard({ complaint }) {
 }
 
 export default function WorkerDashboard() {
-  const { user } = useAuth();
   const [profile, setProfile] = useState(null);
   const [tab, setTab] = useState('active');
   const [doneLoading, setDoneLoading] = useState(null);
@@ -143,19 +141,17 @@ export default function WorkerDashboard() {
   const [toast, setToast] = useState('');
   const [error, setError] = useState('');
 
-  const headers = { Authorization: `Bearer ${user?.access_token}` };
-
   const showToast = (msg) => { setToast(msg); setTimeout(() => setToast(''), 4000); };
 
   const fetchProfile = useCallback(async () => {
     try {
-      const res = await fetch(`${API}/workers/me`, { headers });
+      const res = await fetch(`${API}/workers/me`);
       if (!res.ok) throw new Error('Failed to fetch profile');
       setProfile(await res.json());
     } catch (e) {
       setError(e.message);
     }
-  }, [user?.access_token]);
+  }, []);
 
   useEffect(() => { fetchProfile(); }, [fetchProfile]);
   useEffect(() => {
@@ -170,7 +166,7 @@ export default function WorkerDashboard() {
     try {
       const res = await fetch(`${API}/workers/me/status`, {
         method: 'PATCH',
-        headers: { ...headers, 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ worker_status: next }),
       });
       if (!res.ok) throw new Error('Failed to update status');
@@ -187,7 +183,7 @@ export default function WorkerDashboard() {
     setDoneLoading(complaintId);
     try {
       const res = await fetch(`${API}/workers/me/complaints/${complaintId}/done`, {
-        method: 'PATCH', headers,
+        method: 'PATCH',
       });
       if (!res.ok) {
         const d = await res.json();

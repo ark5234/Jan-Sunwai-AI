@@ -1,4 +1,5 @@
 import os
+from urllib.parse import urlparse
 from motor.motor_asyncio import AsyncIOMotorClient
 from app.config import settings
 
@@ -18,6 +19,17 @@ class Database:
 
 
 db = Database()
+
+
+def _safe_mongo_target(url: str) -> str:
+    try:
+        parsed = urlparse(url)
+        host = parsed.hostname or "localhost"
+        port = parsed.port or 27017
+        db_name = (parsed.path or "").lstrip("/") or DB_NAME
+        return f"{host}:{port}/{db_name}"
+    except Exception:
+        return "<unavailable>"
 
 
 async def ensure_indexes():
@@ -67,7 +79,7 @@ async def connect_to_mongo():
         # Verify connection
         await db.client.admin.command("ping")
         await ensure_indexes()
-        print(f"Connected to MongoDB at {MONGO_URL[:MONGO_URL.find('@') + 1] if '@' in MONGO_URL else MONGO_URL}")
+        print(f"Connected to MongoDB at {_safe_mongo_target(MONGO_URL)}")
     except Exception as e:
         print(f"Could not connect to MongoDB: {e}")
         raise e

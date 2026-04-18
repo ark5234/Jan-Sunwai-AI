@@ -244,7 +244,7 @@ Although major paths were validated, future strengthening can include:
 \textbf{Case ID} & \textbf{Persona} & \textbf{Scenario} & \textbf{Priority} & \textbf{Expected Result} \\ \hline
 \midrule
 \endhead
-UAT-01 & Citizen & Register new citizen account and complete first login & High & Account created and token-based session starts \\ \hline
+UAT-01 & Citizen & Register new citizen account and complete first login & High & Account created and cookie-session starts successfully \\ \hline
 UAT-02 & Citizen & Submit valid image through analyze flow & High & Classification and draft payload are returned \\ \hline
 UAT-03 & Citizen & Edit draft text and submit complaint & High & Complaint record appears with initial Open status \\ \hline
 UAT-04 & Citizen & View dashboard timeline after submission & High & Status history includes creation event \\ \hline
@@ -295,7 +295,7 @@ Peak & 120 & 20/s & 20 min & Graceful degradation accepted for analyze path (429
 \textbf{Sec ID} & \textbf{Control Under Test} & \textbf{Expected Code} & \textbf{Validation Criterion} \\ \hline
 \midrule
 \endhead
-SEC-01 & Invalid bearer token on protected complaint route & 401 & Unauthorized access blocked \\ \hline
+SEC-01 & Invalid auth credential on protected complaint route (cookie or bearer) & 401 & Unauthorized access blocked \\ \hline
 SEC-02 & Non-admin call on admin endpoint & 403 & Role boundary enforced \\ \hline
 SEC-03 & Malformed JPEG payload with .jpg extension & 400 & Header mismatch rejected \\ \hline
 SEC-04 & Oversized upload payload & 413 & Max file-size rule enforced \\ \hline

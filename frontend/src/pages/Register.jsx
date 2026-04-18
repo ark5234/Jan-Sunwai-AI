@@ -66,6 +66,11 @@ export default function Register() {
 
     }
 
+    if (!/[A-Z]/.test(formData.password) || !/[0-9]/.test(formData.password)) {
+      setError('Password must include at least one uppercase letter and one digit.');
+      return;
+    }
+
 
 
     setLoading(true);
@@ -88,7 +93,9 @@ export default function Register() {
 
       
 
-      const response = await axios.post(`${API_BASE_URL}/users/register`, payload);
+      const response = await axios.post(`${API_BASE_URL}/users/register`, payload, {
+        withCredentials: true,
+      });
 
       
 
@@ -252,11 +259,11 @@ export default function Register() {
 
                   required
 
-                  minLength={6}
+                  minLength={10}
 
                   className="pl-10 w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-primary focus:border-primary text-sm"
 
-                  placeholder="********"
+                  placeholder="At least 10 chars, 1 uppercase, 1 digit"
 
                   value={formData.password}
 
