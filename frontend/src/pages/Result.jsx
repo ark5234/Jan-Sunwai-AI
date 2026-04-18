@@ -405,8 +405,9 @@ export default function Result() {
     await handleRegenerate();
   };
 
-  const cleanPath = image_url.replace(/\\/g, '/');
-  const fullImageUrl = `${API_BASE_URL}/${cleanPath}`;
+  const cleanPath = image_url.replace(/\\/g, '/').replace(/^\/+/, '');
+  const STATIC_BASE_URL = API_BASE_URL.replace('/api/v1', '');
+  const fullImageUrl = `${STATIC_BASE_URL}/${cleanPath}`;
 
   const confidenceValue = Number(classificationState?.confidence || 0);
   const confidence = (confidenceValue * 100).toFixed(1);
