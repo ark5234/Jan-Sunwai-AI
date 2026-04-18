@@ -49,6 +49,11 @@ _CATEGORY_RULES: dict[str, list[tuple[list[str], float]]] = {
         (["pipe leak", "water leak", "leaking pipe", "burst pipe"], 2.5),
         (["manhole", "manhole cover", "missing cover", "caved in", "sinkhole"], 2.0),
         (["bridge damage", "damaged bridge", "crack in bridge"], 2.0),
+        # Sand / mud / unpaved road surface issues
+        (["wet sand", "muddy road", "muddy path", "sandy road", "sand on road", "sand on roadside",
+          "sand on the road", "sand on the roadside", "gravel road", "unpaved road",
+          "mud on road", "slushy road", "slush", "waterlogged road"], 3.0),
+        (["road construction", "road repair", "road digging", "road dug up", "construction debris on road"], 2.5),
     ],
     "Horticulture": [
         (["fallen tree", "uprooted tree", "collapsed tree", "uprooted"], 3.0),

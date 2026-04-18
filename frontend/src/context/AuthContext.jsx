@@ -1,6 +1,27 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 
 const AuthContext = createContext(null);
+const AUTH_TOKEN_STORAGE_KEY = 'js_access_token';
+
+function getStoredToken() {
+  try {
+    return localStorage.getItem(AUTH_TOKEN_STORAGE_KEY) || '';
+  } catch {
+    return '';
+  }
+}
+
+function setStoredToken(token) {
+  try {
+    if (token) {
+      localStorage.setItem(AUTH_TOKEN_STORAGE_KEY, token);
+    } else {
+      localStorage.removeItem(AUTH_TOKEN_STORAGE_KEY);
+    }
+  } catch {
+    // Ignore storage errors in restricted/privacy modes.
+  }
+}
 
 /**
  * Decode the exp claim from a JWT payload (no library needed).
@@ -19,6 +40,7 @@ function getTokenExpiry(token) {
 }
 
 function isTokenExpired(token) {
+  if (!token || token === '__cookie__') return false;
   const exp = getTokenExpiry(token);
   if (!exp) return true;
   return Date.now() / 1000 > exp;
@@ -34,14 +56,35 @@ export const AuthProvider = ({ children }) => {
     const bootstrapSession = async () => {
       try {
         const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1';
+        const storedToken = getStoredToken();
+        const currentPath = window.location.pathname || '';
+        const isAuthPage = ['/login', '/register', '/forgot-password', '/reset-password'].some((path) =>
+          currentPath.startsWith(path)
+        );
+
+        if (!storedToken && isAuthPage) {
+          return;
+        }
+
+        const headers = {};
+        if (storedToken && !isTokenExpired(storedToken)) {
+          headers.Authorization = `Bearer ${storedToken}`;
+        }
+
         const res = await fetch(`${API_BASE}/users/me`, {
           method: 'GET',
           credentials: 'include',
+          headers,
         });
         if (!cancelled && res.ok) {
           const me = await res.json();
-          // Compatibility shim for components still checking user.access_token.
-          setUser({ ...me, access_token: '__cookie__' });
+          setUser({
+            ...me,
+            access_token: storedToken && !isTokenExpired(storedToken) ? storedToken : '__cookie__',
+          });
+        } else if (!cancelled && storedToken) {
+          // Clear stale token if server rejects it.
+          setStoredToken('');
         }
       } catch {
         // no-op: unauthenticated startup is expected for guests
@@ -60,7 +103,14 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const login = (userData) => {
-    // Compatibility shim for components still checking user.access_token.
+    const token = userData?.access_token || '';
+    if (token && !isTokenExpired(token)) {
+      setStoredToken(token);
+      setUser({ ...userData, access_token: token });
+      return;
+    }
+    setStoredToken('');
+    // Compatibility shim for cookie-only sessions.
     setUser({ ...userData, access_token: '__cookie__' });
   };
 
@@ -75,6 +125,7 @@ export const AuthProvider = ({ children }) => {
     } catch {
       // Non-fatal — clear client state regardless
     }
+    setStoredToken('');
     setUser(null);
   }, []);
 
@@ -92,6 +143,7 @@ export const AuthProvider = ({ children }) => {
     } catch {
       // Non-fatal
     }
+    setStoredToken('');
     setUser(null);
     window.location.href = '/login';
   }, []);

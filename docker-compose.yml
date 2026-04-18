@@ -4,8 +4,8 @@ services:
     container_name: jan-sunwai-mongodb
     restart: unless-stopped
     ports:
-      # P1-E: bind to localhost only — not reachable from the network
-      - "127.0.0.1:27017:27017"
+      # Bind to localhost only; default to 27018 to avoid conflicts with local mongod on 27017.
+      - "127.0.0.1:${MONGODB_HOST_PORT:-27018}:27017"
     volumes:
       - mongodb_data:/data/db
     environment:
@@ -37,8 +37,8 @@ services:
     environment:
       - APP_ENV=${APP_ENV:-production}
       - RATE_LIMIT_ENABLED=${RATE_LIMIT_ENABLED:-true}
-      - MONGODB_URL=${MONGODB_URL:-mongodb://mongodb:27017/jan_sunwai_db}
-      - MONGO_URL=${MONGO_URL:-mongodb://mongodb:27017/jan_sunwai_db}
+      - MONGODB_URL=${MONGODB_URL:-mongodb://${MONGO_ROOT_USERNAME:-jan_sunwai_admin}:${MONGO_ROOT_PASSWORD:-CHANGE_ME_STRONG_PASSWORD}@mongodb:27017/${DB_NAME:-jan_sunwai_db}?authSource=admin}
+      - MONGO_URL=${MONGO_URL:-mongodb://${MONGO_ROOT_USERNAME:-jan_sunwai_admin}:${MONGO_ROOT_PASSWORD:-CHANGE_ME_STRONG_PASSWORD}@mongodb:27017/${DB_NAME:-jan_sunwai_db}?authSource=admin}
       - DB_NAME=${DB_NAME:-jan_sunwai_db}
       - OLLAMA_BASE_URL=${OLLAMA_BASE_URL:-http://host.docker.internal:11434}
       - OLLAMA_HOST=${OLLAMA_HOST:-http://host.docker.internal:11434}
@@ -67,7 +67,7 @@ services:
     volumes:
       - backend_uploads:/app/uploads
     healthcheck:
-      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health/live', timeout=5)"]
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/api/v1/health/live', timeout=5)"]
       interval: 30s
       timeout: 10s
       retries: 5

@@ -354,7 +354,7 @@ def _compact_location(address: str, max_words: int = 12) -> str:
 
 def _salutation_department(category: str) -> str:
     dep = (category or "").strip()
-    if not dep:
+    if not dep or dep.lower() == "uncategorized":
         return "Concerned Department"
     dep_lower = dep.lower()
     if dep_lower.endswith("department") or dep_lower.endswith("authority") or dep_lower.endswith("cell"):

@@ -25,9 +25,9 @@ class JanSunwaiUser(HttpUser):
 
     def _login(self, username: str, password: str) -> str:
         response = self.client.post(
-            "/users/login",
+            "/api/v1/users/login",
             data={"username": username, "password": password},
-            name="/users/login",
+            name="/api/v1/users/login",
         )
         if response.status_code != 200:
             return ""
@@ -35,13 +35,13 @@ class JanSunwaiUser(HttpUser):
 
     @task(4)
     def public_status(self):
-        with self.client.get("/public/complaints", name="/public/complaints", catch_response=True) as response:
+        with self.client.get("/api/v1/public/complaints", name="/api/v1/public/complaints", catch_response=True) as response:
             if response.status_code != 200:
                 response.failure(f"Unexpected status code: {response.status_code}")
 
     @task(3)
     def health_live(self):
-        with self.client.get("/health/live", name="/health/live", catch_response=True) as response:
+        with self.client.get("/api/v1/health/live", name="/api/v1/health/live", catch_response=True) as response:
             if response.status_code != 200:
                 response.failure(f"Unexpected status code: {response.status_code}")
 
@@ -50,9 +50,9 @@ class JanSunwaiUser(HttpUser):
         if not self.citizen_token:
             return
         with self.client.get(
-            "/notifications/unread-count",
+            "/api/v1/notifications/unread-count",
             headers={"Authorization": f"Bearer {self.citizen_token}"},
-            name="/notifications/unread-count",
+            name="/api/v1/notifications/unread-count",
             catch_response=True,
         ) as response:
             if response.status_code not in (200, 401):
@@ -69,11 +69,11 @@ class JanSunwaiUser(HttpUser):
         data = {"language": "en"}
 
         with self.client.post(
-            "/analyze",
+            "/api/v1/analyze",
             headers={"Authorization": f"Bearer {self.citizen_token}"},
             files=files,
             data=data,
-            name="/analyze",
+            name="/api/v1/analyze",
             catch_response=True,
         ) as response:
             # Under load we can see throttling (429) or temporary AI unavailability (503).

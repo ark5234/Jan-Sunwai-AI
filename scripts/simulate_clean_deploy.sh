@@ -34,7 +34,7 @@ END=$(date +%s)
 ELAPSED=$((END - START))
 echo "[deploy-sim] cold-start seconds: ${ELAPSED}"
 
-curl -fsS http://localhost:8000/health/live >/dev/null
+curl -fsS http://localhost:8000/api/v1/health/live >/dev/null
 curl -fsS http://localhost:5173 >/dev/null
 
 echo "[deploy-sim] PASS"

@@ -4,6 +4,7 @@ import {
   Power, Activity, AlertCircle, Zap, BarChart2, Shield,
 } from 'lucide-react';
 import ComplaintComments from '../components/ComplaintComments';
+import StatusTimeline from '../components/StatusTimeline';
 import FormattedComplaintText from '../components/FormattedComplaintText';
 
 const API = import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1';
@@ -70,6 +71,7 @@ function TaskCard({ complaint, onDone, doneLoading }) {
             </div>
           </div>
 
+          <StatusTimeline items={complaint.status_history || []} />
           <ComplaintComments complaintId={complaint._id} currentRole="worker" />
         </div>
 
@@ -126,6 +128,9 @@ function HistoryCard({ complaint }) {
                 })}
               </span>
             </div>
+          </div>
+          <div className="mt-2 text-sm text-gray-500">
+             <StatusTimeline items={complaint.status_history || []} />
           </div>
         </div>
       </div>

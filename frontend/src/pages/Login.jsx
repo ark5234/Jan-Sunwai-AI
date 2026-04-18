@@ -155,6 +155,8 @@ export default function Login() {
 
                   name="username"
 
+                  autoComplete="username"
+
                   required
 
                   className="pl-10 w-full p-2.5 border border-gray-300 rounded focus:ring-2 focus:ring-primary focus:border-primary transition text-sm"
@@ -186,6 +188,8 @@ export default function Login() {
                   type="password"
 
                   name="password"
+
+                  autoComplete="current-password"
 
                   required
 

@@ -49,9 +49,103 @@ logger = logging.getLogger("JanSunwaiAI.complaints")
 ANALYSIS_TOKEN_TTL_MINUTES = 30
 
 # Helper to fix ObjectId serialization
+def _coerce_float(value):
+    try:
+        return float(value)
+    except (TypeError, ValueError):
+        return None
+
+
+def _normalize_location_payload(raw_location) -> dict | None:
+    if not isinstance(raw_location, dict):
+        return None
+
+    lat = raw_location.get("lat")
+    lon = raw_location.get("lon")
+
+    # Backward-compat: older rows stored coordinates under location.coordinates.
+    coordinates = raw_location.get("coordinates")
+    if (lat is None or lon is None) and isinstance(coordinates, dict):
+        lat = coordinates.get("lat")
+        lon = coordinates.get("lon")
+
+    lat_num = _coerce_float(lat)
+    lon_num = _coerce_float(lon)
+    if lat_num is None or lon_num is None:
+        return None
+
+    source = str(raw_location.get("source") or "manual").lower().strip()
+    if source not in {"exif", "device", "manual"}:
+        source = "manual"
+
+    address = raw_location.get("address")
+    if address is None:
+        address = "Unknown Location"
+
+    return {
+        "lat": lat_num,
+        "lon": lon_num,
+        "address": str(address),
+        "source": source,
+    }
+
+
+def _normalize_ai_metadata_payload(raw_ai_metadata, *, fallback_department: str | None) -> dict | None:
+    if not isinstance(raw_ai_metadata, dict):
+        return None
+
+    confidence_raw = raw_ai_metadata.get("confidence_score")
+    if confidence_raw is None:
+        # Backward-compat: older rows used ai_metadata.confidence.
+        confidence_raw = raw_ai_metadata.get("confidence")
+
+    confidence = _coerce_float(confidence_raw)
+    if confidence is None:
+        confidence = 0.0
+    confidence = max(0.0, min(confidence, 1.0))
+
+    detected_department = str(
+        raw_ai_metadata.get("detected_department")
+        or raw_ai_metadata.get("department")
+        or fallback_department
+        or "Uncategorized"
+    )
+    model_used = str(raw_ai_metadata.get("model_used") or raw_ai_metadata.get("model") or "ollama")
+
+    labels_raw = raw_ai_metadata.get("labels")
+    labels: list[str] = []
+    if isinstance(labels_raw, list):
+        for item in labels_raw:
+            label = str(item).strip()
+            if label:
+                labels.append(label)
+    elif isinstance(labels_raw, str) and labels_raw.strip():
+        labels = [labels_raw.strip()]
+
+    if not labels:
+        labels = [detected_department]
+
+    return {
+        "model_used": model_used,
+        "confidence_score": confidence,
+        "detected_department": detected_department,
+        "labels": labels,
+    }
+
+
 def fix_id(doc):
-    if doc and "_id" in doc:
+    if not doc:
+        return doc
+
+    if "_id" in doc:
         doc["_id"] = str(doc["_id"])
+
+    doc["location"] = _normalize_location_payload(doc.get("location"))
+    doc["ai_metadata"] = _normalize_ai_metadata_payload(
+        doc.get("ai_metadata"),
+        fallback_department=str(doc.get("department") or ""),
+    )
+
     return doc
 
 
@@ -391,7 +485,8 @@ async def create_complaint(
 
     complaint_dict["department"] = resolved_department
 
-    incoming_ai = complaint_dict.get("ai_metadata") if isinstance(complaint_dict.get("ai_metadata"), dict) else {}
+    incoming_ai_raw = complaint_dict.get("ai_metadata")
+    incoming_ai = incoming_ai_raw if isinstance(incoming_ai_raw, dict) else {}
     safe_labels: list[str] = []
     for label in incoming_ai.get("labels", []):
         clean_label = sanitize_text(str(label), max_len=80).strip()

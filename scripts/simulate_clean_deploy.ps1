@@ -23,7 +23,7 @@ try {
     $elapsed = (Get-Date) - $start
     Write-Host "[deploy-sim] cold-start seconds: $([math]::Round($elapsed.TotalSeconds, 2))"
 
-    Invoke-WebRequest -Uri 'http://localhost:8000/health/live' -UseBasicParsing -TimeoutSec 10 | Out-Null
+    Invoke-WebRequest -Uri 'http://localhost:8000/api/v1/health/live' -UseBasicParsing -TimeoutSec 10 | Out-Null
     Invoke-WebRequest -Uri 'http://localhost:5173' -UseBasicParsing -TimeoutSec 10 | Out-Null
 
     Write-Host '[deploy-sim] PASS'

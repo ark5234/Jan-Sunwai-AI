@@ -9,12 +9,12 @@ docker compose --profile prod up -d --build
 
 echo "[prod-verify] checking backend live endpoint"
 for _ in $(seq 1 20); do
-  if curl -fsS http://localhost:8000/health/live >/dev/null 2>&1; then
+  if curl -fsS http://localhost:8000/api/v1/health/live >/dev/null 2>&1; then
     break
   fi
   sleep 2
 done
-curl -fsS http://localhost:8000/health/live >/dev/null
+curl -fsS http://localhost:8000/api/v1/health/live >/dev/null
 
 echo "[prod-verify] checking SPA deep-link fallback"
 STATUS=$(curl -o /tmp/jan_sunwai_deeplink.html -s -w "%{http_code}" http://localhost:5173/dashboard)

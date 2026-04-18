@@ -11,7 +11,7 @@ try {
     $sw = [System.Diagnostics.Stopwatch]::StartNew()
     while ($sw.Elapsed.TotalSeconds -lt 40) {
         try {
-            $r = Invoke-WebRequest -Uri 'http://localhost:8000/health/live' -UseBasicParsing -TimeoutSec 2
+            $r = Invoke-WebRequest -Uri 'http://localhost:8000/api/v1/health/live' -UseBasicParsing -TimeoutSec 2
             if ($r.StatusCode -eq 200) {
                 $ready = $true
                 break

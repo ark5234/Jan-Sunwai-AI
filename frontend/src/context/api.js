@@ -5,12 +5,42 @@
 import axios from "axios";
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8000/api/v1";
+const AUTH_TOKEN_STORAGE_KEY = "js_access_token";
 
 // Ensure every axios call in the app includes cookies for auth.
 axios.defaults.withCredentials = true;
 const api = axios.create({ baseURL: API_BASE_URL, withCredentials: true });
 
 let global401InterceptorInstalled = false;
+
+function getStoredToken() {
+  try {
+    return localStorage.getItem(AUTH_TOKEN_STORAGE_KEY) || "";
+  } catch {
+    return "";
+  }
+}
+
+function clearStoredToken() {
+  try {
+    localStorage.removeItem(AUTH_TOKEN_STORAGE_KEY);
+  } catch {
+    // Ignore storage errors.
+  }
+}
+
+function attachAuthHeader(config) {
+  const token = getStoredToken();
+  if (!token || token === "__cookie__") {
+    return config;
+  }
+
+  const nextConfig = { ...config, headers: { ...(config?.headers || {}) } };
+  if (!nextConfig.headers.Authorization && !nextConfig.headers.authorization) {
+    nextConfig.headers.Authorization = `Bearer ${token}`;
+  }
+  return nextConfig;
+}
 
 const AUTH_ENDPOINT_SEGMENTS = [
   "/users/login",
@@ -24,6 +54,7 @@ function isAuthEndpoint(url = "") {
 }
 
 function clearSessionAndRedirectToLogin() {
+  clearStoredToken();
   // Attempt backend logout so cookie is cleared server-side too.
   fetch(`${API_BASE_URL}/users/logout`, { method: "POST", credentials: "include" }).catch(() => {
     // no-op
@@ -42,6 +73,9 @@ export function installGlobalAxios401Interceptor() {
   if (global401InterceptorInstalled) {
     return;
   }
+
+  axios.interceptors.request.use(attachAuthHeader);
+  api.interceptors.request.use(attachAuthHeader);
 
   axios.interceptors.response.use(
     (response) => response,

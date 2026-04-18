@@ -102,6 +102,11 @@ _KEYWORD_FALLBACK_BY_DEPARTMENT: dict[str, list[str]] = {
         "flooded", "flood", "drain overflow", "sewer overflow", "pipe leak",
         "water gushing", "stagnant water", "blocked drain", "drainage problem",
         "water supply", "sewage leak", "drain",
+        # Sand / mud / unpaved surface issues
+        "wet sand", "muddy road", "muddy path", "sandy road", "sand on road",
+        "sand on roadside", "sand on the road", "sand on the roadside",
+        "gravel road", "unpaved road", "mud on road", "slushy road", "slush",
+        "waterlogged road", "road construction", "road digging",
     ],
     "Health Department": [
         "garbage", "trash", "waste", "litter", "dump", "rubbish", "overflowing bin",

@@ -17,7 +17,7 @@ This runbook closes production verification tasks for SPA routing, NDMC network 
 ## Verification Scope
 
 1. docker-compose.yml boots successfully with `--profile prod`.
-2. Backend live endpoint responds.
+2. Backend versioned live endpoint (`/api/v1/health/live`) responds.
 3. Frontend deep-link route returns SPA HTML shell.
 4. Backend container can reach OLLAMA_BASE_URL.
 5. Short headless locust run completes and writes report.
@@ -25,9 +25,9 @@ This runbook closes production verification tasks for SPA routing, NDMC network 
 
 ## Output Artifacts
 
-- reports/load/<timestamp>/locust-report.html
-- reports/load/<timestamp>/locust_stats.csv
-- reports/load/<timestamp>/locust_failures.csv
+- reports/load/[timestamp]/locust-report.html
+- reports/load/[timestamp]/locust_stats.csv
+- reports/load/[timestamp]/locust_failures.csv
 
 ## Troubleshooting
 

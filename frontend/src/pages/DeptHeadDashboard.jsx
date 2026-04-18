@@ -5,6 +5,7 @@ import { FileText, MapPin, Calendar, Filter, ArrowRightLeft, StickyNote, Chevron
 import axios from 'axios';
 import SLABadge from '../components/SLABadge';
 import ComplaintComments from '../components/ComplaintComments';
+import StatusTimeline from '../components/StatusTimeline';
 import FormattedComplaintText from '../components/FormattedComplaintText';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1';
@@ -14,7 +15,13 @@ const toImageUrl = (imagePath) => {
   const raw = typeof imagePath === 'string' ? imagePath.trim() : '';
   if (!raw) return '';
   if (/^https?:\/\//i.test(raw) || raw.startsWith('data:')) return raw;
-  const cleanPath = raw.replace(/\\/g, '/').replace(/^\/+/, '');
+  let cleanPath = raw.replace(/\\/g, '/');
+  const uploadMatch = cleanPath.match(/uploads\/.*/);
+  if (uploadMatch) {
+    cleanPath = uploadMatch[0];
+  } else {
+    cleanPath = cleanPath.replace(/^\/+/, '');
+  }
   return cleanPath ? `${STATIC_BASE_URL}/${encodeURI(cleanPath)}` : '';
 };
 
@@ -387,6 +394,7 @@ const DeptHeadDashboard = () => {
                           >Save</button>
                         </div>
                       )}
+                      <StatusTimeline items={complaint.status_history || []} />
                       <ComplaintComments complaintId={complaint._id} currentRole="dept_head" />
 
                       {/* Action Buttons */}

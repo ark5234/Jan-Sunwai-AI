@@ -47,7 +47,23 @@ async def model_health():
         client = ollama.Client(host=settings.ollama_base_url)
         # P3-C: was a blocking sync call inside async handler — fixed with to_thread
         response = await asyncio.to_thread(client.list)
-        models = response.get("models", []) if isinstance(response, dict) else []
+        # Ollama SDK can return ListResponse (models attribute) or dict payloads.
+        raw_models = []
+        if hasattr(response, "models"):
+            raw_models = list(getattr(response, "models") or [])
+        elif isinstance(response, dict):
+            raw_models = list(response.get("models", []) or [])
+
+        normalized: list[str] = []
+        for item in raw_models:
+            if isinstance(item, dict):
+                name = item.get("model") or item.get("name")
+            else:
+                name = getattr(item, "model", None) or getattr(item, "name", None)
+            if name:
+                normalized.append(str(name))
+
+        models = normalized
     except Exception as exc:
         ollama_ok = False
         logger.warning("Model health check failed: %s", exc)
