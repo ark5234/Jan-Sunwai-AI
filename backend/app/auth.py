@@ -11,6 +11,7 @@ from datetime import datetime, timedelta, timezone
 from jose import JWTError, jwt
 from fastapi import Depends, HTTPException, Request, status
 from fastapi.security import OAuth2PasswordBearer
+from pydantic import EmailStr, TypeAdapter, ValidationError
 from app.database import get_database
 from app.schemas import UserRole
 from app.config import settings
@@ -73,6 +74,29 @@ def _extract_token(request: Request, bearer_token: str | None) -> str | None:
     return bearer_token
 
 
+def _build_legacy_email(username: str) -> str:
+    """Create a deterministic placeholder email for legacy rows missing email."""
+    safe_username = "".join(
+        ch for ch in (username or "user").lower() if ch.isalnum() or ch in "._+-"
+    ).strip("._+-")
+    if not safe_username:
+        safe_username = "user"
+    return f"{safe_username}@placeholder.com"
+
+
+_EMAIL_ADAPTER = TypeAdapter(EmailStr)
+
+
+def _is_valid_email(value: str | None) -> bool:
+    if not value:
+        return False
+    try:
+        _EMAIL_ADAPTER.validate_python(value)
+        return True
+    except ValidationError:
+        return False
+
+
 async def get_current_user(
     request: Request,
     bearer_token: str | None = Depends(oauth2_scheme),
@@ -98,8 +122,27 @@ async def get_current_user(
     if user is None:
         raise credentials_exception
 
+    updates: dict = {}
+    role_value = str(user.get("role") or UserRole.CITIZEN.value)
+    valid_roles = {r.value for r in UserRole}
+    if role_value not in valid_roles:
+        role_value = UserRole.CITIZEN.value
+        updates["role"] = role_value
+
+    current_email = str(user.get("email") or "").strip()
+    if not _is_valid_email(current_email):
+        updates["email"] = _build_legacy_email(str(user.get("username") or "user"))
+
+    if not user.get("created_at"):
+        updates["created_at"] = datetime.now(timezone.utc)
+
+    if updates:
+        await db["users"].update_one({"_id": user["_id"]}, {"$set": updates})
+        user.update(updates)
+
     # Fix ID
     user["_id"] = str(user["_id"])
+    user.pop("password", None)
     return user
 
 

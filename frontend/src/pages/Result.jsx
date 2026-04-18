@@ -31,14 +31,17 @@ const _STREET_STYLE = _MAPPLS_KEY
       layers: [{ id: 'carto', type: 'raster', source: 'carto' }],
     };
 
+const _SATELLITE_TILES = [
+  'https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+  'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+];
+
 const _SATELLITE_STYLE = {
   version: 8,
   sources: {
     satellite: {
       type: 'raster',
-      tiles: [
-        'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
-      ],
+      tiles: _SATELLITE_TILES,
       tileSize: 256,
       maxzoom: 19,
       attribution:
@@ -616,6 +619,9 @@ export default function Result() {
                       <Map
                         ref={mapRef}
                         mapStyle={mapSatellite ? _SATELLITE_STYLE : _STREET_STYLE}
+                        reuseMaps
+                        maxTileCacheSize={1024}
+                        refreshExpiredTiles={false}
                         initialViewState={{
                           longitude: 78.9629,
                           latitude: 20.5937,

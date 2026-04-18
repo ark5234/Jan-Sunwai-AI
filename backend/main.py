@@ -1,5 +1,6 @@
 import contextlib
 from contextlib import asynccontextmanager
+from typing import Any, cast
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
@@ -91,7 +92,10 @@ app = FastAPI(title="Jan-Sunwai AI API", version="1.0.0", lifespan=lifespan)
 
 if RATE_LIMITING_AVAILABLE and SlowAPIMiddleware is not None and _rate_limit_exceeded_handler is not None:
     app.state.limiter = limiter
-    app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+    app.add_exception_handler(
+        cast(type[Exception], RateLimitExceeded),
+        cast(Any, _rate_limit_exceeded_handler),
+    )
     app.add_middleware(SlowAPIMiddleware)
     logger.info("Rate limiting middleware enabled")
 else:

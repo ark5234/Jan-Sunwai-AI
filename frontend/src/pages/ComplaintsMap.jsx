@@ -29,14 +29,17 @@ const STREET_STYLE = MAPPLS_KEY
       layers: [{ id: 'carto', type: 'raster', source: 'carto' }],
     };
 
+const SATELLITE_TILES = [
+  'https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+  'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+];
+
 const SATELLITE_STYLE = {
   version: 8,
   sources: {
     satellite: {
       type: 'raster',
-      tiles: [
-        'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
-      ],
+      tiles: SATELLITE_TILES,
       tileSize: 256,
       maxzoom: 19,
       attribution:
@@ -248,6 +251,9 @@ export default function ComplaintsMap() {
         <Map
           mapStyle={satellite ? SATELLITE_STYLE : STREET_STYLE}
           initialViewState={DEFAULT_CENTER}
+          reuseMaps
+          maxTileCacheSize={1024}
+          refreshExpiredTiles={false}
           maxBounds={[[67.0, 6.0], [98.0, 38.0]]}
           style={{ width: "100%", height: "100%" }}
           interactiveLayerIds={["complaints-circles"]}
