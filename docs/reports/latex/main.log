@@ -1,461 +1,521 @@
-This is XeTeX, Version 3.141592653-2.6-0.999997 (MiKTeX 25.12) (preloaded format=xelatex 2026.4.7)  18 APR 2026 10:54
+This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026) (preloaded format=pdflatex 2026.4.7)  21 APR 2026 16:22
 entering extended mode
  restricted \write18 enabled.
+ file:line:error style messages enabled.
  %&-line parsing enabled.
-**./main.tex
-(main.tex
+**"c:/Users/Vikra/OneDrive/Desktop/Jan-Sunwai AI/docs/reports/latex/main.tex"
+(c:/Users/Vikra/OneDrive/Desktop/Jan-Sunwai AI/docs/reports/latex/main.tex
 LaTeX2e <2025-11-01>
-L3 programming layer <2025-12-24>
-(C:\Users\Vikra\AppData\Local\Programs\MiKTeX\tex/latex/base\report.cls
+L3 programming layer <2026-03-20>
+(c:/texlive/2026/texmf-dist/tex/latex/base/report.cls
 Document Class: report 2025/01/22 v1.4n Standard LaTeX document class
-(C:\Users\Vikra\AppData\Local\Programs\MiKTeX\tex/latex/base\size12.clo
+(c:/texlive/2026/texmf-dist/tex/latex/base/size12.clo
 File: size12.clo 2025/01/22 v1.4n Standard LaTeX file (size option)
 )
-\c@part=\count271
-\c@chapter=\count272
-\c@section=\count273
-\c@subsection=\count274
-\c@subsubsection=\count275
-\c@paragraph=\count276
-\c@subparagraph=\count277
-\c@figure=\count278
-\c@table=\count279
+\c@part=\count275
+\c@chapter=\count276
+\c@section=\count277
+\c@subsection=\count278
+\c@subsubsection=\count279
+\c@paragraph=\count280
+\c@subparagraph=\count281
+\c@figure=\count282
+\c@table=\count283
 \abovecaptionskip=\skip49
 \belowcaptionskip=\skip50
-\bibindent=\dimen148
-)
-(C:\Users\Vikra\AppData\Local\Programs\MiKTeX\tex/generic/iftex\iftex.sty
+\bibindent=\dimen150
+) (c:/texlive/2026/texmf-dist/tex/generic/iftex/iftex.sty
 Package: iftex 2024/12/12 v1.0g TeX engine tests
-)
-(C:\Users\Vikra\AppData\Local\Programs\MiKTeX\tex/latex/fontspec\fontspec.sty
-(C:\Users\Vikra\AppData\Local\Programs\MiKTeX\tex/latex/l3packages/xparse\xpars
-e.sty
-(C:\Users\Vikra\AppData\Local\Programs\MiKTeX\tex/latex/l3kernel\expl3.sty
-Package: expl3 2025-12-24 L3 programming layer (loader) 
-
-(C:\Users\Vikra\AppData\Local\Programs\MiKTeX\tex/latex/l3backend\l3backend-xet
-ex.def
-File: l3backend-xetex.def 2025-10-09 L3 backend support: XeTeX
-\g__graphics_track_int=\count280
-\g__pdfannot_backend_int=\count281
-\g__pdfannot_backend_link_int=\count282
-))
-Package: xparse 2025-10-09 L3 Experimental document command parser
-)
-Package: fontspec 2025/09/29 v2.9g Font selection for XeLaTeX and LuaLaTeX
-
-(C:\Users\Vikra\AppData\Local\Programs\MiKTeX\tex/latex/fontspec\fontspec-xetex
-.sty
-Package: fontspec-xetex 2025/09/29 v2.9g Font selection for XeLaTeX and LuaLaTe
-X
-\l__fontspec_script_int=\count283
-\l__fontspec_language_int=\count284
-\l__fontspec_strnum_int=\count285
-\l__fontspec_tmp_int=\count286
-\l__fontspec_tmpa_int=\count287
-\l__fontspec_tmpb_int=\count288
-\l__fontspec_tmpc_int=\count289
-\l__fontspec_em_int=\count290
-\l__fontspec_emdef_int=\count291
-\l__fontspec_strong_int=\count292
-\l__fontspec_strongdef_int=\count293
-\l__fontspec_tmpa_dim=\dimen149
-\l__fontspec_tmpb_dim=\dimen150
-\l__fontspec_tmpc_dim=\dimen151
- (C:\Users\Vikra\AppData\Local\Programs\MiKTeX\tex/latex/base\fontenc.sty
+) (c:/texlive/2026/texmf-dist/tex/latex/base/fontenc.sty
 Package: fontenc 2025/07/18 v2.1d Standard LaTeX package
-)
-(C:\Users\Vikra\AppData\Local\Programs\MiKTeX\tex/latex/fontspec\fontspec.cfg))
-)
-
-Package fontspec Info: 
-(fontspec)             Font family 'TimesNewRoman(0)' created for font 'Times
-(fontspec)             New Roman' with options [Ligatures=TeX].
-(fontspec)              
-(fontspec)              This font family consists of the following NFSS
-(fontspec)             series/shapes:
-(fontspec)              
-(fontspec)             - 'normal' (m/n) with NFSS spec.: <->"Times New
-(fontspec)             Roman/OT:script=latn;language=dflt;mapping=tex-text;"
-(fontspec)             - 'small caps'  (m/sc) with NFSS spec.: <->"Times New
-(fontspec)             Roman/OT:script=latn;language=dflt;+smcp;mapping=tex-tex
-t;"
-(fontspec)             - 'bold' (b/n) with NFSS spec.: <->"Times New
-(fontspec)             Roman/B/OT:script=latn;language=dflt;mapping=tex-text;"
-(fontspec)             - 'bold small caps'  (b/sc) with NFSS spec.: <->"Times
-(fontspec)             New
-(fontspec)             Roman/B/OT:script=latn;language=dflt;+smcp;mapping=tex-t
-ext;"
-(fontspec)             - 'italic' (m/it) with NFSS spec.: <->"Times New
-(fontspec)             Roman/I/OT:script=latn;language=dflt;mapping=tex-text;"
-(fontspec)             - 'italic small caps'  (m/scit) with NFSS spec.:
-(fontspec)             <->"Times New
-(fontspec)             Roman/I/OT:script=latn;language=dflt;+smcp;mapping=tex-t
-ext;"
-(fontspec)             - 'bold italic' (b/it) with NFSS spec.: <->"Times New
-(fontspec)             Roman/BI/OT:script=latn;language=dflt;mapping=tex-text;"
-
-(fontspec)             - 'bold italic small caps'  (b/scit) with NFSS spec.:
-(fontspec)             <->"Times New
-(fontspec)             Roman/BI/OT:script=latn;language=dflt;+smcp;mapping=tex-
-text;"
-
- (C:\Users\Vikra\AppData\Local\Programs\MiKTeX\tex/latex/geometry\geometry.sty
-Package: geometry 2026/03/07 v6.0 Page Geometry
-(C:\Users\Vikra\AppData\Local\Programs\MiKTeX\tex/latex/graphics\keyval.sty
-Package: keyval 2022/05/29 v1.15 key=value parser (DPC)
-\KV@toks@=\toks17
-)
-(C:\Users\Vikra\AppData\Local\Programs\MiKTeX\tex/generic/iftex\ifvtex.sty
-Package: ifvtex 2019/10/25 v1.7 ifvtex legacy package. Use iftex instead.
-)
-\Gm@cnth=\count294
-\Gm@cntv=\count295
-\c@Gm@tempcnt=\count296
-\Gm@bindingoffset=\dimen152
-\Gm@wd@mp=\dimen153
-\Gm@odd@mp=\dimen154
-\Gm@even@mp=\dimen155
-\Gm@layoutwidth=\dimen156
-\Gm@layoutheight=\dimen157
-\Gm@layouthoffset=\dimen158
-\Gm@layoutvoffset=\dimen159
-\Gm@dimlist=\toks18
-
-(C:\Users\Vikra\AppData\Local\Programs\MiKTeX\tex/latex/geometry\geometry.cfg))
-(C:\Users\Vikra\AppData\Local\Programs\MiKTeX\tex/latex/setspace\setspace.sty
-Package: setspace 2022/12/04 v6.7b set line spacing
-)
-(C:\Users\Vikra\AppData\Local\Programs\MiKTeX\tex/latex/tools\indentfirst.sty
-Package: indentfirst 2023/07/02 v1.03 Indent first paragraph (DPC)
-)
-(C:\Users\Vikra\AppData\Local\Programs\MiKTeX\tex/latex/graphics\graphicx.sty
-Package: graphicx 2024/12/31 v1.2e Enhanced LaTeX Graphics (DPC,SPQR)
-
-(C:\Users\Vikra\AppData\Local\Programs\MiKTeX\tex/latex/graphics\graphics.sty
-Package: graphics 2024/08/06 v1.4g Standard LaTeX Graphics (DPC,SPQR)
-
-(C:\Users\Vikra\AppData\Local\Programs\MiKTeX\tex/latex/graphics\trig.sty
-Package: trig 2023/12/02 v1.11 sin cos tan (DPC)
-)
-(C:\Users\Vikra\AppData\Local\Programs\MiKTeX\tex/latex/graphics-cfg\graphics.c
-fg
-File: graphics.cfg 2016/06/04 v1.11 sample graphics configuration
-)
-Package graphics Info: Driver file: xetex.def on input line 106.
-
-(C:\Users\Vikra\AppData\Local\Programs\MiKTeX\tex/latex/graphics-def\xetex.def
-File: xetex.def 2025/11/01 v5.0p Graphics/color driver for xetex
+) (c:/texlive/2026/texmf-dist/tex/latex/base/inputenc.sty
+Package: inputenc 2024/02/08 v1.3d Input encoding file
+\inpenc@prehook=\toks17
+\inpenc@posthook=\toks18
+) (c:/texlive/2026/texmf-dist/tex/latex/newtx/newtxtext.sty
+Package: newtxtext 2024/04/01 v1.744(Michael Sharpe) latex and unicode latex support for TeXGyreTermesX
+ `newtxtext' v1.744, 2024/04/01 Text macros taking advantage of TeXGyre Termes and its extensions (msharpe) (c:/texlive/2026/texmf-dist/tex/latex/xpatch/xpatch.sty (c:/texlive/2026/texmf-dist/tex/latex/l3kernel/expl3.sty
+Package: expl3 2026-03-20 L3 programming layer (loader) 
+ (c:/texlive/2026/texmf-dist/tex/latex/l3backend/l3backend-pdftex.def
+File: l3backend-pdftex.def 2026-02-18 L3 backend support: PDF output (pdfTeX)
+\l__color_backend_stack_int=\count284
 ))
-\Gin@req@height=\dimen160
-\Gin@req@width=\dimen161
-) (C:\Users\Vikra\AppData\Local\Programs\MiKTeX\tex/latex/tools\longtable.sty
-Package: longtable 2025-10-13 v4.24 Multi-page Table package (DPC)
-\LTleft=\skip51
-\LTright=\skip52
-\LTpre=\skip53
-\LTpost=\skip54
-\LTchunksize=\count297
-\LTcapwidth=\dimen162
-\LT@head=\box53
-\LT@firsthead=\box54
-\LT@foot=\box55
-\LT@lastfoot=\box56
-\LT@gbox=\box57
-\LT@cols=\count298
-\LT@rows=\count299
-\c@LT@tables=\count300
-\c@LT@chunks=\count301
-\LT@p@ftn=\toks19
-) (C:\Users\Vikra\AppData\Local\Programs\MiKTeX\tex/latex/booktabs\booktabs.sty
-Package: booktabs 2020/01/12 v1.61803398 Publication quality tables
-\heavyrulewidth=\dimen163
-\lightrulewidth=\dimen164
-\cmidrulewidth=\dimen165
-\belowrulesep=\dimen166
-\belowbottomsep=\dimen167
-\aboverulesep=\dimen168
-\abovetopsep=\dimen169
-\cmidrulesep=\dimen170
-\cmidrulekern=\dimen171
-\defaultaddspace=\dimen172
-\@cmidla=\count302
-\@cmidlb=\count303
-\@aboverulesep=\dimen173
-\@belowrulesep=\dimen174
-\@thisruleclass=\count304
-\@lastruleclass=\count305
-\@thisrulewidth=\dimen175
-) (C:\Users\Vikra\AppData\Local\Programs\MiKTeX\tex/latex/tools\tabularx.sty
-Package: tabularx 2023/12/11 v2.12a `tabularx' package (DPC)
-
-(C:\Users\Vikra\AppData\Local\Programs\MiKTeX\tex/latex/tools\array.sty
-Package: array 2025/09/25 v2.6n Tabular extension package (FMi)
-\col@sep=\dimen176
-\ar@mcellbox=\box58
-\extrarowheight=\dimen177
-\NC@list=\toks20
-\extratabsurround=\skip55
-\backup@length=\skip56
-\ar@cellbox=\box59
+Package: xpatch 2020/03/25 v0.3a Extending etoolbox patching commands
+ (c:/texlive/2026/texmf-dist/tex/latex/l3packages/xparse/xparse.sty
+Package: xparse 2025-10-09 L3 Experimental document command parser
+) (c:/texlive/2026/texmf-dist/tex/latex/etoolbox/etoolbox.sty
+Package: etoolbox 2025/10/02 v2.5m e-TeX tools for LaTeX (JAW)
+\etb@tempcnta=\count285
+)) (c:/texlive/2026/texmf-dist/tex/latex/xcolor/xcolor.sty
+Package: xcolor 2024/09/29 v3.02 LaTeX color extensions (UK)
+ (c:/texlive/2026/texmf-dist/tex/latex/graphics-cfg/color.cfg
+File: color.cfg 2016/01/02 v1.6 sample color configuration
 )
-\TX@col@width=\dimen178
-\TX@old@table=\dimen179
-\TX@old@col=\dimen180
-\TX@target=\dimen181
-\TX@delta=\dimen182
-\TX@cols=\count306
-\TX@ftn=\toks21
+Package xcolor Info: Driver file: pdftex.def on input line 274.
+ (c:/texlive/2026/texmf-dist/tex/latex/graphics-def/pdftex.def
+File: pdftex.def 2025/09/29 v1.2d Graphics/color driver for pdftex
+) (c:/texlive/2026/texmf-dist/tex/latex/graphics/mathcolor.ltx)
+Package xcolor Info: Model `cmy' substituted by `cmy0' on input line 1349.
+Package xcolor Info: Model `hsb' substituted by `rgb' on input line 1353.
+Package xcolor Info: Model `RGB' extended on input line 1365.
+Package xcolor Info: Model `HTML' substituted by `rgb' on input line 1367.
+Package xcolor Info: Model `Hsb' substituted by `hsb' on input line 1368.
+Package xcolor Info: Model `tHsb' substituted by `hsb' on input line 1369.
+Package xcolor Info: Model `HSB' substituted by `hsb' on input line 1370.
+Package xcolor Info: Model `Gray' substituted by `gray' on input line 1371.
+Package xcolor Info: Model `wave' substituted by `hsb' on input line 1372.
+) (c:/texlive/2026/texmf-dist/tex/latex/xkeyval/xkeyval.sty
+Package: xkeyval 2025/11/04 v2.10 package option processing (HA)
+ (c:/texlive/2026/texmf-dist/tex/generic/xkeyval/xkeyval.tex (c:/texlive/2026/texmf-dist/tex/generic/xkeyval/xkvutils.tex
+\XKV@toks=\toks19
+\XKV@tempa@toks=\toks20
+\XKV@tempb@toks=\toks21
+ (c:/texlive/2026/texmf-dist/tex/generic/xkeyval/keyval.tex))
+\XKV@depth=\count286
+File: xkeyval.tex 2014/12/03 v2.7a key=value parser (HA)
+)) (c:/texlive/2026/texmf-dist/tex/latex/base/textcomp.sty
+Package: textcomp 2024/04/24 v2.1b Standard LaTeX package
+) (c:/texlive/2026/texmf-dist/tex/generic/xstring/xstring.sty (c:/texlive/2026/texmf-dist/tex/generic/xstring/xstring.tex
+\xs_counta=\count287
+\xs_countb=\count288
 )
-(C:\Users\Vikra\AppData\Local\Programs\MiKTeX\tex/latex/float\float.sty
-Package: float 2001/11/08 v1.3d Float enhancements (AL)
-\c@float@type=\count307
-\float@exts=\toks22
-\float@box=\box60
-\@float@everytoks=\toks23
-\@floatcapt=\box61
+Package: xstring 2023/08/22 v1.86 String manipulations (CT)
+) (c:/texlive/2026/texmf-dist/tex/latex/base/ifthen.sty
+Package: ifthen 2024/03/16 v1.1e Standard LaTeX ifthen package (DPC)
+) (c:/texlive/2026/texmf-dist/tex/latex/carlisle/scalefnt.sty)
+LaTeX Font Info:    Setting ntxLF sub-encoding to TS1/0 on input line 24.
+LaTeX Font Info:    Setting ntxTLF sub-encoding to TS1/0 on input line 24.
+LaTeX Font Info:    Setting ntxOsF sub-encoding to TS1/0 on input line 24.
+LaTeX Font Info:    Setting ntxTOsF sub-encoding to TS1/0 on input line 24.
+ (c:/texlive/2026/texmf-dist/tex/generic/kastrup/binhex.tex)
+\ntx@tmpcnta=\count289
+\ntx@cnt=\count290
+ (c:/texlive/2026/texmf-dist/tex/latex/fontaxes/fontaxes.sty
+Package: fontaxes 2026-01-02 v2.0.2 Font selection axes (deprecated)
+Applying: [2024-11-01] Use figureversions if present on input line 74.
+ (c:/texlive/2026/texmf-dist/tex/latex/figureversions/figureversions.sty
+Package: figureversions 2025-04-29 v1.0.1 Figure versions
 )
-(C:\Users\Vikra\AppData\Local\Programs\MiKTeX\tex/latex/multirow\multirow.sty
-Package: multirow 2024/11/12 v2.9 Span multiple rows of a table
-\multirow@colwidth=\skip57
-\multirow@cntb=\count308
-\multirow@dima=\skip58
-\bigstrutjot=\dimen183
+Already applied: [0000-00-00] Fall back to v1 on input line 76.
 )
-(C:\Users\Vikra\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amsmath.sty
+\tx@sixem=\dimen151
+\tx@y=\dimen152
+\tx@x=\dimen153
+\tx@tmpdima=\dimen154
+\tx@tmpdimb=\dimen155
+\tx@tmpdimc=\dimen156
+\tx@tmpdimd=\dimen157
+\tx@tmpdime=\dimen158
+\tx@tmpdimf=\dimen159
+\tx@dimA=\dimen160
+\tx@dimAA=\dimen161
+\tx@dimB=\dimen162
+\tx@dimBB=\dimen163
+\tx@dimC=\dimen164
+LaTeX Info: Redefining \oldstylenums on input line 902.
+) (c:/texlive/2026/texmf-dist/tex/latex/newtx/newtxmath.sty
+Package: newtxmath 2024/09/22 v1.754
+ `newtxmath' v1.754, 2024/09/22 Math macros based originally on txfonts (msharpe) (c:/texlive/2026/texmf-dist/tex/latex/amsmath/amsmath.sty
 Package: amsmath 2025/07/09 v2.17z AMS math features
-\@mathmargin=\skip59
+\@mathmargin=\skip51
 
 For additional information on amsmath, use the `?' option.
-(C:\Users\Vikra\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amstext.sty
+(c:/texlive/2026/texmf-dist/tex/latex/amsmath/amstext.sty
 Package: amstext 2024/11/17 v2.01 AMS text
-
-(C:\Users\Vikra\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amsgen.sty
+ (c:/texlive/2026/texmf-dist/tex/latex/amsmath/amsgen.sty
 File: amsgen.sty 1999/11/30 v2.0 generic functions
-\@emptytoks=\toks24
-\ex@=\dimen184
-))
-(C:\Users\Vikra\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amsbsy.sty
+\@emptytoks=\toks22
+\ex@=\dimen165
+)) (c:/texlive/2026/texmf-dist/tex/latex/amsmath/amsbsy.sty
 Package: amsbsy 1999/11/29 v1.2d Bold Symbols
-\pmbraise@=\dimen185
-)
-(C:\Users\Vikra\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amsopn.sty
+\pmbraise@=\dimen166
+) (c:/texlive/2026/texmf-dist/tex/latex/amsmath/amsopn.sty
 Package: amsopn 2022/04/08 v2.04 operator names
 )
-\inf@bad=\count309
+\inf@bad=\count291
 LaTeX Info: Redefining \frac on input line 233.
-\uproot@=\count310
-\leftroot@=\count311
+\uproot@=\count292
+\leftroot@=\count293
 LaTeX Info: Redefining \overline on input line 398.
 LaTeX Info: Redefining \colon on input line 409.
-\classnum@=\count312
-\DOTSCASE@=\count313
+\classnum@=\count294
+\DOTSCASE@=\count295
 LaTeX Info: Redefining \ldots on input line 495.
 LaTeX Info: Redefining \dots on input line 498.
 LaTeX Info: Redefining \cdots on input line 619.
-\Mathstrutbox@=\box62
-\strutbox@=\box63
+\Mathstrutbox@=\box53
+\strutbox@=\box54
 LaTeX Info: Redefining \big on input line 721.
 LaTeX Info: Redefining \Big on input line 722.
 LaTeX Info: Redefining \bigg on input line 723.
 LaTeX Info: Redefining \Bigg on input line 724.
-\big@size=\dimen186
+\big@size=\dimen167
 LaTeX Font Info:    Redeclaring font encoding OML on input line 742.
 LaTeX Font Info:    Redeclaring font encoding OMS on input line 743.
-\macc@depth=\count314
+\macc@depth=\count296
 LaTeX Info: Redefining \bmod on input line 904.
 LaTeX Info: Redefining \pmod on input line 909.
 LaTeX Info: Redefining \smash on input line 939.
 LaTeX Info: Redefining \relbar on input line 969.
 LaTeX Info: Redefining \Relbar on input line 970.
-\c@MaxMatrixCols=\count315
+\c@MaxMatrixCols=\count297
 \dotsspace@=\muskip17
-\c@parentequation=\count316
-\dspbrk@lvl=\count317
-\tag@help=\toks25
-\row@=\count318
-\column@=\count319
-\maxfields@=\count320
-\andhelp@=\toks26
-\eqnshift@=\dimen187
-\alignsep@=\dimen188
-\tagshift@=\dimen189
-\tagwidth@=\dimen190
-\totwidth@=\dimen191
-\lineht@=\dimen192
-\@envbody=\toks27
-\multlinegap=\skip60
-\multlinetaggap=\skip61
-\mathdisplay@stack=\toks28
+\c@parentequation=\count298
+\dspbrk@lvl=\count299
+\tag@help=\toks23
+\row@=\count300
+\column@=\count301
+\maxfields@=\count302
+\andhelp@=\toks24
+\eqnshift@=\dimen168
+\alignsep@=\dimen169
+\tagshift@=\dimen170
+\tagwidth@=\dimen171
+\totwidth@=\dimen172
+\lineht@=\dimen173
+\@envbody=\toks25
+\multlinegap=\skip52
+\multlinetaggap=\skip53
+\mathdisplay@stack=\toks26
 LaTeX Info: Redefining \[ on input line 2950.
 LaTeX Info: Redefining \] on input line 2951.
+) (c:/texlive/2026/texmf-dist/tex/latex/oberdiek/centernot.sty
+Package: centernot 2016/05/16 v1.4 Centers the not symbol horizontally (HO)
 )
-(C:\Users\Vikra\AppData\Local\Programs\MiKTeX\tex/latex/enumitem\enumitem.sty
+\tx@cntz=\count303
+ (c:/texlive/2026/texmf-dist/tex/generic/kastrup/binhex.tex)
+\tx@Isdigit=\count304
+\tx@IsAlNum=\count305
+\tx@tA=\toks27
+\tx@tB=\toks28
+\tx@su=\read2
+
+amsthm NOT loaded
+LaTeX Font Info:    Redeclaring symbol font `operators' on input line 402.
+LaTeX Font Info:    Overwriting symbol font `operators' in version `normal'
+(Font)                  OT1/cmr/m/n --> OT1/minntx/m/n on input line 402.
+LaTeX Font Info:    Overwriting symbol font `operators' in version `bold'
+(Font)                  OT1/cmr/bx/n --> OT1/minntx/m/n on input line 402.
+LaTeX Font Info:    Overwriting symbol font `operators' in version `bold'
+(Font)                  OT1/minntx/m/n --> OT1/minntx/b/n on input line 403.
+LaTeX Font Info:    Redeclaring math alphabet \mathsf on input line 410.
+LaTeX Font Info:    Overwriting math alphabet `\mathsf' in version `normal'
+(Font)                  OT1/cmss/m/n --> OT1/qhv/m/n on input line 410.
+LaTeX Font Info:    Overwriting math alphabet `\mathsf' in version `bold'
+(Font)                  OT1/cmss/bx/n --> OT1/qhv/m/n on input line 410.
+LaTeX Font Info:    Overwriting math alphabet `\mathsf' in version `bold'
+(Font)                  OT1/qhv/m/n --> OT1/qhv/b/n on input line 412.
+LaTeX Font Info:    Redeclaring math alphabet \mathit on input line 419.
+LaTeX Font Info:    Overwriting math alphabet `\mathit' in version `normal'
+(Font)                  OT1/cmr/m/it --> OT1/minntx/m/it on input line 419.
+LaTeX Font Info:    Overwriting math alphabet `\mathit' in version `bold'
+(Font)                  OT1/cmr/bx/it --> OT1/minntx/m/it on input line 419.
+LaTeX Font Info:    Redeclaring math alphabet \mathtt on input line 420.
+LaTeX Font Info:    Overwriting math alphabet `\mathtt' in version `normal'
+(Font)                  OT1/cmtt/m/n --> T1/ntxtt/m/n on input line 420.
+LaTeX Font Info:    Overwriting math alphabet `\mathtt' in version `bold'
+(Font)                  OT1/cmtt/m/n --> T1/ntxtt/m/n on input line 420.
+LaTeX Font Info:    Redeclaring math alphabet \mathbf on input line 422.
+LaTeX Font Info:    Overwriting math alphabet `\mathbf' in version `normal'
+(Font)                  OT1/cmr/bx/n --> OT1/minntx/b/n on input line 422.
+LaTeX Font Info:    Overwriting math alphabet `\mathbf' in version `bold'
+(Font)                  OT1/cmr/bx/n --> OT1/minntx/b/n on input line 422.
+LaTeX Font Info:    Overwriting math alphabet `\mathit' in version `bold'
+(Font)                  OT1/minntx/m/it --> OT1/minntx/b/it on input line 423.
+LaTeX Font Info:    Overwriting math alphabet `\mathtt' in version `bold'
+(Font)                  T1/ntxtt/m/n --> T1/ntxtt/b/n on input line 426.
+LaTeX Font Info:    Redeclaring symbol font `letters' on input line 534.
+LaTeX Font Info:    Overwriting symbol font `letters' in version `normal'
+(Font)                  OML/cmm/m/it --> OML/ntxmi/m/it on input line 534.
+LaTeX Font Info:    Overwriting symbol font `letters' in version `bold'
+(Font)                  OML/cmm/b/it --> OML/ntxmi/m/it on input line 534.
+LaTeX Font Info:    Overwriting symbol font `letters' in version `bold'
+(Font)                  OML/ntxmi/m/it --> OML/ntxmi/b/it on input line 535.
+\symlettersA=\mathgroup4
+LaTeX Font Info:    Overwriting symbol font `lettersA' in version `bold'
+(Font)                  U/ntxmia/m/it --> U/ntxmia/b/it on input line 582.
+Now handling font encoding LMS ...
+... no UTF-8 mapping file for font encoding LMS
+LaTeX Font Info:    Redeclaring symbol font `symbols' on input line 604.
+LaTeX Font Info:    Encoding `OMS' has changed to `LMS' for symbol font
+(Font)              `symbols' in the math version `normal' on input line 604.
+LaTeX Font Info:    Overwriting symbol font `symbols' in version `normal'
+(Font)                  OMS/cmsy/m/n --> LMS/ntxsy/m/n on input line 604.
+LaTeX Font Info:    Encoding `OMS' has changed to `LMS' for symbol font
+(Font)              `symbols' in the math version `bold' on input line 604.
+LaTeX Font Info:    Overwriting symbol font `symbols' in version `bold'
+(Font)                  OMS/cmsy/b/n --> LMS/ntxsy/m/n on input line 604.
+LaTeX Font Info:    Overwriting symbol font `symbols' in version `bold'
+(Font)                  LMS/ntxsy/m/n --> LMS/ntxsy/b/n on input line 605.
+\symAMSm=\mathgroup5
+LaTeX Font Info:    Overwriting symbol font `AMSm' in version `bold'
+(Font)                  U/ntxsym/m/n --> U/ntxsym/b/n on input line 630.
+\symsymbolsC=\mathgroup6
+LaTeX Font Info:    Overwriting symbol font `symbolsC' in version `bold'
+(Font)                  U/ntxsyc/m/n --> U/ntxsyc/b/n on input line 651.
+Now handling font encoding LMX ...
+... no UTF-8 mapping file for font encoding LMX
+LaTeX Font Info:    Redeclaring symbol font `largesymbols' on input line 664.
+LaTeX Font Info:    Encoding `OMX' has changed to `LMX' for symbol font
+(Font)              `largesymbols' in the math version `normal' on input line 664.
+LaTeX Font Info:    Overwriting symbol font `largesymbols' in version `normal'
+(Font)                  OMX/cmex/m/n --> LMX/ntxexx/m/n on input line 664.
+LaTeX Font Info:    Encoding `OMX' has changed to `LMX' for symbol font
+(Font)              `largesymbols' in the math version `bold' on input line 664.
+LaTeX Font Info:    Overwriting symbol font `largesymbols' in version `bold'
+(Font)                  OMX/cmex/m/n --> LMX/ntxexx/m/n on input line 664.
+LaTeX Font Info:    Overwriting symbol font `largesymbols' in version `bold'
+(Font)                  LMX/ntxexx/m/n --> LMX/ntxexx/b/n on input line 665.
+\symlargesymbolsTXA=\mathgroup7
+LaTeX Font Info:    Overwriting symbol font `largesymbolsTXA' in version `bold'
+(Font)                  U/ntxexa/m/n --> U/ntxexa/b/n on input line 679.
+\tx@sbptoks=\toks29
+LaTeX Font Info:    Redeclaring math delimiter \lfloor on input line 902.
+LaTeX Font Info:    Redeclaring math delimiter \rfloor on input line 903.
+LaTeX Font Info:    Redeclaring math delimiter \lceil on input line 904.
+LaTeX Font Info:    Redeclaring math delimiter \rceil on input line 905.
+LaTeX Font Info:    Redeclaring math delimiter \lbrace on input line 910.
+LaTeX Font Info:    Redeclaring math delimiter \rbrace on input line 911.
+LaTeX Font Info:    Redeclaring math delimiter \langle on input line 913.
+LaTeX Font Info:    Redeclaring math delimiter \rangle on input line 915.
+LaTeX Font Info:    Redeclaring math delimiter \arrowvert on input line 919.
+LaTeX Font Info:    Redeclaring math delimiter \vert on input line 920.
+LaTeX Font Info:    Redeclaring math symbol \hbar on input line 966.
+LaTeX Font Info:    Redeclaring math accent \dot on input line 991.
+LaTeX Font Info:    Redeclaring math accent \ddot on input line 992.
+LaTeX Font Info:    Redeclaring math accent \vec on input line 2057.
+LaTeX Info: Redefining \Bbbk on input line 2847.
+LaTeX Info: Redefining \not on input line 2995.
+) (c:/texlive/2026/texmf-dist/tex/latex/geometry/geometry.sty
+Package: geometry 2026/03/07 v6.0 Page Geometry
+ (c:/texlive/2026/texmf-dist/tex/generic/iftex/ifvtex.sty
+Package: ifvtex 2019/10/25 v1.7 ifvtex legacy package. Use iftex instead.
+)
+\Gm@cnth=\count306
+\Gm@cntv=\count307
+\c@Gm@tempcnt=\count308
+\Gm@bindingoffset=\dimen174
+\Gm@wd@mp=\dimen175
+\Gm@odd@mp=\dimen176
+\Gm@even@mp=\dimen177
+\Gm@layoutwidth=\dimen178
+\Gm@layoutheight=\dimen179
+\Gm@layouthoffset=\dimen180
+\Gm@layoutvoffset=\dimen181
+\Gm@dimlist=\toks30
+) (c:/texlive/2026/texmf-dist/tex/latex/setspace/setspace.sty
+Package: setspace 2022/12/04 v6.7b set line spacing
+) (c:/texlive/2026/texmf-dist/tex/latex/tools/indentfirst.sty
+Package: indentfirst 2023/07/02 v1.03 Indent first paragraph (DPC)
+) (c:/texlive/2026/texmf-dist/tex/latex/graphics/graphicx.sty
+Package: graphicx 2024/12/31 v1.2e Enhanced LaTeX Graphics (DPC,SPQR)
+ (c:/texlive/2026/texmf-dist/tex/latex/graphics/graphics.sty
+Package: graphics 2024/08/06 v1.4g Standard LaTeX Graphics (DPC,SPQR)
+ (c:/texlive/2026/texmf-dist/tex/latex/graphics/trig.sty
+Package: trig 2023/12/02 v1.11 sin cos tan (DPC)
+) (c:/texlive/2026/texmf-dist/tex/latex/graphics-cfg/graphics.cfg
+File: graphics.cfg 2016/06/04 v1.11 sample graphics configuration
+)
+Package graphics Info: Driver file: pdftex.def on input line 106.
+)
+\Gin@req@height=\dimen182
+\Gin@req@width=\dimen183
+) (c:/texlive/2026/texmf-dist/tex/latex/tools/longtable.sty
+Package: longtable 2025-10-13 v4.24 Multi-page Table package (DPC)
+\LTleft=\skip54
+\LTright=\skip55
+\LTpre=\skip56
+\LTpost=\skip57
+\LTchunksize=\count309
+\LTcapwidth=\dimen184
+\LT@head=\box55
+\LT@firsthead=\box56
+\LT@foot=\box57
+\LT@lastfoot=\box58
+\LT@gbox=\box59
+\LT@cols=\count310
+\LT@rows=\count311
+\c@LT@tables=\count312
+\c@LT@chunks=\count313
+\LT@p@ftn=\toks31
+) (c:/texlive/2026/texmf-dist/tex/latex/booktabs/booktabs.sty
+Package: booktabs 2020/01/12 v1.61803398 Publication quality tables
+\heavyrulewidth=\dimen185
+\lightrulewidth=\dimen186
+\cmidrulewidth=\dimen187
+\belowrulesep=\dimen188
+\belowbottomsep=\dimen189
+\aboverulesep=\dimen190
+\abovetopsep=\dimen191
+\cmidrulesep=\dimen192
+\cmidrulekern=\dimen193
+\defaultaddspace=\dimen194
+\@cmidla=\count314
+\@cmidlb=\count315
+\@aboverulesep=\dimen195
+\@belowrulesep=\dimen196
+\@thisruleclass=\count316
+\@lastruleclass=\count317
+\@thisrulewidth=\dimen197
+) (c:/texlive/2026/texmf-dist/tex/latex/tools/tabularx.sty
+Package: tabularx 2023/12/11 v2.12a `tabularx' package (DPC)
+ (c:/texlive/2026/texmf-dist/tex/latex/tools/array.sty
+Package: array 2025/09/25 v2.6n Tabular extension package (FMi)
+\col@sep=\dimen198
+\ar@mcellbox=\box60
+\extrarowheight=\dimen199
+\NC@list=\toks32
+\extratabsurround=\skip58
+\backup@length=\skip59
+\ar@cellbox=\box61
+)
+\TX@col@width=\dimen256
+\TX@old@table=\dimen257
+\TX@old@col=\dimen258
+\TX@target=\dimen259
+\TX@delta=\dimen260
+\TX@cols=\count318
+\TX@ftn=\toks33
+) (c:/texlive/2026/texmf-dist/tex/latex/float/float.sty
+Package: float 2001/11/08 v1.3d Float enhancements (AL)
+\c@float@type=\count319
+\float@exts=\toks34
+\float@box=\box62
+\@float@everytoks=\toks35
+\@floatcapt=\box63
+) (c:/texlive/2026/texmf-dist/tex/latex/multirow/multirow.sty
+Package: multirow 2024/11/12 v2.9 Span multiple rows of a table
+\multirow@colwidth=\skip60
+\multirow@cntb=\count320
+\multirow@dima=\skip61
+\bigstrutjot=\dimen261
+) (c:/texlive/2026/texmf-dist/tex/latex/enumitem/enumitem.sty
 Package: enumitem 2025/02/06 v3.11 Customized lists
+\enitkv@toks@=\toks36
 \labelindent=\skip62
-\enit@outerparindent=\dimen193
-\enit@toks=\toks29
+\enit@outerparindent=\dimen262
+\enit@toks=\toks37
 \enit@inbox=\box64
 \enit@count@id=\count321
 \enitdp@description=\count322
-)
-(C:\Users\Vikra\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\hyperref.sty
-Package: hyperref 2025-07-12 v7.01o Hypertext links for LaTeX
-
-(C:\Users\Vikra\AppData\Local\Programs\MiKTeX\tex/latex/kvsetkeys\kvsetkeys.sty
+) (c:/texlive/2026/texmf-dist/tex/latex/hyperref/hyperref.sty
+Package: hyperref 2026-01-29 v7.01p Hypertext links for LaTeX
+ (c:/texlive/2026/texmf-dist/tex/latex/kvsetkeys/kvsetkeys.sty
 Package: kvsetkeys 2022-10-05 v1.19 Key value parser (HO)
-)
-(C:\Users\Vikra\AppData\Local\Programs\MiKTeX\tex/generic/kvdefinekeys\kvdefine
-keys.sty
+) (c:/texlive/2026/texmf-dist/tex/generic/kvdefinekeys/kvdefinekeys.sty
 Package: kvdefinekeys 2019-12-19 v1.6 Define keys (HO)
-)
-(C:\Users\Vikra\AppData\Local\Programs\MiKTeX\tex/generic/pdfescape\pdfescape.s
-ty
+) (c:/texlive/2026/texmf-dist/tex/generic/pdfescape/pdfescape.sty
 Package: pdfescape 2019/12/09 v1.15 Implements pdfTeX's escape features (HO)
-
-(C:\Users\Vikra\AppData\Local\Programs\MiKTeX\tex/generic/ltxcmds\ltxcmds.sty
+ (c:/texlive/2026/texmf-dist/tex/generic/ltxcmds/ltxcmds.sty
 Package: ltxcmds 2023-12-04 v1.26 LaTeX kernel commands for general use (HO)
-)
-(C:\Users\Vikra\AppData\Local\Programs\MiKTeX\tex/generic/pdftexcmds\pdftexcmds
-.sty
-Package: pdftexcmds 2020-06-27 v0.33 Utility functions of pdfTeX for LuaTeX (HO
-)
-
-(C:\Users\Vikra\AppData\Local\Programs\MiKTeX\tex/generic/infwarerr\infwarerr.s
-ty
+) (c:/texlive/2026/texmf-dist/tex/generic/pdftexcmds/pdftexcmds.sty
+Package: pdftexcmds 2020-06-27 v0.33 Utility functions of pdfTeX for LuaTeX (HO)
+ (c:/texlive/2026/texmf-dist/tex/generic/infwarerr/infwarerr.sty
 Package: infwarerr 2019/12/03 v1.5 Providing info/warning/error messages (HO)
 )
 Package pdftexcmds Info: \pdf@primitive is available.
 Package pdftexcmds Info: \pdf@ifprimitive is available.
-Package pdftexcmds Info: \pdfdraftmode not found.
-))
-(C:\Users\Vikra\AppData\Local\Programs\MiKTeX\tex/latex/hycolor\hycolor.sty
+Package pdftexcmds Info: \pdfdraftmode found.
+)) (c:/texlive/2026/texmf-dist/tex/latex/hycolor/hycolor.sty
 Package: hycolor 2020-01-27 v1.10 Color options for hyperref/bookmark (HO)
-)
-(C:\Users\Vikra\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\nameref.sty
-Package: nameref 2025-06-21 v2.57 Cross-referencing by name of section
-
-(C:\Users\Vikra\AppData\Local\Programs\MiKTeX\tex/latex/refcount\refcount.sty
+) (c:/texlive/2026/texmf-dist/tex/latex/hyperref/nameref.sty
+Package: nameref 2026-01-29 v2.58 Cross-referencing by name of section
+ (c:/texlive/2026/texmf-dist/tex/latex/refcount/refcount.sty
 Package: refcount 2019/12/15 v3.6 Data extraction from label references (HO)
-)
-(C:\Users\Vikra\AppData\Local\Programs\MiKTeX\tex/generic/gettitlestring\gettit
-lestring.sty
+) (c:/texlive/2026/texmf-dist/tex/generic/gettitlestring/gettitlestring.sty
 Package: gettitlestring 2019/12/15 v1.6 Cleanup title references (HO)
-
-(C:\Users\Vikra\AppData\Local\Programs\MiKTeX\tex/latex/kvoptions\kvoptions.sty
+ (c:/texlive/2026/texmf-dist/tex/latex/kvoptions/kvoptions.sty
 Package: kvoptions 2022-06-15 v3.15 Key value format for package options (HO)
 ))
 \c@section@level=\count323
+) (c:/texlive/2026/texmf-dist/tex/generic/stringenc/stringenc.sty
+Package: stringenc 2019/11/29 v1.12 Convert strings between diff. encodings (HO)
 )
-(C:\Users\Vikra\AppData\Local\Programs\MiKTeX\tex/latex/etoolbox\etoolbox.sty
-Package: etoolbox 2025/10/02 v2.5m e-TeX tools for LaTeX (JAW)
-\etb@tempcnta=\count324
-)
-(C:\Users\Vikra\AppData\Local\Programs\MiKTeX\tex/generic/stringenc\stringenc.s
-ty
-Package: stringenc 2019/11/29 v1.12 Convert strings between diff. encodings (HO
-)
-)
-\@linkdim=\dimen194
-\Hy@linkcounter=\count325
-\Hy@pagecounter=\count326
- (C:\Users\Vikra\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\pd1enc.def
-File: pd1enc.def 2025-07-12 v7.01o Hyperref: PDFDocEncoding definition (HO)
-) (C:\Users\Vikra\AppData\Local\Programs\MiKTeX\tex/generic/intcalc\intcalc.sty
+\@linkdim=\dimen263
+\Hy@linkcounter=\count324
+\Hy@pagecounter=\count325
+ (c:/texlive/2026/texmf-dist/tex/latex/hyperref/pd1enc.def
+File: pd1enc.def 2026-01-29 v7.01p Hyperref: PDFDocEncoding definition (HO)
+Now handling font encoding PD1 ...
+... no UTF-8 mapping file for font encoding PD1
+) (c:/texlive/2026/texmf-dist/tex/generic/intcalc/intcalc.sty
 Package: intcalc 2019/12/15 v1.3 Expandable calculations with integers (HO)
 )
-\Hy@SavedSpaceFactor=\count327
- (C:\Users\Vikra\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\puenc.def
-File: puenc.def 2025-07-12 v7.01o Hyperref: PDF Unicode definition (HO)
+\Hy@SavedSpaceFactor=\count326
+ (c:/texlive/2026/texmf-dist/tex/latex/hyperref/puenc.def
+File: puenc.def 2026-01-29 v7.01p Hyperref: PDF Unicode definition (HO)
+Now handling font encoding PU ...
+... no UTF-8 mapping file for font encoding PU
 )
-Package hyperref Info: Hyper figures OFF on input line 4195.
-Package hyperref Info: Link nesting OFF on input line 4200.
-Package hyperref Info: Hyper index ON on input line 4203.
-Package hyperref Info: Plain pages OFF on input line 4210.
-Package hyperref Info: Backreferencing OFF on input line 4215.
+Package hyperref Info: Hyper figures OFF on input line 4201.
+Package hyperref Info: Link nesting OFF on input line 4206.
+Package hyperref Info: Hyper index ON on input line 4209.
+Package hyperref Info: Plain pages OFF on input line 4216.
+Package hyperref Info: Backreferencing OFF on input line 4221.
 Package hyperref Info: Implicit mode ON; LaTeX internals redefined.
-Package hyperref Info: Bookmarks ON on input line 4462.
-\c@Hy@tempcnt=\count328
-
-(C:\Users\Vikra\AppData\Local\Programs\MiKTeX\tex/latex/url\url.sty
+Package hyperref Info: Bookmarks ON on input line 4468.
+\c@Hy@tempcnt=\count327
+ (c:/texlive/2026/texmf-dist/tex/latex/url/url.sty
 \Urlmuskip=\muskip18
 Package: url 2013/09/16  ver 3.4  Verb mode for urls, etc.
 )
-LaTeX Info: Redefining \url on input line 4801.
-\XeTeXLinkMargin=\dimen195
-
-(C:\Users\Vikra\AppData\Local\Programs\MiKTeX\tex/generic/bitset\bitset.sty
+LaTeX Info: Redefining \url on input line 4807.
+\XeTeXLinkMargin=\dimen264
+ (c:/texlive/2026/texmf-dist/tex/generic/bitset/bitset.sty
 Package: bitset 2019/12/09 v1.3 Handle bit-vector datatype (HO)
-
-(C:\Users\Vikra\AppData\Local\Programs\MiKTeX\tex/generic/bigintcalc\bigintcalc
-.sty
-Package: bigintcalc 2019/12/15 v1.5 Expandable calculations on big integers (HO
-)
+ (c:/texlive/2026/texmf-dist/tex/generic/bigintcalc/bigintcalc.sty
+Package: bigintcalc 2019/12/15 v1.5 Expandable calculations on big integers (HO)
 ))
-\Fld@menulength=\count329
-\Field@Width=\dimen196
-\Fld@charsize=\dimen197
-Package hyperref Info: Hyper figures OFF on input line 6078.
-Package hyperref Info: Link nesting OFF on input line 6083.
-Package hyperref Info: Hyper index ON on input line 6086.
-Package hyperref Info: backreferencing OFF on input line 6093.
-Package hyperref Info: Link coloring OFF on input line 6098.
-Package hyperref Info: Link coloring with OCG OFF on input line 6103.
-Package hyperref Info: PDF/A mode OFF on input line 6108.
-\Hy@abspage=\count330
-\c@Item=\count331
-\c@Hfootnote=\count332
+\Fld@menulength=\count328
+\Field@Width=\dimen265
+\Fld@charsize=\dimen266
+Package hyperref Info: Hyper figures OFF on input line 6084.
+Package hyperref Info: Link nesting OFF on input line 6089.
+Package hyperref Info: Hyper index ON on input line 6092.
+Package hyperref Info: backreferencing OFF on input line 6099.
+Package hyperref Info: Link coloring OFF on input line 6104.
+Package hyperref Info: Link coloring with OCG OFF on input line 6109.
+Package hyperref Info: PDF/A mode OFF on input line 6114.
+\Hy@abspage=\count329
+\c@Item=\count330
+\c@Hfootnote=\count331
 )
-Package hyperref Info: Driver (autodetected): hxetex.
-
-(C:\Users\Vikra\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\hxetex.def
-File: hxetex.def 2025-07-12 v7.01o Hyperref driver for XeTeX
-\pdfm@box=\box65
-\c@Hy@AnnotLevel=\count333
-\HyField@AnnotCount=\count334
-\Fld@listcount=\count335
-\c@bookmark@seq@number=\count336
-
-(C:\Users\Vikra\AppData\Local\Programs\MiKTeX\tex/latex/rerunfilecheck\rerunfil
-echeck.sty
+Package hyperref Info: Driver (autodetected): hpdftex.
+ (c:/texlive/2026/texmf-dist/tex/latex/hyperref/hpdftex.def
+File: hpdftex.def 2026-01-29 v7.01p Hyperref driver for pdfTeX
+\Fld@listcount=\count332
+\c@bookmark@seq@number=\count333
+ (c:/texlive/2026/texmf-dist/tex/latex/rerunfilecheck/rerunfilecheck.sty
 Package: rerunfilecheck 2025-06-21 v1.11 Rerun checks for auxiliary files (HO)
-
-(C:\Users\Vikra\AppData\Local\Programs\MiKTeX\tex/generic/uniquecounter\uniquec
-ounter.sty
+ (c:/texlive/2026/texmf-dist/tex/generic/uniquecounter/uniquecounter.sty
 Package: uniquecounter 2019/12/15 v1.4 Provide unlimited unique counter (HO)
 )
-Package uniquecounter Info: New unique counter `rerunfilecheck' on input line 2
-84.
+Package uniquecounter Info: New unique counter `rerunfilecheck' on input line 284.
 )
 \Hy@SectionHShift=\skip63
-)
-(C:\Users\Vikra\AppData\Local\Programs\MiKTeX\tex/latex/caption\caption.sty
+) (c:/texlive/2026/texmf-dist/tex/latex/caption/caption.sty
 Package: caption 2023/08/05 v3.6o Customizing captions (AR)
-
-(C:\Users\Vikra\AppData\Local\Programs\MiKTeX\tex/latex/caption\caption3.sty
+ (c:/texlive/2026/texmf-dist/tex/latex/caption/caption3.sty
 Package: caption3 2023/07/31 v2.4d caption3 kernel (AR)
-\caption@tempdima=\dimen198
-\captionmargin=\dimen199
-\caption@leftmargin=\dimen256
-\caption@rightmargin=\dimen257
-\caption@width=\dimen258
-\caption@indent=\dimen259
-\caption@parindent=\dimen260
-\caption@hangindent=\dimen261
+\caption@tempdima=\dimen267
+\captionmargin=\dimen268
+\caption@leftmargin=\dimen269
+\caption@rightmargin=\dimen270
+\caption@width=\dimen271
+\caption@indent=\dimen272
+\caption@parindent=\dimen273
+\caption@hangindent=\dimen274
 Package caption Info: Standard document class detected.
 )
-\c@caption@flags=\count337
-\c@continuedfloat=\count338
+\c@caption@flags=\count334
+\c@continuedfloat=\count335
 Package caption Info: float package is loaded.
 Package caption Info: hyperref package is loaded.
 Package caption Info: longtable package is loaded.
-
-(C:\Users\Vikra\AppData\Local\Programs\MiKTeX\tex/latex/caption\ltcaption.sty
+ (c:/texlive/2026/texmf-dist/tex/latex/caption/ltcaption.sty
 Package: ltcaption 2021/01/08 v1.4c longtable captions (AR)
-)) (C:\Users\Vikra\AppData\Local\Programs\MiKTeX\tex/latex/fancyhdr\fancyhdr.st
-y
+)) (c:/texlive/2026/texmf-dist/tex/latex/fancyhdr/fancyhdr.sty
 Package: fancyhdr 2025/02/07 v5.2 Extensive control of page headers and footers
-
 \f@nch@headwidth=\skip64
 \f@nch@offset@elh=\skip65
 \f@nch@offset@erh=\skip66
@@ -470,49 +530,44 @@ Package: fancyhdr 2025/02/07 v5.2 Extensive control of page headers and footers
 \f@nch@widthL=\skip75
 \f@nch@widthC=\skip76
 \f@nch@widthR=\skip77
-\@temptokenb=\toks30
-) (C:\Users\Vikra\AppData\Local\Programs\MiKTeX\tex/latex/titlesec\titlesec.sty
+\@temptokenb=\toks38
+) (c:/texlive/2026/texmf-dist/tex/latex/titlesec/titlesec.sty
 Package: titlesec 2025/01/04 v2.17 Sectioning titles
-\ttl@box=\box66
+\ttl@box=\box65
 \beforetitleunit=\skip78
 \aftertitleunit=\skip79
-\ttl@plus=\dimen262
-\ttl@minus=\dimen263
-\ttl@toksa=\toks31
-\titlewidth=\dimen264
-\titlewidthlast=\dimen265
-\titlewidthfirst=\dimen266
-)
-(C:\Users\Vikra\AppData\Local\Programs\MiKTeX\tex/latex/microtype\microtype.sty
+\ttl@plus=\dimen275
+\ttl@minus=\dimen276
+\ttl@toksa=\toks39
+\titlewidth=\dimen277
+\titlewidthlast=\dimen278
+\titlewidthfirst=\dimen279
+) (c:/texlive/2026/texmf-dist/tex/latex/microtype/microtype.sty
 Package: microtype 2026/03/01 v3.2d Micro-typographical refinements (RS)
-\MT@toks=\toks32
-\MT@tempbox=\box67
-\MT@count=\count339
+\MT@toks=\toks40
+\MT@tempbox=\box66
+\MT@count=\count336
 LaTeX Info: Redefining \noprotrusionifhmode on input line 1084.
 LaTeX Info: Redefining \leftprotrusion on input line 1085.
-\MT@prot@toks=\toks33
+\MT@prot@toks=\toks41
 LaTeX Info: Redefining \rightprotrusion on input line 1104.
 LaTeX Info: Redefining \textls on input line 1449.
-\MT@outer@kern=\dimen267
+\MT@outer@kern=\dimen280
 LaTeX Info: Redefining \microtypecontext on input line 2053.
 LaTeX Info: Redefining \textmicrotypecontext on input line 2070.
-\MT@listname@count=\count340
-
-(C:\Users\Vikra\AppData\Local\Programs\MiKTeX\tex/latex/microtype\microtype-xet
-ex.def
-File: microtype-xetex.def 2026/03/01 v3.2d Definitions specific to xetex (RS)
-LaTeX Info: Redefining \lsstyle on input line 443.
-LaTeX Info: Redefining \lslig on input line 451.
+\MT@listname@count=\count337
+ (c:/texlive/2026/texmf-dist/tex/latex/microtype/microtype-pdftex.def
+File: microtype-pdftex.def 2026/03/01 v3.2d Definitions specific to pdftex (RS)
+LaTeX Info: Redefining \lsstyle on input line 944.
+LaTeX Info: Redefining \lslig on input line 944.
 \MT@outer@space=\skip80
 )
 Package microtype Info: Loading configuration file microtype.cfg.
-
-(C:\Users\Vikra\AppData\Local\Programs\MiKTeX\tex/latex/microtype\microtype.cfg
+ (c:/texlive/2026/texmf-dist/tex/latex/microtype/microtype.cfg
 File: microtype.cfg 2026/03/01 v3.2d microtype main configuration file (RS)
 )
 LaTeX Info: Redefining \microtypesetup on input line 3065.
-)
-(C:\Users\Vikra\AppData\Local\Programs\MiKTeX\tex/latex/ragged2e\ragged2e.sty
+) (c:/texlive/2026/texmf-dist/tex/latex/ragged2e/ragged2e.sty
 Package: ragged2e 2023/06/22 v3.6 ragged2e Package
 \CenteringLeftskip=\skip81
 \RaggedLeftLeftskip=\skip82
@@ -528,122 +583,86 @@ Package: ragged2e 2023/06/22 v3.6 ragged2e Package
 \RaggedLeftParindent=\skip92
 \RaggedRightParindent=\skip93
 \JustifyingParindent=\skip94
-)
-(C:\Users\Vikra\AppData\Local\Programs\MiKTeX\tex/latex/xcolor\xcolor.sty
-Package: xcolor 2024/09/29 v3.02 LaTeX color extensions (UK)
-
-(C:\Users\Vikra\AppData\Local\Programs\MiKTeX\tex/latex/graphics-cfg\color.cfg
-File: color.cfg 2016/01/02 v1.6 sample color configuration
-)
-Package xcolor Info: Driver file: xetex.def on input line 274.
-(C:\Users\Vikra\AppData\Local\Programs\MiKTeX\tex/latex/graphics\mathcolor.ltx)
-Package xcolor Info: Model `cmy' substituted by `cmy0' on input line 1349.
-Package xcolor Info: Model `RGB' extended on input line 1365.
-Package xcolor Info: Model `HTML' substituted by `rgb' on input line 1367.
-Package xcolor Info: Model `Hsb' substituted by `hsb' on input line 1368.
-Package xcolor Info: Model `tHsb' substituted by `hsb' on input line 1369.
-Package xcolor Info: Model `HSB' substituted by `hsb' on input line 1370.
-Package xcolor Info: Model `Gray' substituted by `gray' on input line 1371.
-Package xcolor Info: Model `wave' substituted by `hsb' on input line 1372.
-) (C:\Users\Vikra\AppData\Local\Programs\MiKTeX\tex/latex/xurl\xurl.sty
+) (c:/texlive/2026/texmf-dist/tex/latex/xurl/xurl.sty
 Package: xurl 2022/01/09 v 0.10 modify URL breaks
 )
 Package hyperref Info: Option `colorlinks' set `true' on input line 44.
-\@float@every@table=\toks34
-
-(main.aux)
+\@float@every@table=\toks42
+LaTeX Font Info:    Trying to load font information for T1+ntxtlf on input line 183.
+ (c:/texlive/2026/texmf-dist/tex/latex/newtx/t1ntxtlf.fd
+File: t1ntxtlf.fd 2021/05/24 v1.1 font definition file for T1/ntx/tlf
+)
+LaTeX Font Info:    Font shape `T1/ntxtlf/m/n' will be
+(Font)              scaled to size 12.0pt on input line 183.
+ (./main.aux)
 \openout1 = `main.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 182.
-LaTeX Font Info:    ... okay on input line 182.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 182.
-LaTeX Font Info:    ... okay on input line 182.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 182.
-LaTeX Font Info:    ... okay on input line 182.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 182.
-LaTeX Font Info:    ... okay on input line 182.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 182.
-LaTeX Font Info:    ... okay on input line 182.
-LaTeX Font Info:    Checking defaults for TU/lmr/m/n on input line 182.
-LaTeX Font Info:    ... okay on input line 182.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 182.
-LaTeX Font Info:    ... okay on input line 182.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 182.
-LaTeX Font Info:    ... okay on input line 182.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 182.
-LaTeX Font Info:    ... okay on input line 182.
-LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 182.
-LaTeX Font Info:    ... okay on input line 182.
-
-Package fontspec Info: 
-(fontspec)             Adjusting the maths setup (use [no-math] to avoid
-(fontspec)             this).
-
-\symlegacymaths=\mathgroup4
-LaTeX Font Info:    Overwriting symbol font `legacymaths' in version `bold'
-(Font)                  OT1/cmr/m/n --> OT1/cmr/bx/n on input line 182.
-LaTeX Font Info:    Redeclaring math accent \acute on input line 182.
-LaTeX Font Info:    Redeclaring math accent \grave on input line 182.
-LaTeX Font Info:    Redeclaring math accent \ddot on input line 182.
-LaTeX Font Info:    Redeclaring math accent \tilde on input line 182.
-LaTeX Font Info:    Redeclaring math accent \bar on input line 182.
-LaTeX Font Info:    Redeclaring math accent \breve on input line 182.
-LaTeX Font Info:    Redeclaring math accent \check on input line 182.
-LaTeX Font Info:    Redeclaring math accent \hat on input line 182.
-LaTeX Font Info:    Redeclaring math accent \dot on input line 182.
-LaTeX Font Info:    Redeclaring math accent \mathring on input line 182.
-LaTeX Font Info:    Redeclaring math symbol \Gamma on input line 182.
-LaTeX Font Info:    Redeclaring math symbol \Delta on input line 182.
-LaTeX Font Info:    Redeclaring math symbol \Theta on input line 182.
-LaTeX Font Info:    Redeclaring math symbol \Lambda on input line 182.
-LaTeX Font Info:    Redeclaring math symbol \Xi on input line 182.
-LaTeX Font Info:    Redeclaring math symbol \Pi on input line 182.
-LaTeX Font Info:    Redeclaring math symbol \Sigma on input line 182.
-LaTeX Font Info:    Redeclaring math symbol \Upsilon on input line 182.
-LaTeX Font Info:    Redeclaring math symbol \Phi on input line 182.
-LaTeX Font Info:    Redeclaring math symbol \Psi on input line 182.
-LaTeX Font Info:    Redeclaring math symbol \Omega on input line 182.
-LaTeX Font Info:    Redeclaring math symbol \mathdollar on input line 182.
-LaTeX Font Info:    Redeclaring symbol font `operators' on input line 182.
-LaTeX Font Info:    Encoding `OT1' has changed to `TU' for symbol font
-(Font)              `operators' in the math version `normal' on input line 182.
-
-LaTeX Font Info:    Overwriting symbol font `operators' in version `normal'
-(Font)                  OT1/cmr/m/n --> TU/TimesNewRoman(0)/m/n on input line 1
-82.
-LaTeX Font Info:    Encoding `OT1' has changed to `TU' for symbol font
-(Font)              `operators' in the math version `bold' on input line 182.
-LaTeX Font Info:    Overwriting symbol font `operators' in version `bold'
-(Font)                  OT1/cmr/bx/n --> TU/TimesNewRoman(0)/m/n on input line 
-182.
-LaTeX Font Info:    Overwriting symbol font `operators' in version `normal'
-(Font)                  TU/TimesNewRoman(0)/m/n --> TU/TimesNewRoman(0)/m/n on 
-input line 182.
-LaTeX Font Info:    Overwriting math alphabet `\mathit' in version `normal'
-(Font)                  OT1/cmr/m/it --> TU/TimesNewRoman(0)/m/it on input line
- 182.
-LaTeX Font Info:    Overwriting math alphabet `\mathbf' in version `normal'
-(Font)                  OT1/cmr/bx/n --> TU/TimesNewRoman(0)/b/n on input line 
-182.
-LaTeX Font Info:    Overwriting math alphabet `\mathsf' in version `normal'
-(Font)                  OT1/cmss/m/n --> TU/lmss/m/n on input line 182.
-LaTeX Font Info:    Overwriting math alphabet `\mathtt' in version `normal'
-(Font)                  OT1/cmtt/m/n --> TU/lmtt/m/n on input line 182.
-LaTeX Font Info:    Overwriting symbol font `operators' in version `bold'
-(Font)                  TU/TimesNewRoman(0)/m/n --> TU/TimesNewRoman(0)/b/n on 
-input line 182.
-LaTeX Font Info:    Overwriting math alphabet `\mathit' in version `bold'
-(Font)                  OT1/cmr/bx/it --> TU/TimesNewRoman(0)/b/it on input lin
-e 182.
-LaTeX Font Info:    Overwriting math alphabet `\mathsf' in version `bold'
-(Font)                  OT1/cmss/bx/n --> TU/lmss/b/n on input line 182.
-LaTeX Font Info:    Overwriting math alphabet `\mathtt' in version `bold'
-(Font)                  OT1/cmtt/m/n --> TU/lmtt/b/n on input line 182.
+LaTeX Font Info:    Checking defaults for OML/ntxmi/m/it on input line 183.
+LaTeX Font Info:    Trying to load font information for OML+ntxmi on input line 183.
+ (c:/texlive/2026/texmf-dist/tex/latex/newtx/omlntxmi.fd
+File: omlntxmi.fd 2015/08/25 Fontinst v1.933 font definitions for OML/ntxmi.
+)
+LaTeX Font Info:    ... okay on input line 183.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 183.
+LaTeX Font Info:    ... okay on input line 183.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 183.
+LaTeX Font Info:    ... okay on input line 183.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 183.
+LaTeX Font Info:    ... okay on input line 183.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 183.
+LaTeX Font Info:    ... okay on input line 183.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 183.
+LaTeX Font Info:    ... okay on input line 183.
+LaTeX Font Info:    Checking defaults for U/ntxexa/m/n on input line 183.
+LaTeX Font Info:    Trying to load font information for U+ntxexa on input line 183.
+ (c:/texlive/2026/texmf-dist/tex/latex/newtx/untxexa.fd
+File: untxexa.fd 2012/04/16 Fontinst v1.933 font definitions for U/ntxexa.
+)
+LaTeX Font Info:    ... okay on input line 183.
+LaTeX Font Info:    Checking defaults for LMS/ntxsy/m/n on input line 183.
+LaTeX Font Info:    Trying to load font information for LMS+ntxsy on input line 183.
+ (c:/texlive/2026/texmf-dist/tex/latex/newtx/lmsntxsy.fd
+File: lmsntxsy.fd 2016/07/02 Fontinst v1.933 font definitions for LMS/ntxsy.
+)
+LaTeX Font Info:    ... okay on input line 183.
+LaTeX Font Info:    Checking defaults for LMX/ntxexx/m/n on input line 183.
+LaTeX Font Info:    Trying to load font information for LMX+ntxexx on input line 183.
+ (c:/texlive/2026/texmf-dist/tex/latex/newtx/lmxntxexx.fd
+File: lmxntxexx.fd 2016/07/03 Fontinst v1.933 font definitions for LMX/ntxexx.
+)
+LaTeX Font Info:    ... okay on input line 183.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 183.
+LaTeX Font Info:    ... okay on input line 183.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 183.
+LaTeX Font Info:    ... okay on input line 183.
+ (c:/texlive/2026/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
+[Loading MPS to PDF converter (version 2006.09.02).]
+\scratchcounter=\count338
+\scratchdimen=\dimen281
+\scratchbox=\box67
+\nofMPsegments=\count339
+\nofMParguments=\count340
+\everyMPshowfont=\toks43
+\MPscratchCnt=\count341
+\MPscratchDim=\dimen282
+\MPnumerator=\count342
+\makeMPintoPDFobject=\count343
+\everyMPtoPDFconversion=\toks44
+) (c:/texlive/2026/texmf-dist/tex/latex/epstopdf-pkg/epstopdf-base.sty
+Package: epstopdf-base 2020-01-24 v2.11 Base part for package epstopdf
+Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 485.
+ (c:/texlive/2026/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg
+File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Live
+))
+\c@mv@tabular=\count344
+\c@mv@boldtabular=\count345
+LaTeX Info: Command `\dddot' is already robust on input line 183.
+LaTeX Info: Command `\ddddot' is already robust on input line 183.
 
 *geometry* driver: auto-detecting
-*geometry* detected driver: xetex
+*geometry* detected driver: pdftex
 *geometry* verbose mode - [ preamble ] result:
-* driver: xetex
+* driver: pdftex
 * paper: a4paper
 * layout: <same size as paper>
 * layoutoffset:(h,v)=(0.0pt,0.0pt)
@@ -674,95 +693,187 @@ LaTeX Font Info:    Overwriting math alphabet `\mathtt' in version `bold'
 * \@reversemarginfalse
 * (1in=72.27pt=25.4mm, 1cm=28.453pt)
 
-Package hyperref Info: Link coloring ON on input line 182.
-(main.out) (main.out)
+Package hyperref Info: Link coloring ON on input line 183.
+(./main.out) (./main.out)
 \@outlinefile=\write3
 \openout3 = `main.out'.
 
 Package caption Info: Begin \AtBeginDocument code.
 Package caption Info: End \AtBeginDocument code.
-LaTeX Info: Redefining \microtypecontext on input line 182.
-Package microtype Info: Applying patch `item' on input line 182.
-Package microtype Info: Applying patch `toc' on input line 182.
-Package microtype Info: Applying patch `eqnum' on input line 182.
-Package microtype Info: Applying patch `footnote' on input line 182.
-Package microtype Info: Applying patch `verbatim' on input line 182.
-LaTeX Info: Redefining \microtypesetup on input line 182.
+LaTeX Info: Redefining \microtypecontext on input line 183.
+Package microtype Info: Applying patch `item' on input line 183.
+Package microtype Info: Applying patch `toc' on input line 183.
+Package microtype Info: Applying patch `eqnum' on input line 183.
+Package microtype Info: Applying patch `footnote' on input line 183.
+Package microtype Info: Applying patch `verbatim' on input line 183.
+LaTeX Info: Redefining \microtypesetup on input line 183.
+Package microtype Info: Generating PDF output.
 Package microtype Info: Character protrusion enabled (level 2).
 Package microtype Info: Using default protrusion set `alltext'.
+Package microtype Info: Automatic font expansion enabled (level 2),
+(microtype)             stretch: 20, shrink: 20, step: 1, non-selected.
+Package microtype Info: Using default expansion set `alltext-nott'.
+Package microtype Info: Patching command `\showhyphens'.
 Package microtype Info: No adjustment of tracking.
-Package microtype Info: No adjustment of spacing.
-Package microtype Info: No adjustment of kerning.
+Package microtype Info: No adjustment of interword spacing.
+Package microtype Info: No adjustment of character kerning.
+ (c:/texlive/2026/texmf-dist/tex/latex/microtype/mt-ptm.cfg
+File: mt-ptm.cfg 2006/04/20 v1.7 microtype config. file: Times (RS)
+)
+LaTeX Font Info:    Font shape `T1/ntxtlf/m/n' will be
+(Font)              scaled to size 17.28pt on input line 188.
+LaTeX Font Info:    Font shape `T1/ntxtlf/b/n' will be
+(Font)              scaled to size 17.28pt on input line 188.
+LaTeX Font Info:    Font shape `T1/ntxtlf/m/n' will be
+(Font)              scaled to size 20.74pt on input line 189.
+LaTeX Font Info:    Font shape `T1/ntxtlf/b/n' will be
+(Font)              scaled to size 20.74pt on input line 189.
+LaTeX Font Info:    Font shape `T1/ntxtlf/m/n' will be
+(Font)              scaled to size 14.4pt on input line 190.
+<../../images/GUI_Wireframe.png, id=795, 642.4pt x 642.4pt>
+File: ../../images/GUI_Wireframe.png Graphic file (type png)
+<use ../../images/GUI_Wireframe.png>
+Package pdftex.def Info: ../../images/GUI_Wireframe.png  used on input line 192.
+(pdftex.def)             Requested size: 104.7042pt x 104.69753pt.
+LaTeX Font Info:    Trying to load font information for OT1+minntx on input line 194.
+ (c:/texlive/2026/texmf-dist/tex/latex/newtx/ot1minntx.fd
+File: ot1minntx.fd 2023/09/09 v1.1 font definition file for OT1/minntx
+)
+LaTeX Font Info:    Font shape `OT1/minntx/m/n' will be
+(Font)              scaled to size 12.0pt on input line 194.
 Package microtype Info: Loading generic protrusion settings for font family
-(microtype)             `TimesNewRoman' (encoding: TU).
+(microtype)             `minntx' (encoding: OT1).
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
-File: ../../images/GUI_Wireframe.png Graphic file (type bmp)
-<../../images/GUI_Wireframe.png>
-
-(C:\Users\Vikra\AppData\Local\Programs\MiKTeX\tex/latex/microtype\mt-cmr.cfg
-File: mt-cmr.cfg 2013/05/19 v2.2 microtype config. file: Computer Modern Roman 
-(RS)
+LaTeX Font Info:    Font shape `OT1/minntx/m/n' will be
+(Font)              scaled to size 8.8pt on input line 194.
+LaTeX Font Info:    Font shape `OT1/minntx/m/n' will be
+(Font)              scaled to size 6.6pt on input line 194.
+LaTeX Font Info:    Font shape `OML/ntxmi/m/it' will be
+(Font)              scaled to size 12.0pt on input line 194.
+LaTeX Font Info:    Font shape `OML/ntxmi/m/it' will be
+(Font)              scaled to size 8.8pt on input line 194.
+LaTeX Font Info:    Font shape `OML/ntxmi/m/it' will be
+(Font)              scaled to size 6.6pt on input line 194.
+LaTeX Font Info:    Font shape `LMS/ntxsy/m/n' will be
+(Font)              scaled to size 12.0pt on input line 194.
+LaTeX Font Info:    Font shape `LMS/ntxsy/m/n' will be
+(Font)              scaled to size 8.8pt on input line 194.
+LaTeX Font Info:    Font shape `LMS/ntxsy/m/n' will be
+(Font)              scaled to size 6.6pt on input line 194.
+LaTeX Font Info:    Font shape `LMX/ntxexx/m/n' will be
+(Font)              scaled to size 12.0pt on input line 194.
+LaTeX Font Info:    Font shape `LMX/ntxexx/m/n' will be
+(Font)              scaled to size 8.8pt on input line 194.
+LaTeX Font Info:    Font shape `LMX/ntxexx/m/n' will be
+(Font)              scaled to size 6.6pt on input line 194.
+LaTeX Font Info:    Trying to load font information for U+ntxmia on input line 194.
+ (c:/texlive/2026/texmf-dist/tex/latex/newtx/untxmia.fd
+File: untxmia.fd 2024/04/09 Fontinst v1.933 font definitions for U/ntxmia.
 )
+LaTeX Font Info:    Font shape `U/ntxmia/m/it' will be
+(Font)              scaled to size 12.0pt on input line 194.
+LaTeX Font Info:    Font shape `U/ntxmia/m/it' will be
+(Font)              scaled to size 8.8pt on input line 194.
+LaTeX Font Info:    Font shape `U/ntxmia/m/it' will be
+(Font)              scaled to size 6.6pt on input line 194.
+LaTeX Font Info:    Trying to load font information for U+ntxsym on input line 194.
+ (c:/texlive/2026/texmf-dist/tex/latex/newtx/untxsym.fd
+File: untxsym.fd 2023/08/16 Fontinst v1.933 font definitions for U/ntxsym.
+)
+LaTeX Font Info:    Font shape `U/ntxsym/m/n' will be
+(Font)              scaled to size 12.0pt on input line 194.
+LaTeX Font Info:    Font shape `U/ntxsym/m/n' will be
+(Font)              scaled to size 8.8pt on input line 194.
+LaTeX Font Info:    Font shape `U/ntxsym/m/n' will be
+(Font)              scaled to size 6.6pt on input line 194.
+LaTeX Font Info:    Trying to load font information for U+ntxsyc on input line 194.
+ (c:/texlive/2026/texmf-dist/tex/latex/newtx/untxsyc.fd
+File: untxsyc.fd 2012/04/12 Fontinst v1.933 font definitions for U/ntxsyc.
+)
+LaTeX Font Info:    Font shape `U/ntxsyc/m/n' will be
+(Font)              scaled to size 12.0pt on input line 194.
+LaTeX Font Info:    Font shape `U/ntxsyc/m/n' will be
+(Font)              scaled to size 8.8pt on input line 194.
+LaTeX Font Info:    Font shape `U/ntxsyc/m/n' will be
+(Font)              scaled to size 6.6pt on input line 194.
+LaTeX Font Info:    Font shape `U/ntxexa/m/n' will be
+(Font)              scaled to size 12.0pt on input line 194.
+LaTeX Font Info:    Font shape `U/ntxexa/m/n' will be
+(Font)              scaled to size 8.8pt on input line 194.
+LaTeX Font Info:    Font shape `U/ntxexa/m/n' will be
+(Font)              scaled to size 6.6pt on input line 194.
+LaTeX Font Info:    Font shape `T1/ntxtlf/m/it' will be
+(Font)              scaled to size 12.0pt on input line 205.
+ [1
+
+{c:/texlive/2026/texmf-var/fonts/map/pdftex/updmap/pdftex.map}{c:/texlive/2026/texmf-dist/fonts/enc/dvips/newtx/ntx-ec-tlf.enc} <../../images/GUI_Wireframe.png>]
+LaTeX Font Info:    Font shape `T1/ntxtlf/b/n' will be
+(Font)              scaled to size 12.0pt on input line 218.
+LaTeX Font Info:    Font shape `T1/ntxtlf/b/n' will be
+(Font)              scaled to size 16.0pt on input line 218.
+LaTeX Font Info:    Font shape `T1/ntxtlf/m/n' will be
+(Font)              scaled to size 10.95pt on input line 220.
+LaTeX Font Info:    Font shape `T1/ntxtlf/b/n' will be
+(Font)              scaled to size 10.95pt on input line 226.
+
+Underfull \hbox (badness 10000) in alignment at lines 224--227
+[] [] []
+ []
+
+
+Underfull \hbox (badness 10000) in alignment at lines 227--230
+[] [] []
+ []
+
+
+Underfull \hbox (badness 10000) in alignment at lines 230--316
+[] [] []
+ []
+
+
+ignored: Infinite glue shrinkage found in box being split [1
+
+
+]
+ignored: Infinite glue shrinkage found in box being split [2] [3]
+Underfull \hbox (badness 10000) in alignment at lines 332--335
+[] [] []
+ []
+
+
+Underfull \hbox (badness 10000) in alignment at lines 335--338
+[] [] []
+ []
+
+
+Underfull \hbox (badness 10000) in alignment at lines 338--370
+[] [] []
+ []
+
 [1
 
-]
-Underfull \hbox (badness 10000) in alignment at lines 223--226
-[] [] []
- []
-
-
-Underfull \hbox (badness 10000) in alignment at lines 226--229
-[] [] []
- []
-
-
-Underfull \hbox (badness 10000) in alignment at lines 229--315
-[] [] []
- []
-
-ignored error: Infinite glue shrinkage found in box being split [1
-
 
 ]
-ignored error: Infinite glue shrinkage found in box being split [2] [3]
-Underfull \hbox (badness 10000) in alignment at lines 331--334
+Underfull \hbox (badness 10000) in alignment at lines 383--386
 [] [] []
  []
 
 
-Underfull \hbox (badness 10000) in alignment at lines 334--337
+Underfull \hbox (badness 10000) in alignment at lines 386--389
 [] [] []
  []
 
 
-Underfull \hbox (badness 10000) in alignment at lines 337--369
-[] [] []
- []
-
-[1
-
-
-]
-Underfull \hbox (badness 10000) in alignment at lines 382--385
+Underfull \hbox (badness 10000) in alignment at lines 389--442
 [] [] []
  []
 
 
-Underfull \hbox (badness 10000) in alignment at lines 385--388
-[] [] []
- []
+ignored: Infinite glue shrinkage found in box being split [2
 
 
-Underfull \hbox (badness 10000) in alignment at lines 388--441
-[] [] []
- []
-
-ignored error: Infinite glue shrinkage found in box being split [2
-
-
-] [3]
-(frontmatter/abbreviations.tex
+] [3] (./frontmatter/abbreviations.tex
 Underfull \hbox (badness 10000) in alignment at lines 5--8
 [] []
  []
@@ -780,7 +891,7 @@ Underfull \hbox (badness 10000) in alignment at lines 11--43
 ) [4
 
 
-] (frontmatter/definitions.tex
+] (./frontmatter/definitions.tex
 Underfull \hbox (badness 10000) in alignment at lines 5--8
 [] []
  []
@@ -795,64 +906,116 @@ Underfull \hbox (badness 10000) in alignment at lines 11--31
 [] []
  []
 
-ignored error: Infinite glue shrinkage found in box being split [5
+
+ignored: Infinite glue shrinkage found in box being split [5
 
 
-]) [6]
-(frontmatter/screenshots.tex
+]) [6] (./frontmatter/screenshots.tex
+LaTeX Font Info:    Trying to load font information for T1+ntxtt on input line 5.
+ (c:/texlive/2026/texmf-dist/tex/latex/newtx/t1ntxtt.fd
+File: t1ntxtt.fd 2012/04/20 v3.1
+)
+LaTeX Font Info:    Font shape `T1/ntxtt/m/n' will be
+(Font)              scaled to size 12.0pt on input line 5.
 Package microtype Info: Loading generic protrusion settings for font family
-(microtype)             `lmtt' (encoding: TU).
+(microtype)             `ntxtt' (encoding: T1).
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
 
-Underfull \hbox (badness 10000) in alignment at lines 8--11
+Underfull \hbox (badness 10000) in alignment at lines 10--13
 [] [] []
  []
 
 
-Underfull \hbox (badness 10000) in alignment at lines 11--14
+Underfull \hbox (badness 10000) in alignment at lines 13--16
 [] [] []
  []
 
+LaTeX Font Info:    Font shape `T1/ntxtt/m/n' will be
+(Font)              scaled to size 10.95pt on input line 17.
+LaTeX Font Info:    Font shape `OT1/minntx/m/n' will be
+(Font)              scaled to size 10.95pt on input line 17.
+LaTeX Font Info:    Font shape `OT1/minntx/m/n' will be
+(Font)              scaled to size 8.0pt on input line 17.
+LaTeX Font Info:    Font shape `OT1/minntx/m/n' will be
+(Font)              scaled to size 6.1pt on input line 17.
+LaTeX Font Info:    Font shape `OML/ntxmi/m/it' will be
+(Font)              scaled to size 10.95pt on input line 17.
+LaTeX Font Info:    Font shape `OML/ntxmi/m/it' will be
+(Font)              scaled to size 8.0pt on input line 17.
+LaTeX Font Info:    Font shape `OML/ntxmi/m/it' will be
+(Font)              scaled to size 6.1pt on input line 17.
+LaTeX Font Info:    Font shape `LMS/ntxsy/m/n' will be
+(Font)              scaled to size 10.95pt on input line 17.
+LaTeX Font Info:    Font shape `LMS/ntxsy/m/n' will be
+(Font)              scaled to size 8.0pt on input line 17.
+LaTeX Font Info:    Font shape `LMS/ntxsy/m/n' will be
+(Font)              scaled to size 6.1pt on input line 17.
+LaTeX Font Info:    Font shape `LMX/ntxexx/m/n' will be
+(Font)              scaled to size 10.95pt on input line 17.
+LaTeX Font Info:    Font shape `LMX/ntxexx/m/n' will be
+(Font)              scaled to size 8.0pt on input line 17.
+LaTeX Font Info:    Font shape `LMX/ntxexx/m/n' will be
+(Font)              scaled to size 6.1pt on input line 17.
+LaTeX Font Info:    Font shape `U/ntxmia/m/it' will be
+(Font)              scaled to size 10.95pt on input line 17.
+LaTeX Font Info:    Font shape `U/ntxmia/m/it' will be
+(Font)              scaled to size 8.0pt on input line 17.
+LaTeX Font Info:    Font shape `U/ntxmia/m/it' will be
+(Font)              scaled to size 6.1pt on input line 17.
+LaTeX Font Info:    Font shape `U/ntxsym/m/n' will be
+(Font)              scaled to size 10.95pt on input line 17.
+LaTeX Font Info:    Font shape `U/ntxsym/m/n' will be
+(Font)              scaled to size 8.0pt on input line 17.
+LaTeX Font Info:    Font shape `U/ntxsym/m/n' will be
+(Font)              scaled to size 6.1pt on input line 17.
+LaTeX Font Info:    Font shape `U/ntxsyc/m/n' will be
+(Font)              scaled to size 10.95pt on input line 17.
+LaTeX Font Info:    Font shape `U/ntxsyc/m/n' will be
+(Font)              scaled to size 8.0pt on input line 17.
+LaTeX Font Info:    Font shape `U/ntxsyc/m/n' will be
+(Font)              scaled to size 6.1pt on input line 17.
+LaTeX Font Info:    Font shape `U/ntxexa/m/n' will be
+(Font)              scaled to size 10.95pt on input line 17.
+LaTeX Font Info:    Font shape `U/ntxexa/m/n' will be
+(Font)              scaled to size 8.0pt on input line 17.
+LaTeX Font Info:    Font shape `U/ntxexa/m/n' will be
+(Font)              scaled to size 6.1pt on input line 17.
 
-Underfull \hbox (badness 10000) in paragraph at lines 28--28
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Citizen dashboard (complaint
+Underfull \hbox (badness 10000) in paragraph at lines 30--30
+[]|[][]\T1/ntxtlf/m/n/10.95 (+20) Citizen dash-board (com-plaint
  []
 
 
-Underfull \hbox (badness 6348) in paragraph at lines 32--32
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Supplementary: resolved complaint
- []
-
-
-Underfull \hbox (badness 1762) in paragraph at lines 33--33
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Supplementary: result page location
- []
-
-
-Underfull \hbox (badness 10000) in alignment at lines 14--35
+Underfull \hbox (badness 10000) in alignment at lines 16--37
 [] [] []
  []
 
 ) [7
 
 
-] (chapters/ch01_introduction.tex
+] (./chapters/ch01_introduction.tex
 Chapter 1.
-[1
+LaTeX Font Info:    Font shape `T1/ntxtlf/b/n' will be
+(Font)              scaled to size 14.0pt on input line 8.
+LaTeX Font Info:    Trying to load font information for TS1+ntxtlf on input line 34.
+(c:/texlive/2026/texmf-dist/tex/latex/newtx/ts1ntxtlf.fd
+File: ts1ntxtlf.fd 2015/01/18 v1.0 fd file for TS1/ntxtlf
+)
+LaTeX Font Info:    Font shape `TS1/ntxtlf/m/n' will be
+(Font)              scaled to size 12.0pt on input line 34.
+
+pdfTeX warning (ext4): destination with the same identifier (name{page.1}) has been already used, duplicate ignored
+<to be read again> 
+                   \relax 
+l.42 \section{Scope}
+                     [1
 
 
-]
-Underfull \hbox (badness 4072) in paragraph at lines 74--74
-[]|\TU/TimesNewRoman(0)/m/n/12 Auto-assignment by department, service
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 94--94
-[]|\TU/TimesNewRoman(0)/m/n/12 Unit/integration/security/resilience/load
- []
-
-[2] [3]) (chapters/ch02_project_management.tex [4]
+{c:/texlive/2026/texmf-dist/fonts/enc/dvips/tex-gyre/q-ts1.enc}] [2]
+LaTeX Font Info:    Font shape `T1/ntxtlf/b/n' will be
+(Font)              scaled to size 13.0pt on input line 108.
+ [3]) (./chapters/ch02_project_management.tex [4]
 Chapter 2.
 [5
 
@@ -872,28 +1035,8 @@ Underfull \hbox (badness 10000) in alignment at lines 72--76
  []
 
 
-Underfull \hbox (badness 4819) in paragraph at lines 77--77
-\TU/TimesNewRoman(0)/m/n/12 end skeleton, DB connectivity, auth
- []
-
-
-Underfull \hbox (badness 1533) in paragraph at lines 82--82
-[]|\TU/TimesNewRoman(0)/m/n/12 Worker panel, assignment engine, au-
- []
-
-
 Underfull \hbox (badness 10000) in paragraph at lines 86--86
-[]|\TU/TimesNewRoman(0)/m/n/12 Testing and Pre-
- []
-
-
-Underfull \hbox (badness 1968) in paragraph at lines 88--88
-[]|\TU/TimesNewRoman(0)/m/n/12 Technical report artifacts, screenshots,
- []
-
-
-Underfull \hbox (badness 1184) in paragraph at lines 88--88
-\TU/TimesNewRoman(0)/m/n/12 presentation, final submission hygiene
+[]|\T1/ntxtlf/m/n/12 (+20) Testing and Pre-
  []
 
 
@@ -901,12 +1044,7 @@ Underfull \hbox (badness 10000) in alignment at lines 76--90
 [] [] [] []
  []
 
-[6]
-Underfull \hbox (badness 10000) in paragraph at lines 112--112
-[]|\TU/TimesNewRoman(0)/m/n/12 DevOps and Deploy-
- []
-
-[7] [8]
+[6] [7] [8]
 Overfull \hbox (455.24411pt too wide) detected at line 175
 []
  []
@@ -922,53 +1060,23 @@ Underfull \hbox (badness 10000) in alignment at lines 179--183
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 184--184
-[]|\TU/TimesNewRoman(0)/m/n/12 Model unavailability
- []
-
-
-Underfull \hbox (badness 3343) in paragraph at lines 184--184
-[]|\TU/TimesNewRoman(0)/m/n/12 Multi-tier vision fallback, queue-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 185--185
-[]|\TU/TimesNewRoman(0)/m/n/12 Wrong department
- []
-
-
-Underfull \hbox (badness 4792) in paragraph at lines 185--185
-[]|\TU/TimesNewRoman(0)/m/n/12 Deterministic rule engine, triage
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 186--186
-[]|\TU/TimesNewRoman(0)/m/n/12 Invalid/malicious
+Underfull \hbox (badness 2401) in paragraph at lines 186--186
+[]|\T1/ntxtlf/m/n/12 (+20) Invalid/malicious up-
  []
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 188--188
-[]|\TU/TimesNewRoman(0)/m/n/12 Configuration drift
+[]|\T1/ntxtlf/m/n/12 (+20) Configuration drift
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 189--189
-[]|\TU/TimesNewRoman(0)/m/n/12 Notification inconsis-
- []
-
-
-Underfull \hbox (badness 1286) in paragraph at lines 189--189
-[]|\TU/TimesNewRoman(0)/m/n/12 Automated notification-chain tests
- []
-
-
-Underfull \hbox (badness 3679) in paragraph at lines 190--190
-[]|\TU/TimesNewRoman(0)/m/n/12 Performance degrada-
+Underfull \hbox (badness 1424) in paragraph at lines 189--189
+[]|\T1/ntxtlf/m/n/12 (+20) Notification in-con-sis-
  []
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 191--191
-[]|\TU/TimesNewRoman(0)/m/n/12 Documentation mis-
+[]|\T1/ntxtlf/m/n/12 (+20) Documentation mis-
  []
 
 
@@ -976,14 +1084,15 @@ Underfull \hbox (badness 10000) in alignment at lines 183--193
 [] [] [] []
  []
 
-ignored error: Infinite glue shrinkage found in box being split [9]
+
+ignored: Infinite glue shrinkage found in box being split [9]
 Overfull \hbox (455.24411pt too wide) detected at line 208
 []
  []
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 210--210
-[]|\TU/TimesNewRoman(0)/b/n/12 Management
+[]|\T1/ntxtlf/b/n/12 (+20) Management
  []
 
 
@@ -993,7 +1102,7 @@ Underfull \hbox (badness 10000) in alignment at lines 207--212
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 214--214
-[]|\TU/TimesNewRoman(0)/b/n/12 Management
+[]|\T1/ntxtlf/b/n/12 (+20) Management
  []
 
 
@@ -1002,138 +1111,83 @@ Underfull \hbox (badness 10000) in alignment at lines 212--216
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 217--217
-[]|\TU/TimesNewRoman(0)/m/n/12 Repository initialization, environment
- []
-
-
-Underfull \hbox (badness 3590) in paragraph at lines 217--217
-[]|\TU/TimesNewRoman(0)/m/n/12 Foundation con-
- []
-
-
-Underfull \hbox (badness 3148) in paragraph at lines 218--218
-[]|\TU/TimesNewRoman(0)/m/n/12 Mongo connectivity, schema definitions,
- []
-
-
-Underfull \hbox (badness 3657) in paragraph at lines 218--218
-[]|\TU/TimesNewRoman(0)/m/n/12 Core API base-
+Underfull \hbox (badness 10000) in paragraph at lines 219--219
+[]|\T1/ntxtlf/m/n/12 (+20) Security and
  []
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 219--219
-[]|\TU/TimesNewRoman(0)/m/n/12 Security and
+\T1/ntxtlf/m/n/12 (+20) AI di-rec-tion
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 219--219
-\TU/TimesNewRoman(0)/m/n/12 AI direction
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 220--220
-[]|\TU/TimesNewRoman(0)/m/n/12 EXIF/location extraction and reverse-
+Underfull \hbox (badness 5548) in paragraph at lines 220--220
+[]|\T1/ntxtlf/m/n/12 (+20) EXIF/location ex-trac-tion and reverse-
  []
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 220--220
-\TU/TimesNewRoman(0)/m/n/12 readiness
- []
-
-
-Underfull \hbox (badness 2012) in paragraph at lines 223--223
-[]|\TU/TimesNewRoman(0)/m/n/12 Map refinement, draft persistence, error
+\T1/ntxtlf/m/n/12 (+20) readi-ness
  []
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 223--223
-[]|\TU/TimesNewRoman(0)/m/n/12 Baseline UX
+[]|\T1/ntxtlf/m/n/12 (+20) Baseline UX
  []
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 223--223
-\TU/TimesNewRoman(0)/m/n/12 hardening com-
+\T1/ntxtlf/m/n/12 (+20) hard-en-ing
  []
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 224--224
-[]|\TU/TimesNewRoman(0)/m/n/12 Production-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 224--224
-\TU/TimesNewRoman(0)/m/n/12 risk exposure
+[]|\T1/ntxtlf/m/n/12 (+20) Production-risk
  []
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 225--225
-[]|\TU/TimesNewRoman(0)/m/n/12 Operational
+[]|\T1/ntxtlf/m/n/12 (+20) Operational
  []
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 226--226
-[]|\TU/TimesNewRoman(0)/m/n/12 Communication
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 226--226
-\TU/TimesNewRoman(0)/m/n/12 workflows
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 227--227
-[]|\TU/TimesNewRoman(0)/m/n/12 Performance optimization, graceful de-
- []
-
-
-Underfull \hbox (badness 1946) in paragraph at lines 228--228
-[]|\TU/TimesNewRoman(0)/m/n/12 Production container profile and deploy-
+[]|\T1/ntxtlf/m/n/12 (+20) Communication
  []
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 228--228
-[]|\TU/TimesNewRoman(0)/m/n/12 Deployment
+[]|\T1/ntxtlf/m/n/12 (+20) Deployment
  []
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 228--228
-\TU/TimesNewRoman(0)/m/n/12 readiness
+\T1/ntxtlf/m/n/12 (+20) readi-ness
  []
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 229--229
-[]|\TU/TimesNewRoman(0)/m/n/12 Test expansion
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 229--229
-\TU/TimesNewRoman(0)/m/n/12 (unit/integration/security/load) and mo-
+[]|\T1/ntxtlf/m/n/12 (+20) Test ex-pan-sion
  []
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 230--230
-[]|\TU/TimesNewRoman(0)/m/n/12 Pre-handover
+[]|\T1/ntxtlf/m/n/12 (+20) Pre-handover
  []
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 230--230
-\TU/TimesNewRoman(0)/m/n/12 alignment com-
+\T1/ntxtlf/m/n/12 (+20) align-ment
  []
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 231--231
-[]|\TU/TimesNewRoman(0)/m/n/12 Reproducibility
+[]|\T1/ntxtlf/m/n/12 (+20) Reproducibility
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 233--233
-[]|\TU/TimesNewRoman(0)/m/n/12 Submission as-
- []
-
-
-Underfull \hbox (badness 1436) in paragraph at lines 234--234
-[]|\TU/TimesNewRoman(0)/m/n/12 Project lifecycle
+Underfull \hbox (badness 6268) in paragraph at lines 233--233
+[]|\T1/ntxtlf/m/n/12 (+20) Submission as-
  []
 
 
@@ -1141,46 +1195,27 @@ Underfull \hbox (badness 10000) in alignment at lines 216--236
 [] [] [] []
  []
 
-ignored error: Infinite glue shrinkage found in box being split [10]
-Underfull \hbox (badness 10000) in paragraph at lines 253--253
-[]|\TU/TimesNewRoman(0)/m/n/12 Milestone completion consis-
+
+ignored: Infinite glue shrinkage found in box being split [10]
+Underfull \hbox (badness 1655) in paragraph at lines 253--253
+[]|\T1/ntxtlf/m/n/12 (+20) Milestone com-ple-tion con-sis-
  []
 
-[11]) (chapters/ch03_system_requirement_study.tex [12]
+[11]) (./chapters/ch03_system_requirement_study.tex [12]
 Chapter 3.
 
-Underfull \hbox (badness 4543) in paragraph at lines 35--35
-[]|\TU/TimesNewRoman(0)/m/n/12 Inconsistent complaint descrip-
- []
-
-
-Underfull \hbox (badness 1019) in paragraph at lines 35--35
-[]|\TU/TimesNewRoman(0)/m/n/12 Weak integration of visual evi-
- []
-
-
-Underfull \hbox (badness 4144) in paragraph at lines 54--54
-[]|\TU/TimesNewRoman(0)/m/n/12 Resolve assigned field
+Underfull \hbox (badness 10000) in paragraph at lines 54--54
+[]|\T1/ntxtlf/m/n/12 (+20) Department
  []
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 54--54
-[]|\TU/TimesNewRoman(0)/m/n/12 Department
+[]|\T1/ntxtlf/m/n/12 (+20) Manage de-part-men-tal
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 54--54
-[]|\TU/TimesNewRoman(0)/m/n/12 Manage departmental
- []
-
-
-Underfull \hbox (badness 1571) in paragraph at lines 54--54
-[]|\TU/TimesNewRoman(0)/m/n/12 Filter department queue, change status, add
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 54--54
-[]|\TU/TimesNewRoman(0)/m/n/12 Governance and over-
+Underfull \hbox (badness 2326) in paragraph at lines 54--54
+[]|\T1/ntxtlf/m/n/12 (+20) Governance and over-
  []
 
 [13
@@ -1201,33 +1236,8 @@ Underfull \hbox (badness 10000) in alignment at lines 65--69
  []
 
 
-Underfull \hbox (badness 2173) in paragraph at lines 73--73
-[]|\TU/TimesNewRoman(0)/m/n/12 System shall support forgot-password and
- []
-
-
 Underfull \hbox (badness 10000) in paragraph at lines 74--74
-[]|\TU/TimesNewRoman(0)/m/n/12 Analyze endpoint shall accept valid
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 74--74
-\TU/TimesNewRoman(0)/m/n/12 JPG/PNG/WEBP images and reject un-
- []
-
-
-Underfull \hbox (badness 2111) in paragraph at lines 80--80
-[]|\TU/TimesNewRoman(0)/m/n/12 Department head/admin shall update com-
- []
-
-
-Underfull \hbox (badness 1430) in paragraph at lines 81--81
-\TU/TimesNewRoman(0)/m/n/12 plaint ownership across departments when
- []
-
-
-Underfull \hbox (badness 4024) in paragraph at lines 86--86
-[]|\TU/TimesNewRoman(0)/m/n/12 Admin shall review low-confidence com-
+[]|\T1/ntxtlf/m/n/12 (+20) Analyze end-point shall ac-cept valid
  []
 
 
@@ -1235,7 +1245,8 @@ Underfull \hbox (badness 10000) in alignment at lines 69--93
 [] [] []
  []
 
-ignored error: Infinite glue shrinkage found in box being split [14]
+
+ignored: Infinite glue shrinkage found in box being split [14]
 Overfull \hbox (455.24411pt too wide) detected at line 98
 []
  []
@@ -1251,86 +1262,26 @@ Underfull \hbox (badness 10000) in alignment at lines 102--106
  []
 
 
-Underfull \hbox (badness 4266) in paragraph at lines 110--110
-\TU/TimesNewRoman(0)/m/n/12 and support responsive layouts for desk-
- []
-
-
-Underfull \hbox (badness 2351) in paragraph at lines 111--111
-[]|\TU/TimesNewRoman(0)/m/n/12 Modular routers/services with documented
- []
-
-
-Underfull \hbox (badness 6559) in paragraph at lines 112--112
-[]|\TU/TimesNewRoman(0)/m/n/12 Process-time headers, rotating logs, and
- []
-
-
-Underfull \hbox (badness 2762) in paragraph at lines 114--114
-[]|\TU/TimesNewRoman(0)/m/n/12 Project setup shall support Windows and
- []
-
-
-Underfull \hbox (badness 2961) in paragraph at lines 116--116
-[]|\TU/TimesNewRoman(0)/m/n/12 Validation schemas and controlled update
- []
-
-
 Underfull \hbox (badness 10000) in alignment at lines 106--118
 [] [] []
  []
 
 [15]
-Underfull \hbox (badness 8189) in paragraph at lines 137--137
-[]|\TU/TimesNewRoman(0)/m/n/12 Stable LAN/internet for
+Underfull \hbox (badness 1314) in paragraph at lines 137--137
+[]|\T1/ntxtlf/m/n/12 (+20) Stable LAN/internet for
  []
 
 
-Underfull \hbox (badness 6300) in paragraph at lines 137--137
-[]|\TU/TimesNewRoman(0)/m/n/12 Managed institutional net-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 162--162
-[]|\TU/TimesNewRoman(0)/m/n/12 Docker 24+ recom-
+Underfull \hbox (badness 3635) in paragraph at lines 162--162
+[]|\T1/ntxtlf/m/n/12 (+20) Docker 24+ rec-om-
  []
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 162--162
-[]|\TU/TimesNewRoman(0)/m/n/12 Chromium/Firefox
+[]|\T1/ntxtlf/m/n/12 (+20) Chromium/Firefox
  []
 
 [16] [17]
-Underfull \hbox (badness 2376) in paragraph at lines 234--234
-[]|\TU/TimesNewRoman(0)/m/n/12 MongoDB instance is reachable and
- []
-
-
-Underfull \hbox (badness 1867) in paragraph at lines 234--234
-[]|\TU/TimesNewRoman(0)/m/n/12 Analyze and generation pathways re-
- []
-
-
-Underfull \hbox (badness 1742) in paragraph at lines 234--234
-[]|\TU/TimesNewRoman(0)/m/n/12 Worker profiles include valid depart-
- []
-
-
-Underfull \hbox (badness 2376) in paragraph at lines 234--234
-[]|\TU/TimesNewRoman(0)/m/n/12 Assignment service can select candi-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 234--234
-[]|\TU/TimesNewRoman(0)/m/n/12 Deployment host supports Docker
- []
-
-
-Underfull \hbox (badness 4429) in paragraph at lines 234--234
-[]|\TU/TimesNewRoman(0)/m/n/12 Production-style stack can be repro-
- []
-
-
 Overfull \hbox (455.24411pt too wide) detected at line 241
 []
  []
@@ -1346,78 +1297,28 @@ Underfull \hbox (badness 10000) in alignment at lines 245--249
  []
 
 
-Underfull \hbox (badness 2310) in paragraph at lines 251--251
-[]|\TU/TimesNewRoman(0)/m/n/12 Unsupported/corrupt image
+Underfull \hbox (badness 1902) in paragraph at lines 254--254
+\T1/ntxtlf/m/n/12 (+20) blocked with con-flict re-
  []
 
 
-Underfull \hbox (badness 3612) in paragraph at lines 252--252
-\TU/TimesNewRoman(0)/m/n/12 submits manual complaint
+Underfull \hbox (badness 1888) in paragraph at lines 255--255
+[]|\T1/ntxtlf/m/n/12 (+20) Worker pend-ing ap-proval
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 254--254
-[]|\TU/TimesNewRoman(0)/m/n/12 Duplicate feedback at-
- []
-
-
-Underfull \hbox (badness 5359) in paragraph at lines 255--255
-[]|\TU/TimesNewRoman(0)/m/n/12 View assigned complaints
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 255--255
-[]|\TU/TimesNewRoman(0)/m/n/12 Worker pending approval
- []
-
-
-Underfull \hbox (badness 2846) in paragraph at lines 255--255
-\TU/TimesNewRoman(0)/m/n/12 cannot access worker-only
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 257--257
-[]|\TU/TimesNewRoman(0)/m/n/12 Filter department com-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 257--257
-[]|\TU/TimesNewRoman(0)/m/n/12 Dept-head cannot update
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 257--257
-\TU/TimesNewRoman(0)/m/n/12 complaints outside own
+Underfull \hbox (badness 2653) in paragraph at lines 257--257
+[]|\T1/ntxtlf/m/n/12 (+20) Dept-head can-not up-date
  []
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 258--258
-[]|\TU/TimesNewRoman(0)/m/n/12 Add notes and trans-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 258--258
-[]|\TU/TimesNewRoman(0)/m/n/12 Invalid complaint ID or
- []
-
-
-Underfull \hbox (badness 3803) in paragraph at lines 258--258
-\TU/TimesNewRoman(0)/m/n/12 missing target yields con-
+[]|\T1/ntxtlf/m/n/12 (+20) Add notes and trans-
  []
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 259--259
-[]|\TU/TimesNewRoman(0)/m/n/12 Already-approved/rejected
- []
-
-
-Underfull \hbox (badness 5316) in paragraph at lines 261--261
-[]|\TU/TimesNewRoman(0)/m/n/12 No authenticated personal
- []
-
-
-Underfull \hbox (badness 5847) in paragraph at lines 261--261
-\TU/TimesNewRoman(0)/m/n/12 fields are exposed in re-
+[]|\T1/ntxtlf/m/n/12 (+20) Already-approved/rejected
  []
 
 
@@ -1425,47 +1326,48 @@ Underfull \hbox (badness 10000) in alignment at lines 249--263
 [] [] [] []
  []
 
-[18]
+
+ignored: Infinite glue shrinkage found in box being split [18]
 Underfull \hbox (badness 10000) in paragraph at lines 278--278
-[]|\TU/TimesNewRoman(0)/b/n/12 Requirement
+[]|\T1/ntxtlf/b/n/12 (+20) Requirement
+ []
+
+
+Underfull \hbox (badness 6477) in paragraph at lines 278--278
+[]|\T1/ntxtlf/m/n/12 (+20) FR-01 to FR-
+ []
+
+
+Underfull \hbox (badness 8038) in paragraph at lines 278--278
+[]|\T1/ntxtlf/m/n/12 (+20) FR-13, FR-15,
+ []
+
+
+Underfull \hbox (badness 8038) in paragraph at lines 278--278
+\T1/ntxtlf/m/n/12 (+20) FR-17, FR-18,
  []
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 278--278
-\TU/TimesNewRoman(0)/m/n/12 FR-14, FR-16,
+[]|\T1/ntxtlf/m/n/12 (+20) Non-
  []
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 278--278
-[]|\TU/TimesNewRoman(0)/m/n/12 FR-13, FR-15,
+\T1/ntxtlf/m/n/12 (+20) Functional
+ []
+
+
+Underfull \hbox (badness 5022) in paragraph at lines 278--278
+[]|\T1/ntxtlf/m/n/12 (+20) NFR-01, NFR-
  []
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 278--278
-\TU/TimesNewRoman(0)/m/n/12 FR-17, FR-18,
+\T1/ntxtlf/m/n/12 (+20) 02, NFR-06,
  []
 
-
-Underfull \hbox (badness 10000) in paragraph at lines 278--278
-[]|\TU/TimesNewRoman(0)/m/n/12 Non-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 278--278
-\TU/TimesNewRoman(0)/m/n/12 Functional
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 278--278
-[]|\TU/TimesNewRoman(0)/m/n/12 NFR-01, NFR-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 278--278
-\TU/TimesNewRoman(0)/m/n/12 02, NFR-06,
- []
-
-[19]) (chapters/ch04_proposed_system_requirements.tex [20]
+[19]) (./chapters/ch04_proposed_system_requirements.tex [20]
 Chapter 4.
 [21
 
@@ -1475,18 +1377,8 @@ Overfull \hbox (455.24411pt too wide) detected at line 54
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 56--56
-[]|\TU/TimesNewRoman(0)/b/n/12 Feature
- []
-
-
 Underfull \hbox (badness 10000) in alignment at lines 53--58
 [] [] []
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 60--60
-[]|\TU/TimesNewRoman(0)/b/n/12 Feature
  []
 
 
@@ -1495,38 +1387,19 @@ Underfull \hbox (badness 10000) in alignment at lines 58--62
  []
 
 
-Underfull \hbox (badness 1436) in paragraph at lines 65--65
-[]|\TU/TimesNewRoman(0)/m/n/12 Standardizes language quality and reduces
- []
-
-
-Underfull \hbox (badness 1648) in paragraph at lines 67--67
-[]|\TU/TimesNewRoman(0)/m/n/12 Reduces manual workload and accelerates
- []
-
-
-Underfull \hbox (badness 3291) in paragraph at lines 70--70
-[]|\TU/TimesNewRoman(0)/m/n/12 Prevents low-confidence AI outputs from
- []
-
-
-Underfull \hbox (badness 2368) in paragraph at lines 71--71
-[]|\TU/TimesNewRoman(0)/m/n/12 Improves throughput for backlog manage-
- []
-
-
 Underfull \hbox (badness 10000) in alignment at lines 62--76
 [] [] []
  []
 
-ignored error: Infinite glue shrinkage found in box being split [22] [23]
+
+ignored: Infinite glue shrinkage found in box being split [22] [23]
 Overfull \hbox (455.24411pt too wide) detected at line 121
 []
  []
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 123--123
-[]|\TU/TimesNewRoman(0)/b/n/12 Requirement
+[]|\T1/ntxtlf/b/n/12 (+20) Requirement
  []
 
 
@@ -1536,7 +1409,7 @@ Underfull \hbox (badness 10000) in alignment at lines 120--125
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 127--127
-[]|\TU/TimesNewRoman(0)/b/n/12 Requirement
+[]|\T1/ntxtlf/b/n/12 (+20) Requirement
  []
 
 
@@ -1545,88 +1418,63 @@ Underfull \hbox (badness 10000) in alignment at lines 125--129
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 130--130
-[]|\TU/TimesNewRoman(0)/m/n/12 Registration
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 130--130
-[]|\TU/TimesNewRoman(0)/m/n/12 Register/login routes, cookie-session is-
- []
-
-
-Underfull \hbox (badness 1694) in paragraph at lines 130--130
-\TU/TimesNewRoman(0)/m/n/12 suance, JWT compatibility mode, profile
+Underfull \hbox (badness 1895) in paragraph at lines 130--130
+[]|\T1/ntxtlf/m/n/12 (+20) Register/login routes, cookie-session is-
  []
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 131--131
-[]|\TU/TimesNewRoman(0)/m/n/12 AI Classifi-
+[]|\T1/ntxtlf/m/n/12 (+20) AI Clas-si-fi-
  []
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 131--131
-\TU/TimesNewRoman(0)/m/n/12 cation and
+\T1/ntxtlf/m/n/12 (+20) ca-tion and
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 131--131
-[]|\TU/TimesNewRoman(0)/m/n/12 Analyze Module +
- []
-
-
-Underfull \hbox (badness 3189) in paragraph at lines 131--131
-[]|\TU/TimesNewRoman(0)/m/n/12 Vision model cascade, rule engine scor-
+Underfull \hbox (badness 3000) in paragraph at lines 131--131
+[]|\T1/ntxtlf/m/n/12 (+20) Analyze Mod-ule +
  []
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 132--132
-[]|\TU/TimesNewRoman(0)/m/n/12 Lifecycle and
+[]|\T1/ntxtlf/m/n/12 (+20) Lifecycle and
  []
 
 
-Underfull \hbox (badness 5592) in paragraph at lines 132--132
-[]|\TU/TimesNewRoman(0)/m/n/12 Complaint Lifecycle
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 133--133
-[]|\TU/TimesNewRoman(0)/m/n/12 Worker Opera-
+Underfull \hbox (badness 1701) in paragraph at lines 133--133
+[]|\T1/ntxtlf/m/n/12 (+20) Worker Op-er-a-
  []
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 133--133
-[]|\TU/TimesNewRoman(0)/m/n/12 Assignment and
+[]|\T1/ntxtlf/m/n/12 (+20) Assignment and
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 134--134
-[]|\TU/TimesNewRoman(0)/m/n/12 Triage and Admin
+Underfull \hbox (badness 3769) in paragraph at lines 134--134
+[]|\T1/ntxtlf/m/n/12 (+20) Triage and Ad-min
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 136--136
-[]|\TU/TimesNewRoman(0)/m/n/12 Reporting and
+Underfull \hbox (badness 3364) in paragraph at lines 136--136
+[]|\T1/ntxtlf/m/n/12 (+20) Reporting and
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 136--136
-[]|\TU/TimesNewRoman(0)/m/n/12 Analytics/Public
+Underfull \hbox (badness 6910) in paragraph at lines 136--136
+[]|\T1/ntxtlf/m/n/12 (+20) Overview met-rics, heatmap end-point,
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 136--136
-[]|\TU/TimesNewRoman(0)/m/n/12 Overview metrics, heatmap endpoint,
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 137--137
-[]|\TU/TimesNewRoman(0)/m/n/12 Resilience and
+Underfull \hbox (badness 1577) in paragraph at lines 137--137
+[]|\T1/ntxtlf/m/n/12 (+20) Resilience and
  []
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 137--137
-[]|\TU/TimesNewRoman(0)/m/n/12 Cross-cutting Plat-
+[]|\T1/ntxtlf/m/n/12 (+20) Cross-cutting Plat-
  []
 
 
@@ -1634,6 +1482,8 @@ Underfull \hbox (badness 10000) in alignment at lines 129--139
 [] [] []
  []
 
+LaTeX Font Info:    Font shape `T1/ntxtlf/m/n' will be
+(Font)              scaled to size 14.0pt on input line 145.
 [24]
 Overfull \hbox (455.24411pt too wide) detected at line 167
 []
@@ -1650,63 +1500,23 @@ Underfull \hbox (badness 10000) in alignment at lines 171--175
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 176--176
-[]|\TU/TimesNewRoman(0)/m/n/12 Authentication mod-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 177--177
-[]|\TU/TimesNewRoman(0)/m/n/12 Complaint lifecycle
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 177--177
-[]|\TU/TimesNewRoman(0)/m/n/12 Produces classification/location/draft
+Underfull \hbox (badness 7362) in paragraph at lines 177--177
+[]|\T1/ntxtlf/m/n/12 (+20) Produces clas-si-fi-ca-tion/location/draft
  []
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 178--178
-[]|\TU/TimesNewRoman(0)/m/n/12 Complaint lifecycle
+[]|\T1/ntxtlf/m/n/12 (+20) Complaint life-cy-cle
  []
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 178--178
-[]|\TU/TimesNewRoman(0)/m/n/12 Emits status/registration/escalation
+[]|\T1/ntxtlf/m/n/12 (+20) Emits sta-tus/registration/escalation
  []
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 179--179
-[]|\TU/TimesNewRoman(0)/m/n/12 Complaint lifecycle
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 180--180
-[]|\TU/TimesNewRoman(0)/m/n/12 Complaint lifecycle
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 181--181
-[]|\TU/TimesNewRoman(0)/m/n/12 Complaint lifecycle
- []
-
-
-Underfull \hbox (badness 2970) in paragraph at lines 181--181
-[]|\TU/TimesNewRoman(0)/m/n/12 Applies corrected decisions for low-
- []
-
-
-Underfull \hbox (badness 2119) in paragraph at lines 182--182
-[]|\TU/TimesNewRoman(0)/m/n/12 Executes aggregate queries for dash-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 184--184
-[]|\TU/TimesNewRoman(0)/m/n/12 Publishes live-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 184--184
-\TU/TimesNewRoman(0)/m/n/12 ness/readiness/dependency status
+[]|\T1/ntxtlf/m/n/12 (+20) Complaint life-cy-cle
  []
 
 
@@ -1714,51 +1524,16 @@ Underfull \hbox (badness 10000) in alignment at lines 175--186
 [] [] []
  []
 
-ignored error: Infinite glue shrinkage found in box being split [25]
-Underfull \hbox (badness 1867) in paragraph at lines 202--202
-[]|\TU/TimesNewRoman(0)/m/n/12 Analyze intake, dashboard
- []
-
-
-Underfull \hbox (badness 1221) in paragraph at lines 202--202
-[]|\TU/TimesNewRoman(0)/m/n/12 Assignment list, status up-
- []
-
-
-Underfull \hbox (badness 8019) in paragraph at lines 202--202
-[]|\TU/TimesNewRoman(0)/m/n/12 Structured field execution and improved
- []
-
 
 Underfull \hbox (badness 10000) in paragraph at lines 202--202
-[]|\TU/TimesNewRoman(0)/m/n/12 Department
+[]|\T1/ntxtlf/m/n/12 (+20) Department
  []
 
-
-Underfull \hbox (badness 1342) in paragraph at lines 202--202
-\TU/TimesNewRoman(0)/m/n/12 updates, transfer/escalation,
- []
-
-
-Underfull \hbox (badness 4713) in paragraph at lines 202--202
-[]|\TU/TimesNewRoman(0)/m/n/12 Transparency without exposing personally
- []
-
-[26]) (chapters/ch05_system_design.tex [27]
+[25]) (./chapters/ch05_system_design.tex [26]
 Chapter 5.
-[28
+[27
 
-]
-Underfull \hbox (badness 1412) in paragraph at lines 44--44
-[]|\TU/TimesNewRoman(0)/m/n/12 Hybrid AI pipeline (vision +
- []
-
-
-Underfull \hbox (badness 2111) in paragraph at lines 44--44
-[]|\TU/TimesNewRoman(0)/m/n/12 Queue-based draft generation
- []
-
-[29] [30] [31] [32] [33]
+] [28] [29] [30] [31] [32]
 Overfull \hbox (455.24411pt too wide) detected at line 114
 []
  []
@@ -1774,38 +1549,13 @@ Underfull \hbox (badness 10000) in alignment at lines 118--122
  []
 
 
-Underfull \hbox (badness 3872) in paragraph at lines 128--128
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Department linkage for worker and
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 130--130
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Availability state (avail-
- []
-
-
-Underfull \hbox (badness 4621) in paragraph at lines 132--132
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Worker geofence with lat, lon, ra-
- []
-
-
-Underfull \hbox (badness 3088) in paragraph at lines 145--145
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Model, confidence, labels, rationale
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 153--153
-[]|\TU/TimesNewRoman(0)/m/n/10.95 is_duplicate / dupli-
+Underfull \hbox (badness 6125) in paragraph at lines 153--153
+[]|\T1/ntxtlf/m/n/10.95 (+20) is_duplicate / du-pli-
  []
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 159--159
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Notification category (sta-
- []
-
-
-Underfull \hbox (badness 1024) in paragraph at lines 171--171
-[]|\TU/TimesNewRoman(0)/m/n/10.95 used_at / revoked_at /
+[]|\T1/ntxtlf/m/n/10.95 (+20) Notification cat-e-gory (sta-
  []
 
 
@@ -1813,138 +1563,183 @@ Underfull \hbox (badness 10000) in alignment at lines 122--173
 [] [] [] []
  []
 
-ignored error: Infinite glue shrinkage found in box being split [34]
+
+ignored: Infinite glue shrinkage found in box being split [33]
 Underfull \hbox (badness 10000) in paragraph at lines 198--198
-[]|\TU/TimesNewRoman(0)/m/n/12 unique(username),
+[]|\T1/ntxtlf/m/n/12 (+20) unique(username),
  []
 
-[35] [36]
-Underfull \hbox (badness 10000) in paragraph at lines 249--249
-[]|\TU/TimesNewRoman(0)/m/n/12 Analyze and Result
+[34]
+Underfull \hbox (badness 5878) in paragraph at lines 249--249
+[]|\T1/ntxtlf/m/n/12 (+20) Analyze and Re-sult
  []
 
-File: ../../images/GUI_Wireframe.png Graphic file (type bmp)
-<../../images/GUI_Wireframe.png>
-[37] [38]
-File: ../../images/screenshots/S01_home_desktop.png Graphic file (type bmp)
-<../../images/screenshots/S01_home_desktop.png>
+[35{c:/texlive/2026/texmf-dist/fonts/enc/dvips/newtx/ntx-ot1-tlf.enc}]
+File: ../../images/GUI_Wireframe.png Graphic file (type png)
+<use ../../images/GUI_Wireframe.png>
+Package pdftex.def Info: ../../images/GUI_Wireframe.png  used on input line 261.
+(pdftex.def)             Requested size: 386.96027pt x 386.97212pt.
+ [36] [37]
+<../../images/screenshots/S01_home_desktop.png, id=1702, 1432.60219pt x 744.53156pt>
+File: ../../images/screenshots/S01_home_desktop.png Graphic file (type png)
+<use ../../images/screenshots/S01_home_desktop.png>
+Package pdftex.def Info: ../../images/screenshots/S01_home_desktop.png  used on input line 273.
+(pdftex.def)             Requested size: 437.01955pt x 227.12155pt.
+ [38
+
+ <../../images/screenshots/S01_home_desktop.png>]
+<../../images/screenshots/S02_login_desktop.png, id=1710, 1200.73593pt x 703.12688pt>
+File: ../../images/screenshots/S02_login_desktop.png Graphic file (type png)
+<use ../../images/screenshots/S02_login_desktop.png>
+Package pdftex.def Info: ../../images/screenshots/S02_login_desktop.png  used on input line 276.
+(pdftex.def)             Requested size: 437.02826pt x 255.91498pt.
  [39
 
-]
-File: ../../images/screenshots/S02_login_desktop.png Graphic file (type bmp)
-<../../images/screenshots/S02_login_desktop.png>
+ <../../images/screenshots/S02_login_desktop.png>]
+<../../images/screenshots/S03_register_desktop.png, id=1716, 1178.15157pt x 717.43031pt>
+File: ../../images/screenshots/S03_register_desktop.png Graphic file (type png)
+<use ../../images/screenshots/S03_register_desktop.png>
+Package pdftex.def Info: ../../images/screenshots/S03_register_desktop.png  used on input line 279.
+(pdftex.def)             Requested size: 437.04181pt x 266.13472pt.
  [40
 
-]
-File: ../../images/screenshots/S03_register_desktop.png Graphic file (type bmp)
-
-<../../images/screenshots/S03_register_desktop.png>
+ <../../images/screenshots/S03_register_desktop.png>]
+<../../images/screenshots/S04_reset_password_desktop.png, id=1722, 1443.89438pt x 682.04813pt>
+File: ../../images/screenshots/S04_reset_password_desktop.png Graphic file (type png)
+<use ../../images/screenshots/S04_reset_password_desktop.png>
+Package pdftex.def Info: ../../images/screenshots/S04_reset_password_desktop.png  used on input line 282.
+(pdftex.def)             Requested size: 437.02725pt x 206.43727pt.
  [41
 
-]
-File: ../../images/screenshots/S04_reset_password_desktop.png Graphic file (typ
-e bmp)
-<../../images/screenshots/S04_reset_password_desktop.png>
+ <../../images/screenshots/S04_reset_password_desktop.png>]
+<../../images/screenshots/S05_admin_dashboard_desktop.png, id=1729, 1444.64719pt x 737.75626pt>
+File: ../../images/screenshots/S05_admin_dashboard_desktop.png Graphic file (type png)
+<use ../../images/screenshots/S05_admin_dashboard_desktop.png>
+Package pdftex.def Info: ../../images/screenshots/S05_admin_dashboard_desktop.png  used on input line 285.
+(pdftex.def)             Requested size: 437.03468pt x 223.18602pt.
  [42
 
-]
-File: ../../images/screenshots/S05_admin_dashboard_desktop.png Graphic file (ty
-pe bmp)
-<../../images/screenshots/S05_admin_dashboard_desktop.png>
+ <../../images/screenshots/S05_admin_dashboard_desktop.png>]
+<../../images/screenshots/S06_triage_review_desktop.png, id=1735, 594.72188pt x 474.27188pt>
+File: ../../images/screenshots/S06_triage_review_desktop.png Graphic file (type png)
+<use ../../images/screenshots/S06_triage_review_desktop.png>
+Package pdftex.def Info: ../../images/screenshots/S06_triage_review_desktop.png  used on input line 288.
+(pdftex.def)             Requested size: 437.0382pt x 348.52412pt.
  [43
 
-]
-File: ../../images/screenshots/S06_triage_review_desktop.png Graphic file (type
- bmp)
-<../../images/screenshots/S06_triage_review_desktop.png>
+ <../../images/screenshots/S06_triage_review_desktop.png>]
+<../../images/screenshots/S07_worker_assignment_panel_desktop.png, id=1741, 1165.35374pt x 500.62032pt>
+File: ../../images/screenshots/S07_worker_assignment_panel_desktop.png Graphic file (type png)
+<use ../../images/screenshots/S07_worker_assignment_panel_desktop.png>
+Package pdftex.def Info: ../../images/screenshots/S07_worker_assignment_panel_desktop.png  used on input line 291.
+(pdftex.def)             Requested size: 437.02437pt x 187.73979pt.
  [44
 
-]
-File: ../../images/screenshots/S07_worker_assignment_panel_desktop.png Graphic 
-file (type bmp)
-<../../images/screenshots/S07_worker_assignment_panel_desktop.png>
+ <../../images/screenshots/S07_worker_assignment_panel_desktop.png>]
+<../../images/screenshots/S08_analytics_dashboard_desktop.png, id=1748, 877.77937pt x 674.52pt>
+File: ../../images/screenshots/S08_analytics_dashboard_desktop.png Graphic file (type png)
+<use ../../images/screenshots/S08_analytics_dashboard_desktop.png>
+Package pdftex.def Info: ../../images/screenshots/S08_analytics_dashboard_desktop.png  used on input line 294.
+(pdftex.def)             Requested size: 437.04027pt x 335.83882pt.
  [45
 
-]
-File: ../../images/screenshots/S08_analytics_dashboard_desktop.png Graphic file
- (type bmp)
-<../../images/screenshots/S08_analytics_dashboard_desktop.png>
+ <../../images/screenshots/S08_analytics_dashboard_desktop.png>]
+<../../images/screenshots/S09_map_overview_satellite_desktop.png, id=1754, 939.51pt x 595.47469pt>
+File: ../../images/screenshots/S09_map_overview_satellite_desktop.png Graphic file (type png)
+<use ../../images/screenshots/S09_map_overview_satellite_desktop.png>
+Package pdftex.def Info: ../../images/screenshots/S09_map_overview_satellite_desktop.png  used on input line 297.
+(pdftex.def)             Requested size: 437.03966pt x 277.00189pt.
  [46
 
-]
-File: ../../images/screenshots/S09_map_overview_satellite_desktop.png Graphic f
-ile (type bmp)
-<../../images/screenshots/S09_map_overview_satellite_desktop.png>
+ <../../images/screenshots/S09_map_overview_satellite_desktop.png>]
+<../../images/screenshots/S10_map_popup_detail_desktop.png, id=1760, 920.68968pt x 740.0147pt>
+File: ../../images/screenshots/S10_map_popup_detail_desktop.png Graphic file (type png)
+<use ../../images/screenshots/S10_map_popup_detail_desktop.png>
+Package pdftex.def Info: ../../images/screenshots/S10_map_popup_detail_desktop.png  used on input line 300.
+(pdftex.def)             Requested size: 437.05118pt x 351.2848pt.
  [47
 
-]
-File: ../../images/screenshots/S10_map_popup_detail_desktop.png Graphic file (t
-ype bmp)
-<../../images/screenshots/S10_map_popup_detail_desktop.png>
+ <../../images/screenshots/S10_map_popup_detail_desktop.png>]
+<../../images/screenshots/S11_public_board_desktop.png, id=1766, 1239.88219pt x 743.02594pt>
+File: ../../images/screenshots/S11_public_board_desktop.png Graphic file (type png)
+<use ../../images/screenshots/S11_public_board_desktop.png>
+Package pdftex.def Info: ../../images/screenshots/S11_public_board_desktop.png  used on input line 303.
+(pdftex.def)             Requested size: 437.03015pt x 261.89967pt.
  [48
 
-]
-File: ../../images/screenshots/S11_public_board_desktop.png Graphic file (type 
-bmp)
-<../../images/screenshots/S11_public_board_desktop.png>
+ <../../images/screenshots/S11_public_board_desktop.png>]
+<../../images/screenshots/S12_heatmap_desktop.png, id=1772, 1190.19656pt x 743.02594pt>
+File: ../../images/screenshots/S12_heatmap_desktop.png Graphic file (type png)
+<use ../../images/screenshots/S12_heatmap_desktop.png>
+Package pdftex.def Info: ../../images/screenshots/S12_heatmap_desktop.png  used on input line 306.
+(pdftex.def)             Requested size: 437.02423pt x 272.82916pt.
  [49
 
-]
-File: ../../images/screenshots/S12_heatmap_desktop.png Graphic file (type bmp)
-<../../images/screenshots/S12_heatmap_desktop.png>
+ <../../images/screenshots/S12_heatmap_desktop.png>]
+<../../images/screenshots/S13_profile_admin_desktop.png, id=1778, 1227.08438pt x 738.50906pt>
+File: ../../images/screenshots/S13_profile_admin_desktop.png Graphic file (type png)
+<use ../../images/screenshots/S13_profile_admin_desktop.png>
+Package pdftex.def Info: ../../images/screenshots/S13_profile_admin_desktop.png  used on input line 309.
+(pdftex.def)             Requested size: 437.03165pt x 263.02335pt.
  [50
 
-]
-File: ../../images/screenshots/S13_profile_admin_desktop.png Graphic file (type
- bmp)
-<../../images/screenshots/S13_profile_admin_desktop.png>
+ <../../images/screenshots/S13_profile_admin_desktop.png>]
+<../../images/screenshots/S14_citizen_dashboard_desktop.png, id=1785, 1163.0953pt x 736.25063pt>
+File: ../../images/screenshots/S14_citizen_dashboard_desktop.png Graphic file (type png)
+<use ../../images/screenshots/S14_citizen_dashboard_desktop.png>
+Package pdftex.def Info: ../../images/screenshots/S14_citizen_dashboard_desktop.png  used on input line 312.
+(pdftex.def)             Requested size: 437.04704pt x 276.65501pt.
  [51
 
-]
-File: ../../images/screenshots/S14_citizen_dashboard_desktop.png Graphic file (
-type bmp)
-<../../images/screenshots/S14_citizen_dashboard_desktop.png>
+ <../../images/screenshots/S14_citizen_dashboard_desktop.png>]
+<../../images/screenshots/S15_notifications_panel_desktop.png, id=1791, 1187.18532pt x 539.01375pt>
+File: ../../images/screenshots/S15_notifications_panel_desktop.png Graphic file (type png)
+<use ../../images/screenshots/S15_notifications_panel_desktop.png>
+Package pdftex.def Info: ../../images/screenshots/S15_notifications_panel_desktop.png  used on input line 315.
+(pdftex.def)             Requested size: 437.04167pt x 198.42854pt.
+ [52
 
-[52
-
-]
-File: ../../images/screenshots/S15_notifications_panel_desktop.png Graphic file
- (type bmp)
-<../../images/screenshots/S15_notifications_panel_desktop.png>
+ <../../images/screenshots/S15_notifications_panel_desktop.png>]
+<../../images/screenshots/SX1_file_complaint_upload_desktop.png, id=1797, 997.47656pt x 733.23938pt>
+File: ../../images/screenshots/SX1_file_complaint_upload_desktop.png Graphic file (type png)
+<use ../../images/screenshots/SX1_file_complaint_upload_desktop.png>
+Package pdftex.def Info: ../../images/screenshots/SX1_file_complaint_upload_desktop.png  used on input line 320.
+(pdftex.def)             Requested size: 437.03418pt x 321.26135pt.
  [53
 
-]
-File: ../../images/screenshots/SX1_file_complaint_upload_desktop.png Graphic fi
-le (type bmp)
-<../../images/screenshots/SX1_file_complaint_upload_desktop.png>
+ <../../images/screenshots/SX1_file_complaint_upload_desktop.png>]
+<../../images/screenshots/SX2_citizen_timeline_multilingual_desktop.png, id=1803, 1178.90437pt x 685.05937pt>
+File: ../../images/screenshots/SX2_citizen_timeline_multilingual_desktop.png Graphic file (type png)
+<use ../../images/screenshots/SX2_citizen_timeline_multilingual_desktop.png>
+Package pdftex.def Info: ../../images/screenshots/SX2_citizen_timeline_multilingual_desktop.png  used on input line 323.
+(pdftex.def)             Requested size: 437.03326pt x 253.95929pt.
  [54
 
-]
-File: ../../images/screenshots/SX2_citizen_timeline_multilingual_desktop.png Gr
-aphic file (type bmp)
-<../../images/screenshots/SX2_citizen_timeline_multilingual_desktop.png>
+ <../../images/screenshots/SX2_citizen_timeline_multilingual_desktop.png>]
+<../../images/screenshots/SX3_resolved_feedback_snapshot_desktop.png, id=1809, 1151.80313pt x 429.85594pt>
+File: ../../images/screenshots/SX3_resolved_feedback_snapshot_desktop.png Graphic file (type png)
+<use ../../images/screenshots/SX3_resolved_feedback_snapshot_desktop.png>
+Package pdftex.def Info: ../../images/screenshots/SX3_resolved_feedback_snapshot_desktop.png  used on input line 326.
+(pdftex.def)             Requested size: 437.03946pt x 163.10426pt.
  [55
 
-]
-File: ../../images/screenshots/SX3_resolved_feedback_snapshot_desktop.png Graph
-ic file (type bmp)
-<../../images/screenshots/SX3_resolved_feedback_snapshot_desktop.png>
+ <../../images/screenshots/SX3_resolved_feedback_snapshot_desktop.png>]
+<../../images/screenshots/SX4_result_location_analysis_desktop.png, id=1815, 1197.72469pt x 703.87968pt>
+File: ../../images/screenshots/SX4_result_location_analysis_desktop.png Graphic file (type png)
+<use ../../images/screenshots/SX4_result_location_analysis_desktop.png>
+Package pdftex.def Info: ../../images/screenshots/SX4_result_location_analysis_desktop.png  used on input line 329.
+(pdftex.def)             Requested size: 437.02881pt x 256.83339pt.
  [56
 
-]
-File: ../../images/screenshots/SX4_result_location_analysis_desktop.png Graphic
- file (type bmp)
-<../../images/screenshots/SX4_result_location_analysis_desktop.png>
- [57
+ <../../images/screenshots/SX4_result_location_analysis_desktop.png>]
+<../../images/screenshots/SX5_result_grievance_description_desktop.png, id=1822, 337.26pt x 396.7322pt>
+File: ../../images/screenshots/SX5_result_grievance_description_desktop.png Graphic file (type png)
+<use ../../images/screenshots/SX5_result_grievance_description_desktop.png>
+Package pdftex.def Info: ../../images/screenshots/SX5_result_grievance_description_desktop.png  used on input line 332.
+(pdftex.def)             Requested size: 437.04848pt x 514.11731pt.
+) (./chapters/ch06_implementation_planning.tex [57
 
-]
-File: ../../images/screenshots/SX5_result_grievance_description_desktop.png Gra
-phic file (type bmp)
-<../../images/screenshots/SX5_result_grievance_description_desktop.png>
-) (chapters/ch06_implementation_planning.tex
-[58
-
-]
+ <../../images/screenshots/SX5_result_grievance_description_desktop.png>]
 Chapter 6.
 
 Overfull \hbox (455.24411pt too wide) detected at line 38
@@ -1963,32 +1758,22 @@ Underfull \hbox (badness 10000) in alignment at lines 42--46
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 47--47
-[]|\TU/TimesNewRoman(0)/m/n/12 Backend Frame-
+[]|\T1/ntxtlf/m/n/12 (+20) Backend Frame-
  []
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 49--49
-[]|\TU/TimesNewRoman(0)/m/n/12 python-jose,
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 51--51
-[]|\TU/TimesNewRoman(0)/m/n/12 Motor/PyMongo
+[]|\T1/ntxtlf/m/n/12 (+20) python-jose,
  []
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 54--54
-[]|\TU/TimesNewRoman(0)/m/n/12 Frontend Frame-
+[]|\T1/ntxtlf/m/n/12 (+20) Frontend Frame-
  []
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 58--58
-[]|\TU/TimesNewRoman(0)/m/n/12 Reproducible orchestration of back-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 59--59
-[]|\TU/TimesNewRoman(0)/m/n/12 Unit/integration/security/resilience/load test
+[]|\T1/ntxtlf/m/n/12 (+20) Reproducible or-ches-tra-tion of back-
  []
 
 
@@ -1996,29 +1781,9 @@ Underfull \hbox (badness 10000) in alignment at lines 46--62
 [] [] []
  []
 
-[59
+[58
 
-] [60] [61]
-Underfull \hbox (badness 10000) in paragraph at lines 150--150
-[]|\TU/TimesNewRoman(0)/m/n/12 Implement analyze pipeline
- []
-
-
-Underfull \hbox (badness 4013) in paragraph at lines 150--150
-[]|\TU/TimesNewRoman(0)/m/n/12 Build frontend analyze/result
- []
-
-
-Underfull \hbox (badness 2707) in paragraph at lines 150--150
-[]|\TU/TimesNewRoman(0)/m/n/12 Depends on complaint schema maturity and
- []
-
-
-Underfull \hbox (badness 7397) in paragraph at lines 150--150
-[]|\TU/TimesNewRoman(0)/m/n/12 Add security and reliability
- []
-
-[62]
+] [59] [60] [61]
 Overfull \hbox (455.24411pt too wide) detected at line 203
 []
  []
@@ -2034,48 +1799,18 @@ Underfull \hbox (badness 10000) in alignment at lines 207--211
  []
 
 
-Underfull \hbox (badness 4416) in paragraph at lines 212--212
-[]|\TU/TimesNewRoman(0)/m/n/12 registration, login, profile
- []
-
-
-Underfull \hbox (badness 1259) in paragraph at lines 213--213
-[]|\TU/TimesNewRoman(0)/m/n/12 Needed consistent status-history ap-
- []
-
-
 Underfull \hbox (badness 10000) in paragraph at lines 214--214
-[]|\TU/TimesNewRoman(0)/m/n/12 assignment views, ap-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 214--214
-\TU/TimesNewRoman(0)/m/n/12 proval/rejection, service-
- []
-
-
-Underfull \hbox (badness 2626) in paragraph at lines 214--214
-[]|\TU/TimesNewRoman(0)/m/n/12 Needed separation between worker
- []
-
-
-Underfull \hbox (badness 3815) in paragraph at lines 214--214
-\TU/TimesNewRoman(0)/m/n/12 self-actions and admin governance
+[]|\T1/ntxtlf/m/n/12 (+20) assignment views, ap-
  []
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 217--217
-[]|\TU/TimesNewRoman(0)/m/n/12 dashboards, heatmap,
+[]|\T1/ntxtlf/m/n/12 (+20) dashboards, heatmap,
  []
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 218--218
-[]|\TU/TimesNewRoman(0)/m/n/12 live/ready/models/gpu
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 218--218
-[]|\TU/TimesNewRoman(0)/m/n/12 Needed operationally meaningful
+[]|\T1/ntxtlf/m/n/12 (+20) live/ready/models/gpu
  []
 
 
@@ -2083,12 +1818,7 @@ Underfull \hbox (badness 10000) in alignment at lines 211--220
 [] [] []
  []
 
-[63] [64]
-Underfull \hbox (badness 10000) in paragraph at lines 267--267
-[]|\TU/TimesNewRoman(0)/m/n/12 Environment readi-
- []
-
-[65]
+[62] [63] [64]
 Overfull \hbox (455.24411pt too wide) detected at line 285
 []
  []
@@ -2105,37 +1835,22 @@ Underfull \hbox (badness 10000) in alignment at lines 289--293
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 294--294
-[]|\TU/TimesNewRoman(0)/m/n/12 Response header
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 296--296
-[]|\TU/TimesNewRoman(0)/m/n/12 /health/models end-
- []
-
-
-Underfull \hbox (badness 5563) in paragraph at lines 298--298
-[]|\TU/TimesNewRoman(0)/m/n/12 unread-count behavior
+[]|\T1/ntxtlf/m/n/12 (+20) Response header
  []
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 299--299
-[]|\TU/TimesNewRoman(0)/m/n/12 Assignment queue
+[]|\T1/ntxtlf/m/n/12 (+20) Assignment queue
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 299--299
-[]|\TU/TimesNewRoman(0)/m/n/12 open/unassigned com-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 299--299
-\TU/TimesNewRoman(0)/m/n/12 plaints and worker
+Underfull \hbox (badness 1616) in paragraph at lines 299--299
+[]|\T1/ntxtlf/m/n/12 (+20) open/unassigned com-
  []
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 300--300
-[]|\TU/TimesNewRoman(0)/m/n/12 low-confidence com-
+[]|\T1/ntxtlf/m/n/12 (+20) low-confidence com-
  []
 
 
@@ -2143,7 +1858,7 @@ Underfull \hbox (badness 10000) in alignment at lines 293--303
 [] [] []
  []
 
-[66]) (chapters/ch07_testing.tex [67]
+[65]) (./chapters/ch07_testing.tex [66]
 Chapter 7.
 
 Overfull \hbox (455.24411pt too wide) detected at line 49
@@ -2161,23 +1876,13 @@ Underfull \hbox (badness 10000) in alignment at lines 53--57
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 58--58
-[]|\TU/TimesNewRoman(0)/m/n/12 GeoLocation bounds, complaint
- []
-
-
-Underfull \hbox (badness 2735) in paragraph at lines 58--58
-\TU/TimesNewRoman(0)/m/n/12 schema validity, confidence-score
+Underfull \hbox (badness 2452) in paragraph at lines 58--58
+[]|\T1/ntxtlf/m/n/12 (+20) GeoLocation bounds, com-plaint
  []
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 59--59
-[]|\TU/TimesNewRoman(0)/m/n/12 Token claims, admin and
- []
-
-
-Underfull \hbox (badness 2799) in paragraph at lines 61--61
-[]|\TU/TimesNewRoman(0)/m/n/12 /api/v1 profile route, CORS pre-
+[]|\T1/ntxtlf/m/n/12 (+20) Token claims, ad-min and
  []
 
 
@@ -2185,14 +1890,9 @@ Underfull \hbox (badness 10000) in alignment at lines 57--67
 [] [] []
  []
 
-[68
+[67
 
-] [69]
-Underfull \hbox (badness 1297) in paragraph at lines 120--120
-[]|\TU/TimesNewRoman(0)/m/n/12 Citizen upload -> analyze ->
- []
-
-[70] [71]
+] [68] [69]
 Overfull \hbox (455.24411pt too wide) detected at line 188
 []
  []
@@ -2208,68 +1908,48 @@ Underfull \hbox (badness 10000) in alignment at lines 192--196
  []
 
 
-Underfull \hbox (badness 3646) in paragraph at lines 197--197
-[]|\TU/TimesNewRoman(0)/m/n/12 Reworked login end-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 197--197
-\TU/TimesNewRoman(0)/m/n/12 fields and validated
- []
-
-
-Underfull \hbox (badness 7433) in paragraph at lines 198--198
-\TU/TimesNewRoman(0)/m/n/12 major versions com-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 198--198
-\TU/TimesNewRoman(0)/m/n/12 patible with current
+Underfull \hbox (badness 2744) in paragraph at lines 197--197
+\T1/ntxtlf/m/n/12 (+20) fields and val-i-dated
  []
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 199--199
-[]|\TU/TimesNewRoman(0)/m/n/12 Corrected compose
+[]|\T1/ntxtlf/m/n/12 (+20) Corrected com-pose
  []
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 199--199
-\TU/TimesNewRoman(0)/m/n/12 volume target to
+\T1/ntxtlf/m/n/12 (+20) vol-ume tar-get to
  []
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 199--199
-\TU/TimesNewRoman(0)/m/n/12 /app/uploads and
+\T1/ntxtlf/m/n/12 (+20) /app/uploads and
  []
 
 
-Underfull \hbox (badness 7468) in paragraph at lines 199--199
-\TU/TimesNewRoman(0)/m/n/12 cleaned stray nested
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 200--200
-[]|\TU/TimesNewRoman(0)/m/n/12 Added dedicated
+Underfull \hbox (badness 1383) in paragraph at lines 199--199
+\T1/ntxtlf/m/n/12 (+20) cleaned stray nested
  []
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 200--200
-\TU/TimesNewRoman(0)/m/n/12 forgot/reset pages,
+[]|\T1/ntxtlf/m/n/12 (+20) Added ded-i-cated
  []
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 200--200
-\TU/TimesNewRoman(0)/m/n/12 route wiring, and
+\T1/ntxtlf/m/n/12 (+20) for-got/reset pages,
  []
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 200--200
-\TU/TimesNewRoman(0)/m/n/12 contextual links in
+\T1/ntxtlf/m/n/12 (+20) route wiring, and
  []
 
 
-Underfull \hbox (badness 1424) in paragraph at lines 201--201
-[]|\TU/TimesNewRoman(0)/m/n/12 Repositioned link un-
+Underfull \hbox (badness 6542) in paragraph at lines 200--200
+\T1/ntxtlf/m/n/12 (+20) con-tex-tual links in
  []
 
 
@@ -2277,22 +1957,22 @@ Underfull \hbox (badness 10000) in alignment at lines 196--203
 [] [] [] []
  []
 
-
+[70]
 Underfull \hbox (badness 10000) in paragraph at lines 220--220
-[]|\TU/TimesNewRoman(0)/m/n/12 Backend automated
+[]|\T1/ntxtlf/m/n/12 (+20) Backend au-to-mated
  []
 
 
-Underfull \hbox (badness 7685) in paragraph at lines 220--220
-[]|\TU/TimesNewRoman(0)/m/n/12 Controlled degraded responses confirmed for
+Underfull \hbox (badness 1231) in paragraph at lines 220--220
+[]|\T1/ntxtlf/m/n/12 (+20) Controlled de-graded re-sponses con-firmed for
  []
 
 
-Underfull \hbox (badness 7851) in paragraph at lines 220--220
-[]|\TU/TimesNewRoman(0)/m/n/12 Pass with re-
+Underfull \hbox (badness 1546) in paragraph at lines 220--220
+[]|\T1/ntxtlf/m/n/12 (+20) Pass with re-
  []
 
-[72]
+[71]
 Overfull \hbox (455.24411pt too wide) detected at line 238
 []
  []
@@ -2309,187 +1989,102 @@ Underfull \hbox (badness 10000) in alignment at lines 242--246
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 247--247
-[]|\TU/TimesNewRoman(0)/m/n/12 Account created
- []
-
-
-Underfull \hbox (badness 3138) in paragraph at lines 248--248
-[]|\TU/TimesNewRoman(0)/m/n/12 Classification and
- []
-
-
-Underfull \hbox (badness 3439) in paragraph at lines 248--248
-\TU/TimesNewRoman(0)/m/n/12 draft payload are
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 249--249
-[]|\TU/TimesNewRoman(0)/m/n/12 Complaint record
- []
-
-
-Underfull \hbox (badness 1127) in paragraph at lines 250--250
-[]|\TU/TimesNewRoman(0)/m/n/12 View dashboard timeline after
+[]|\T1/ntxtlf/m/n/12 (+20) Account cre-ated
  []
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 250--250
-[]|\TU/TimesNewRoman(0)/m/n/12 Status history
+[]|\T1/ntxtlf/m/n/12 (+20) Status his-tory
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 250--250
-\TU/TimesNewRoman(0)/m/n/12 includes creation
+Underfull \hbox (badness 3460) in paragraph at lines 250--250
+\T1/ntxtlf/m/n/12 (+20) in-cludes cre-ation
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 251--251
-\TU/TimesNewRoman(0)/m/n/12 list are synchro-
+Underfull \hbox (badness 2846) in paragraph at lines 251--251
+\T1/ntxtlf/m/n/12 (+20) list are syn-chro-
  []
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 252--252
-[]|\TU/TimesNewRoman(0)/m/n/12 Forgot-password and reset-
+[]|\T1/ntxtlf/m/n/12 (+20) Forgot-password and reset-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 253--253
-[]|\TU/TimesNewRoman(0)/m/n/12 Only assigned
- []
-
-
-Underfull \hbox (badness 3635) in paragraph at lines 253--253
-\TU/TimesNewRoman(0)/m/n/12 tasks and worker
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 254--254
-[]|\TU/TimesNewRoman(0)/m/n/12 Mark assigned complaint as
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 254--254
-[]|\TU/TimesNewRoman(0)/m/n/12 Complaint transi-
- []
-
-
-Underfull \hbox (badness 4403) in paragraph at lines 254--254
-\TU/TimesNewRoman(0)/m/n/12 tions and worker
+Underfull \hbox (badness 2573) in paragraph at lines 254--254
+[]|\T1/ntxtlf/m/n/12 (+20) Complaint tran-si-
  []
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 255--255
-[]|\TU/TimesNewRoman(0)/m/n/12 Department-
+[]|\T1/ntxtlf/m/n/12 (+20) Department-
  []
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 255--255
-\TU/TimesNewRoman(0)/m/n/12 scoped records
- []
-
-
-Underfull \hbox (badness 3323) in paragraph at lines 256--256
-[]|\TU/TimesNewRoman(0)/m/n/12 Update complaint status with
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 257--257
-[]|\TU/TimesNewRoman(0)/m/n/12 Access denied
- []
-
-
-Underfull \hbox (badness 1668) in paragraph at lines 257--257
-\TU/TimesNewRoman(0)/m/n/12 with authorization
+\T1/ntxtlf/m/n/12 (+20) scoped records
  []
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 258--258
-[]|\TU/TimesNewRoman(0)/m/n/12 Worker status
+[]|\T1/ntxtlf/m/n/12 (+20) Worker sta-tus
  []
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 258--258
-\TU/TimesNewRoman(0)/m/n/12 changes to ap-
+\T1/ntxtlf/m/n/12 (+20) changes to ap-
  []
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 259--259
-[]|\TU/TimesNewRoman(0)/m/n/12 Assignment
+[]|\T1/ntxtlf/m/n/12 (+20) Assignment
  []
 
 
-Underfull \hbox (badness 5050) in paragraph at lines 259--259
-\TU/TimesNewRoman(0)/m/n/12 reflected in com-
- []
-
-
-Underfull \hbox (badness 1067) in paragraph at lines 259--259
-\TU/TimesNewRoman(0)/m/n/12 plaint and worker
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 260--260
-[]|\TU/TimesNewRoman(0)/m/n/12 Open triage queue and ap-
- []
-
-
-Underfull \hbox (badness 2205) in paragraph at lines 261--261
-[]|\TU/TimesNewRoman(0)/m/n/12 All selected com-
+Underfull \hbox (badness 2486) in paragraph at lines 260--260
+[]|\T1/ntxtlf/m/n/12 (+20) Open triage queue and ap-
  []
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 261--261
-\TU/TimesNewRoman(0)/m/n/12 plaints updated
+\T1/ntxtlf/m/n/12 (+20) plaints up-dated
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 262--262
-[]|\TU/TimesNewRoman(0)/m/n/12 Download file
+Underfull \hbox (badness 4048) in paragraph at lines 262--262
+\T1/ntxtlf/m/n/12 (+20) ex-pected col-umn
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 262--262
-\TU/TimesNewRoman(0)/m/n/12 with expected
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 263--263
-[]|\TU/TimesNewRoman(0)/m/n/12 View analytics and heatmap
+Underfull \hbox (badness 1436) in paragraph at lines 263--263
+[]|\T1/ntxtlf/m/n/12 (+20) View an-a-lyt-ics and heatmap
  []
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 263--263
-[]|\TU/TimesNewRoman(0)/m/n/12 Aggregates and
+[]|\T1/ntxtlf/m/n/12 (+20) Aggregates and
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 264--264
-[]|\TU/TimesNewRoman(0)/m/n/12 Anonymized list-
- []
-
-
-Underfull \hbox (badness 1038) in paragraph at lines 265--265
-[]|\TU/TimesNewRoman(0)/m/n/12 Submit malformed image pay-
+Underfull \hbox (badness 4144) in paragraph at lines 264--264
+[]|\T1/ntxtlf/m/n/12 (+20) Anonymized list-
  []
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 265--265
-[]|\TU/TimesNewRoman(0)/m/n/12 Request rejected
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 265--265
-\TU/TimesNewRoman(0)/m/n/12 with safe valida-
+[]|\T1/ntxtlf/m/n/12 (+20) Request re-jected
  []
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 266--266
-[]|\TU/TimesNewRoman(0)/m/n/12 User-friendly
+[]|\T1/ntxtlf/m/n/12 (+20) User-friendly
  []
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 266--266
-\TU/TimesNewRoman(0)/m/n/12 retryable 503
+\T1/ntxtlf/m/n/12 (+20) retryable 503
  []
 
 
@@ -2497,20 +2092,20 @@ Underfull \hbox (badness 10000) in alignment at lines 246--268
 [] [] [] [] []
  []
 
-ignored error: Infinite glue shrinkage found in box being split [73]
-ignored error: Infinite glue shrinkage found in box being split [74]
+
+ignored: Infinite glue shrinkage found in box being split [72]
 Underfull \hbox (badness 10000) in paragraph at lines 282--282
-[]|\TU/TimesNewRoman(0)/b/n/12 Spawn
+[]|\T1/ntxtlf/b/n/12 (+20) Spawn
  []
 
-
+[73]
 Overfull \hbox (455.24411pt too wide) detected at line 289
 []
  []
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 291--291
-[]|\TU/TimesNewRoman(0)/b/n/12 Expected
+[]|\T1/ntxtlf/b/n/12 (+20) Expected
  []
 
 
@@ -2520,7 +2115,7 @@ Underfull \hbox (badness 10000) in alignment at lines 288--293
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 295--295
-[]|\TU/TimesNewRoman(0)/b/n/12 Expected
+[]|\T1/ntxtlf/b/n/12 (+20) Expected
  []
 
 
@@ -2530,57 +2125,27 @@ Underfull \hbox (badness 10000) in alignment at lines 293--297
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 298--298
-[]|\TU/TimesNewRoman(0)/m/n/12 Unauthorized access
+[]|\T1/ntxtlf/m/n/12 (+20) Unauthorized ac-cess
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 302--302
-[]|\TU/TimesNewRoman(0)/m/n/12 200 with
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 303--303
-[]|\TU/TimesNewRoman(0)/m/n/12 Notification read on foreign
+Underfull \hbox (badness 2726) in paragraph at lines 302--302
+[]|\T1/ntxtlf/m/n/12 (+20) 200 with es-
  []
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 303--303
-[]|\TU/TimesNewRoman(0)/m/n/12 Ownership scope pre-
+[]|\T1/ntxtlf/m/n/12 (+20) Ownership scope pre-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 304--304
-[]|\TU/TimesNewRoman(0)/m/n/12 nosniff, frame deny,
- []
-
-
-Underfull \hbox (badness 2495) in paragraph at lines 304--304
-\TU/TimesNewRoman(0)/m/n/12 CSP and policy headers
- []
-
-
-Underfull \hbox (badness 1803) in paragraph at lines 305--305
-[]|\TU/TimesNewRoman(0)/m/n/12 CORS preflight from allowed
- []
-
-
-Underfull \hbox (badness 3168) in paragraph at lines 305--305
-[]|\TU/TimesNewRoman(0)/m/n/12 Allow-origin policy con-
- []
-
-
-Underfull \hbox (badness 1270) in paragraph at lines 306--306
-[]|\TU/TimesNewRoman(0)/m/n/12 Invalid/expired reset token us-
- []
-
-
-Underfull \hbox (badness 4713) in paragraph at lines 307--307
-[]|\TU/TimesNewRoman(0)/m/n/12 Controlled degrade mes-
+Underfull \hbox (badness 2556) in paragraph at lines 304--304
+\T1/ntxtlf/m/n/12 (+20) and pol-icy head-ers in-
  []
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 307--307
-\TU/TimesNewRoman(0)/m/n/12 sage returned without
+\T1/ntxtlf/m/n/12 (+20) sage re-turned with-out
  []
 
 
@@ -2588,22 +2153,12 @@ Underfull \hbox (badness 10000) in alignment at lines 297--309
 [] [] [] []
  []
 
-ignored error: Infinite glue shrinkage found in box being split [75])
-(chapters/ch08_limitations_future_scope.tex [76]
+
+ignored: Infinite glue shrinkage found in box being split [74]) (./chapters/ch08_limitations_future_scope.tex [75]
 Chapter 8.
-[77
+[76
 
-] [78]
-Underfull \hbox (badness 10000) in paragraph at lines 120--120
-[]|\TU/TimesNewRoman(0)/m/n/12 Scale and institutionaliza-
- []
-
-
-Underfull \hbox (badness 1466) in paragraph at lines 120--120
-[]|\TU/TimesNewRoman(0)/m/n/12 Distributed queueing, observability stack,
- []
-
-
+] [77]
 Overfull \hbox (455.24411pt too wide) detected at line 127
 []
  []
@@ -2619,58 +2174,18 @@ Underfull \hbox (badness 10000) in alignment at lines 131--135
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 140--140
-[]|\TU/TimesNewRoman(0)/m/n/12 Domain-adapted classifier
+Underfull \hbox (badness 4726) in paragraph at lines 140--140
+[]|\T1/ntxtlf/m/n/12 (+20) Domain-adapted clas-si-fier
  []
 
 
-Underfull \hbox (badness 2376) in paragraph at lines 141--141
-[]|\TU/TimesNewRoman(0)/m/n/12 Duplicate complaint detec-
+Underfull \hbox (badness 4713) in paragraph at lines 142--142
+[]|\T1/ntxtlf/m/n/12 (+20) SLA rules en-gine with
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 142--142
-[]|\TU/TimesNewRoman(0)/m/n/12 SLA rules engine with
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 142--142
-\TU/TimesNewRoman(0)/m/n/12 department-specific thresh-
- []
-
-
-Underfull \hbox (badness 3635) in paragraph at lines 147--147
-[]|\TU/TimesNewRoman(0)/m/n/12 Expanded public analytics
- []
-
-
-Underfull \hbox (badness 1189) in paragraph at lines 148--148
-[]|\TU/TimesNewRoman(0)/m/n/12 Multi-tenant authority hier-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 150--150
-[]|\TU/TimesNewRoman(0)/m/n/12 Integrated vulnerability
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 151--151
-[]|\TU/TimesNewRoman(0)/m/n/12 Observability stack with
- []
-
-
-Underfull \hbox (badness 6758) in paragraph at lines 153--153
-[]|\TU/TimesNewRoman(0)/m/n/12 Complaint closure quality
- []
-
-
-Underfull \hbox (badness 7379) in paragraph at lines 154--154
-[]|\TU/TimesNewRoman(0)/m/n/12 Auto-generated administra-
- []
-
-
-Underfull \hbox (badness 1072) in paragraph at lines 155--155
-[]|\TU/TimesNewRoman(0)/m/n/12 Predictive hotspot forecast-
+Underfull \hbox (badness 4846) in paragraph at lines 151--151
+[]|\T1/ntxtlf/m/n/12 (+20) Observability stack with
  []
 
 
@@ -2678,17 +2193,12 @@ Underfull \hbox (badness 10000) in alignment at lines 135--157
 [] [] [] [] []
  []
 
-ignored error: Infinite glue shrinkage found in box being split [79]
-Overfull \hbox (3.87192pt too wide) in paragraph at lines 161--162
-[]\TU/TimesNewRoman(0)/m/n/12 Municipal adoption requires alignment between sof
-tware capability, administrative processes,
- []
 
-[80]) (chapters/ch09_conclusion_references.tex [81]
+ignored: Infinite glue shrinkage found in box being split [78] [79]) (./chapters/ch09_conclusion_references.tex [80]
 Chapter 9.
-[82
+[81
 
-]) (chapters/ch10_appendices.tex [83]
+]) (./chapters/ch10_appendices.tex [82]
 Chapter 10.
 
 Overfull \hbox (455.24411pt too wide) detected at line 9
@@ -2707,102 +2217,72 @@ Underfull \hbox (badness 10000) in alignment at lines 13--17
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 18--18
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Citizen/worker self-
+[]|\T1/ntxtlf/m/n/10.95 (+20) Citizen/worker self-
  []
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 19--19
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Cookie-session login
+[]|\T1/ntxtlf/m/n/10.95 (+20) Cookie-session lo-gin
  []
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 19--19
-\TU/TimesNewRoman(0)/m/n/10.95 (JWT compatibility
- []
-
-
-Underfull \hbox (badness 1242) in paragraph at lines 23--23
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Reset token issuance re-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 24--24
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Password reset submis-
+\T1/ntxtlf/m/n/10.95 (+20) (JWT com-pat-i-bil-ity
  []
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 27--27
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Regenerate complaint
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 28--28
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Poll queued generation
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 31--31
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Role-filtered complaint
+[]|\T1/ntxtlf/m/n/10.95 (+20) Regenerate com-plaint
  []
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 33--33
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Admin/Dept
+[]|\T1/ntxtlf/m/n/10.95 (+20) Admin/Dept
  []
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 34--34
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Admin/Dept
+[]|\T1/ntxtlf/m/n/10.95 (+20) Admin/Dept
  []
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 35--35
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Admin/Dept
+[]|\T1/ntxtlf/m/n/10.95 (+20) Admin/Dept
  []
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 37--37
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Admin/Dept
+[]|\T1/ntxtlf/m/n/10.95 (+20) Admin/Dept
  []
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 38--38
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Admin/Dept
+[]|\T1/ntxtlf/m/n/10.95 (+20) Admin/Dept
  []
 
 
-Underfull \hbox (badness 7704) in paragraph at lines 39--39
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Add collaborative com-
+Underfull \hbox (badness 1320) in paragraph at lines 39--39
+[]|\T1/ntxtlf/m/n/10.95 (+20) Add col-lab-o-ra-tive com-
  []
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 49--49
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Admin/Dept
+[]|\T1/ntxtlf/m/n/10.95 (+20) Admin/Dept
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 53--53
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Update worker service
+Underfull \hbox (badness 2941) in paragraph at lines 53--53
+[]|\T1/ntxtlf/m/n/10.95 (+20) Update worker ser-vice
  []
 
 
-Underfull \hbox (badness 2478) in paragraph at lines 59--59
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Mark single notification
- []
-
-
-Underfull \hbox (badness 7925) in paragraph at lines 62--62
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Retrieve low-confidence
+Underfull \hbox (badness 1803) in paragraph at lines 62--62
+[]|\T1/ntxtlf/m/n/10.95 (+20) Retrieve low-confidence
  []
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 66--66
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Admin/Dept
- []
-
-
-Underfull \hbox (badness 1142) in paragraph at lines 67--67
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Public anonymized com-
+[]|\T1/ntxtlf/m/n/10.95 (+20) Admin/Dept
  []
 
 
@@ -2810,10 +2290,10 @@ Underfull \hbox (badness 10000) in alignment at lines 17--73
 [] [] [] []
  []
 
-ignored error: Infinite glue shrinkage found in box being split [84
+
+ignored: Infinite glue shrinkage found in box being split [83
 
 ]
-ignored error: Infinite glue shrinkage found in box being split [85]
 Overfull \hbox (455.24411pt too wide) detected at line 78
 []
  []
@@ -2830,12 +2310,12 @@ Underfull \hbox (badness 10000) in alignment at lines 82--86
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 87--87
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Runtime mode (develop-
+[]|\T1/ntxtlf/m/n/10.95 (+20) Runtime mode (de-vel-op-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 93--93
-[]|\TU/TimesNewRoman(0)/m/n/10.95 1440 (dev) / 480
+Underfull \hbox (badness 3701) in paragraph at lines 93--93
+[]|\T1/ntxtlf/m/n/10.95 (+20) 1440 (dev) / 480
  []
 
 
@@ -2843,7 +2323,8 @@ Underfull \hbox (badness 10000) in alignment at lines 86--117
 [] [] []
  []
 
-ignored error: Infinite glue shrinkage found in box being split [86]
+[84]
+ignored: Infinite glue shrinkage found in box being split [85]
 Overfull \hbox (455.24411pt too wide) detected at line 122
 []
  []
@@ -2883,7 +2364,8 @@ Underfull \hbox (badness 10000) in alignment at lines 157--169
 [] []
  []
 
-ignored error: Infinite glue shrinkage found in box being split [87]
+
+ignored: Infinite glue shrinkage found in box being split [86]
 Overfull \hbox (455.24411pt too wide) detected at line 174
 []
  []
@@ -2903,7 +2385,8 @@ Underfull \hbox (badness 10000) in alignment at lines 182--204
 [] [] []
  []
 
-ignored error: Infinite glue shrinkage found in box being split [88] [89]
+
+ignored: Infinite glue shrinkage found in box being split [87] [88]
 Overfull \hbox (455.24411pt too wide) detected at line 296
 []
  []
@@ -2919,24 +2402,13 @@ Underfull \hbox (badness 10000) in alignment at lines 300--304
  []
 
 
-Underfull \hbox (badness 3386) in paragraph at lines 312--312
-[]|\TU/TimesNewRoman(0)/m/n/12 Security hardening: upload checks, sanitization,
-
- []
-
-
 Underfull \hbox (badness 10000) in alignment at lines 304--324
 [] [] []
  []
 
-[90]
+[89]
 Overfull \hbox (455.24411pt too wide) detected at line 329
 []
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 331--331
-[]|\TU/TimesNewRoman(0)/b/n/12 Validation Evi-
  []
 
 
@@ -2945,183 +2417,88 @@ Underfull \hbox (badness 10000) in alignment at lines 328--333
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 335--335
-[]|\TU/TimesNewRoman(0)/b/n/12 Validation Evi-
- []
-
-
 Underfull \hbox (badness 10000) in alignment at lines 333--337
 [] [] [] []
  []
 
 
-Underfull \hbox (badness 2020) in paragraph at lines 338--338
-[]|\TU/TimesNewRoman(0)/m/n/12 Register route tests
- []
-
-
 Underfull \hbox (badness 10000) in paragraph at lines 339--339
-[]|\TU/TimesNewRoman(0)/m/n/12 Auth permission
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 341--341
-[]|\TU/TimesNewRoman(0)/m/n/12 Forgot/reset end-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 341--341
-\TU/TimesNewRoman(0)/m/n/12 point implementa-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 341--341
-\TU/TimesNewRoman(0)/m/n/12 tion and UI path
+[]|\T1/ntxtlf/m/n/12 (+20) Auth per-mis-sion
  []
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 342--342
-[]|\TU/TimesNewRoman(0)/m/n/12 Resilience/security
+[]|\T1/ntxtlf/m/n/12 (+20) Resilience/security
  []
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 342--342
-\TU/TimesNewRoman(0)/m/n/12 tests for header
- []
-
-
-Underfull \hbox (badness 5637) in paragraph at lines 342--342
-\TU/TimesNewRoman(0)/m/n/12 mismatch and size
+\T1/ntxtlf/m/n/12 (+20) tests for header
  []
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 343--343
-[]|\TU/TimesNewRoman(0)/m/n/12 Analyze endpoint
+[]|\T1/ntxtlf/m/n/12 (+20) Analyze end-point
  []
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 343--343
-\TU/TimesNewRoman(0)/m/n/12 response contract
+\T1/ntxtlf/m/n/12 (+20) re-sponse con-tract
  []
 
 
-Underfull \hbox (badness 2573) in paragraph at lines 343--343
-\TU/TimesNewRoman(0)/m/n/12 checks and manual
+Underfull \hbox (badness 3815) in paragraph at lines 344--344
+[]|\T1/ntxtlf/m/n/12 (+20) Generation polling
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 344--344
-[]|\TU/TimesNewRoman(0)/m/n/12 Generation polling
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 344--344
-\TU/TimesNewRoman(0)/m/n/12 route and regen-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 344--344
-\TU/TimesNewRoman(0)/m/n/12 eration request
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 345--345
-[]|\TU/TimesNewRoman(0)/m/n/12 End-to-end citizen
- []
-
-
-Underfull \hbox (badness 1184) in paragraph at lines 345--345
-\TU/TimesNewRoman(0)/m/n/12 flow and complaint
- []
-
-
-Underfull \hbox (badness 4726) in paragraph at lines 346--346
-\TU/TimesNewRoman(0)/m/n/12 behavior and dash-
- []
-
-
-Underfull \hbox (badness 1189) in paragraph at lines 347--347
-\TU/TimesNewRoman(0)/m/n/12 trieval and timeline
+Underfull \hbox (badness 6110) in paragraph at lines 345--345
+[]|\T1/ntxtlf/m/n/12 (+20) End-to-end cit-i-zen
  []
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 348--348
-[]|\TU/TimesNewRoman(0)/m/n/12 Notification chain
+[]|\T1/ntxtlf/m/n/12 (+20) Notification chain
  []
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 348--348
-\TU/TimesNewRoman(0)/m/n/12 tests and status
+\T1/ntxtlf/m/n/12 (+20) tests and sta-tus
  []
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 349--349
-[]|\TU/TimesNewRoman(0)/m/n/12 Admin/dept-head
+[]|\T1/ntxtlf/m/n/12 (+20) Admin/dept-head
  []
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 349--349
-\TU/TimesNewRoman(0)/m/n/12 transfer operation
- []
-
-
-Underfull \hbox (badness 4108) in paragraph at lines 350--350
-[]|\TU/TimesNewRoman(0)/m/n/12 Escalation endpoint
- []
-
-
-Underfull \hbox (badness 5893) in paragraph at lines 351--351
-[]|\TU/TimesNewRoman(0)/m/n/12 Assignment service
- []
-
-
-Underfull \hbox (badness 2261) in paragraph at lines 352--352
-[]|\TU/TimesNewRoman(0)/m/n/12 Worker done work-
+\T1/ntxtlf/m/n/12 (+20) trans-fer op-er-a-tion
  []
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 353--353
-[]|\TU/TimesNewRoman(0)/m/n/12 Unread-count and
+[]|\T1/ntxtlf/m/n/12 (+20) Unread-count and
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 353--353
-\TU/TimesNewRoman(0)/m/n/12 mark-read chain
+Underfull \hbox (badness 4686) in paragraph at lines 354--354
+[]|\T1/ntxtlf/m/n/12 (+20) Triage re-view UI
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 354--354
-\TU/TimesNewRoman(0)/m/n/12 decision endpoint
+Underfull \hbox (badness 3657) in paragraph at lines 354--354
+\T1/ntxtlf/m/n/12 (+20) and de-ci-sion end-
  []
 
 
-Underfull \hbox (badness 4713) in paragraph at lines 356--356
-\TU/TimesNewRoman(0)/m/n/12 ecution and output
+Underfull \hbox (badness 4492) in paragraph at lines 357--357
+[]|\T1/ntxtlf/m/n/12 (+20) Public feed route
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 357--357
-[]|\TU/TimesNewRoman(0)/m/n/12 Public feed route
- []
-
-
-Underfull \hbox (badness 1292) in paragraph at lines 358--358
-[]|\TU/TimesNewRoman(0)/m/n/12 Live, ready, model,
- []
-
-
-Underfull \hbox (badness 4699) in paragraph at lines 358--358
-\TU/TimesNewRoman(0)/m/n/12 and GPU endpoint
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 359--359
-[]|\TU/TimesNewRoman(0)/m/n/12 /api/v1 integration
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 359--359
-\TU/TimesNewRoman(0)/m/n/12 checks in matrix
+Underfull \hbox (badness 7203) in paragraph at lines 359--359
+[]|\T1/ntxtlf/m/n/12 (+20) /api/v1 in-te-gra-tion
  []
 
 
@@ -3129,23 +2506,28 @@ Underfull \hbox (badness 10000) in alignment at lines 337--361
 [] [] [] []
  []
 
-[91]
-ignored error: Infinite glue shrinkage found in box being split [92]) [93]
-(main.aux)
+[90]
+ignored: Infinite glue shrinkage found in box being split [91]) [92] (./main.aux)
  ***********
 LaTeX2e <2025-11-01>
-L3 programming layer <2025-12-24>
+L3 programming layer <2020/03/25>
  ***********
 Package rerunfilecheck Info: File `main.out' has not changed.
 (rerunfilecheck)             Checksum: 6BEE89430E9C37397D0566F870F954D3;37788.
  ) 
 Here is how much of TeX's memory you used:
- 17262 strings out of 402987
- 335133 string characters out of 5448525
- 938203 words of memory out of 5000000
- 45724 multiletter control sequences out of 15000+600000
- 632871 words of font info for 87 fonts, out of 8000000 for 9000
- 1348 hyphenation exceptions out of 8191
- 73i,12n,93p,1003b,671s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 20217 strings out of 467349
+ 321794 string characters out of 5419863
+ 827170 words of memory out of 5000000
+ 48376 multiletter control sequences out of 15000+600000
+ 705118 words of font info for 196 fonts, out of 8000000 for 9000
+ 1141 hyphenation exceptions out of 8191
+ 75i,12n,117p,1068b,759s stack positions out of 10000i,1000n,20000p,200000b,200000s
+<c:/texlive/2026/texmf-dist/fonts/type1/public/newtx/NewTXMI.pfb><c:/texlive/2026/texmf-dist/fonts/type1/public/tex-gyre/qtmr.pfb><c:/texlive/2026/texmf-dist/fonts/type1/public/txfonts/t1xtt.pfb><c:/texlive/2026/texmf-dist/fonts/type1/public/newtx/txexs.pfb><c:/texlive/2026/texmf-dist/fonts/type1/public/newtx/txmiaX.pfb><c:/texlive/2026/texmf-dist/fonts/type1/public/newtx/txsys.pfb><c:/texlive/2026/texmf-dist/fonts/type1/public/newtx/ztmb.pfb><c:/texlive/2026/texmf-dist/fonts/type1/public/newtx/ztmr.pfb><c:/texlive/2026/texmf-dist/fonts/type1/public/newtx/ztmri.pfb>
+Output written on main.pdf (103 pages, 8475473 bytes).
+PDF statistics:
+ 2175 PDF objects out of 2487 (max. 8388607)
+ 1990 compressed objects within 20 object streams
+ 444 named destinations out of 1000 (max. 500000)
+ 36498 words of extra memory for PDF output out of 42996 (max. 10000000)
 
-Output written on main.pdf (104 pages).

@@ -149,6 +149,7 @@
 \newcommand{\cnsection}[1]{\hspace*{0.8em}#1}
 \newcommand{\cnsubsection}[1]{\hspace*{1.6em}#1}
 \newcommand{\linkrow}[4]{\hyperlink{#1}{#2} & \hyperlink{#1}{#3} & \hyperlink{#1}{#4} \\ \hline}
+\newcommand{\linkrowref}[4]{\hyperref[#1]{#2} & \hyperref[#1]{#3} & \hyperref[#1]{#4} \\ \hline}
 
 \newcommand{\placeholderfigure}[2]{
 \begin{figure}[H]
@@ -227,11 +228,11 @@ Institute: & \textit{Institution Name} \\
 \hline
 \textbf{Chapter No.} & \textbf{Description} & \textbf{Page No.} \\ \hline
 \endhead
-\linkrow{chap:list-figures}{--}{List of Figures}{I}
-\linkrow{chap:list-tables}{--}{List of Tables}{II}
-\linkrow{chap:list-abbreviations}{--}{List of Abbreviations}{IV}
-\linkrow{chap:list-definitions}{--}{List of Definitions}{V}
-\linkrow{chap:list-screenshots}{--}{List of Screenshots}{VII}
+\linkrowref{chap:list-figures}{--}{List of Figures}{I}
+\linkrowref{chap:list-tables}{--}{List of Tables}{II}
+\linkrowref{chap:list-abbreviations}{--}{List of Abbreviations}{IV}
+\linkrowref{chap:list-definitions}{--}{List of Definitions}{V}
+\linkrowref{chap:list-screenshots}{--}{List of Screenshots}{VII}
 \linkrow{chapter.1}{\cnchapter{1}}{Introduction}{1}
 \linkrow{section.1.1}{\cnsection{1.1}}{Project Details}{1}
 \linkrow{section.1.2}{\cnsection{1.2}}{Purpose}{1}
@@ -335,37 +336,37 @@ Institute: & \textit{Institution Name} \\
 \hline
 \textbf{Figure No.} & \textbf{Description} & \textbf{Page No.} \\ \hline
 \endhead
-\linkrow{figure.caption.19}{4.1}{Proposed End-to-End Workflow}{25}
-\linkrow{figure.caption.22}{5.1}{Overall System Context Diagram}{28}
-\linkrow{figure.caption.23}{5.2}{Component Architecture Diagram}{29}
-\linkrow{figure.caption.25}{5.3}{E-R Diagram}{30}
-\linkrow{figure.caption.26}{5.4}{Use Case Diagram}{30}
-\linkrow{figure.caption.27}{5.5}{Class Diagram}{31}
-\linkrow{figure.caption.28}{5.6}{Sequence Diagram}{31}
-\linkrow{figure.caption.29}{5.7}{Activity Diagram}{32}
-\linkrow{figure.caption.30}{5.8}{Data Flow Diagram}{32}
-\linkrow{figure.caption.31}{5.9}{Deployment Diagram}{33}
-\linkrow{figure.caption.34}{5.10}{GUI Wireframe Reference from Project Documentation}{38}
-\linkrow{figure.caption.35}{5.11}{S01: Home Page Hero and Public Entry CTA}{39}
-\linkrow{figure.caption.36}{5.12}{S02: Login Page}{40}
-\linkrow{figure.caption.37}{5.13}{S03: Citizen Registration Page}{41}
-\linkrow{figure.caption.38}{5.14}{S04: Reset Password Page}{42}
-\linkrow{figure.caption.39}{5.15}{S05: Admin Dashboard Overview}{43}
-\linkrow{figure.caption.40}{5.16}{S06: Triage Human Review Queue}{44}
-\linkrow{figure.caption.41}{5.17}{S07: Worker Assignment Panel}{45}
-\linkrow{figure.caption.42}{5.18}{S08: Analytics Dashboard}{46}
-\linkrow{figure.caption.43}{5.19}{S09: Complaints Map Overview (Satellite Layer)}{47}
-\linkrow{figure.caption.44}{5.20}{S10: Map Popup Detail View}{48}
-\linkrow{figure.caption.45}{5.21}{S11: Public Grievance Board}{49}
-\linkrow{figure.caption.46}{5.22}{S12: Grievance Heatmap Page}{50}
-\linkrow{figure.caption.47}{5.23}{S13: Profile Page (Admin)}{51}
-\linkrow{figure.caption.48}{5.24}{S14: Citizen Dashboard with Timeline}{52}
-\linkrow{figure.caption.49}{5.25}{S15: Notifications Dropdown Panel}{53}
-\linkrow{figure.caption.50}{5.26}{SX1: File Complaint Upload Interface}{54}
-\linkrow{figure.caption.51}{5.27}{SX2: Multilingual Citizen Timeline Snapshot}{55}
-\linkrow{figure.caption.52}{5.28}{SX3: Resolved Complaint with Citizen Feedback}{56}
-\linkrow{figure.caption.53}{5.29}{SX4: Result Page with Location Context and AI Analysis}{57}
-\linkrow{figure.caption.54}{5.30}{SX5: Result Page with Grievance Description Editing}{58}
+\linkrow{figure.caption.7}{4.1}{Proposed End-to-End Workflow}{25}
+\linkrow{figure.caption.8}{5.1}{Overall System Context Diagram}{28}
+\linkrow{figure.caption.9}{5.2}{Component Architecture Diagram}{29}
+\linkrow{figure.caption.10}{5.3}{E-R Diagram}{30}
+\linkrow{figure.caption.11}{5.4}{Use Case Diagram}{30}
+\linkrow{figure.caption.12}{5.5}{Class Diagram}{31}
+\linkrow{figure.caption.13}{5.6}{Sequence Diagram}{31}
+\linkrow{figure.caption.14}{5.7}{Activity Diagram}{32}
+\linkrow{figure.caption.15}{5.8}{Data Flow Diagram}{32}
+\linkrow{figure.caption.16}{5.9}{Deployment Diagram}{33}
+\linkrowref{fig:gui-wireframe}{5.10}{GUI Wireframe Reference from Project Documentation}{38}
+\linkrowref{fig:s01}{5.11}{S01: Home Page Hero and Public Entry CTA}{39}
+\linkrowref{fig:s02}{5.12}{S02: Login Page}{40}
+\linkrowref{fig:s03}{5.13}{S03: Citizen Registration Page}{41}
+\linkrowref{fig:s04}{5.14}{S04: Reset Password Page}{42}
+\linkrowref{fig:s05}{5.15}{S05: Admin Dashboard Overview}{43}
+\linkrowref{fig:s06}{5.16}{S06: Triage Human Review Queue}{44}
+\linkrowref{fig:s07}{5.17}{S07: Worker Assignment Panel}{45}
+\linkrowref{fig:s08}{5.18}{S08: Analytics Dashboard}{46}
+\linkrowref{fig:s09}{5.19}{S09: Complaints Map Overview (Satellite Layer)}{47}
+\linkrowref{fig:s10}{5.20}{S10: Map Popup Detail View}{48}
+\linkrowref{fig:s11}{5.21}{S11: Public Grievance Board}{49}
+\linkrowref{fig:s12}{5.22}{S12: Grievance Heatmap Page}{50}
+\linkrowref{fig:s13}{5.23}{S13: Profile Page (Admin)}{51}
+\linkrowref{fig:s14}{5.24}{S14: Citizen Dashboard with Timeline}{52}
+\linkrowref{fig:s15}{5.25}{S15: Notifications Dropdown Panel}{53}
+\linkrowref{fig:sx1}{5.26}{SX1: File Complaint Upload Interface}{54}
+\linkrowref{fig:sx2}{5.27}{SX2: Multilingual Citizen Timeline Snapshot}{55}
+\linkrowref{fig:sx3}{5.28}{SX3: Resolved Complaint with Citizen Feedback}{56}
+\linkrowref{fig:sx4}{5.29}{SX4: Result Page with Location Context and AI Analysis}{57}
+\linkrowref{fig:sx5}{5.30}{SX5: Result Page with Grievance Description Editing}{58}
 \end{longtable}
 
 \normalsize
@@ -386,50 +387,50 @@ Institute: & \textit{Institution Name} \\
 \hline
 \textbf{Table No.} & \textbf{Description} & \textbf{Page No.} \\ \hline
 \endhead
-\linkrow{table.caption.7}{1.1}{Project Profile}{1}
-\linkrow{table.caption.8}{1.2}{Objectives and Expected Outcomes}{2}
-\linkrow{table.caption.9}{1.3}{Technology Stack and Role in System}{3}
+\linkrow{table.1.1}{1.1}{Project Profile}{1}
+\linkrow{table.1.2}{1.2}{Objectives and Expected Outcomes}{2}
+\linkrow{table.1.3}{1.3}{Technology Stack and Role in System}{3}
 \linkrow{table.2.1}{2.1}{Milestone Summary and Deliverables}{7}
-\linkrow{table.caption.10}{2.2}{Role Responsibility Matrix (Project Execution)}{8}
-\linkrow{table.caption.11}{2.3}{PERT-Style Activity Dependencies}{9}
+\linkrow{table.2.2}{2.2}{Role Responsibility Matrix (Project Execution)}{8}
+\linkrow{table.2.3}{2.3}{PERT-Style Activity Dependencies}{9}
 \linkrow{table.2.4}{2.4}{Risk Register and Mitigation Plan}{9}
 \linkrow{table.2.5}{2.5}{Week-by-Week Execution Summary (W1--W18)}{10}
-\linkrow{table.caption.12}{2.6}{Governance-Oriented Delivery Metrics}{12}
-\linkrow{table.caption.13}{3.1}{Limitations in Legacy Grievance Handling}{13}
-\linkrow{table.caption.14}{3.2}{User Characteristics and Behavioral Expectations}{14}
+\linkrow{table.2.6}{2.6}{Governance-Oriented Delivery Metrics}{12}
+\linkrow{table.3.1}{3.1}{Limitations in Legacy Grievance Handling}{13}
+\linkrow{table.3.2}{3.2}{User Characteristics and Behavioral Expectations}{14}
 \linkrow{table.3.3}{3.3}{Functional Requirement Specification}{14}
 \linkrow{table.3.4}{3.4}{Non-Functional Requirement Specification}{16}
-\linkrow{table.caption.15}{3.5}{Hardware Requirement Baseline}{16}
-\linkrow{table.caption.16}{3.6}{Software Environment Requirements}{17}
-\linkrow{table.caption.17}{3.7}{Assumptions and External Dependencies}{18}
+\linkrow{table.3.5}{3.5}{Hardware Requirement Baseline}{16}
+\linkrow{table.3.6}{3.6}{Software Environment Requirements}{17}
+\linkrow{table.3.7}{3.7}{Assumptions and External Dependencies}{18}
 \linkrow{table.3.8}{3.8}{Narrative Use-Case Requirements}{19}
-\linkrow{table.caption.18}{3.9}{MoSCoW-Style Requirement Priority Mapping}{20}
+\linkrow{table.3.9}{3.9}{MoSCoW-Style Requirement Priority Mapping}{20}
 \linkrow{table.4.1}{4.1}{Proposed Feature Set and Operational Benefit}{22}
 \linkrow{table.4.2}{4.2}{Traceability from Requirements to Proposed Modules}{24}
-\linkrow{table.caption.20}{4.3}{Expected Impact of Proposed System}{25}
+\linkrow{table.4.3}{4.3}{Expected Impact of Proposed System}{25}
 \linkrow{table.4.4}{4.4}{Inter-Module Contract Summary}{25}
-\linkrow{table.caption.21}{4.5}{Persona-Oriented Realization Snapshot}{26}
-\linkrow{table.caption.24}{5.1}{Major Design Decisions and Rationale}{29}
+\linkrow{table.4.5}{4.5}{Persona-Oriented Realization Snapshot}{26}
+\linkrow{table.5.1}{5.1}{Major Design Decisions and Rationale}{29}
 \linkrow{table.5.2}{5.2}{Data Dictionary (Core Fields)}{34}
-\linkrow{table.caption.32}{5.3}{Indexing Strategy by Collection}{36}
-\linkrow{table.caption.33}{5.4}{GUI Areas and Purpose}{37}
+\linkrow{table.5.3}{5.3}{Indexing Strategy by Collection}{36}
+\linkrow{table.5.4}{5.4}{GUI Areas and Purpose}{37}
 \linkrow{table.6.1}{6.1}{Implementation Toolchain and Use Cases}{60}
-\linkrow{table.caption.55}{6.2}{Implementation Sequence with Dependency Notes}{62}
-\linkrow{table.caption.56}{6.3}{Implementation Quality Gates}{63}
+\linkrow{table.6.2}{6.2}{Implementation Sequence with Dependency Notes}{62}
+\linkrow{table.6.3}{6.3}{Implementation Quality Gates}{63}
 \linkrow{table.6.4}{6.4}{Router-Level Implementation Planning Notes}{64}
-\linkrow{table.caption.57}{6.5}{Service-Level Implementation Planning}{65}
-\linkrow{table.caption.58}{6.6}{Deployment Rollout Stages}{65}
+\linkrow{table.6.5}{6.5}{Service-Level Implementation Planning}{65}
+\linkrow{table.6.6}{6.6}{Deployment Rollout Stages}{65}
 \linkrow{table.6.7}{6.7}{Operational Monitoring Matrix}{66}
-\linkrow{table.caption.59}{7.1}{Testing Environment Baseline}{68}
+\linkrow{table.7.1}{7.1}{Testing Environment Baseline}{68}
 \linkrow{table.7.2}{7.2}{Testing Coverage Matrix by Suite}{69}
-\linkrow{table.caption.60}{7.3}{Representative Unit Test Cases}{70}
-\linkrow{table.caption.61}{7.4}{System Test Scenarios}{70}
+\linkrow{table.7.3}{7.3}{Representative Unit Test Cases}{70}
+\linkrow{table.7.4}{7.4}{System Test Scenarios}{70}
 \linkrow{table.7.5}{7.5}{Defect Log Snapshot and Resolution}{72}
-\linkrow{table.caption.62}{7.6}{Outcome Summary by Validation Area}{73}
+\linkrow{table.7.6}{7.6}{Outcome Summary by Validation Area}{73}
 \linkrow{table.7.7}{7.7}{Persona-Driven UAT Matrix}{73}
-\linkrow{table.caption.63}{7.8}{Load Profile and Acceptance Guidance}{75}
+\linkrow{table.7.8}{7.8}{Load Profile and Acceptance Guidance}{75}
 \linkrow{table.7.9}{7.9}{Security Regression Verification Matrix}{75}
-\linkrow{table.caption.64}{8.1}{Indicative Post-Submission Roadmap}{79}
+\linkrow{table.8.1}{8.1}{Indicative Post-Submission Roadmap}{79}
 \linkrow{table.8.2}{8.2}{Future Backlog Prioritization Matrix}{79}
 \linkrow{table.10.1}{10.1}{API Endpoint Snapshot}{84}
 \linkrow{table.10.2}{10.2}{Core Backend Environment Variables}{86}
