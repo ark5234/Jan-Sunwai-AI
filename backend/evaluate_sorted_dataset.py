@@ -41,11 +41,14 @@ if _ollama_host.startswith("0.0.0.0"):
     os.environ["OLLAMA_HOST"] = _fixed
 
 try:
-    from app.category_utils import folder_to_canonical  # type: ignore
+    from app.category_utils import folder_to_label, canonicalize_label  # type: ignore
 except Exception:  # running outside the backend package context
-    def folder_to_canonical(folder_name: str) -> str:  # type: ignore
+    def folder_to_label(folder_name: str) -> str:  # type: ignore
         """Best-effort: convert a snake_case folder name back to display label."""
         return folder_name.replace("_-_", " - ").replace("_", " ")
+
+    def canonicalize_label(label: str) -> str:  # type: ignore
+        return str(label).strip()
 
 
 IMAGE_EXTS = {".jpg", ".jpeg", ".png", ".webp"}
@@ -68,7 +71,7 @@ def collect_images_from_sorted_dir(
             continue
         if sample > 0:
             images = random.sample(images, min(sample, len(images)))
-        label = folder_to_canonical(folder.name)
+        label = folder_to_label(folder.name)
         for img in images:
             records.append({"image_path": str(img), "ground_truth_folder": folder.name, "ground_truth_label": label})
     return records
@@ -138,10 +141,14 @@ def evaluate(
 
     merged["predicted_label"] = merged["final_label"].fillna("(no prediction)")
     merged["confidence"] = pd.to_numeric(merged["confidence"], errors="coerce").fillna(0.0)
-    merged["match"] = merged["ground_truth_label"].str.strip() == merged["predicted_label"].str.strip()
+    merged["expected_canonical"] = merged["ground_truth_label"].apply(canonicalize_label)
+    merged["predicted_canonical"] = merged["predicted_label"].apply(
+        lambda v: canonicalize_label(v) if v != "(no prediction)" else "(no prediction)"
+    )
 
     # 4. Overall accuracy
     labelled_mask = merged["predicted_label"] != "(no prediction)"
+    merged["match"] = labelled_mask & (merged["expected_canonical"] == merged["predicted_canonical"])
     labelled = merged[labelled_mask]
     overall_accuracy = labelled["match"].mean() if len(labelled) > 0 else float("nan")
     coverage = labelled_mask.sum() / total_images if total_images > 0 else 0.0
@@ -154,7 +161,7 @@ def evaluate(
     if labelled_mask.any():
         print("\n--- Per-category agreement ---")
         cat_stats = (
-            labelled.groupby("ground_truth_label")
+            labelled.groupby("expected_canonical")
             .agg(
                 n=("match", "count"),
                 correct=("match", "sum"),
@@ -188,7 +195,9 @@ def evaluate(
             "image_path": "Filename",
             "ground_truth_folder": "Ground_Truth_Folder",
             "ground_truth_label": "Expected_Label",
-            "predicted_label": "Predicted_Canonical",
+            "expected_canonical": "Expected_Canonical",
+            "predicted_label": "Predicted_Label",
+            "predicted_canonical": "Predicted_Canonical",
             "confidence": "Confidence",
             "vision_summary": "Vision_Description",
             "match": "Match",

@@ -106,7 +106,9 @@ _KEYWORD_FALLBACK_BY_DEPARTMENT: dict[str, list[str]] = {
         "wet sand", "muddy road", "muddy path", "sandy road", "sand on road",
         "sand on roadside", "sand on the road", "sand on the roadside",
         "gravel road", "unpaved road", "mud on road", "slushy road", "slush",
-        "waterlogged road", "road construction", "road digging",
+        "waterlogged road", "wet road", "sand and mud", "mud and sand",
+        "sandy mud", "muddy surface", "slippery road", "slippery surface",
+        "road is slippery", "road construction", "road digging",
     ],
     "Health Department": [
         "garbage", "trash", "waste", "litter", "dump", "rubbish", "overflowing bin",
@@ -299,7 +301,7 @@ def _is_screen_capture(image_path: str) -> bool:
                 )
             return is_screenshot
     except Exception as e:
-        print(f"[classifier] _is_screen_capture check failed ({e}) — skipping")
+        print(f"[classifier] _is_screen_capture check failed ({e}) - skipping")
         return False
 
 
@@ -577,7 +579,7 @@ class CivicClassifier:
                     if not is_last:
                         next_tier = models_to_try[models_to_try.index(model_name) + 1]
                         print(f"[classifier] {model_name} timed out after {timeout_secs}s "
-                              f"→ unloading and trying next tier: {next_tier}")
+                            f"-> unloading and trying next tier: {next_tier}")
                         self._unload_model(model_name)
                         continue
                     raise RuntimeError(
@@ -593,7 +595,7 @@ class CivicClassifier:
                     if is_oom and not is_last:
                         next_tier = models_to_try[models_to_try.index(model_name) + 1]
                         print(f"[classifier] {model_name} OOM ({model_err}) "
-                              f"→ falling back to {next_tier}")
+                            f"-> falling back to {next_tier}")
                         self._unload_model(model_name)
                         continue
                     raise  # not OOM or last model → propagate
@@ -660,7 +662,7 @@ class CivicClassifier:
             if _rail_score >= 2 and not _pre_has_electrical_fire_hazard:
                 print(
                     "[classifier] non-civic scene detected (rail/transit) in payload "
-                    f"(score={_rail_score}) — returning Uncategorized"
+                    f"(score={_rail_score}) - returning Uncategorized"
                 )
                 return {
                     "department": "Uncategorized",
@@ -710,7 +712,7 @@ class CivicClassifier:
                     "timings": timings,
                 }
 
-            print(f"[classifier] full payload — primary_issue={vision_payload.get('primary_issue','')!r}  setting={vision_payload.get('setting','')!r}")
+            print(f"[classifier] full payload - primary_issue={vision_payload.get('primary_issue','')!r}  setting={vision_payload.get('setting','')!r}")
 
             description = str(vision_payload.get("description", ""))
 
@@ -751,7 +753,7 @@ class CivicClassifier:
                     vision_payload["description"] = description
                     print(f"[classifier] rebuilt description from structured fields: {description[:80]}")
                 else:
-                    print(f"[classifier] WARNING: vision model returned uninterpretable output — description left empty")
+                    print(f"[classifier] WARNING: vision model returned uninterpretable output - description left empty")
                     _vision_was_garbage = True
 
             print(f"[classifier] vision ({active_vision_model}): {description[:120]}")
@@ -780,7 +782,7 @@ class CivicClassifier:
             if has_electrical_fire_hazard and canonical in ("Enforcement", "Uncategorized", "Civil Department"):
                 print(
                     "[classifier] ELECTRICAL-FIRE override: electrical + fire cues present "
-                    f"— overriding {canonical} -> Electrical Department"
+                    f"- overriding {canonical} -> Electrical Department"
                 )
                 canonical = "Electrical Department"
                 method = "electrical_fire_guard"
@@ -798,7 +800,7 @@ class CivicClassifier:
             # ------------------------------------------------------------------
             if canonical == "Enforcement" and has_traffic_terms and not has_vehicle_terms:
                 print(f"[classifier] Traffic VETO: congestion terms found but no vehicle terms "
-                      f"— overriding to Uncategorized (was conf={model_confidence:.2f})")
+                        f"- overriding to Uncategorized (was conf={model_confidence:.2f})")
                 if has_electrical_fire_hazard:
                     canonical = "Electrical Department"
                     method = "electrical_fire_guard"
@@ -817,11 +819,11 @@ class CivicClassifier:
             raw_json_str = raw_vision_json  # default audit trail
 
             if _vision_was_garbage:
-                print(f"[classifier] SKIPPING reasoning — vision was garbage, reasoning will hallucinate")
+                print(f"[classifier] SKIPPING reasoning - vision was garbage, reasoning will hallucinate")
                 is_ambiguous = False   # prevent reasoning, let retry handle it
 
             if is_ambiguous and settings.reasoning_model and not settings.rule_engine_only:
-                print(f"[classifier] ambiguous → invoking {settings.reasoning_model}")
+                print(f"[classifier] ambiguous -> invoking {settings.reasoning_model}")
                 reasoning_start = time.perf_counter()
                 # Unload vision model before loading reasoning model to stay within VRAM budget
                 self._unload_model(settings.vision_model)
@@ -907,7 +909,7 @@ class CivicClassifier:
                 print(f"[classifier] alternate_models={_alternate_models}")
                 if _alternate_models:
                     alt_model = _alternate_models[0]
-                    print(f"[classifier] still Uncategorized after all steps — "
+                    print(f"[classifier] still Uncategorized after all steps - "
                           f"retrying with alternate vision model: {alt_model}")
                     self._unload_model(active_vision_model)
 

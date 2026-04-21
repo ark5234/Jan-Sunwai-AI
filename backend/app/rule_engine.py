@@ -52,7 +52,9 @@ _CATEGORY_RULES: dict[str, list[tuple[list[str], float]]] = {
         # Sand / mud / unpaved road surface issues
         (["wet sand", "muddy road", "muddy path", "sandy road", "sand on road", "sand on roadside",
           "sand on the road", "sand on the roadside", "gravel road", "unpaved road",
-          "mud on road", "slushy road", "slush", "waterlogged road"], 3.0),
+                    "mud on road", "slushy road", "slush", "waterlogged road",
+                    "wet road", "sand and mud", "mud and sand", "sandy mud", "muddy surface",
+                    "slippery road", "slippery surface", "road is slippery"], 3.0),
         (["road construction", "road repair", "road digging", "road dug up", "construction debris on road"], 2.5),
     ],
     "Horticulture": [

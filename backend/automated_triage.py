@@ -1,4 +1,5 @@
 import argparse
+import importlib
 import io
 import json
 import os
@@ -14,7 +15,7 @@ _ollama_host = os.getenv('OLLAMA_HOST', '')
 if _ollama_host.startswith('0.0.0.0'):
     _fixed = _ollama_host.replace('0.0.0.0', '127.0.0.1', 1)
     os.environ['OLLAMA_HOST'] = _fixed
-    print(f'[startup] OLLAMA_HOST remapped: {_ollama_host} → {_fixed}')
+    print(f'[startup] OLLAMA_HOST remapped: {_ollama_host} -> {_fixed}')
 
 import ollama
 import pandas as pd
@@ -22,8 +23,11 @@ from PIL import Image
 from tqdm import tqdm
 from app.category_utils import safe_dirname
 
+# Optional dependency: import dynamically so static analysis does not require
+# cleanvision to be installed in every developer environment.
 try:
-    from cleanvision import Imagelab
+    _cleanvision = importlib.import_module("cleanvision")
+    Imagelab = getattr(_cleanvision, "Imagelab", None)
 except Exception:
     Imagelab = None
 
@@ -104,7 +108,7 @@ def resolve_dataset_dir(dataset_dir: Path) -> Path:
 
     for candidate in candidates:
         if candidate.exists() and list_images(candidate):
-            print(f"⚠️ No images found in '{dataset_dir}'. Using '{candidate}' instead.")
+            print(f"[warn] No images found in '{dataset_dir}'. Using '{candidate}' instead.")
             return candidate
 
     return dataset_dir
@@ -117,7 +121,7 @@ def run_cleanvision_audit(dataset_dir: Path, prune_ratio: float, work_dir: Path,
 
     valid_images, broken_images = split_valid_and_broken_images(images)
     if broken_images:
-        print(f"⚠️ Skipping {len(broken_images)} unreadable image(s).")
+        print(f"[warn] Skipping {len(broken_images)} unreadable image(s).")
         broken_df = pd.DataFrame({"filepath": [str(p) for p in broken_images], "issue_count": 999, "issue_type": "broken_file"})
         broken_csv = work_dir / "broken_images.csv"
         broken_df.to_csv(broken_csv, index=False)
@@ -127,16 +131,16 @@ def run_cleanvision_audit(dataset_dir: Path, prune_ratio: float, work_dir: Path,
         return [], broken_images, pd.DataFrame({"filepath": [str(p) for p in broken_images], "issue_count": 999, "issue_type": "broken_file"})
 
     if Imagelab is None:
-        print("⚠️ CleanVision not installed. Skipping audit; all images will be retained.")
+        print("[warn] CleanVision not installed. Skipping audit; all images will be retained.")
         return valid_images, broken_images, pd.DataFrame({"filepath": [str(p) for p in valid_images], "issue_count": 0})
 
-    print("🔎 Running CleanVision audit...")
+    print("[info] Running CleanVision audit...")
     staged_dataset_dir = stage_valid_dataset_for_audit(valid_images, dataset_dir, work_dir)
     imagelab = Imagelab(data_path=str(staged_dataset_dir))
     try:
         imagelab.find_issues()
     except Exception as e:
-        print(f"⚠️ CleanVision failed ({e}). Continuing without pruning.")
+        print(f"[warn] CleanVision failed ({e}). Continuing without pruning.")
         fallback_df = pd.DataFrame({"filepath": [str(p) for p in valid_images], "issue_count": 0})
         return valid_images, broken_images, fallback_df
 
@@ -206,7 +210,7 @@ def run_cleanvision_audit(dataset_dir: Path, prune_ratio: float, work_dir: Path,
 
     # Fallback: if resolution completely failed, keep all valid images
     if not kept and not rejected:
-        print("⚠️ CleanVision path resolution failed — keeping all valid images.")
+        print("[warn] CleanVision path resolution failed - keeping all valid images.")
         kept = list(valid_images)
 
     rejected_dir = work_dir / "audit_rejected"
@@ -417,7 +421,7 @@ def vision_reasoning_label(
             "vision_payload": vision_payload,
         }
     except Exception as e:
-        print(f"  ⚠ vision_reasoning failed for {image_path.name}: {e}")
+        print(f"  [warn] vision_reasoning failed for {image_path.name}: {e}")
         return {
             "label": "Uncategorized",
             "confidence": 0.0,
@@ -443,7 +447,7 @@ def run_pipeline(
     dataset_dir = resolve_dataset_dir(dataset_dir)
 
     if sample_per_folder > 0:
-        print(f"\n⚡ Sampling mode: {sample_per_folder} images per folder")
+        print(f"\n[info] Sampling mode: {sample_per_folder} images per folder")
 
     print("\n=== STEP 1: Automated Cleaning (Audit) ===")
     kept_images, rejected_images, issues_df = run_cleanvision_audit(dataset_dir, prune_ratio, output_dir, sample_per_folder=sample_per_folder)
@@ -452,7 +456,7 @@ def run_pipeline(
     print(f"Kept for labeling: {len(kept_images)}")
 
     if not kept_images:
-        print("⚠️ No images available after audit. Exiting without Ollama AI pipeline stages.")
+        print("[warn] No images available after audit. Exiting without Ollama AI pipeline stages.")
         audit_csv = output_dir / "audit_issues.csv"
         labels_csv = output_dir / "triage_labels.csv"
         review_csv = output_dir / "review_queue.csv"
@@ -464,7 +468,7 @@ def run_pipeline(
         with open(labels_json, "w", encoding="utf-8") as f:
             json.dump([], f, indent=2)
 
-        print("✅ Empty reports generated")
+        print("[ok] Empty reports generated")
         print(f"- Audit report: {audit_csv}")
         print(f"- Label report: {labels_csv}")
         print(f"- Review queue: {review_csv}")
@@ -528,7 +532,7 @@ def run_pipeline(
     with open(labels_json, "w", encoding="utf-8") as f:
         json.dump(records, f, indent=2)
 
-    print("✅ Pipeline complete")
+    print("[ok] Pipeline complete")
     print(f"- Triaged folders: {triage_dir}")
     print(f"- Audit report: {audit_csv}")
     print(f"- Label report: {labels_csv}")

@@ -159,13 +159,13 @@ def select_vision_model() -> str:
         needed = info["estimated_runtime_bytes"] + _SAFETY_MARGIN_BYTES
         needed_gb = needed / (1024 ** 3)
         if available_ram >= needed:
-            print(f"[model_selector] ✓ {model} fits "
-                  f"(needs ~{needed_gb:.1f} GB, available {available_gb:.1f} GB)")
+            print(f"[model_selector] [OK] {model} fits "
+                f"(needs ~{needed_gb:.1f} GB, available {available_gb:.1f} GB)")
             return model
         else:
-            print(f"[model_selector] ✗ {model} too large "
-                  f"(needs ~{needed_gb:.1f} GB, available {available_gb:.1f} GB) "
-                  f"→ trying next tier")
+            print(f"[model_selector] [SKIP] {model} too large "
+                f"(needs ~{needed_gb:.1f} GB, available {available_gb:.1f} GB) "
+                f"-> trying next tier")
 
     # All models either too large or not found — use last in chain as last resort
     last = chain[-1]
