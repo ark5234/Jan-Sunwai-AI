@@ -21,13 +21,13 @@ def _get_ollama_client() -> ollama.Client:
 # Human-readable definitions passed to the reasoning model so it can
 # make a contextual decision rather than just matching a string.
 CATEGORY_DEFINITIONS: dict[str, str] = {
-    "Civil Department":                "broken roads, potholes, cracked pavement, damaged footpaths, bridge damage, waterlogging, flooded streets, blocked drains",
+    "Civil Department":                "broken roads, potholes, road depression, sinkage, cracked pavement, damaged footpaths, leaking pipes, bridge damage, waterlogging, flooded streets, blocked drains",
     "Health Department":               "garbage dumps, overflowing trash bins, dirty public toilets, waste piles on streets",
-    "Horticulture":                    "fallen or uprooted trees, overgrown vegetation, unmaintained parks, dead/dry plants",
+    "Horticulture":                    "fallen or uprooted trees, overgrown vegetation, unmaintained parks, leaf litter, accumulated dead leaves",
     "Electrical Department":           "broken street lights, non-functional lamp posts, dark public roads, dangling wires, open transformers",
     "Commercial":                      "property tax issues, municipal billing disputes, commercial licensing",
-    "Enforcement":                     "illegal parking, footpath encroachment, public nuisance, unauthorized vendors",
-    "VBD Department":                  "mosquito breeding, stagnant water, fogging requests, vector-borne disease risks",
+    "Enforcement":                     "illegal parking, footpath encroachment, unauthorized vendors, hawkers blocking pavement, public nuisance",
+    "VBD Department":                  "mosquito breeding, mosquito larvae in stagnant water, fogging requests, vector-borne disease risks (excluding roadside flooding)",
     "EBR Department":                  "illegal construction, building code violations, unauthorized modifications",
     "Fire Department":                 "fire hazards, flammable dumps, lack of fire safety",
     "IT Department":                   "portal errors, online payment failures, app bugs",
@@ -49,14 +49,37 @@ _NON_CIVIC_VISION_PHRASES: list[str] = [
     "document", "certificate", "id card", "aadhar", "passport", "form filled",
 ]
 
-# Keywords that indicate a non-civic / irrelevant photo
-_NEGATIVE_KEYWORDS = [
-    "selfie", "portrait", "food", "meal", "restaurant", "cartoon", "anime",
-    "gaming", "screenshot", "indoor furniture", "appliance", "pet", "animal",
-    "beautiful landscape", "clear sky",
+# Hard non-civic cues: always out-of-scope regardless of nearby words.
+_HARD_NON_CIVIC_KEYWORDS = [
     # Indian Railways is Central Government — not in scope for this portal
     "railway station", "train station", "railway platform", "train platform",
     "railway track", "train track", "metro station",
+]
+
+# Soft non-civic cues: may still be civic when strong civic context is present
+# (e.g., animal tearing open garbage bags in a sanitation complaint).
+_SOFT_NON_CIVIC_KEYWORDS = [
+    "selfie", "portrait", "food", "meal", "restaurant", "cartoon", "anime",
+    "gaming", "screenshot", "indoor furniture", "appliance", "pet", "animal",
+    "beautiful landscape", "clear sky",
+]
+
+# Backward-compat alias for existing checks.
+_NEGATIVE_KEYWORDS = _SOFT_NON_CIVIC_KEYWORDS + _HARD_NON_CIVIC_KEYWORDS
+
+_CIVIC_CONTEXT_TERMS = [
+    # Sanitation / waste
+    "garbage", "trash", "waste", "litter", "dump", "rubbish", "dustbin",
+    "trash bin", "garbage bin", "overflowing bin", "spilled garbage", "spilled trash",
+    "waste pile", "open dump",
+    # Roads / drains
+    "pothole", "road damage", "cracked road", "broken road", "waterlogging",
+    "blocked drain", "drain overflow", "sewer overflow", "stagnant water",
+    # Electrical
+    "street light", "dangling wire", "exposed wire", "transformer", "electrical box",
+    # Other civic domains
+    "illegal parking", "encroachment", "mosquito", "larvae", "fogging",
+    "illegal construction", "building collapse", "fire hazard", "chemical dump",
 ]
 
 _TRAFFIC_TERMS: list[str] = [
@@ -97,12 +120,12 @@ _KEYWORD_FALLBACK_BY_DEPARTMENT: dict[str, list[str]] = {
     ],
     "Civil Department": [
         "pothole", "road damage", "cracked road", "broken road", "damaged road",
+        "road depression", "sinkage", "road sinking", "uneven road surface",
         "damaged pavement", "broken pavement", "footpath damage", "manhole",
         "caved in", "uneven road", "missing cover", "crater", "waterlog",
-        "flooded", "flood", "drain overflow", "sewer overflow", "pipe leak",
-        "water gushing", "stagnant water", "blocked drain", "drainage problem",
-        "water supply", "sewage leak", "drain",
-        # Sand / mud / unpaved surface issues
+        "flooded", "flood", "drain overflow", "sewer overflow", "pipe leak", "water leak",
+        "leaking pipe", "burst pipe", "broken water pipe", "water gushing", 
+        "stagnant water", "blocked drain", "drainage problem", "water supply", "sewage leak", "drain",
         "wet sand", "muddy road", "muddy path", "sandy road", "sand on road",
         "sand on roadside", "sand on the road", "sand on the roadside",
         "gravel road", "unpaved road", "mud on road", "slushy road", "slush",
@@ -112,23 +135,27 @@ _KEYWORD_FALLBACK_BY_DEPARTMENT: dict[str, list[str]] = {
     ],
     "Health Department": [
         "garbage", "trash", "waste", "litter", "dump", "rubbish", "overflowing bin",
+        "dustbin", "trash bin", "garbage bin", "overturned bin", "tipped bin",
+        "spilled trash", "spilled garbage", "debris",
         "pile of", "large pile", "heap of", "plastic bottles", "plastic bottle",
-        "glass bottles", "broken glass", "broken bottles", "empty bottles", "scattered",
+        "glass bottles", "broken glass", "broken bottles", "empty bottles", "scattered waste",
         "junk", "filth", "filthy", "open dump", "roadside dump", "dead animal",
         "stench", "medical waste",
     ],
     "Horticulture": [
         "fallen tree", "uprooted tree", "overgrown", "dead plant", "broken branch",
         "tree blocking", "overgrown bush", "dry leaves", "park unmaintained", "weed",
+        "fallen leaves", "dry leaves", "leaves scattered", "leaf litter", "leaf debris",
+        "leaves", "leaf",
     ],
     "Enforcement": [
         "traffic signal", "signal failure", "traffic jam", "road blockage",
         "traffic congestion", "gridlock", "traffic deadlock", "standstill",
         "peak hour", "rush hour", "no lane", "chaotic traffic", "accident",
         "illegal parking", "encroachment", "footpath blocked", "public nuisance",
-        "hawker", "unauthorized", "illegal occupation",
+        "hawker", "unauthorized vendor", "illegal occupation", "vendor blockage",
     ],
-    "VBD Department": ["mosquito", "dengue", "malaria", "fogging", "larvae"],
+    "VBD Department": ["mosquito", "dengue", "malaria", "fogging", "larvae", "mosquito breeding"],
     "EBR Department": ["illegal construction", "unauthorized construction", "building collapse", "unsafe building"],
     "Commercial": ["faulty meter", "property tax", "billing", "license"],
     "IT Department": ["portal bug", "app bug", "login failed", "server error"],
@@ -164,6 +191,33 @@ def _keyword_fallback(description: str) -> str:
         if any(kw in desc for kw in keywords):
             return category
     return "Uncategorized"
+
+
+def _payload_text_for_keyword_fallback(vision_payload: dict) -> str:
+    """Combine all structured vision fields into one text blob for fallback matching."""
+    parts = [
+        str(vision_payload.get("description", "")),
+        " ".join(str(item) for item in vision_payload.get("visible_objects", [])),
+        str(vision_payload.get("primary_issue", "")),
+        str(vision_payload.get("secondary_issue", "")),
+        str(vision_payload.get("setting", "")),
+        " ".join(str(item) for item in vision_payload.get("hazards", [])),
+    ]
+    return " ".join(parts)
+
+
+def _has_civic_context(text: str) -> bool:
+    text_lower = text.lower()
+    return any(term in text_lower for term in _CIVIC_CONTEXT_TERMS)
+
+
+def _is_non_civic_text(text: str) -> bool:
+    text_lower = text.lower()
+    if any(kw in text_lower for kw in _HARD_NON_CIVIC_KEYWORDS):
+        return True
+    if any(kw in text_lower for kw in _SOFT_NON_CIVIC_KEYWORDS):
+        return not _has_civic_context(text_lower)
+    return False
 
 
 def _contains_whole_word(text: str, term: str) -> bool:
@@ -368,7 +422,7 @@ class CivicClassifier:
             }
 
         normalized_lower = normalized.lower()
-        if any(kw in normalized_lower for kw in _NEGATIVE_KEYWORDS):
+        if _is_non_civic_text(normalized_lower):
             return {
                 "department": "Uncategorized",
                 "label": normalized,
@@ -495,7 +549,9 @@ class CivicClassifier:
                 "}\n\n"
                 "STRICT RULES:\n"
                 "- ONLY describe what you can CLEARLY and DIRECTLY see. Do NOT infer or guess.\n"
-                "- Do NOT mention trains/railways/metro unless tracks, train coaches, or platform signage are clearly visible.\n"
+                "- If a scene contains scattered litter, determine if it is primarily plant-based (dried leaves, twigs, fallen branches) or man-made waste (plastic, food wrappers, metal, glass).\n"
+                "- Only describe an issue as 'sanitation' or 'garbage' if man-made waste, trash bags, or waste bins are clearly visible.\n"
+                "- If the dominant objects are fallen or dried leaves, explicitly describe them as such and avoid the word 'garbage'.\n"
                 "- If you see flames/smoke/sparks near wires, a transformer, meter box, or electrical panel, "
                 "set primary_issue to 'electrical fire hazard' (NOT traffic congestion).\n"
                 "- If you see a train, railway platform, or railway station, say so EXPLICITLY "
@@ -504,9 +560,11 @@ class CivicClassifier:
                 "or congestion with NO clear infrastructure damage, set primary_issue to "
                 "'traffic congestion' and description should reflect that.\n"
                 "- Never use 'traffic congestion' unless vehicles are clearly visible and dominant in the scene.\n"
-                "- Be specific: 'traffic congestion' / 'road damage' / 'waterlogging' / "
+                "- Be specific: 'traffic congestion' / 'road damage' / 'waterlogging' / 'pipe leak' / "
                 "'broken street light' / 'fallen tree' / 'garbage dump' / 'dangling wire' / "
-                "'electrical box' / 'railway platform' / 'train station'\n"
+                "'hawker encroachment' / 'illegal parking' / 'broken water pipe' / 'railway platform'\n"
+                "- If stagnant water is visible near a broken road, pothole, or caved-in area, prioritize naming the infrastructure damage ('road damage' / 'pothole') as the primary issue.\n"
+                "- If you see vendors, stalls, or hawkers blocking a sidewalk or road, use 'encroachment' or 'hawker blockage' as the primary issue.\n"
                 "- If the image is a phone screenshot, payment receipt, bank transaction, "
                 "UPI screen, chat message, or any digital/scanned document, set "
                 "primary_issue to 'non_civic_document' and description to describe it as such.\n"
@@ -516,8 +574,9 @@ class CivicClassifier:
             _simple_prompt = (
                 "Look at this image carefully and describe ONLY what you can clearly see. "
                 "What is the main activity or condition visible in the scene? "
-                "How many vehicles or people are present? "
-                "Is there any obvious physical damage to roads, infrastructure, or surroundings? "
+                "Look for: garbage/litter, broken roads/potholes, leaking pipes, "
+                "fallen trees/branches, broken street lights, dangling wires, "
+                "stagnant water, or unauthorized vendors blocking pavements. "
                 "Describe in 2-3 factual sentences without guessing or assuming."
             )
 
@@ -795,8 +854,8 @@ class CivicClassifier:
             # phrases) alone is not sufficient evidence — a crowded railway
             # platform, festival crowd, or busy market also "looks congested".
             # Require at least ONE vehicle term anywhere in the combined payload.
-            # If absent, override to Uncategorized so the reasoning model (or
-            # the keyword fallback) gets a chance to re-evaluate.
+            # If absent, override to Uncategorized so keyword fallback / vision
+            # retry can re-evaluate without expensive reasoning hops.
             # ------------------------------------------------------------------
             if canonical == "Enforcement" and has_traffic_terms and not has_vehicle_terms:
                 print(f"[classifier] Traffic VETO: congestion terms found but no vehicle terms "
@@ -809,7 +868,9 @@ class CivicClassifier:
                     is_ambiguous = False
                 else:
                     canonical = "Uncategorized"
-                    is_ambiguous = True          # allow reasoning model to re-classify
+                    # Traffic hallucination without vehicle evidence is usually
+                    # not improved by reasoning; prefer faster fallback/retry path.
+                    is_ambiguous = False
                     model_confidence = 0.3
 
             # ------------------------------------------------------------------
@@ -822,7 +883,12 @@ class CivicClassifier:
                 print(f"[classifier] SKIPPING reasoning - vision was garbage, reasoning will hallucinate")
                 is_ambiguous = False   # prevent reasoning, let retry handle it
 
-            if is_ambiguous and settings.reasoning_model and not settings.rule_engine_only:
+            if (
+                is_ambiguous
+                and canonical != "Uncategorized"
+                and settings.reasoning_model
+                and not settings.rule_engine_only
+            ):
                 print(f"[classifier] ambiguous -> invoking {settings.reasoning_model}")
                 reasoning_start = time.perf_counter()
                 # Unload vision model before loading reasoning model to stay within VRAM budget
@@ -884,7 +950,9 @@ class CivicClassifier:
 
             # Final fallback: keyword scan if still Uncategorized
             if canonical == "Uncategorized":
-                keyword_result = _keyword_fallback(description)
+                keyword_result = _keyword_fallback(
+                    _payload_text_for_keyword_fallback(vision_payload)
+                )
                 if keyword_result != "Uncategorized":
                     canonical = keyword_result
                     method = "keyword_fallback"
@@ -902,8 +970,11 @@ class CivicClassifier:
                   f"chain={_full_chain}")
             if (canonical == "Uncategorized" or _vision_was_garbage) and not _retry_used:
                 _retry_used = True
+                # Retry only within the RAM-safe tier chain already chosen above.
+                # If selector started at mid/fallback, do not jump back up to a
+                # heavier model (e.g. granite -> qwen), which hurts latency.
                 _alternate_models = [
-                    m for m in _full_chain
+                    m for m in models_to_try
                     if m and m != active_vision_model
                 ]
                 print(f"[classifier] alternate_models={_alternate_models}")
@@ -967,7 +1038,9 @@ class CivicClassifier:
                                 rationale = f"retry_top_score={alt_rule['scores'].get(alt_canonical, 0):.1f}"
                             else:
                                 # Try keyword fallback on the alt description
-                                alt_kw = _keyword_fallback(alt_desc)
+                                alt_kw = _keyword_fallback(
+                                    _payload_text_for_keyword_fallback(alt_payload)
+                                )
                                 if alt_kw != "Uncategorized":
                                     canonical = alt_kw
                                     method = "vision_retry_keyword"
@@ -982,8 +1055,7 @@ class CivicClassifier:
                               f"keeping Uncategorized")
 
             # Determine validity
-            desc_lower = description.lower()
-            is_non_civic = any(kw in desc_lower for kw in _NEGATIVE_KEYWORDS)
+            is_non_civic = _is_non_civic_text(description)
             is_valid = (canonical != "Uncategorized") and not is_non_civic
 
             return {

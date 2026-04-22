@@ -47,18 +47,23 @@ export default function useAnalyze() {
 
     let uploadFile = file;
     const preferredType = file.type && file.type.startsWith('image/') ? file.type : 'image/jpeg';
-    try {
-      // Compress to reduce upload time and backend load.
-      uploadFile = await imageCompression(file, {
-        maxSizeMB: 1,
-        maxWidthOrHeight: 1920,
-        useWebWorker: true,
-        initialQuality: 0.85,
-        fileType: preferredType,
-      });
-    } catch (compressionError) {
-      void compressionError
-      uploadFile = file;
+    const shouldCompress = file.size > (1024 * 1024);
+    if (shouldCompress) {
+      try {
+        // Compress to reduce upload time and backend load, while preserving
+        // camera metadata (including GPS EXIF) when available.
+        uploadFile = await imageCompression(file, {
+          maxSizeMB: 1,
+          maxWidthOrHeight: 1920,
+          useWebWorker: true,
+          initialQuality: 0.85,
+          fileType: preferredType,
+          preserveExif: true,
+        });
+      } catch (compressionError) {
+        void compressionError
+        uploadFile = file;
+      }
     }
 
     const dimensions = await getImageDimensions(uploadFile);
