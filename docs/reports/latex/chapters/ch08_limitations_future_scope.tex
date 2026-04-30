@@ -1,3 +1,4 @@
+% !TeX root = ../main.tex
 \chapter{Limitations and Future Scope}
 
 No production-oriented civic platform is complete without explicit recognition of current boundaries. Jan-Sunwai AI delivers a strong operational baseline, but several limitations remain due to time, infrastructure, and deployment-context constraints.
@@ -8,7 +9,7 @@ Current limitations were documented to provide a realistic boundary for what the
 
 \subsection{Model and AI Limitations}
 
-The points below highlight the most important considerations that define this subsection.
+The following AI-specific constraints reflect the boundaries of local model behaviour under diverse civic imagery and describe where the current pipeline still falls short:
 
 
 \begin{itemize}
@@ -20,7 +21,7 @@ The points below highlight the most important considerations that define this su
 
 \subsection{Infrastructure Limitations}
 
-The points below highlight the most important considerations that define this subsection.
+Infrastructure ceilings were accepted as deliberate scope boundaries for a project-grade pilot; the specific hardware and queue constraints are:
 
 
 \begin{itemize}
@@ -31,7 +32,7 @@ The points below highlight the most important considerations that define this su
 
 \subsection{Workflow and Data Limitations}
 
-The points below highlight the most important considerations that define this subsection.
+Workflow limitations arise from the intersection of civic process complexity and the data quality of administrator-maintained configuration:
 
 
 \begin{itemize}
@@ -43,13 +44,23 @@ The points below highlight the most important considerations that define this su
 
 \subsection{Security and Governance Limitations}
 
-The points below highlight the most important considerations that define this subsection.
-
+Security boundaries that fall outside the application layer are inherited from the host deployment environment and must be addressed before large-scale rollout:
 
 \begin{itemize}
 \item Security checks are strong at application layer but external perimeter controls (WAF, zero-trust segmentation) are deployment-dependent.
 \item Email delivery remains stub-based until institutional SMTP integration is finalized.
 \item Continuous dependency vulnerability tracking is not yet fully automated in release workflow.
+\end{itemize}
+
+\subsection{Real-World Deployment Challenges}
+
+Each of the following real-world challenges represents an organizational or policy constraint that software engineering alone cannot fully resolve:
+
+\begin{itemize}
+\item \textbf{Data Privacy Concerns:} Handling complaints containing sensitive citizen data or private locations requires strict redaction and retention policies.
+\item \textbf{Model Bias:} Local models may demonstrate bias if training data lacks representation of diverse civic environments and informal settlements.
+\item \textbf{Infrastructure Limitations:} Municipal offices often lack the continuous power supply and network bandwidth required for high-availability AI services.
+\item \textbf{Staff Training Requirements:} Shifting from manual data entry to AI-assisted triage demands new digital literacy skills from existing municipal workers.
 \end{itemize}
 
 \section{Future Scope}
@@ -58,19 +69,18 @@ Future scope is framed as a phased enhancement roadmap that balances impact, eff
 
 \subsection{AI and Intelligence Enhancements}
 
-The sequence below presents the recommended order of actions and priorities for this subsection.
-
+The following enhancements are direct extensions of the existing hybrid classification pipeline and can be built incrementally on top of the current codebase without architectural rewrites:
 
 \begin{enumerate}
-\item Introduce domain fine-tuning or retrieval-augmented context for better local scene understanding.
-\item Add multilingual voice-to-text intake for accessibility.
-\item Integrate confidence calibration dashboards and model drift alerts.
-\item Build image deduplication and duplicate complaint clustering using visual embeddings.
+\item \textbf{Domain-Adapted Classifier Tuning:} The existing rule engine (already in production) can be extended with a lightweight ONNX classifier trained on municipal complaint image datasets, replacing the current zero-shot vision model for common civic categories.
+\item \textbf{Duplicate Complaint Detection:} The complaint MongoDB collection already stores text and category. Adding embedding-based similarity search (via a local embedding model in Ollama) would enable real-time deduplication against the last 30 days of records.
+\item \textbf{Multilingual Draft Generation:} The Ollama inference pipeline already supports prompt templating. Switching the draft generation prompt to a multilingual instruction template would unlock Hindi and other regional language output without model changes.
+\item \textbf{Confidence-Adaptive Triage Routing:} The current triage queue uses a fixed 0.70 threshold. A simple feedback loop recording admin correction decisions could be used to auto-tune this per-category threshold over time.
 \end{enumerate}
 
 \subsection{Operational Workflow Enhancements}
 
-The sequence below presents the recommended order of actions and priorities for this subsection.
+Each workflow enhancement below addresses a specific gap between the current pilot implementation and a full institutional deployment:
 
 
 \begin{enumerate}
@@ -82,7 +92,7 @@ The sequence below presents the recommended order of actions and priorities for 
 
 \subsection{Platform and Deployment Enhancements}
 
-The sequence below presents the recommended order of actions and priorities for this subsection.
+Platform and infrastructure improvements address the scale gap between the current Docker Compose pilot and a multi-ward municipal deployment:
 
 
 \begin{enumerate}
@@ -94,7 +104,7 @@ The sequence below presents the recommended order of actions and priorities for 
 
 \subsection{Security and Compliance Enhancements}
 
-The sequence below presents the recommended order of actions and priorities for this subsection.
+Security and compliance maturity goals represent the delta between the current application-layer hardening and institutional audit readiness:
 
 
 \begin{enumerate}
@@ -166,7 +176,7 @@ Municipal deployment success is influenced by organizational readiness as much a
 
 \subsection{Change Management Considerations}
 
-The points below highlight the most important considerations that define this subsection.
+Key considerations include:
 
 
 \begin{itemize}

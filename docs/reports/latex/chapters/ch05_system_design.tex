@@ -5,7 +5,7 @@ System design in Jan-Sunwai AI focuses on reliable complaint orchestration in a 
 
 \section{System Architecture Design}
 
-System architecture design was developed to ensure clear separation of concerns while preserving end-to-end traceability across complaint intake, processing, and governance review. The design prioritizes predictable integration boundaries among frontend, backend, data, and AI runtime layers so that failures can be isolated and recovered without cascading disruption. This architecture also supports future scaling through modular service evolution.
+System architecture design was developed to ensure clear separation of concerns while preserving end-to-end traceability across complaint intake, processing, and governance review. The design prioritizes predictable integration boundaries among frontend, backend, data, and AI runtime layers so that failures can be isolated and recovered without cascading disruption. This architecture also supports future scaling through modular service evolution [11, 12, 13, 17, 16].
 
 \subsection{Architectural Style}
 
@@ -25,7 +25,7 @@ The platform follows a layered service architecture:
 
 \subsection{Key Architectural Decisions}
 
-The following table summarizes the major points relevant to this subsection for quick review.
+Key design decisions are summarized below:
 
 
 \begin{table}[H]
@@ -46,6 +46,16 @@ Versioned API alias (/api/v1) & Improves long-term integration stability for ext
 \label{tab:design-decisions}
 \end{table}
 
+\subsection{AI Classification Pipeline}
+
+To ensure reliable routing, the AI component employs a hybrid model combining vision-language inference with deterministic thresholding. When an image is uploaded, the vision model generates class probabilities. The final confidence score is formulated as the maximum probability across predefined civic categories:
+
+\begin{equation}
+\text{Confidence} = \max_{i} (P(\text{class}_i \mid \text{image}))
+\end{equation}
+
+If this $\text{Confidence}$ exceeds the system's acceptable threshold (e.g., $0.70$), the complaint is auto-routed to the corresponding department. If the confidence falls below this threshold, the system flags the submission for the administrative triage queue, ensuring human oversight handles ambiguous cases.
+
 \section{UML Diagrams}
 
 The following diagrams are aligned with the implemented module boundaries, routing flow, and lifecycle stages documented in the project report and API references.
@@ -54,33 +64,47 @@ The following diagrams are aligned with the implemented module boundaries, routi
 
 \placeholderfigure{E-R Diagram}{Primary entities: User, Complaint, Notification, and PasswordReset token. Relationships include complaint ownership, assignment, and notification generation.}
 
+\textbf{Data Flow \& Rationale:} This diagram shows how complaint records act as the central nexus linking users, workers, and notifications. By embedding status history directly within the Complaint entity, the database minimizes costly relational joins during dashboard rendering.
+
 \subsection{Use Case Diagram}
 
 \placeholderfigure{Use Case Diagram}{Citizen submits and tracks complaints; worker resolves assignments; department head updates status; admin governs approvals, triage, and analytics.}
+
+\textbf{Role Segregation \& Governance:} This diagram captures the strict access boundaries enforced by the system. While citizens have broad permission to create and track records, state mutations (such as resolving or rejecting a complaint) are heavily restricted to authenticated workers and department heads. It visually demonstrates the governance principle that AI assists but humans hold final approval authority.
 
 \subsection{Class Diagram}
 
 \placeholderfigure{Class Diagram}{Schema-level classes represent User, Complaint, and Notification with association to role, status, and metadata properties.}
 
+\textbf{Data Encapsulation:} The class structure reflects the document-oriented database design where complex types like Geolocation and Timestamps are embedded rather than relationally linked. This tradeoff sacrifices some normalization but ensures that fetching a single Complaint object provides the frontend with the complete operational context needed to render a dashboard.
+
 \subsection{Sequence Diagram}
 
 \placeholderfigure{Sequence Diagram}{Upload -> analyze -> generate draft -> submit complaint -> auto-assign -> status updates -> notifications.}
+
+\textbf{Flow \& Bottlenecks:} This sequence outlines the chronological journey of a grievance. It highlights the AI inference step as the primary synchronous bottleneck. To prevent browser timeouts, the system restricts the analysis time window and degrades gracefully to a manual form if inference times out.
 
 \subsection{Activity Diagram}
 
 \placeholderfigure{Activity Diagram}{Lifecycle from citizen intake through operational processing and closure with feedback and audit logging.}
 
+\textbf{State Machine Constraints:} This diagram tracks the rigid state transitions a complaint undergoes (e.g., from `Pending` to `In Progress` to `Resolved`). It illustrates the system's fail-safes: if the AI classification confidence is low, the activity branches into the administrative triage queue rather than failing silently, preventing black-hole scenarios in civic reporting.
+
 \subsection{DFD Diagram}
 
 \placeholderfigure{Data Flow Diagram}{Data moves from frontend to API services, then to persistence and AI runtime. Notification and analytics streams derive from lifecycle events.}
+
+\textbf{System Dynamics:} The DFD maps the transition of unstructured citizen uploads into structured database records. It illustrates why the AI module is isolated from the core CRUD APIâ€”allowing the transaction engine to operate independently of the compute-heavy vision processing.
 
 \subsection{Deployment Diagram}
 
 \placeholderfigure{Deployment Diagram}{Browser clients access frontend service; frontend proxies API calls to backend service; backend communicates with MongoDB and host-level Ollama runtime.}
 
+\textbf{Local-First Architecture:} The deployment topology explicitly avoids managed cloud dependencies to comply with municipal security constraints. By keeping the React bundle, FastAPI server, MongoDB, and Ollama LLM isolated within a Docker Compose network, the diagram proves that the entire grievance platform can be air-gapped or run on constrained on-premises infrastructure.
+
 \section{Database Design}
 
-Database design focused on lifecycle integrity, query efficiency, and auditability rather than strict relational normalization. Since complaint records evolve through multiple state transitions and actor interactions, the chosen document model keeps operationally related history close to primary complaint entities while retaining key references for role and ownership controls. This approach improves retrieval speed for dashboards, timelines, and governance reviews.
+Database design focused on lifecycle integrity, query efficiency, and auditability rather than strict relational normalization. Since complaint records evolve through multiple state transitions and actor interactions, the chosen document model keeps operationally related history close to primary complaint entities while retaining key references for role and ownership controls. This approach improves retrieval speed for dashboards, timelines, and governance reviews [13, 11, 14].
 
 \subsection{Table Design and Relationships}
 
@@ -107,75 +131,9 @@ The platform uses controlled denormalization:
 
 This approach preserves operational read performance while retaining clear ownership semantics.
 
-\subsection{Data Dictionary}
-
-\small
-\begin{longtable}{|p{0.15\textwidth}|p{0.23\textwidth}|p{0.16\textwidth}|p{0.38\textwidth}|}
-\caption{Data Dictionary (Core Fields)}\label{tab:data-dictionary}\\
-\toprule
-\textbf{Collection} & \textbf{Field} & \textbf{Type} & \textbf{Purpose} \\ \hline
-\midrule
-\endfirsthead
-\toprule
-\textbf{Collection} & \textbf{Field} & \textbf{Type} & \textbf{Purpose} \\ \hline
-\midrule
-\endhead
-users & \_id & ObjectId & Primary identifier for user record \\ \hline
-users & username & String & Unique login identity \\ \hline
-users & email & String & Unique contact and recovery identity \\ \hline
-users & password & String (hash) & bcrypt password hash \\ \hline
-users & role & Enum/String & Citizen, worker, department head, admin \\ \hline
-users & department & String & Department linkage for worker and head roles \\ \hline
-users & is\_approved & Boolean & Worker approval gate \\ \hline
-users & worker\_status & String & Availability state (available/offline/busy) \\ \hline
-users & active\_complaint\_ids & Array[String] & Assigned active complaint references \\ \hline
-users & service\_area & Object & Worker geofence with lat, lon, radius\_km \\ \hline
-users & created\_at / updated\_at & Datetime & Audit timestamps \\ \hline
-\midrule
-complaints & \_id & ObjectId & Primary complaint identity \\ \hline
-complaints & user\_id & String & Citizen owner reference \\ \hline
-complaints & assigned\_to & String/Null & Worker currently assigned \\ \hline
-complaints & authority\_id & String & Current authority mapping \\ \hline
-complaints & department & String & Canonical department label \\ \hline
-complaints & status & Enum/String & Open/In Progress/Resolved/Rejected \\ \hline
-complaints & priority & Enum/String & Derived urgency priority \\ \hline
-complaints & description & String & Citizen complaint text \\ \hline
-complaints & image\_url & String & Stored upload path \\ \hline
-complaints & location & Object & Geospatial metadata and address \\ \hline
-complaints & ai\_metadata & Object & Model, confidence, labels, rationale fields \\ \hline
-complaints & routing\_confidence & Float & Routing confidence metadata \\ \hline
-complaints & escalated & Boolean & Escalation state \\ \hline
-complaints & \path{escalation_parent_authority_id} & String/Null & Parent target for escalation \\ \hline
-complaints & status\_history & Array[Object] & Lifecycle transition audit \\ \hline
-complaints & dept\_notes & Array[Object] & Internal notes for admin/head \\ \hline
-complaints & comments & Array[Object] & Shared comment thread \\ \hline
-complaints & feedback & Object/Null & Citizen post-resolution feedback \\ \hline
-complaints & is\_duplicate / duplicate\_of & Boolean/String & Duplicate detection metadata \\ \hline
-complaints & created\_at / updated\_at & Datetime & Lifecycle timestamps \\ \hline
-\midrule
-notifications & \_id & ObjectId & Notification identifier \\ \hline
-notifications & user\_id & String & Recipient user identity \\ \hline
-notifications & complaint\_id & String/Null & Related complaint reference \\ \hline
-notifications & type & String & Notification category (status/escalation/etc.) \\ \hline
-notifications & title & String & Display title \\ \hline
-notifications & message & String & Display message \\ \hline
-notifications & is\_read & Boolean & Read-state for badge computation \\ \hline
-notifications & created\_at & Datetime & Event timestamp \\ \hline
-\midrule
-\path{password_resets} & \_id & ObjectId & Reset record identity \\ \hline
-\path{password_resets} & user\_id & String & Target user identity \\ \hline
-\path{password_resets} & token\_hash & String & SHA-256 hash of reset token \\ \hline
-\path{password_resets} & used & Boolean & Token consumed/revoked marker \\ \hline
-\path{password_resets} & created\_at & Datetime & Token issued time \\ \hline
-\path{password_resets} & expires\_at & Datetime & TTL-controlled expiry time \\ \hline
-\path{password_resets} & used\_at / revoked\_at / expired\_at & Datetime/Null & Token lifecycle audit fields \\ \hline
-\bottomrule
-\end{longtable}
-\normalsize
-
 \subsection{Indexing Strategy}
 
-The following table summarizes the major points relevant to this subsection for quick review.
+Key indexing strategies are summarized below:
 
 
 \begin{table}[H]
@@ -200,16 +158,6 @@ notifications & (user\_id, is\_read) & Unread badge counter queries \\ \hline
 \label{tab:indexing-strategy}
 \end{table}
 
-\subsection{Assignment Distance Formula}
-
-Auto-assignment uses geospatial proximity filtering where service-area radii are configured for workers. The distance calculation follows the Haversine relation described by Sinnott (1984):
-
-\begin{equation}\label{eq:haversine_distance}
- d = 2R \arcsin\left(\sqrt{\sin^2\left(\frac{\phi_2-\phi_1}{2}\right) + \cos(\phi_1)\cos(\phi_2)\sin^2\left(\frac{\lambda_2-\lambda_1}{2}\right)}\right)
-\end{equation}
-
-Equation~\eqref{eq:haversine_distance} is used for worker-to-complaint distance scoring, where $R$ is Earth radius in kilometers, $(\phi_1, \lambda_1)$ is worker location, and $(\phi_2, \lambda_2)$ is complaint location.
-
 \section{GUI Design}
 
 GUI design was planned as a task-oriented interface model where each role sees only the controls and data required for its responsibilities. Visual hierarchy, workflow clarity, and responsive behavior were treated as core functional requirements because field and supervisory users interact with the platform under different device and time constraints. The resulting interface strategy emphasizes speed of action, low ambiguity, and consistent feedback.
@@ -222,12 +170,12 @@ The UI follows practical governance portal principles:
 \item Clarity of action over decorative complexity.
 \item Explicit role boundaries in navigation and controls.
 \item Immediate visual feedback for status and notification changes.
-\item Responsive behavior for desktop operator screens and mobile field usage.
+\item Responsive behavior for desktop operator screens and mobile field usage [21].
 \end{itemize}
 
 \subsection{Interface Areas}
 
-The following table summarizes the major points relevant to this subsection for quick review.
+Key interface areas are summarized below:
 
 
 \begin{table}[H]
@@ -265,71 +213,26 @@ The following figure provides a visual reference that complements the explanator
 
 \section{Screenshots}
 
-The screenshot gallery below is designed for final submission formatting. Each figure points to a deterministic file name under \texttt{docs/images/screenshots/}. Missing files render as placeholders so report compilation can continue while pending captures are added.
+The screenshot gallery below restores representative evidence from the implementation while keeping the report compact enough for submission.
 
-\subsection{Primary Screenshot Gallery (S01--S15)}
+\begin{center}
+\screenshotcard[S01: Home Page Hero]{0.47\textwidth}{fig:s01}{../../images/screenshots/S01_home_desktop.png}{S01: Home Page Hero and Public Entry CTA}\hfill
+\screenshotcard[S02: AI Analysis Result]{0.47\textwidth}{fig:s02}{../../images/screenshots/S02_analyze_result.png}{S02: AI Analysis Result and Draft Review}
+\end{center}
 
-\clearpage
-\screenshotfigure{fig:s01}{../../images/screenshots/S01_home_desktop.png}{S01: Home Page Hero and Public Entry CTA}
+\vspace{1em}
 
-\clearpage
-\screenshotfigure{fig:s02}{../../images/screenshots/S02_login_desktop.png}{S02: Login Page}
+\begin{center}
+\screenshotcard[S03: Citizen Tracking Dashboard]{0.47\textwidth}{fig:s03}{../../images/screenshots/S03_citizen_dashboard.png}{S03: Citizen Complaint Tracking Dashboard}\hfill
+\screenshotcard[S04: Worker Assignment Queue]{0.47\textwidth}{fig:s04}{../../images/screenshots/S04_worker_dashboard.png}{S04: Worker Assignment Queue}
+\end{center}
 
-\clearpage
-\screenshotfigure{fig:s03}{../../images/screenshots/S03_register_desktop.png}{S03: Citizen Registration Page}
+\vspace{1em}
 
-\clearpage
-\screenshotfigure{fig:s04}{../../images/screenshots/S04_reset_password_desktop.png}{S04: Reset Password Page}
-
-\clearpage
-\screenshotfigure{fig:s05}{../../images/screenshots/S05_admin_dashboard_desktop.png}{S05: Admin Dashboard Overview}
-
-\clearpage
-\screenshotfigure{fig:s06}{../../images/screenshots/S06_triage_review_desktop.png}{S06: Triage Human Review Queue}
-
-\clearpage
-\screenshotfigure{fig:s07}{../../images/screenshots/S07_worker_assignment_panel_desktop.png}{S07: Worker Assignment Panel}
-
-\clearpage
-\screenshotfigure{fig:s08}{../../images/screenshots/S08_analytics_dashboard_desktop.png}{S08: Analytics Dashboard}
-
-\clearpage
-\screenshotfigure{fig:s09}{../../images/screenshots/S09_map_overview_satellite_desktop.png}{S09: Complaints Map Overview (Satellite Layer)}
-
-\clearpage
-\screenshotfigure{fig:s10}{../../images/screenshots/S10_map_popup_detail_desktop.png}{S10: Map Popup Detail View}
-
-\clearpage
-\screenshotfigure{fig:s11}{../../images/screenshots/S11_public_board_desktop.png}{S11: Public Grievance Board}
-
-\clearpage
-\screenshotfigure{fig:s12}{../../images/screenshots/S12_heatmap_desktop.png}{S12: Grievance Heatmap Page}
-
-\clearpage
-\screenshotfigure{fig:s13}{../../images/screenshots/S13_profile_admin_desktop.png}{S13: Profile Page (Admin)}
-
-\clearpage
-\screenshotfigure{fig:s14}{../../images/screenshots/S14_citizen_dashboard_desktop.png}{S14: Citizen Dashboard with Timeline}
-
-\clearpage
-\screenshotfigure{fig:s15}{../../images/screenshots/S15_notifications_panel_desktop.png}{S15: Notifications Dropdown Panel}
-
-\subsection{Supplementary Screens (Optional in Final Print)}
-
-\clearpage
-\screenshotfigure{fig:sx1}{../../images/screenshots/SX1_file_complaint_upload_desktop.png}{SX1: File Complaint Upload Interface}
-
-\clearpage
-\screenshotfigure{fig:sx2}{../../images/screenshots/SX2_citizen_timeline_multilingual_desktop.png}{SX2: Multilingual Citizen Timeline Snapshot}
-
-\clearpage
-\screenshotfigure{fig:sx3}{../../images/screenshots/SX3_resolved_feedback_snapshot_desktop.png}{SX3: Resolved Complaint with Citizen Feedback}
-
-\clearpage
-\screenshotfigure{fig:sx4}{../../images/screenshots/SX4_result_location_analysis_desktop.png}{SX4: Result Page with Location Context and AI Analysis}
-
-\clearpage
-\screenshotfigure{fig:sx5}{../../images/screenshots/SX5_result_grievance_description_desktop.png}{SX5: Result Page with Grievance Description Editing}
+\begin{center}
+\screenshotcard[S05: Admin Dashboard]{0.47\textwidth}{fig:s05}{../../images/screenshots/S05_admin_dashboard_desktop.png}{S05: Admin Dashboard --- shows real-time complaint volume, department breakdown, and pending approvals. The admin can initiate bulk status updates or export records from this single view.}\hfill
+\screenshotcard[S06: Admin Triage Queue]{0.47\textwidth}{fig:s06}{../../images/screenshots/S06_triage_queue.png}{S06: Administrative Triage Queue --- displays low-confidence AI classifications awaiting human review. The confidence score, AI-suggested category, and uploaded image are shown side-by-side so the admin can approve, reject, or relabel in one action.}
+\end{center}
 
 \section{Chapter Summary}
 

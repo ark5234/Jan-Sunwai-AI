@@ -51,7 +51,7 @@ Last updated: 2026-04-06
 | 2.2.2 | Milestones and Deliverables | 16 |
 | 2.2.3 | Roles and Responsibilities | 17 |
 | 2.2.4 | Group Dependencies | 18 |
-| 2.3 | Project Scheduling (Gantt/PERT chart) | 19 |
+| 2.3 | Project Scheduling (Gantt chart) | 19 |
 | 3 | System Requirement Study | 21 |
 | 3.1 | Existing System Overview | 22 |
 | 3.2 | Limitations of the Existing System | 23 |
@@ -120,7 +120,7 @@ Last updated: 2026-04-06
 | Figure 7 | Activity Diagram | 51 |
 | Figure 8 | DFD Diagram | 52 |
 | Figure 9 | Deployment Diagram | 55 |
-| Figure 10 | Project Gantt and PERT Views | 19 |
+| Figure 10 | Project Gantt View | 19 |
 
 ## List of Tables
 
@@ -250,7 +250,7 @@ Milestones include core backend/frontend, AI integration, assignment and triage,
 - Frontend depends on backend route availability and auth flow.
 - Production deployment depends on compose, env config, and host runtime access.
 
-### 2.3 Project Scheduling (Gantt/PERT chart)
+### 2.3 Project Scheduling (Gantt chart)
 
 ```mermaid
 gantt
@@ -268,13 +268,7 @@ gantt
     UAT and final submission              :a4, 2026-05-01, 2026-05-27
 ```
 
-```mermaid
-flowchart LR
-    P1[Plan] --> P2[Build]
-    P2 --> P3[Integrate]
-    P3 --> P4[Test]
-    P4 --> P5[Handover]
-```
+<!-- PERT/flowchart removed per request; retained Gantt above -->
 
 ## 3 System Requirement Study
 

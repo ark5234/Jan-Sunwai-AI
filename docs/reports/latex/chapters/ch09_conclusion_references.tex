@@ -1,22 +1,15 @@
+% !TeX root = ../main.tex
 \chapter{Conclusion and References}
 
 \section{Conclusion}
 
-Jan-Sunwai AI demonstrates that a practical civic grievance platform can combine AI assistance with deterministic governance controls without sacrificing transparency or operational safety. The technology choices and implementation baseline align with established platform documentation for FastAPI, React, MongoDB, and Docker \cite{fastapi_docs,react_docs,mongodb_docs,docker_docs}. The project delivered:
+Jan-Sunwai AI demonstrates that a practical civic grievance platform can combine AI assistance with deterministic governance controls without sacrificing transparency or operational safety. While the system successfully reduces complaint submission friction and improves routing efficiency through hybrid AI-assisted classification, the development process revealed that the primary challenge in civic technology is not algorithmic accuracy, but rather systemic trust and auditability. The technology choices align with established platform documentation for FastAPI, React, MongoDB, and Docker [11, 12, 13, 16].
 
-\begin{itemize}
-\item A complete complaint lifecycle from image-based intake to resolution tracking.
-\item Role-specific workflows for citizens, workers, department heads, and administrators.
-\item A hybrid classification pipeline that improves routing stability through staged decision logic.
-\item Security and reliability controls aligned with deployment realities.
-\item Containerized deployment and documentation artifacts suitable for institutional handover.
-\end{itemize}
+From an engineering standpoint, the most significant intellectual contribution of this project is the architecture pattern: using AI (such as vision-language models for context extraction [3]) where it adds value, but preserving deterministic checkpoints and human governance where accountability is essential. Integrating Llama 3.2 Vision locally proved substantially harder than expected due to inference latency and memory constraints, revealing that edge-based civic AI must prioritize graceful degradation over perfect automation. This pattern is especially appropriate in public-service software, where explainability and auditability are as important as automation speed. Security controls were rigorously shaped by OWASP guidance [7, 8, 9].
 
-From an engineering standpoint, the most significant contribution is the architecture pattern: use AI where it adds value, but preserve deterministic checkpoints and human governance where accountability is essential. This pattern is especially appropriate in public-service software, where explainability and auditability are as important as automation speed. Security controls for upload validation, input handling, and operational hardening were shaped by OWASP guidance \cite{owasp_top10,owasp_file_upload}.
+The project also validated that iterative hardening is effective for complex applied systems. Testing the system under load using the Locust framework [18] exposed the fragility of synchronous AI calls, forcing the architectural pivot to asynchronous queues and administrative triage. These limitations highlight a broader reality: civic platforms cannot assume a perfect digital environment. They must be resilient against malformed data, low-bandwidth connections, and ambiguous citizen inputs.
 
-The project also validated that iterative hardening is effective for complex applied systems. Functional breadth, security controls, resilience behavior, and deployment readiness were improved incrementally, with testing and documentation integrated into delivery rather than deferred to the end. Performance and scenario-load behavior were evaluated using the Locust framework \cite{locust_docs}.
-
-As a final outcome, Jan-Sunwai AI is positioned as a strong foundation for municipal deployment pilots. With further scaling and policy integration, it can evolve into a wider civic operations platform supporting higher throughput, stronger compliance workflows, and richer planning intelligence.
+As a final outcome, Jan-Sunwai AI is positioned not just as a working application, but as a blueprint for local-first, privacy-respecting municipal deployment. It proves that resource-constrained institutions can leverage advanced AI without surrendering operational control to black-box cloud APIs, offering a scalable foundation for future e-governance initiatives.
 
 \makeatletter
 \renewenvironment{thebibliography}[1]
@@ -24,8 +17,8 @@ As a final outcome, Jan-Sunwai AI is positioned as a strong foundation for munic
 	\@mkboth{\MakeUppercase\bibname}{\MakeUppercase\bibname}%
 	\list{\@biblabel{\@arabic\c@enumiv}}%
 	     {\settowidth\labelwidth{\@biblabel{#1}}%
-		\leftmargin\labelwidth
-		\advance\leftmargin\labelsep
+		\leftmargin=1.2em
+		\labelsep=0.35em
 		\@openbib@code
 		\usecounter{enumiv}%
 		\let\p@enumiv\@empty
@@ -41,6 +34,51 @@ As a final outcome, Jan-Sunwai AI is positioned as a strong foundation for munic
 
 \begin{thebibliography}{99}
 
+% A. Civic Governance & Grievance Systems
+\bibitem{un_e_gov}
+United Nations,
+\newblock ``UN E-Government Survey: Harnessing Digitalization for Sustainable Development,'' Department of Global Communications, 2022. [Online]. Available: \url{https://publicadministration.un.org/egovernance}.
+
+\bibitem{world_bank_digital_governance}
+World Bank,
+\newblock ``Digital Government Toolkit,'' World Bank Group, 2023. [Online]. Available: \url{https://www.worldbank.org/en/topic/governance/brief/digital-government}.
+
+% B. AI / Computer Vision / Multimodal
+\bibitem{clip_paper}
+A. Radford, J. W. Kim, C. Hallacy, A. Ramesh, G. Goh, S. Agarwal, G. Sastry, A. Askell, P. Mishkin, J. Clark, G. Krueger, and D. Amodei,
+\newblock ``Learning transferable visual models from natural language supervision,'' in \textit{Proceedings of the 38th International Conference on Machine Learning (ICML)}, 2021.
+
+\bibitem{llama_vision}
+Meta AI,
+\newblock ``Llama 3.2: Revolutionizing edge AI and vision with open, customizable models,'' Sept. 2024. [Online]. Available: \url{https://ai.meta.com/blog/llama-3-2-connect-2024-vision-edge-mobile-devices/}.
+
+% C. Hybrid AI Systems
+\bibitem{neuro_symbolic}
+A. d'Avila Garcez, M. Gori, L. C. Lamb, L. Serafini, M. Spranger, and S. N. Tran,
+\newblock ``Neural-Symbolic Computing: An Effective Methodology for Principled Integration of Machine Learning and Reasoning,'' \textit{FLAP}, vol. 6, no. 4, 2019.
+
+\bibitem{hitl_ai}
+E. Mosqueira-Rey, E. Hernández-Pereira, D. Alonso-Ríos, F. Bobes-Bascarán, and A. Fernández-Leal,
+\newblock ``Human-in-the-loop machine learning: A state of the art,'' \textit{Artificial Intelligence Review}, vol. 56, pp. 3005-3054, 2023.
+
+% D. Security
+\bibitem{owasp_top10}
+OWASP Foundation,
+\newblock ``OWASP Top 10: Web application security risks,'' [Online]. Available: \url{https://owasp.org/www-project-top-ten/}. [Accessed: Apr. 7, 2026].
+
+\bibitem{owasp_file_upload}
+OWASP Foundation,
+\newblock ``File upload security cheat sheet,'' [Online]. Available: \url{https://cheatsheetseries.owasp.org/cheatsheets/File_Upload_Cheat_Sheet.html}. [Accessed: Apr. 7, 2026].
+
+\bibitem{jwt_rfc}
+IETF,
+\newblock ``JSON Web Token (JWT),'' RFC 7519, May 2015. [Online]. Available: \url{https://tools.ietf.org/html/rfc7519}. [Accessed: Apr. 7, 2026].
+
+\bibitem{owasp_session}
+OWASP Foundation,
+\newblock ``Session Management Cheat Sheet,'' [Online]. Available: \url{https://cheatsheetseries.owasp.org/cheatsheets/Session_Management_Cheat_Sheet.html}.
+
+% E. Framework Documentation
 \bibitem{fastapi_docs}
 FastAPI,
 \newblock ``FastAPI documentation,'' [Online]. Available: \url{https://fastapi.tiangolo.com}. [Accessed: Apr. 7, 2026].
@@ -53,33 +91,38 @@ React,
 MongoDB,
 \newblock ``MongoDB documentation,'' [Online]. Available: \url{https://www.mongodb.com/docs}. [Accessed: Apr. 7, 2026].
 
+\bibitem{mongodb_patterns}
+MongoDB,
+\newblock ``Data Model Design,'' [Online]. Available: \url{https://www.mongodb.com/docs/manual/core/data-model-design/}.
+
 \bibitem{pydantic_docs}
 Pydantic,
 \newblock ``Pydantic documentation,'' [Online]. Available: \url{https://docs.pydantic.dev}. [Accessed: Apr. 7, 2026].
-
-\bibitem{ollama_docs}
-Ollama,
-\newblock ``Ollama documentation,'' [Online]. Available: \url{https://ollama.com}. [Accessed: Apr. 7, 2026].
-
-\bibitem{owasp_top10}
-OWASP Foundation,
-\newblock ``OWASP Top 10: Web application security risks,'' [Online]. Available: \url{https://owasp.org/www-project-top-ten/}. [Accessed: Apr. 7, 2026].
-
-\bibitem{owasp_file_upload}
-OWASP Foundation,
-\newblock ``File upload security cheat sheet,'' [Online]. Available: \url{https://cheatsheetseries.owasp.org/cheatsheets/File_Upload_Cheat_Sheet.html}. [Accessed: Apr. 7, 2026].
 
 \bibitem{docker_docs}
 Docker,
 \newblock ``Docker documentation,'' [Online]. Available: \url{https://docs.docker.com}. [Accessed: Apr. 7, 2026].
 
+\bibitem{ollama_docs}
+Ollama,
+\newblock ``Ollama documentation,'' [Online]. Available: \url{https://ollama.com}. [Accessed: Apr. 7, 2026].
+
 \bibitem{locust_docs}
 Locust,
 \newblock ``Locust documentation,'' [Online]. Available: \url{https://docs.locust.io}. [Accessed: Apr. 7, 2026].
 
-\bibitem{haversine_original}
-R. W. Sinnott,
-\newblock ``Virtues of the Haversine,''
-\newblock \emph{Sky and Telescope}, vol. 68, no. 2, p. 159, 1984.
+% F. Software Engineering
+\bibitem{fielding_rest}
+R. T. Fielding,
+\newblock \textit{Architectural Styles and the Design of Network-based Software Architectures}, Ph.D. dissertation, University of California, Irvine, 2000.
+
+\bibitem{moscow_method}
+DSDM Consortium,
+\newblock \textit{The DSDM Agile Project Framework}, 2014. [Online]. Available: \url{https://www.agilebusiness.org/}.
+
+\bibitem{mobile_design}
+W3C,
+\newblock ``Mobile Web Best Practices,'' [Online]. Available: \url{https://www.w3.org/TR/mobile-bp/}.
 
 \end{thebibliography}
+

@@ -132,6 +132,8 @@ _KEYWORD_FALLBACK_BY_DEPARTMENT: dict[str, list[str]] = {
         "waterlogged road", "wet road", "sand and mud", "mud and sand",
         "sandy mud", "muddy surface", "slippery road", "slippery surface",
         "road is slippery", "road construction", "road digging",
+        "rebar", "iron rod", "steel rod", "cement bag", "construction material",
+        "construction waste", "construction debris",
     ],
     "Health Department": [
         "garbage", "trash", "waste", "litter", "dump", "rubbish", "overflowing bin",
@@ -146,7 +148,7 @@ _KEYWORD_FALLBACK_BY_DEPARTMENT: dict[str, list[str]] = {
         "fallen tree", "uprooted tree", "overgrown", "dead plant", "broken branch",
         "tree blocking", "overgrown bush", "dry leaves", "park unmaintained", "weed",
         "fallen leaves", "dry leaves", "leaves scattered", "leaf litter", "leaf debris",
-        "leaves", "leaf",
+        "leaves", "leaf", "pile of grass", "dry grass", "vegetation pile", "garden waste",
     ],
     "Enforcement": [
         "traffic signal", "signal failure", "traffic jam", "road blockage",
@@ -549,9 +551,11 @@ class CivicClassifier:
                 "}\n\n"
                 "STRICT RULES:\n"
                 "- ONLY describe what you can CLEARLY and DIRECTLY see. Do NOT infer or guess.\n"
-                "- If a scene contains scattered litter, determine if it is primarily plant-based (dried leaves, twigs, fallen branches) or man-made waste (plastic, food wrappers, metal, glass).\n"
+                "- If a scene contains scattered litter, determine if it is primarily plant-based (dried leaves, twigs, fallen branches, piles of dry grass) or man-made waste (plastic, food wrappers, metal, glass, construction debris).\n"
+                "- If you see a sidewalk or roadside covered in significant dust, sand, gravel, or silt, explicitly mention 'sand on the road' or 'dust accumulation' in the description.\n"
                 "- Only describe an issue as 'sanitation' or 'garbage' if man-made waste, trash bags, or waste bins are clearly visible.\n"
-                "- If the dominant objects are fallen or dried leaves, explicitly describe them as such and avoid the word 'garbage'.\n"
+                "- If you see construction materials like rebar (iron rods), cement bags, or bricks piled on a road or sidewalk, explicitly mention them as 'construction material' or 'construction waste'.\n"
+                "- If the dominant objects are fallen or dried leaves or piles of grass, explicitly describe them as such and avoid the word 'garbage'.\n"
                 "- If you see flames/smoke/sparks near wires, a transformer, meter box, or electrical panel, "
                 "set primary_issue to 'electrical fire hazard' (NOT traffic congestion).\n"
                 "- If you see a train, railway platform, or railway station, say so EXPLICITLY "
@@ -562,8 +566,9 @@ class CivicClassifier:
                 "- Never use 'traffic congestion' unless vehicles are clearly visible and dominant in the scene.\n"
                 "- Be specific: 'traffic congestion' / 'road damage' / 'waterlogging' / 'pipe leak' / "
                 "'broken street light' / 'fallen tree' / 'garbage dump' / 'dangling wire' / "
-                "'hawker encroachment' / 'illegal parking' / 'broken water pipe' / 'railway platform'\n"
+                "'hawker encroachment' / 'illegal parking' / 'broken water pipe' / 'railway platform' / 'rebar on road' / 'vegetation pile' / 'sand accumulation'\n"
                 "- If stagnant water is visible near a broken road, pothole, or caved-in area, prioritize naming the infrastructure damage ('road damage' / 'pothole') as the primary issue.\n"
+                "- If you see a small dark object on the ground, do NOT assume it is a 'broken water pipe' unless it is clearly a metallic or PVC pipe and water is leaking. If it's just debris or animal waste, call it 'debris' or 'scattered litter'.\n"
                 "- If you see vendors, stalls, or hawkers blocking a sidewalk or road, use 'encroachment' or 'hawker blockage' as the primary issue.\n"
                 "- If the image is a phone screenshot, payment receipt, bank transaction, "
                 "UPI screen, chat message, or any digital/scanned document, set "

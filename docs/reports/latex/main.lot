@@ -1,0 +1,45 @@
+\addvspace {10\p@ }
+\contentsline {table}{\numberline {1.1}{\ignorespaces Comparison of Grievance System Architectures}}{6}{table.1.1}%
+\addvspace {10\p@ }
+\contentsline {table}{\numberline {2.1}{\ignorespaces Milestone Summary and Deliverables}}{9}{table.2.1}%
+\contentsline {table}{\numberline {2.2}{\ignorespaces Role Responsibility Matrix (Project Execution)}}{11}{table.2.2}%
+\contentsline {table}{\numberline {2.3}{\ignorespaces Risk Register and Mitigation Plan}}{12}{table.2.3}%
+\addvspace {10\p@ }
+\contentsline {table}{\numberline {3.1}{\ignorespaces Functional Requirement Specification}}{15}{table.3.1}%
+\contentsline {table}{\numberline {3.2}{\ignorespaces Non-Functional Requirement Specification}}{16}{table.3.2}%
+\contentsline {table}{\numberline {3.3}{\ignorespaces Hardware Requirement Baseline}}{17}{table.3.3}%
+\contentsline {table}{\numberline {3.4}{\ignorespaces Software Environment Requirements}}{18}{table.3.4}%
+\contentsline {table}{\numberline {3.5}{\ignorespaces Assumptions and External Dependencies}}{20}{table.3.5}%
+\contentsline {table}{\numberline {3.6}{\ignorespaces Narrative Use-Case Requirements}}{20}{table.3.6}%
+\contentsline {table}{\numberline {3.7}{\ignorespaces MoSCoW-Style Requirement Priority Mapping}}{21}{table.3.7}%
+\addvspace {10\p@ }
+\contentsline {table}{\numberline {4.1}{\ignorespaces Proposed Feature Set and Operational Benefit}}{24}{table.4.1}%
+\contentsline {table}{\numberline {4.2}{\ignorespaces Traceability from Requirements to Proposed Modules}}{26}{table.4.2}%
+\contentsline {table}{\numberline {4.3}{\ignorespaces Inter-Module Contract Summary}}{28}{table.4.3}%
+\addvspace {10\p@ }
+\contentsline {table}{\numberline {5.1}{\ignorespaces Major Design Decisions and Rationale}}{31}{table.5.1}%
+\contentsline {table}{\numberline {5.2}{\ignorespaces Indexing Strategy by Collection}}{37}{table.5.2}%
+\contentsline {table}{\numberline {5.3}{\ignorespaces GUI Areas and Purpose}}{38}{table.5.3}%
+\addvspace {10\p@ }
+\contentsline {table}{\numberline {6.1}{\ignorespaces Implementation Toolchain and Use Cases}}{44}{table.6.1}%
+\contentsline {table}{\numberline {6.2}{\ignorespaces Implementation Sequence with Dependency Notes}}{48}{table.6.2}%
+\contentsline {table}{\numberline {6.3}{\ignorespaces Implementation Quality Gates}}{49}{table.6.3}%
+\contentsline {table}{\numberline {6.4}{\ignorespaces Router-Level Implementation Planning Notes}}{50}{table.6.4}%
+\contentsline {table}{\numberline {6.5}{\ignorespaces Service-Level Implementation Planning}}{51}{table.6.5}%
+\contentsline {table}{\numberline {6.6}{\ignorespaces Deployment Rollout Stages}}{52}{table.6.6}%
+\contentsline {table}{\numberline {6.7}{\ignorespaces Operational Monitoring Matrix}}{52}{table.6.7}%
+\addvspace {10\p@ }
+\contentsline {table}{\numberline {7.1}{\ignorespaces Testing Environment Baseline}}{54}{table.7.1}%
+\contentsline {table}{\numberline {7.2}{\ignorespaces Testing Coverage Matrix by Suite}}{55}{table.7.2}%
+\contentsline {table}{\numberline {7.3}{\ignorespaces Representative Unit Test Cases}}{56}{table.7.3}%
+\contentsline {table}{\numberline {7.4}{\ignorespaces System Test Scenarios}}{57}{table.7.4}%
+\contentsline {table}{\numberline {7.5}{\ignorespaces System SLA and Performance Metrics}}{57}{table.7.5}%
+\contentsline {table}{\numberline {7.6}{\ignorespaces System Evaluation Metrics}}{59}{table.7.6}%
+\contentsline {table}{\numberline {7.7}{\ignorespaces Outcome Summary by Validation Area}}{60}{table.7.7}%
+\contentsline {table}{\numberline {7.8}{\ignorespaces Persona-Driven UAT Matrix}}{60}{table.7.8}%
+\contentsline {table}{\numberline {7.9}{\ignorespaces Load Profile and Acceptance Guidance}}{62}{table.7.9}%
+\contentsline {table}{\numberline {7.10}{\ignorespaces Security Regression Verification Matrix}}{62}{table.7.10}%
+\addvspace {10\p@ }
+\contentsline {table}{\numberline {8.1}{\ignorespaces Indicative Post-Submission Roadmap}}{67}{table.8.1}%
+\contentsline {table}{\numberline {8.2}{\ignorespaces Future Backlog Prioritization Matrix}}{67}{table.8.2}%
+\addvspace {10\p@ }

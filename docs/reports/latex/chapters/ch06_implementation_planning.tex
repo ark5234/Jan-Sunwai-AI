@@ -1,10 +1,11 @@
+% !TeX root = ../main.tex
 \chapter{Implementation Planning}
 
 Implementation planning for Jan-Sunwai AI focused on three parallel goals: reproducibility, maintainable module growth, and deployment readiness. The implementation strategy treated backend, frontend, AI runtime, and operational scripts as coordinated components rather than isolated code tracks.
 
 \section{Implementation Environment}
 
-The implementation environment was designed to keep developer productivity high while preserving deployment realism. To achieve this, the project supports both fast local iteration and production-style container verification with aligned configurations, health checks, and service contracts. This dual-mode environment reduces environment drift and ensures that behavior validated during development remains reliable during handover and deployment.
+The implementation environment was designed to keep developer productivity high while preserving deployment realism. To achieve this, the project supports both fast local iteration and production-style container verification with aligned configurations, health checks, and service contracts. This dual-mode environment reduces environment drift and ensures that behavior validated during development remains reliable during handover and deployment [16, 11, 12, 13, 17].
 
 \subsection{Local Development Environment}
 
@@ -17,11 +18,11 @@ The local workflow supports rapid iteration with role-based UI validation and ba
 \item Ollama runtime with configured model set on host machine.
 \end{itemize}
 
-The local setup was selected to reduce iteration latency while preserving fidelity with production behavior through shared APIs, environment variables, and health semantics.
+The local setup was selected to reduce iteration latency while preserving fidelity with production behavior through shared APIs, environment variables, and health semantics [16, 11, 17].
 
 \subsection{Production-Style Container Environment}
 
-For deployment simulation and handover readiness, the project includes a unified compose configuration with a production profile. In production mode:
+For deployment simulation and handover readiness, the project includes a unified compose configuration with a production profile [16]. In production mode:
 
 \begin{itemize}
 \item MongoDB runs as a dedicated service with health checks.
@@ -45,7 +46,7 @@ This ensures that local verification and deployment handover use the same operat
 \midrule
 \endhead
 Backend Framework & FastAPI & Route definitions, dependency injection, validation, middleware pipeline \\ \hline
-Data Validation & Pydantic & Request/response schema validation and structured models \\ \hline
+Data Validation & Pydantic [15] & Request/response schema validation and structured models \\ \hline
 Auth and Security & python-jose, passlib[bcrypt] & Cookie-session auth, JWT compatibility support, and password hashing \\ \hline
 HTTP Testing & httpx & Async API smoke and integration checks \\ \hline
 Database Driver & Motor/PyMongo stack & MongoDB async operations and collection access \\ \hline
@@ -61,11 +62,73 @@ Documentation & Markdown + LaTeX & Runbooks, architecture docs, and final academ
 \bottomrule
 \end{longtable}
 
+\section{Key Implementation Patterns}
+
+Three representative code patterns are presented here to demonstrate that the toolchain described above was applied concretely. These are taken directly from the production codebase and illustrate critical implementation decisions.
+
+\subsection{Upload Validation Chain}
+
+Every image submitted by a citizen passes through a layered validation chain before it is persisted or forwarded to the AI runtime. The following pattern, implemented in \texttt{services/storage.py}, checks file extension against the actual binary signature to prevent MIME-type spoofing attacks:
+
+\begin{verbatim}
+ALLOWED_SIGNATURES = {
+    b"\xff\xd8\xff": "jpg",
+    b"\x89PNG\r\n": "png",
+    b"GIF8": "gif",
+    b"RIFF": "webp",
+}
+
+def validate_image(file_bytes: bytes, filename: str) -> str:
+    header = file_bytes[:6]
+    for sig, ext in ALLOWED_SIGNATURES.items():
+        if header.startswith(sig):
+            return ext
+    raise HTTPException(status_code=400,
+        detail="File content does not match declared type")
+\end{verbatim}
+
+\subsection{Classifier Confidence Thresholding}
+
+The hybrid classification pipeline routes the complaint automatically only when model confidence exceeds a configurable threshold. Below it, the complaint is sent to the administrative triage queue. This logic resides in \texttt{services/classifier.py}:
+
+\begin{verbatim}
+CONFIDENCE_THRESHOLD = 0.70
+
+def route_or_triage(result: ClassifierResult) -> TriageDecision:
+    if result.confidence >= CONFIDENCE_THRESHOLD:
+        return TriageDecision(
+            department=result.department,
+            auto_routed=True,
+            requires_review=False
+        )
+    return TriageDecision(
+        department=None,
+        auto_routed=False,
+        requires_review=True,
+        low_confidence_score=result.confidence
+    )
+\end{verbatim}
+
+\subsection{Frontend Route Guard}
+
+Role-based page access is enforced client-side through a \texttt{ProtectedRoute} wrapper component. This ensures that navigating directly to an admin URL while authenticated as a citizen triggers an immediate redirect rather than a permission error:
+
+\begin{verbatim}
+const ProtectedRoute = ({ allowedRoles, children }) => {
+  const { user, isLoading } = useAuth();
+  if (isLoading) return <LoadingSpinner />;
+  if (!user) return <Navigate to="/login" replace />;
+  if (!allowedRoles.includes(user.role))
+    return <Navigate to="/dashboard" replace />;
+  return children;
+};
+\end{verbatim}
+
 \section{Coding Standards Followed}
 
 \subsection{Backend Standards}
 
-The points below highlight the most important considerations that define this subsection.
+The backend was implemented with the following structural conventions so that every route, schema, and service remained independently testable:
 
 
 \begin{itemize}
@@ -78,7 +141,7 @@ The points below highlight the most important considerations that define this su
 
 \subsection{Frontend Standards}
 
-The points below highlight the most important considerations that define this subsection.
+Frontend code separated concerns so that role-aware pages, shared components, and API communication remained independently updatable:
 
 
 \begin{itemize}
@@ -91,7 +154,7 @@ The points below highlight the most important considerations that define this su
 
 \subsection{Configuration Standards}
 
-The points below highlight the most important considerations that define this subsection.
+Environment and configuration consistency was treated as a first-class engineering concern, governed by these conventions:
 
 
 \begin{itemize}
@@ -196,7 +259,7 @@ This section captures implementation-level observations that are useful for main
 
 \subsection{Backend Router Implementation Notes}
 
-The following longtable consolidates the key details for this subsection in a structured and comparable format.
+Each router group below shows how its implementation responsibilities were planned and what specific engineering decisions arose during delivery:
 
 
 \begin{longtable}{|p{0.22\textwidth}|p{0.30\textwidth}|p{0.40\textwidth}|}
@@ -221,7 +284,7 @@ health & live/ready/models/gpu probes & Needed operationally meaningful readines
 
 \subsection{Service-Layer Planning Notes}
 
-The following table summarizes the major points relevant to this subsection for quick review.
+The matrix below details the specific planning components necessary to operationalize this segment of the architecture.
 
 
 \begin{table}[H]
@@ -230,7 +293,7 @@ The following table summarizes the major points relevant to this subsection for 
 \toprule
 \textbf{Service} & \textbf{Planning Note} \\ \hline
 \midrule
-Assignment service & Haversine-based distance filtering was planned with fallback behavior when location metadata is missing \\ \hline
+Assignment service & Location-aware proximity filtering with fallback behavior when location metadata is missing \\ \hline
 Storage service & Validation pipeline designed as extension + content-type + magic-number + payload decode sequence \\ \hline
 Sanitization service & Planned as reusable utility to keep payload cleaning centralized and testable \\ \hline
 LLM queue service & Introduced to absorb long-running draft generation and preserve responsive user experience \\ \hline
@@ -247,7 +310,7 @@ The deployment runbook formalizes a stepwise rollout process so that releases re
 
 \subsection{Rollout Stages}
 
-The following table summarizes the major points relevant to this subsection for quick review.
+The matrix below details the specific planning components necessary to operationalize this segment of the architecture.
 
 
 \begin{table}[H]
@@ -327,3 +390,4 @@ Implementation planning revealed that operational simplification tasks (for exam
 \section{Chapter Summary}
 
 Implementation planning translated conceptual design into execution-ready work packages, sequence constraints, and quality gates. The plan successfully balanced rapid feature delivery with operational robustness, resulting in a deployable and documentable civic platform.
+

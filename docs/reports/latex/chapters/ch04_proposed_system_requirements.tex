@@ -1,10 +1,11 @@
+% !TeX root = ../main.tex
 \chapter{Proposed System Requirements}
 
-This chapter describes the proposed Jan-Sunwai AI solution architecture from a requirement realization perspective. While Chapter 3 documented what is required, this chapter explains how the proposed system addresses those requirements through modular capabilities and integrated workflows.
+This chapter describes the proposed Jan-Sunwai AI solution architecture from a requirement realization perspective. While Chapter 3 documented what is required, this chapter explains how the proposed system addresses those requirements through modular capabilities and integrated workflows built on the React, FastAPI, MongoDB, and Ollama stack [12, 11, 13, 17].
 
 \section{Overview of Proposed System}
 
-The proposed system is a role-driven civic complaint platform that combines AI-assisted intake with deterministic governance controls. The citizen-facing side is optimized for minimal friction, while administrative and departmental flows emphasize accountability and operational throughput.
+The proposed system is a role-driven civic complaint platform that combines AI-assisted intake with deterministic governance controls. Rather than adopting a monolithic architecture or a purely generative AI approach, the system was designed with strict module boundaries, a hybrid inference pipeline, and a flexible document-store database. These architectural choices were made to ensure the platform could run efficiently in resource-constrained municipal environments while maintaining strict auditability and data residency [11, 13, 7].
 
 The system can be summarized as a five-stage path:
 
@@ -22,7 +23,7 @@ The proposed system is organized as cooperating modules so that each operational
 
 \subsection{Authentication and User Management Module}
 
-This module handles registration, login, session identity, profile updates, and password recovery. It enforces role-oriented authorization for citizen, worker, department head, and admin personas. Key controls include secure cookie-session issuance, role checks, JWT compatibility for API clients, and reset-token hashing.
+This module handles registration, login, session identity, profile updates, and password recovery. It enforces role-oriented authorization for citizen, worker, department head, and admin personas. Key controls include secure cookie-session issuance [10], role checks, JWT compatibility for API clients, and reset-token hashing.
 
 \subsection{Analyze and Complaint Intake Module}
 
@@ -77,11 +78,11 @@ PF-12 & Health endpoints and timing logs & Supports operational diagnosis and pr
 
 \section{Advantages of Proposed System}
 
-The proposed solution offers measurable value across three levels: citizen experience, administrative throughput, and institutional governance. Its primary advantage is balanced automation, where AI reduces intake friction and routing ambiguity while policy-sensitive actions remain human-governed through role controls and audit trails. This design improves both usability and accountability in the same operational framework.
+The proposed solution offers measurable value across three levels: citizen experience, administrative throughput, and institutional governance. Crucially, the chosen architecture (FastAPI + React + MongoDB + Local LLM) outperforms simpler monolithic alternatives in several ways. The document model (MongoDB) is better suited to civic records, which evolve through complex, schema-less state transitions (such as appending notes and timestamps) without requiring expensive relational joins. Furthermore, the hybrid AI approach ensures that the non-deterministic nature of vision models is bounded by hard-coded, deterministic routing SLAs, making the system vastly more reliable for public service than a pure "black box" generative classifier.
 
 \subsection{Citizen-Centric Advantages}
 
-The points below highlight the most important considerations that define this subsection.
+The citizen-facing advantages below stem directly from the image-first intake and AI-assisted drafting architecture:
 
 
 \begin{itemize}
@@ -93,7 +94,7 @@ The points below highlight the most important considerations that define this su
 
 \subsection{Administrative and Departmental Advantages}
 
-The points below highlight the most important considerations that define this subsection.
+On the administrative side, the module boundaries and assignment automation translate into measurable operational gains:
 
 
 \begin{itemize}
@@ -105,7 +106,7 @@ The points below highlight the most important considerations that define this su
 
 \subsection{Institutional Advantages}
 
-The points below highlight the most important considerations that define this subsection.
+At the institutional level, the deployment architecture delivers compliance and handover advantages not possible with ad-hoc cloud-dependent designs:
 
 
 \begin{itemize}
@@ -144,22 +145,7 @@ Resilience and Security & Cross-cutting Platform Controls & Health probes, secur
 
 \section{Expected Impact}
 
-\begin{table}[H]
-\centering
-\begin{tabularx}{\textwidth}{|p{0.36\textwidth}|X|}
-\toprule
-\textbf{Impact Area} & \textbf{Expected Outcome} \\ \hline
-\midrule
-Complaint quality & Higher consistency through guided input and generated drafts \\ \hline
-Routing efficiency & Reduced first-hop delays due to department prediction and authority mapping \\ \hline
-Resolution governance & Better oversight through status timelines, notes, and escalation controls \\ \hline
-Citizen trust & Improved perception through notifications and transparent progress signals \\ \hline
-Operational analytics & Better planning through department trends and heatmap indicators \\ \hline
-Deployment readiness & Lower setup friction due to unified compose and environment strategy \\ \hline
-\bottomrule
-\end{tabularx}
-\caption{Expected Impact of Proposed System}
-\end{table}
+The platform is expected to produce measurable improvements across six dimensions. Complaint quality will improve as guided image intake and AI drafting reduce inconsistent descriptions. Routing efficiency will increase as department prediction and authority mapping eliminate the first-hop re-assignment delay. Resolution governance becomes stronger through status timelines, notes, and escalation controls. Citizen trust improves through notifications and transparent progress signals. Operational analytics give administrators better planning tools through department trends and heatmap indicators. Finally, deployment readiness is lowered through a unified compose and environment strategy.
 
 \section{Module Interaction Contracts}
 
@@ -187,21 +173,7 @@ Health module & Database/model runtime & Publishes liveness/readiness/dependency
 
 \section{Requirement Realization Detail by Persona}
 
-\begin{table}[H]
-\centering
-\begin{tabularx}{\textwidth}{|p{0.16\textwidth}|p{0.30\textwidth}|X|}
-\toprule
-\textbf{Persona} & \textbf{Key Features Delivered} & \textbf{Operational Value Delivered} \\ \hline
-\midrule
-Citizen & Analyze intake, dashboard tracking, notifications, feedback, password reset & Reduced filing friction and improved visibility of complaint progress \\ \hline
-Worker & Assignment list, status updates, completion actions & Structured field execution and improved queue throughput \\ \hline
-Department Head & Department filtering, status updates, transfer/escalation, notes & Controlled supervisory governance with auditable transitions \\ \hline
-Admin & Worker approvals, triage decisions, bulk operations, analytics, exports & End-to-end operational governance and reporting capability \\ \hline
-Public Viewer & Public board access & Transparency without exposing personally identifiable records \\ \hline
-\bottomrule
-\end{tabularx}
-\caption{Persona-Oriented Realization Snapshot}
-\end{table}
+Each persona receives a targeted feature set. \textbf{Citizens} get image-based intake, dashboard tracking, notifications, feedback, and password reset --- reducing filing friction and improving visibility. \textbf{Workers} receive an assignment list, status update controls, and completion actions --- delivering structured field execution. \textbf{Department Heads} have department-level filtering, status updates, transfer/escalation, and notes --- enabling controlled supervisory governance. \textbf{Administrators} hold full operational governance: worker approvals, triage decisions, bulk operations, analytics, and exports. \textbf{Public Viewers} can access the anonymised complaint board without exposing any personally identifiable records.
 
 \section{Proposed Data and Control Flow Narrative}
 
@@ -210,3 +182,4 @@ The proposed flow intentionally separates decision support from governance autho
 \section{Chapter Summary}
 
 The proposed system translates requirement intent into integrated modules that jointly address user friction, operational traceability, and governance accountability. It deliberately combines AI assistance with deterministic controls and administrative safety nets, making it suitable for practical municipal deployment contexts.
+

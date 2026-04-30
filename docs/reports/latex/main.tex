@@ -2,16 +2,12 @@
 
 \usepackage{iftex}
 \ifPDFTeX
-\usepackage[T1]{fontenc}
-\usepackage[utf8]{inputenc}
-\usepackage{newtxtext,newtxmath}
-\else
+\PackageError{JanSunwaiReport}{Compile this report with XeLaTeX to satisfy the Times New Roman requirement}{Use xelatex -interaction=nonstopmode main.tex}
+\fi
 \usepackage{fontspec}
 \setmainfont{Times New Roman}
-\fi
 \usepackage[a4paper,left=3cm,right=2cm,top=2cm,bottom=2cm]{geometry}
 \usepackage{setspace}
-\usepackage{indentfirst}
 \usepackage{graphicx}
 \usepackage{longtable}
 \usepackage{booktabs}
@@ -28,7 +24,9 @@
 \usepackage{microtype}
 \usepackage{ragged2e}
 \usepackage{xcolor}
-\usepackage{xurl}
+\usepackage{etoolbox}
+\usepackage{tocloft}
+\usepackage{newfloat} % Using newfloat for more robust float management
 
 \definecolor{headingblue}{RGB}{0,0,0}
 
@@ -43,19 +41,80 @@
   pdfkeywords={FastAPI, React, MongoDB, Ollama, Civic AI}
 }
 
+% ===== tocloft configuration for TOC/LOF/LOT formatting =====
+% Set TOC/LOF/LOT title formatting to 12pt bold
+\renewcommand{\contentsname}{Contents}
+\renewcommand{\listfigurename}{List of Figures}
+\renewcommand{\listtablename}{List of Tables}
+
+% Format TOC title styling
+\renewcommand{\cfttoctitlefont}{\bfseries\normalsize}
+% Format LOF title styling
+\renewcommand{\cftloftitlefont}{\bfseries\normalsize}
+% Format LOT title styling
+\renewcommand{\cftlottitlefont}{\bfseries\normalsize}
+
+% Set spacing before and after TOC/LOF/LOT titles
+\setlength{\cftbeforetoctitleskip}{0pt}
+\setlength{\cftaftertoctitleskip}{14pt}
+\setlength{\cftbeforeloftitleskip}{0pt}
+\setlength{\cftafterloftitleskip}{14pt}
+\setlength{\cftbeforelottitleskip}{0pt}
+\setlength{\cftafterlottitleskip}{14pt}
+
+% Set chapter entries in TOC to 12pt normal font
+\renewcommand{\cftchapfont}{\normalsize}
+\renewcommand{\cftchappagefont}{\normalsize}
+
+% Set section entries in TOC to 12pt normal font
+\renewcommand{\cftsecfont}{\normalsize}
+\renewcommand{\cftsecpagefont}{\normalsize}
+
+% Set subsection entries in TOC to 12pt normal font
+\renewcommand{\cftsubsecfont}{\normalsize}
+\renewcommand{\cftsubsecpagefont}{\normalsize}
+
+% Set subsubsection entries in TOC to 12pt normal font
+\renewcommand{\cftsubsubsecfont}{\normalsize}
+\renewcommand{\cftsubsubsecpagefont}{\normalsize}
+
+% Figure and Table entries in LOF/LOT to 12pt
+\renewcommand{\cftfigfont}{\normalsize}
+\renewcommand{\cftfigpagefont}{\normalsize}
+\renewcommand{\cfttabfont}{\normalsize}
+\renewcommand{\cfttabpagefont}{\normalsize}
+
+% Proper indentation for TOC entries (left-aligned as per style guide)
+\setlength{\cftchapindent}{0em}
+\setlength{\cftsecindent}{0.8em}
+\setlength{\cftsubsecindent}{1.6em}
+\setlength{\cftsubsubsecindent}{2.4em}
+
+% Leader dots spacing for readability
+\renewcommand{\cftdotsep}{1}
+% ===== End tocloft configuration =====
+
 \setstretch{1.15}
 \setcounter{secnumdepth}{3}
 \setcounter{tocdepth}{3}
 \setlength{\headheight}{14.5pt}
 \setlength{\emergencystretch}{6em}
-\setlength{\parindent}{1.5em}
-\setlength{\parskip}{0.2em}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt}
 \setlength{\tabcolsep}{4pt}
-\setlength{\arrayrulewidth}{0.5pt}
-\renewcommand{\arraystretch}{1.1}
+\setlength{\extrarowheight}{2pt}
+\renewcommand{\arraystretch}{1.2}
 \renewcommand{\toprule}{\hline}
 \renewcommand{\midrule}{\hline}
 \renewcommand{\bottomrule}{\hline}
+\renewcommand{\tabularxcolumn}[1]{>{\RaggedRight\arraybackslash}p{#1}}
+% Suppress parskip inside all table environments to prevent inconsistent row gaps
+\AtBeginEnvironment{table}{\small\setlength{\parskip}{0pt}}
+\AtEndEnvironment{table}{\normalsize}
+\AtBeginEnvironment{tabular}{\setlength{\parskip}{0pt}}
+\AtBeginEnvironment{tabularx}{\setlength{\parskip}{0pt}}
+\AtBeginEnvironment{longtable}{\small\setlength{\parskip}{0pt}}
+\AtEndEnvironment{longtable}{\normalsize}
 \setlist[itemize,1]{label=\textbullet,leftmargin=2.0em,labelsep=0.6em,itemsep=0.35em,topsep=0.35em,parsep=0pt,partopsep=0pt}
 \setlist[itemize,2]{label=\textendash,leftmargin=2.2em,labelsep=0.5em,itemsep=0.25em,topsep=0.25em,parsep=0pt,partopsep=0pt}
 \setlist[enumerate,1]{label=\arabic*.,leftmargin=2.2em,labelsep=0.6em,itemsep=0.35em,topsep=0.35em,parsep=0pt,partopsep=0pt}
@@ -69,6 +128,42 @@
 \captionsetup[longtable]{position=top,skip=6pt}
 \AtBeginDocument{\justifying}
 \fussy
+
+% Screenshot float type — produces its own auto-generated List of Screenshots
+\DeclareFloatingEnvironment[
+    fileext=los,
+    listname={List of Screenshots},
+    name=Screenshot,
+    placement=H,
+    within=chapter
+]{screenshot}
+\restylefloat{screenshot}
+
+% Customize the List of Screenshots style to match TOC/LOF
+\renewcommand{\thescreenshot}{S \thechapter.\arabic{screenshot}}
+
+% tocloft configuration for screenshots
+\newlength{\screenshotlabelwidth}
+\settowidth{\screenshotlabelwidth}{Screenshot 9.99}
+\addtolength{\screenshotlabelwidth}{1.5em}
+
+
+% Define tocloft-compatible lengths for the custom screenshot float
+\makeatletter
+\newlength{\cftscreenshotindent}
+\newlength{\cftscreenshotnumwidth}
+\setlength{\cftscreenshotindent}{0em}
+\setlength{\cftscreenshotnumwidth}{\screenshotlabelwidth}
+% Manual definition of the list command to avoid conflict with newfloat/tocloft defaults
+\renewcommand{\listofscreenshots}{%
+  \clearpage
+  \phantomsection
+  {\centering\bfseries\fontsize{16}{19}\selectfont List of Screenshots\par}
+  \vspace{1.5em}
+  {\normalsize\setstretch{1.15}\@starttoc{los}}%
+}
+\makeatother
+
 
 \titleformat{\chapter}[block]
   {\bfseries\fontsize{16}{19}\selectfont\centering\color{headingblue}}
@@ -96,6 +191,32 @@
   {}
 \titlespacing*{\subsection}{1.27cm}{8pt}{4pt}
 
+\makeatletter
+\renewcommand{\tableofcontents}{%
+  \clearpage
+  \phantomsection
+  \addcontentsline{toc}{chapter}{Contents}
+  {\centering\bfseries\fontsize{16}{19}\selectfont Contents\par}
+  \vspace{1.5em}
+  {\normalsize\setstretch{1.15}\@starttoc{toc}}%
+}
+\renewcommand{\listoffigures}{%
+  \clearpage
+  \phantomsection
+  \addcontentsline{toc}{chapter}{List of Figures}
+  {\centering\bfseries\fontsize{16}{19}\selectfont List of Figures\par}
+  \vspace{1.5em}
+  {\normalsize\setstretch{1.15}\@starttoc{lof}}%
+}
+\renewcommand{\listoftables}{%
+  \clearpage
+  \phantomsection
+  \addcontentsline{toc}{chapter}{List of Tables}
+  {\centering\bfseries\fontsize{16}{19}\selectfont List of Tables\par}
+  \vspace{1.5em}
+  {\normalsize\setstretch{1.15}\@starttoc{lot}}%
+}
+\makeatother
 \titleformat{\subsubsection}
   {\bfseries\fontsize{12}{14}\selectfont\color{headingblue}}
   {\thesubsubsection}
@@ -167,9 +288,9 @@
 \begin{figure}[H]
 \centering
 \IfFileExists{#2}{
-  \includegraphics[width=0.96\textwidth,height=0.82\textheight,keepaspectratio]{#2}
+  \includegraphics[width=0.96\textwidth,height=0.32\textheight,keepaspectratio]{#2}
 }{
-  \fbox{\begin{minipage}[c][0.62\textheight][c]{0.90\textwidth}
+  \fbox{\begin{minipage}[c][0.32\textheight][c]{0.90\textwidth}
   \centering
   \textbf{Screenshot Placeholder}\\[0.5em]
   \small Missing file: \path{#2}
@@ -180,276 +301,57 @@
 \end{figure}
 }
 
+\newcommand{\screenshotcard}[5][]{%
+\begin{screenshot}[H]
+\centering
+\IfFileExists{#4}{%
+  \includegraphics[width=0.96\textwidth,height=0.28\textheight,keepaspectratio]{#4}%
+}{%
+  \fbox{\begin{minipage}[c][0.26\textheight][c]{0.90\textwidth}
+  \centering
+  \textbf{Screenshot Placeholder}\\[0.5em]
+  \small Missing file: \path{#4}
+  \end{minipage}}%
+}
+\ifstrempty{#1}{%
+  \caption{#5}%
+}{%
+  \caption[#1]{#5}%
+}
+\label{#3}
+\end{screenshot}
+}
+
 \begin{document}
 
-\begin{titlepage}
-\centering
-\vspace*{1.2cm}
-{\Large \textbf{Final Year Project Report}}\\[0.6cm]
-{\LARGE \textbf{Jan-Sunwai AI}}\\[0.3cm]
-{\large Automated Visual Classification, Routing, and Lifecycle Tracking\\for Civic Grievances}\\[1.2cm]
 
-\includegraphics[width=0.23\textwidth]{../../images/GUI_Wireframe.png}\\[1.0cm]
-
-\begin{tabular}{p{0.35\textwidth}p{0.55\textwidth}}
-Project Domain: & Civic Technology and Grievance Redressal \\
-Technology Stack: & React, FastAPI, MongoDB, Ollama, Docker \\
-Academic Session: & 2025--2026 \\
-Project Duration: & 28 January 2026 -- 27 May 2026 \\
-Submission Type: & Major Project Final Report \\
-\end{tabular}
-
-\vfill
-
-\begin{tabular}{p{0.35\textwidth}p{0.55\textwidth}}
-Submitted By: & \textit{Project Team} \\
-Guided By: & \textit{Project Supervisor} \\
-Department: & \textit{Computer Science / Information Technology} \\
-Institute: & \textit{Institution Name} \\
-\end{tabular}
-
-\vspace*{1.0cm}
-\end{titlepage}
 
 \clearpage
 \pagenumbering{roman}
 \setromanfooterstyles
-
-\chapter*{CONTENTS}
-
-\small
-\setlength{\LTleft}{0pt}
-\setlength{\LTright}{0pt}
-
-\begin{longtable}{|p{0.16\textwidth}|p{0.64\textwidth}|p{0.12\textwidth}|}
-\hline
-\textbf{Chapter No.} & \textbf{Description} & \textbf{Page No.} \\ \hline
-\endfirsthead
-\hline
-\textbf{Chapter No.} & \textbf{Description} & \textbf{Page No.} \\ \hline
-\endhead
-\linkrowref{chap:list-figures}{--}{List of Figures}{I}
-\linkrowref{chap:list-tables}{--}{List of Tables}{II}
-\linkrowref{chap:list-abbreviations}{--}{List of Abbreviations}{IV}
-\linkrowref{chap:list-definitions}{--}{List of Definitions}{V}
-\linkrowref{chap:list-screenshots}{--}{List of Screenshots}{VII}
-\linkrow{chapter.1}{\cnchapter{1}}{Introduction}{1}
-\linkrow{section.1.1}{\cnsection{1.1}}{Project Details}{1}
-\linkrow{section.1.2}{\cnsection{1.2}}{Purpose}{1}
-\linkrow{section.1.3}{\cnsection{1.3}}{Scope}{2}
-\linkrow{section.1.4}{\cnsection{1.4}}{Objectives}{2}
-\linkrow{section.1.5}{\cnsection{1.5}}{Technology Stack Used}{3}
-\linkrow{section.1.6}{\cnsection{1.6}}{Problem Context and Motivation}{3}
-\linkrow{section.1.7}{\cnsection{1.7}}{Literature Review}{3}
-\linkrow{chapter.2}{\cnchapter{2}}{Project Management}{5}
-\linkrow{section.2.1}{\cnsection{2.1}}{Feasibility Study}{5}
-\linkrow{subsection.2.1.1}{\cnsubsection{2.1.1}}{Technical Feasibility}{5}
-\linkrow{subsection.2.1.2}{\cnsubsection{2.1.2}}{Time Schedule Feasibility}{5}
-\linkrow{subsection.2.1.3}{\cnsubsection{2.1.3}}{Operational Feasibility}{5}
-\linkrow{subsection.2.1.4}{\cnsubsection{2.1.4}}{Implementation Feasibility}{6}
-\linkrow{section.2.2}{\cnsection{2.2}}{Project Planning}{6}
-\linkrow{subsection.2.2.1}{\cnsubsection{2.2.1}}{Development Approach and Justification}{6}
-\linkrow{subsection.2.2.2}{\cnsubsection{2.2.2}}{Milestones and Deliverables}{6}
-\linkrow{subsection.2.2.3}{\cnsubsection{2.2.3}}{Roles and Responsibilities}{8}
-\linkrow{subsection.2.2.4}{\cnsubsection{2.2.4}}{Group Dependencies}{8}
-\linkrow{section.2.3}{\cnsection{2.3}}{Project Scheduling (Gantt/PERT Chart)}{8}
-\linkrow{chapter.3}{\cnchapter{3}}{System Requirement Study}{13}
-\linkrow{section.3.1}{\cnsection{3.1}}{Existing System Overview}{13}
-\linkrow{section.3.2}{\cnsection{3.2}}{Limitations of the Existing System}{13}
-\linkrow{section.3.3}{\cnsection{3.3}}{User Characteristics}{14}
-\linkrow{section.3.4}{\cnsection{3.4}}{Functional Requirements}{14}
-\linkrow{section.3.5}{\cnsection{3.5}}{Non-Functional Requirements}{15}
-\linkrow{section.3.6}{\cnsection{3.6}}{Hardware and Software Requirements}{16}
-\linkrow{section.3.7}{\cnsection{3.7}}{Constraints}{17}
-\linkrow{subsection.3.7.1}{\cnsubsection{3.7.1}}{UI Constraints}{17}
-\linkrow{subsection.3.7.2}{\cnsubsection{3.7.2}}{Communication Interface}{17}
-\linkrow{subsection.3.7.3}{\cnsubsection{3.7.3}}{Hardware Interface}{17}
-\linkrow{subsection.3.7.4}{\cnsubsection{3.7.4}}{Criticality of Application}{18}
-\linkrow{subsection.3.7.5}{\cnsubsection{3.7.5}}{Safety and Security Considerations}{18}
-\linkrow{section.3.8}{\cnsection{3.8}}{Assumptions and Dependencies}{18}
-\linkrow{chapter.4}{\cnchapter{4}}{Proposed System Requirements}{21}
-\linkrow{section.4.1}{\cnsection{4.1}}{Overview of Proposed System}{21}
-\linkrow{section.4.2}{\cnsection{4.2}}{Module Descriptions}{21}
-\linkrow{section.4.3}{\cnsection{4.3}}{System Features}{22}
-\linkrow{section.4.4}{\cnsection{4.4}}{Advantages of Proposed System}{23}
-\linkrow{chapter.5}{\cnchapter{5}}{System Design}{28}
-\linkrow{section.5.1}{\cnsection{5.1}}{System Architecture Design}{28}
-\linkrow{section.5.2}{\cnsection{5.2}}{UML Diagrams}{29}
-\linkrow{subsection.5.2.1}{\cnsubsection{5.2.1}}{E-R Diagram}{30}
-\linkrow{subsection.5.2.2}{\cnsubsection{5.2.2}}{Use Case Diagram}{30}
-\linkrow{subsection.5.2.3}{\cnsubsection{5.2.3}}{Class Diagram}{31}
-\linkrow{subsection.5.2.4}{\cnsubsection{5.2.4}}{Sequence Diagram}{31}
-\linkrow{subsection.5.2.5}{\cnsubsection{5.2.5}}{Activity Diagram}{32}
-\linkrow{subsection.5.2.6}{\cnsubsection{5.2.6}}{DFD Diagram}{32}
-\linkrow{subsection.5.2.7}{\cnsubsection{5.2.7}}{Deployment Diagram}{33}
-\linkrow{section.5.3}{\cnsection{5.3}}{Database Design}{33}
-\linkrow{subsection.5.3.1}{\cnsubsection{5.3.1}}{Table Design and Relationships}{33}
-\linkrow{subsection.5.3.2}{\cnsubsection{5.3.2}}{Normalization}{33}
-\linkrow{subsection.5.3.3}{\cnsubsection{5.3.3}}{Data Dictionary}{34}
-\linkrow{section.5.4}{\cnsection{5.4}}{GUI Design}{36}
-\linkrow{section.5.5}{\cnsection{5.5}}{Screenshots}{38}
-\linkrow{chapter.6}{\cnchapter{6}}{Implementation Planning}{59}
-\linkrow{section.6.1}{\cnsection{6.1}}{Implementation Environment}{59}
-\linkrow{section.6.2}{\cnsection{6.2}}{Tools \& Technologies Used}{59}
-\linkrow{section.6.3}{\cnsection{6.3}}{Coding Standards Followed}{60}
-\linkrow{chapter.7}{\cnchapter{7}}{Testing}{68}
-\linkrow{section.7.1}{\cnsection{7.1}}{Testing Plan}{68}
-\linkrow{section.7.2}{\cnsection{7.2}}{Types of Testing}{69}
-\linkrow{subsection.7.2.1}{\cnsubsection{7.2.1}}{Unit Testing}{69}
-\linkrow{subsection.7.2.2}{\cnsubsection{7.2.2}}{Integration Testing}{70}
-\linkrow{subsection.7.2.3}{\cnsubsection{7.2.3}}{System Testing}{70}
-\linkrow{subsection.7.2.4}{\cnsubsection{7.2.4}}{User Acceptance Testing (UAT)}{70}
-\linkrow{section.7.3}{\cnsection{7.3}}{Testing Techniques}{71}
-\linkrow{subsection.7.3.1}{\cnsubsection{7.3.1}}{Black-Box Behavioral Testing}{71}
-\linkrow{chapter.8}{\cnchapter{8}}{Limitations and Future Scope}{77}
-\linkrow{section.8.1}{\cnsection{8.1}}{Current Limitations}{77}
-\linkrow{section.8.2}{\cnsection{8.2}}{Future Scope}{78}
-\linkrow{section.8.3}{\cnsection{8.3}}{Roadmap Perspective}{79}
-\linkrow{section.8.4}{\cnsection{8.4}}{Risk-Prioritized Improvement Backlog}{79}
-\linkrow{section.8.5}{\cnsection{8.5}}{Adoption Considerations for Municipal Deployment}{80}
-\linkrow{section.8.6}{\cnsection{8.6}}{Research Continuation Opportunities}{81}
-\linkrow{section.8.7}{\cnsection{8.7}}{Chapter Summary}{81}
-\linkrow{chapter.9}{\cnchapter{9}}{Conclusion and References}{82}
-\linkrow{section.9.1}{\cnsection{9.1}}{Conclusion}{82}
-\linkrow{section.9.2}{\cnsection{9.2}}{References}{82}
-\linkrow{chapter.10}{\cnchapter{10}}{Appendices}{84}
-\end{longtable}
-
-\normalsize
+% Institutional requirement: Cover page and Inner page (identical content)
+\input{frontmatter/inner_title_page}
 \clearpage
-
-\pagenumbering{Roman}
-\setromanfooterstyles
-
-\chapter*{LIST OF FIGURES}
-\addcontentsline{toc}{chapter}{List of Figures}
-\label{chap:list-figures}
-
-\small
-\setlength{\LTleft}{0pt}
-\setlength{\LTright}{0pt}
-
-\begin{longtable}{|p{0.16\textwidth}|p{0.64\textwidth}|p{0.12\textwidth}|}
-\hline
-\textbf{Figure No.} & \textbf{Description} & \textbf{Page No.} \\ \hline
-\endfirsthead
-\hline
-\textbf{Figure No.} & \textbf{Description} & \textbf{Page No.} \\ \hline
-\endhead
-\linkrow{figure.caption.7}{4.1}{Proposed End-to-End Workflow}{25}
-\linkrow{figure.caption.8}{5.1}{Overall System Context Diagram}{28}
-\linkrow{figure.caption.9}{5.2}{Component Architecture Diagram}{29}
-\linkrow{figure.caption.10}{5.3}{E-R Diagram}{30}
-\linkrow{figure.caption.11}{5.4}{Use Case Diagram}{30}
-\linkrow{figure.caption.12}{5.5}{Class Diagram}{31}
-\linkrow{figure.caption.13}{5.6}{Sequence Diagram}{31}
-\linkrow{figure.caption.14}{5.7}{Activity Diagram}{32}
-\linkrow{figure.caption.15}{5.8}{Data Flow Diagram}{32}
-\linkrow{figure.caption.16}{5.9}{Deployment Diagram}{33}
-\linkrowref{fig:gui-wireframe}{5.10}{GUI Wireframe Reference from Project Documentation}{38}
-\linkrowref{fig:s01}{5.11}{S01: Home Page Hero and Public Entry CTA}{39}
-\linkrowref{fig:s02}{5.12}{S02: Login Page}{40}
-\linkrowref{fig:s03}{5.13}{S03: Citizen Registration Page}{41}
-\linkrowref{fig:s04}{5.14}{S04: Reset Password Page}{42}
-\linkrowref{fig:s05}{5.15}{S05: Admin Dashboard Overview}{43}
-\linkrowref{fig:s06}{5.16}{S06: Triage Human Review Queue}{44}
-\linkrowref{fig:s07}{5.17}{S07: Worker Assignment Panel}{45}
-\linkrowref{fig:s08}{5.18}{S08: Analytics Dashboard}{46}
-\linkrowref{fig:s09}{5.19}{S09: Complaints Map Overview (Satellite Layer)}{47}
-\linkrowref{fig:s10}{5.20}{S10: Map Popup Detail View}{48}
-\linkrowref{fig:s11}{5.21}{S11: Public Grievance Board}{49}
-\linkrowref{fig:s12}{5.22}{S12: Grievance Heatmap Page}{50}
-\linkrowref{fig:s13}{5.23}{S13: Profile Page (Admin)}{51}
-\linkrowref{fig:s14}{5.24}{S14: Citizen Dashboard with Timeline}{52}
-\linkrowref{fig:s15}{5.25}{S15: Notifications Dropdown Panel}{53}
-\linkrowref{fig:sx1}{5.26}{SX1: File Complaint Upload Interface}{54}
-\linkrowref{fig:sx2}{5.27}{SX2: Multilingual Citizen Timeline Snapshot}{55}
-\linkrowref{fig:sx3}{5.28}{SX3: Resolved Complaint with Citizen Feedback}{56}
-\linkrowref{fig:sx4}{5.29}{SX4: Result Page with Location Context and AI Analysis}{57}
-\linkrowref{fig:sx5}{5.30}{SX5: Result Page with Grievance Description Editing}{58}
-\end{longtable}
-
-\normalsize
+\input{frontmatter/inner_title_page}
 \clearpage
-
-\chapter*{LIST OF TABLES}
-\addcontentsline{toc}{chapter}{List of Tables}
-\label{chap:list-tables}
-
-\small
-\setlength{\LTleft}{0pt}
-\setlength{\LTright}{0pt}
-
-\begin{longtable}{|p{0.16\textwidth}|p{0.64\textwidth}|p{0.12\textwidth}|}
-\hline
-\textbf{Table No.} & \textbf{Description} & \textbf{Page No.} \\ \hline
-\endfirsthead
-\hline
-\textbf{Table No.} & \textbf{Description} & \textbf{Page No.} \\ \hline
-\endhead
-\linkrow{table.1.1}{1.1}{Project Profile}{1}
-\linkrow{table.1.2}{1.2}{Objectives and Expected Outcomes}{2}
-\linkrow{table.1.3}{1.3}{Technology Stack and Role in System}{3}
-\linkrow{table.2.1}{2.1}{Milestone Summary and Deliverables}{7}
-\linkrow{table.2.2}{2.2}{Role Responsibility Matrix (Project Execution)}{8}
-\linkrow{table.2.3}{2.3}{PERT-Style Activity Dependencies}{9}
-\linkrow{table.2.4}{2.4}{Risk Register and Mitigation Plan}{9}
-\linkrow{table.2.5}{2.5}{Week-by-Week Execution Summary (W1--W18)}{10}
-\linkrow{table.2.6}{2.6}{Governance-Oriented Delivery Metrics}{12}
-\linkrow{table.3.1}{3.1}{Limitations in Legacy Grievance Handling}{13}
-\linkrow{table.3.2}{3.2}{User Characteristics and Behavioral Expectations}{14}
-\linkrow{table.3.3}{3.3}{Functional Requirement Specification}{14}
-\linkrow{table.3.4}{3.4}{Non-Functional Requirement Specification}{16}
-\linkrow{table.3.5}{3.5}{Hardware Requirement Baseline}{16}
-\linkrow{table.3.6}{3.6}{Software Environment Requirements}{17}
-\linkrow{table.3.7}{3.7}{Assumptions and External Dependencies}{18}
-\linkrow{table.3.8}{3.8}{Narrative Use-Case Requirements}{19}
-\linkrow{table.3.9}{3.9}{MoSCoW-Style Requirement Priority Mapping}{20}
-\linkrow{table.4.1}{4.1}{Proposed Feature Set and Operational Benefit}{22}
-\linkrow{table.4.2}{4.2}{Traceability from Requirements to Proposed Modules}{24}
-\linkrow{table.4.3}{4.3}{Expected Impact of Proposed System}{25}
-\linkrow{table.4.4}{4.4}{Inter-Module Contract Summary}{25}
-\linkrow{table.4.5}{4.5}{Persona-Oriented Realization Snapshot}{26}
-\linkrow{table.5.1}{5.1}{Major Design Decisions and Rationale}{29}
-\linkrow{table.5.2}{5.2}{Data Dictionary (Core Fields)}{34}
-\linkrow{table.5.3}{5.3}{Indexing Strategy by Collection}{36}
-\linkrow{table.5.4}{5.4}{GUI Areas and Purpose}{37}
-\linkrow{table.6.1}{6.1}{Implementation Toolchain and Use Cases}{60}
-\linkrow{table.6.2}{6.2}{Implementation Sequence with Dependency Notes}{62}
-\linkrow{table.6.3}{6.3}{Implementation Quality Gates}{63}
-\linkrow{table.6.4}{6.4}{Router-Level Implementation Planning Notes}{64}
-\linkrow{table.6.5}{6.5}{Service-Level Implementation Planning}{65}
-\linkrow{table.6.6}{6.6}{Deployment Rollout Stages}{65}
-\linkrow{table.6.7}{6.7}{Operational Monitoring Matrix}{66}
-\linkrow{table.7.1}{7.1}{Testing Environment Baseline}{68}
-\linkrow{table.7.2}{7.2}{Testing Coverage Matrix by Suite}{69}
-\linkrow{table.7.3}{7.3}{Representative Unit Test Cases}{70}
-\linkrow{table.7.4}{7.4}{System Test Scenarios}{70}
-\linkrow{table.7.5}{7.5}{Defect Log Snapshot and Resolution}{72}
-\linkrow{table.7.6}{7.6}{Outcome Summary by Validation Area}{73}
-\linkrow{table.7.7}{7.7}{Persona-Driven UAT Matrix}{73}
-\linkrow{table.7.8}{7.8}{Load Profile and Acceptance Guidance}{75}
-\linkrow{table.7.9}{7.9}{Security Regression Verification Matrix}{75}
-\linkrow{table.8.1}{8.1}{Indicative Post-Submission Roadmap}{79}
-\linkrow{table.8.2}{8.2}{Future Backlog Prioritization Matrix}{79}
-\linkrow{table.10.1}{10.1}{API Endpoint Snapshot}{84}
-\linkrow{table.10.2}{10.2}{Core Backend Environment Variables}{86}
-\linkrow{table.10.3}{10.3}{Department to Authority Mapping Snapshot}{87}
-\linkrow{table.10.4}{10.4}{Operational Script Inventory}{87}
-\linkrow{table.10.5}{10.5}{Screenshot Capture Checklist}{88}
-\linkrow{table.10.6}{10.6}{Execution Timeline Digest for Final Report Verification}{91}
-\linkrow{table.10.7}{10.7}{Traceability from Functional Requirement to Validation Evidence}{92}
-\end{longtable}
-
-\normalsize
+\input{frontmatter/student_declaration}
 \clearpage
-
-\input{frontmatter/abbreviations}
+\input{frontmatter/supervisor_certificate}
 \clearpage
-\input{frontmatter/definitions}
+\input{frontmatter/company_certificate}
 \clearpage
-\input{frontmatter/screenshots}
+\input{frontmatter/acknowledgement}
 \clearpage
+\input{frontmatter/abstract}
+\clearpage
+\tableofcontents
+\clearpage
+\listoftables
+\clearpage
+\listoffigures
+\clearpage
+\addcontentsline{toc}{chapter}{List of Screenshots}
+\listofscreenshots
 
 \pagenumbering{arabic}
 \setarabicfooterstyles
@@ -463,8 +365,5 @@ Institute: & \textit{Institution Name} \\
 \input{chapters/ch07_testing}
 \input{chapters/ch08_limitations_future_scope}
 \input{chapters/ch09_conclusion_references}
-\input{chapters/ch10_appendices}
-
-\label{lastpage}
 
 \end{document}

@@ -1,3 +1,4 @@
+% !TeX root = ../main.tex
 \chapter{System Requirement Study}
 
 This chapter documents requirement analysis for Jan-Sunwai AI, including the baseline state of existing grievance systems, observed limitations, actor expectations, and formalized functional/non-functional requirements. The study was derived from implementation realities, municipal workflow assumptions, and validation through tests and user journeys.
@@ -18,42 +19,13 @@ Key characteristics of existing systems observed in this problem context:
 
 \section{Limitations of the Existing System}
 
-\begin{table}[H]
-\centering
-\begin{tabularx}{\textwidth}{|p{0.08\textwidth}|p{0.35\textwidth}|X|}
-\toprule
-\textbf{ID} & \textbf{Observed Limitation} & \textbf{Operational Effect} \\ \hline
-\midrule
-L1 & Manual authority selection by citizens & High probability of misrouting and delayed first response \\ \hline
-L2 & Inconsistent complaint description quality & Staff time spent rewriting or clarifying cases \\ \hline
-L3 & Weak integration of visual evidence & Evidence underused in initial triage and prioritization \\ \hline
-L4 & Limited role-specific workflows & Same interface burden across very different operational personas \\ \hline
-L5 & Minimal lifecycle traceability & Difficult root-cause analysis and accountability review \\ \hline
-L6 & Low transparency in queue behavior & Citizens lose trust when progress signals are unclear \\ \hline
-L7 & Sparse analytics for administrators & Planning decisions made without stable trend and workload data \\ \hline
-\bottomrule
-\end{tabularx}
-\caption{Limitations in Legacy Grievance Handling}
-\end{table}
+Seven recurring limitations were observed in legacy civic grievance systems: manual authority selection by citizens causing frequent misrouting; inconsistent complaint descriptions that require staff to rewrite or clarify cases before action; weak integration of visual evidence leaving photographs unused during triage; limited role-specific workflows that impose the same interface burden on very different personas; minimal lifecycle traceability making accountability reviews difficult; low transparency in queue behavior eroding citizen trust; and sparse administrative analytics that force planning decisions to rely on intuition rather than data.
 
 \section{User Characteristics}
 
 The system is designed for four operational personas with distinct interaction patterns and authorization boundaries.
 
-\begin{table}[H]
-\centering
-\begin{tabularx}{\textwidth}{|p{0.18\textwidth}|p{0.26\textwidth}|X|}
-\toprule
-\textbf{User Role} & \textbf{Primary Goals} & \textbf{Typical Interaction Pattern} \\ \hline
-\midrule
-Citizen & Report issues and track outcomes & Upload image, review generated draft, submit complaint, monitor notifications and status timeline \\ \hline
-Worker & Resolve assigned field tasks & View own queue, update availability, mark task completion, add resolution note \\ \hline
-Department Head & Manage departmental flow & Filter department queue, change status, add notes, transfer/escalate cases when needed \\ \hline
-Administrator & Governance and oversight & Approve workers, triage ambiguous cases, perform bulk actions, export reports, monitor analytics \\ \hline
-\bottomrule
-\end{tabularx}
-\caption{User Characteristics and Behavioral Expectations}
-\end{table}
+The system serves four distinct operational personas. \textbf{Citizens} report issues and track outcomes --- they upload images, review the AI-generated draft, submit their complaint, and monitor notifications and status updates. \textbf{Workers} resolve assigned field tasks by viewing their queue, managing availability, and marking completions with resolution notes. \textbf{Department Heads} manage departmental flow by filtering the department queue, updating complaint status, adding notes, and transferring or escalating cases when required. \textbf{Administrators} exercise end-to-end governance: approving workers, triaging ambiguous AI classifications, performing bulk operations, exporting reports, and monitoring analytics.
 
 \section{Functional Requirements}
 
@@ -121,7 +93,7 @@ NFR-10 & Data Integrity & Validation schemas and controlled update flows shall m
 
 \subsection{Hardware Requirements}
 
-The following table summarizes the major points relevant to this subsection for quick review.
+The baseline parameters established below define the minimum viable constraints required to support the proposed features.
 
 
 \begin{table}[H]
@@ -142,7 +114,7 @@ Network & Stable LAN/internet for maps and package fetch & Managed institutional
 
 \subsection{Software Requirements}
 
-The following table summarizes the major points relevant to this subsection for quick review.
+The baseline parameters established below define the minimum viable constraints required to support the proposed features.
 
 
 \begin{table}[H]
@@ -169,7 +141,7 @@ Constraints in this project are not only technical limits but also governance an
 
 \subsection{UI Constraints}
 
-The points below highlight the most important considerations that define this subsection.
+UI constraints define the rendering, state-management, and responsiveness requirements that guard against poor citizen experience in adverse conditions:
 
 
 \begin{itemize}
@@ -180,7 +152,7 @@ The points below highlight the most important considerations that define this su
 
 \subsection{Communication Interface}
 
-The points below highlight the most important considerations that define this subsection.
+The platform communicates exclusively over authenticated REST endpoints; the following interface rules govern how clients and services exchange data:
 
 
 \begin{itemize}
@@ -191,7 +163,7 @@ The points below highlight the most important considerations that define this su
 
 \subsection{Hardware Interface}
 
-The points below highlight the most important considerations that define this subsection.
+Hardware interface constraints bound the AI runtime's operational envelope and determine how the system must gracefully degrade under resource pressure:
 
 
 \begin{itemize}
@@ -206,7 +178,7 @@ The system is governance-sensitive. Incorrect status transitions, misrouted comp
 
 \subsection{Safety and Security Considerations}
 
-The points below highlight the most important considerations that define this subsection.
+Because civic complaints can contain sensitive personal information, the following security constraints are treated as non-negotiable throughout the codebase:
 
 
 \begin{itemize}
@@ -264,6 +236,8 @@ UC-12 & Public User & View anonymized complaint board & No authenticated persona
 
 \section{Requirement Priority Classification}
 
+Requirements are classified using the MoSCoW methodology [20] to ensure delivery focus.
+
 \begin{table}[H]
 \centering
 \begin{tabularx}{\textwidth}{|p{0.14\textwidth}|p{0.18\textwidth}|X|}
@@ -282,3 +256,4 @@ Non-Functional Critical & NFR-01, NFR-02, NFR-06, NFR-10 & Security, reliability
 \section{Chapter Summary}
 
 The requirement study establishes the transition from a manually intensive grievance flow to a structured, secure, and auditable digital workflow. Functional and non-functional requirements were formalized in implementation-aligned terms and mapped against realistic user roles and operational constraints.
+

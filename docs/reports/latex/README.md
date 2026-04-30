@@ -20,9 +20,11 @@ Run twice so table/figure/page references settle.
 If XeLaTeX is unavailable, use:
 
 ```bash
-pdflatex -interaction=nonstopmode main.tex
-pdflatex -interaction=nonstopmode main.tex
+xelatex -interaction=nonstopmode main.tex
+xelatex -interaction=nonstopmode main.tex
 ```
+
+The report is configured for XeLaTeX so that the Times New Roman requirement is enforced consistently.
 
 ## Screenshot Assets
 
