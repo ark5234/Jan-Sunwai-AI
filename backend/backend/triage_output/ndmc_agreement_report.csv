@@ -1,0 +1,6 @@
+image,resolved_image_path,local_label,local_canonical,local_confidence,ndmc_label,ndmc_canonical,ndmc_confidence,ndmc_success,selected_label,selected_method,agreement,comparison_reason,ndmc_error
+sorted_dataset\Uncategorized\21450_18741.jpg,triage_output\triaged_dataset\Uncategorized\21450_18741.jpg,Uncategorized,Uncategorized,0.0000,Uncategorized,Uncategorized,1.0000,True,Uncategorized,local,True,Both models agree on category,
+sorted_dataset\Uncategorized\20321_7676.jpg,triage_output\triaged_dataset\Uncategorized\20321_7676.jpg,Uncategorized,Uncategorized,0.0000,Uncategorized,Uncategorized,1.0000,True,Uncategorized,local,True,Both models agree on category,
+sorted_dataset\Uncategorized\19982_17035.jpg,triage_output\triaged_dataset\Uncategorized\19982_17035.jpg,Uncategorized,Uncategorized,0.0000,Uncategorized,Uncategorized,1.0000,True,Uncategorized,local,True,Both models agree on category,
+sorted_dataset\Uncategorized\16896_4503.jpg,triage_output\triaged_dataset\Uncategorized\16896_4503.jpg,Uncategorized,Uncategorized,0.0000,Uncategorized,Uncategorized,1.0000,True,Uncategorized,local,True,Both models agree on category,
+sorted_dataset\Uncategorized\16309_5411.jpg,triage_output\triaged_dataset\Uncategorized\16309_5411.jpg,Uncategorized,Uncategorized,0.0000,Uncategorized,Uncategorized,1.0000,True,Uncategorized,local,True,Both models agree on category,

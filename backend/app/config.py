@@ -1,6 +1,12 @@
 import os
+from pathlib import Path
 from pydantic_settings import BaseSettings
 from pydantic import Field, field_validator
+from dotenv import load_dotenv
+
+_REPO_ENV = Path(__file__).resolve().parents[1] / ".env"
+if not Path("/.dockerenv").exists() and _REPO_ENV.exists():
+    load_dotenv(_REPO_ENV)
 
 
 def _parse_origins(value: str) -> list[str]:
@@ -20,6 +26,9 @@ class Settings(BaseSettings):
     # Database
     mongodb_url: str = Field(default="mongodb://localhost:27017", alias="MONGODB_URL")
     db_name: str = Field(default="jan_sunwai_db", alias="DB_NAME")
+    ndmc_mongodb_url: str = Field(default="mongodb://localhost:27019", alias="NDMC_MONGODB_URL")
+    ndmc_db_name: str = Field(default="ndmc_analysis_db", alias="NDMC_DB_NAME")
+    ndmc_analysis_collection: str = Field(default="ndmc_analysis", alias="NDMC_ANALYSIS_COLLECTION")
 
     # JWT
     jwt_secret_key: str = Field(default="change-me-in-production", alias="JWT_SECRET_KEY")
@@ -75,6 +84,12 @@ class Settings(BaseSettings):
     default_page_size: int = Field(default=25, alias="DEFAULT_PAGE_SIZE")
     max_page_size: int = Field(default=100, alias="MAX_PAGE_SIZE")
 
+    # NDMC Model API (for result comparison)
+    ndmc_api_enabled: bool = Field(default=True, alias="NDMC_API_ENABLED")
+    ndmc_api_url: str = Field(default="https://askai.bisag-n.gov.in/ndmc/predict", alias="NDMC_API_URL")
+    ndmc_api_token: str = Field(default="", alias="NDMC_API_TOKEN")
+    ndmc_api_timeout_seconds: float = Field(default=30.0, alias="NDMC_API_TIMEOUT_SECONDS")
+
     # ── derived ──────────────────────────────────────────────────────────────
 
     @property
@@ -93,8 +108,6 @@ class Settings(BaseSettings):
     # ── pydantic-settings config ──────────────────────────────────────────────
 
     model_config = {  # type: ignore[misc]
-        "env_file": ".env",
-        "env_file_encoding": "utf-8",
         "populate_by_name": True,
         "extra": "ignore",
         "protected_namespaces": ("settings_",),

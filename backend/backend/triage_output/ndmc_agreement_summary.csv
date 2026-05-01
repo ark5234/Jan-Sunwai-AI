@@ -1,0 +1,5 @@
+metric,value,details
+sample_size,5,sampled existing cases
+ndmc_successes,5,successful NDMC responses
+agreement_rate,1.0000,5/5
+top_confusion_1,0,no mismatches in successful NDMC comparisons

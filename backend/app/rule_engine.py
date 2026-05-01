@@ -272,21 +272,26 @@ def classify_by_rules(
         scores["Civil Department"] = scores.get("Civil Department", 0.0) + 2.0
 
     # ── Civil vs. Horticulture: Infrastructure-over-Landscape ──────────
-    # Sand, dust accumulation, or pavement damage on a sidewalk/roadside
-    # is a Civil issue, even if a few leaves are present.
+    # Sand, dust accumulation, construction materials, or pavement damage
+    # on a sidewalk/roadside is a Civil issue, even if a few leaves are present.
     has_sand_or_dust = any(term in combined_lower for term in [
-        "sand on road", "sand on roadside", "dust accumulation", "sandy", "dusty", "gravel", "silt"
+        "sand on road", "sand on roadside", "dust accumulation", "sandy", "dusty", "gravel", "silt", "gravel road", "unpaved road"
+    ])
+    has_construction_materials = any(term in combined_lower for term in [
+        "road construction", "road repair", "road digging", "road dug up", 
+        "construction debris on road", "rebar", "iron rod", "steel rod", 
+        "cement bag", "construction material", "construction waste", "metal pipe"
     ])
     has_sidewalk_pavement = any(term in combined_lower for term in ["sidewalk", "pavement", "footpath", "curb"])
     
-    if (has_sand_or_dust or has_infrastructure_failure) and has_leaf_dominant:
-        # If it's a sidewalk/road with sand/damage, suppress the Horticulture signal
-        # unless it's an explicit park/garden.
+    if (has_sand_or_dust or has_infrastructure_failure or has_construction_materials) and has_leaf_dominant:
+        # If it's a sidewalk/road with sand/damage/construction, suppress the Horticulture signal
+        # unless it's an explicit park/garden (and no construction materials are involved).
         is_explicit_park = any(term in combined_lower for term in ["park", "garden", "greenery"])
-        if not is_explicit_park:
+        if not is_explicit_park or has_construction_materials:
             scores["Horticulture"] = scores.get("Horticulture", 0.0) * 0.4
             scores["Civil Department"] = scores.get("Civil Department", 0.0) + 2.5
-            print(f"[rule_engine] prioritizing Civil over Horticulture for roadside sand/damage")
+            print(f"[rule_engine] prioritizing Civil over Horticulture for roadside sand/damage/construction")
 
     # ── Enforcement vs. Civil: Activity-over-Infrastructure ────────────────
     # Active management of vendors/parking usually takes priority over

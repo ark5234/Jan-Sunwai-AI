@@ -11,6 +11,7 @@ Jan-Sunwai AI is a full-stack platform where a citizen uploads an issue photo, t
 ## What Is Implemented
 
 - FastAPI backend with JWT auth, role-aware access control, and MongoDB persistence.
+- Dedicated NDMC MongoDB audit store for comparison history and server-version tracking.
 - React frontend with dedicated flows for citizen, worker, department head, and admin.
 - Hybrid AI pipeline: Vision -> Rule Engine -> Optional Reasoning -> Draft Writer.
 - Worker auto-assignment using department + service-area distance logic.
@@ -30,6 +31,7 @@ flowchart LR
     FE -->|JWT + REST| API[FastAPI Backend]
 
     API --> DB[(MongoDB)]
+    API --> NDMC_DB[(NDMC MongoDB)]
     API --> Uploads[(uploads/)]
     API --> Queue[In-memory LLM Queue]
     Queue --> Ollama[Ollama Runtime]
@@ -156,7 +158,7 @@ python -m venv .venv
 pip install -r backend/requirements.txt
 # edit backend/.env with local values if needed
 
-docker compose up -d mongodb
+docker compose up -d mongodb ndmc_mongodb
 
 ollama pull qwen2.5vl:3b
 ollama pull granite3.2-vision:2b
@@ -170,7 +172,7 @@ cd frontend && npm install
 Terminal 1:
 
 ```bash
-docker compose up -d mongodb
+docker compose up -d mongodb ndmc_mongodb
 ```
 
 Terminal 2:
@@ -206,6 +208,7 @@ Open `http://localhost:5173`.
 
 - For Docker Compose local runs, backend JWT configuration is sourced from `backend/.env` through `env_file`.
 - `docker-compose.yml` no longer forces `JWT_SECRET_KEY` from shell interpolation, which avoids accidental blank secrets.
+- The NDMC comparison flow now uses a separate MongoDB service and stores audit records in `ndmc_analysis_db`.
 - Changing `JWT_SECRET_KEY` invalidates existing login sessions/tokens, but does not change user accounts or password hashes.
 
 ## Health Checks
@@ -318,9 +321,12 @@ Use the unified template, then edit values as needed:
 | --- | --- | --- |
 | `APP_ENV` | `development` | Runtime mode (`development` or `production`) |
 | `RATE_LIMIT_ENABLED` | `false` (dev), auto-`true` in production if unset | Enable request rate limiting |
-| `MONGODB_URL` | `mongodb://localhost:27017` | MongoDB connection string |
+| `MONGODB_URL` | `mongodb://localhost:27017` | Main MongoDB connection string |
 | `MONGO_URL` | `mongodb://localhost:27017` | Legacy MongoDB URL alias fallback |
-| `DB_NAME` | `jan_sunwai_db` | MongoDB database name |
+| `DB_NAME` | `jan_sunwai_db` | Main MongoDB database name |
+| `NDMC_MONGODB_URL` | `mongodb://localhost:27019` | NDMC audit MongoDB connection string |
+| `NDMC_DB_NAME` | `ndmc_analysis_db` | NDMC audit database name |
+| `NDMC_ANALYSIS_COLLECTION` | `ndmc_analysis` | NDMC audit collection name |
 | `JWT_SECRET_KEY` | `change-me-in-production` | Secret used to sign JWTs |
 | `JWT_ALGORITHM` | `HS256` | JWT signing algorithm |
 | `ACCESS_TOKEN_EXPIRE_MINUTES` | `1440` in dev, `480` in prod if unset | Access token TTL in minutes |

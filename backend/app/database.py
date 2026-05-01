@@ -6,6 +6,9 @@ from app.config import settings
 # Check both MONGODB_URL and MONGO_URL for flexibility
 MONGO_URL = settings.mongodb_url
 DB_NAME = settings.db_name
+NDMC_MONGO_URL = settings.ndmc_mongodb_url
+NDMC_DB_NAME = settings.ndmc_db_name
+NDMC_ANALYSIS_COLLECTION = settings.ndmc_analysis_collection
 
 # BL-07: Explicit connection pool configuration.
 # Motor default is 100 max connections — fine for small deployments but
@@ -19,6 +22,13 @@ class Database:
 
 
 db = Database()
+
+
+class NdmcDatabase:
+    client: AsyncIOMotorClient | None = None
+
+
+ndmc_db = NdmcDatabase()
 
 
 def _safe_mongo_target(url: str) -> str:
@@ -68,6 +78,18 @@ async def ensure_indexes():
     await database["llm_jobs"].create_index("created_at", expireAfterSeconds=3600)
 
 
+async def ensure_ndmc_indexes():
+    if ndmc_db.client is None:
+        return
+
+    database = ndmc_db.client[NDMC_DB_NAME]
+    collection = database[NDMC_ANALYSIS_COLLECTION]
+
+    await collection.create_index([("complaint_id", 1), ("created_at", -1)])
+    await collection.create_index([("ndmc_server_version", 1), ("created_at", -1)])
+    await collection.create_index([("selected_department", 1), ("created_at", -1)])
+
+
 async def connect_to_mongo():
     try:
         db.client = AsyncIOMotorClient(
@@ -80,6 +102,20 @@ async def connect_to_mongo():
         await db.client.admin.command("ping")
         await ensure_indexes()
         print(f"Connected to MongoDB at {_safe_mongo_target(MONGO_URL)}")
+
+        try:
+            if NDMC_MONGO_URL:
+                ndmc_db.client = AsyncIOMotorClient(
+                    NDMC_MONGO_URL,
+                    maxPoolSize=_MONGO_MAX_POOL_SIZE,
+                    minPoolSize=_MONGO_MIN_POOL_SIZE,
+                )
+                await ndmc_db.client.admin.command("ping")
+                await ensure_ndmc_indexes()
+                print(f"Connected to NDMC MongoDB at {_safe_mongo_target(NDMC_MONGO_URL)}")
+        except Exception as ndmc_error:
+            ndmc_db.client = None
+            print(f"Could not connect to NDMC MongoDB: {ndmc_error}")
     except Exception as e:
         print(f"Could not connect to MongoDB: {e}")
         raise e
@@ -89,6 +125,9 @@ async def close_mongo_connection():
     if db.client:
         db.client.close()
         print("MongoDB connection closed")
+    if ndmc_db.client:
+        ndmc_db.client.close()
+        print("NDMC MongoDB connection closed")
 
 
 def get_database():
@@ -96,3 +135,10 @@ def get_database():
     if db.client is None:
         raise RuntimeError("Database client not initialized. Ensure MongoDB is running and app started correctly.")
     return db.client[DB_NAME]
+
+
+def get_ndmc_database():
+    """Returns the NDMC audit database instance when available."""
+    if ndmc_db.client is None:
+        raise RuntimeError("NDMC database client not initialized. Ensure NDMC MongoDB is running and app started correctly.")
+    return ndmc_db.client[NDMC_DB_NAME]

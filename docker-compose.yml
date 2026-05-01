@@ -26,41 +26,82 @@ services:
     networks:
       - jan-sunwai-network
 
+  ndmc_mongodb:
+    image: mongo:7.0
+    container_name: jan-sunwai-ndmc-mongodb
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:${NDMC_MONGODB_HOST_PORT:-27019}:27017"
+    volumes:
+      - ndmc_mongodb_data:/data/db
+    environment:
+      MONGO_INITDB_DATABASE: ${NDMC_DB_NAME:-ndmc_analysis_db}
+      MONGO_INITDB_ROOT_USERNAME: ${NDMC_MONGO_ROOT_USERNAME:-jan_sunwai_admin}
+      MONGO_INITDB_ROOT_PASSWORD: ${NDMC_MONGO_ROOT_PASSWORD:-CHANGE_ME_STRONG_PASSWORD}
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping').ok"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "5"
+    networks:
+      - jan-sunwai-network
+
   backend:
     build:
       context: ./backend
       dockerfile: Dockerfile.prod
     container_name: jan-sunwai-backend
     restart: unless-stopped
-    env_file:
-      - ./backend/.env
+    env_file: ./backend/.env
     environment:
-      - APP_ENV=${APP_ENV:-production}
-      - RATE_LIMIT_ENABLED=${RATE_LIMIT_ENABLED:-true}
-      - MONGODB_URL=${MONGODB_URL:-mongodb://${MONGO_ROOT_USERNAME:-jan_sunwai_admin}:${MONGO_ROOT_PASSWORD:-CHANGE_ME_STRONG_PASSWORD}@mongodb:27017/${DB_NAME:-jan_sunwai_db}?authSource=admin}
-      - MONGO_URL=${MONGO_URL:-mongodb://${MONGO_ROOT_USERNAME:-jan_sunwai_admin}:${MONGO_ROOT_PASSWORD:-CHANGE_ME_STRONG_PASSWORD}@mongodb:27017/${DB_NAME:-jan_sunwai_db}?authSource=admin}
-      - DB_NAME=${DB_NAME:-jan_sunwai_db}
-      - OLLAMA_BASE_URL=${OLLAMA_BASE_URL:-http://host.docker.internal:11434}
-      - OLLAMA_HOST=${OLLAMA_HOST:-http://host.docker.internal:11434}
-      - ALLOWED_ORIGINS=${ALLOWED_ORIGINS:-http://localhost:5173,http://127.0.0.1:5173}
-      # JWT secret for local Docker runs is sourced from ./backend/.env via env_file.
-      - JWT_ALGORITHM=${JWT_ALGORITHM:-HS256}
-      - ACCESS_TOKEN_EXPIRE_MINUTES=${ACCESS_TOKEN_EXPIRE_MINUTES:-1440}
+      - APP_ENV=production
+      - RATE_LIMIT_ENABLED=true
+      - MONGODB_URL=mongodb://${MONGO_ROOT_USERNAME:-jan_sunwai_admin}:${MONGO_ROOT_PASSWORD:-CHANGE_ME_STRONG_PASSWORD}@mongodb:27017/${DB_NAME:-jan_sunwai_db}?authSource=admin
+      - MONGO_URL=mongodb://${MONGO_ROOT_USERNAME:-jan_sunwai_admin}:${MONGO_ROOT_PASSWORD:-CHANGE_ME_STRONG_PASSWORD}@mongodb:27017/${DB_NAME:-jan_sunwai_db}?authSource=admin
+      - DB_NAME=jan_sunwai_db
+      - NDMC_MONGODB_URL=mongodb://${NDMC_MONGO_ROOT_USERNAME:-jan_sunwai_admin}:${NDMC_MONGO_ROOT_PASSWORD:-CHANGE_ME_STRONG_PASSWORD}@ndmc_mongodb:27017/${NDMC_DB_NAME:-ndmc_analysis_db}?authSource=admin
+      - NDMC_DB_NAME=ndmc_analysis_db
+      - NDMC_ANALYSIS_COLLECTION=ndmc_analysis
+      - OLLAMA_BASE_URL=http://host.docker.internal:11434
+      - OLLAMA_HOST=http://host.docker.internal:11434
+      - ALLOWED_ORIGINS=http://localhost:5173,http://127.0.0.1:5173
+      - JWT_SECRET_KEY=91eafb662b75eb7e818c9172eee7d7afaa998b2cc451d95c4a28c3ff019e7e75e902cb5a3be13ca8d119bccfdb28cb083b4c040984e7b9b4bed04abde07af0c9
+      - JWT_ALGORITHM=HS256
+      - ACCESS_TOKEN_EXPIRE_MINUTES=1440
       - PYTHONUNBUFFERED=1
-      - VISION_MODEL=${VISION_MODEL:-qwen2.5vl:3b}
-      - MID_VISION_MODEL=${MID_VISION_MODEL:-granite3.2-vision:2b}
-      - FALLBACK_VISION_MODEL=${FALLBACK_VISION_MODEL:-granite3.2-vision:2b}
-      - REASONING_MODEL=${REASONING_MODEL:-llama3.2:1b}
-      - VISION_TIMEOUT_SECONDS=${VISION_TIMEOUT_SECONDS:-240}
-      - LLM_INLINE_TIMEOUT_SECONDS=${LLM_INLINE_TIMEOUT_SECONDS:-15}
-      - COMPLAINT_OUTPUT_MODE=${COMPLAINT_OUTPUT_MODE:-email}
-      - MODEL_UNLOAD_TIMEOUT_SECONDS=${MODEL_UNLOAD_TIMEOUT_SECONDS:-30}
-      - MODEL_UNLOAD_POLL_INTERVAL_SECONDS=${MODEL_UNLOAD_POLL_INTERVAL_SECONDS:-0.1}
-      - KEEP_REASONING_MODEL_WARM=${KEEP_REASONING_MODEL_WARM:-false}
+      - VISION_MODEL=qwen2.5vl:3b
+      - MID_VISION_MODEL=granite3.2-vision:2b
+      - FALLBACK_VISION_MODEL=granite3.2-vision:2b
+      - REASONING_MODEL=llama3.2:1b
+      - ENABLE_OLLAMA_TRANSLATION_FALLBACK=true
+      - VISION_TIMEOUT_SECONDS=240
+      - LLM_INLINE_TIMEOUT_SECONDS=8
+      - LLM_QUEUE_WORKERS=2
+      - RULE_ENGINE_ONLY=false
+      - AMBIGUITY_THRESHOLD=2.0
+      - UNLOAD_AFTER_REASONING=true
+      - COMPLAINT_OUTPUT_MODE=email
+      - MODEL_UNLOAD_TIMEOUT_SECONDS=30
+      - MODEL_UNLOAD_POLL_INTERVAL_SECONDS=0.1
+      - KEEP_REASONING_MODEL_WARM=false
+      - SMTP_HOST=
+      - SMTP_PORT=587
+      - SMTP_FROM=noreply@jan-sunwai.local
+      - SMTP_USERNAME=
+      - SMTP_PASSWORD=
+      - DEFAULT_PAGE_SIZE=25
+      - MAX_PAGE_SIZE=100
     extra_hosts:
       - "host.docker.internal:host-gateway"
     depends_on:
       mongodb:
+        condition: service_healthy
+      ndmc_mongodb:
         condition: service_healthy
     ports:
       - "8000:8000"
@@ -103,6 +144,7 @@ services:
 
 volumes:
   mongodb_data:
+  ndmc_mongodb_data:
   backend_uploads:
 
 networks:

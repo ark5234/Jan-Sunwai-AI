@@ -131,9 +131,9 @@ _KEYWORD_FALLBACK_BY_DEPARTMENT: dict[str, list[str]] = {
         "gravel road", "unpaved road", "mud on road", "slushy road", "slush",
         "waterlogged road", "wet road", "sand and mud", "mud and sand",
         "sandy mud", "muddy surface", "slippery road", "slippery surface",
-        "road is slippery", "road construction", "road digging",
+        "road is slippery", "road construction", "road digging", "road repair", "road dug up",
         "rebar", "iron rod", "steel rod", "cement bag", "construction material",
-        "construction waste", "construction debris",
+        "construction waste", "construction debris", "construction debris on road", "gravel",
     ],
     "Health Department": [
         "garbage", "trash", "waste", "litter", "dump", "rubbish", "overflowing bin",
@@ -547,33 +547,32 @@ class CivicClassifier:
                 '  "secondary_issue": "single phrase or empty string",\n'
                 '  "hazards": ["hazard1", "hazard2"],\n'
                 '  "setting": "road/park/drain/building/railway station/train platform/etc",\n'
-                '  "confidence": "low/medium/high"\n'
+                '  "confidence": "low/medium/high",\n'
+                '  "candidates": [\n'
+                '    {"category": "Civil Department", "confidence": 0.95, "reason": "visible potholes"},\n'
+                '    {"category": "Health Department", "confidence": 0.05, "reason": "some debris"}\n'
+                '  ]\n'
                 "}\n\n"
                 "STRICT RULES:\n"
+                "- PRIORITY IDENTIFICATION: (1) Infrastructure failure (potholes, broken roads, damaged footpaths), (2) Construction material/debris (metal pipes, iron rods, bricks, cement bags), (3) Sanitation issues (garbage dumps, overflowing bins), (4) Horticulture (fallen trees, overgrown parks, leaf litter).\n"
+                "- CANDIDATES: Provide 2-3 most likely categories with confidence scores (0.0-1.0). Confidence scores should sum to ≤ 1.0. Use primary_issue to determine the top candidate.\n"
+                "- DOMINANCE: Identify and describe the MOST DOMINANT object or condition in the foreground. Do not describe background textures (like cracks in concrete) as the primary issue if there are large objects (like pipes or garbage) in the foreground.\n"
+                "- MATERIAL DISTINCTION: Carefully distinguish between:\n"
+                "  * Natural materials: leaves, twigs, branches, sand, soil, mud, wood\n"
+                "  * Man-made materials: metal pipes, iron rods, plastic bottles, bricks, cement bags, PVC pipes, steel rebar\n"
+                "  * NEVER call large cylindrical metal objects 'twigs' or 'branches'.\n"
                 "- ONLY describe what you can CLEARLY and DIRECTLY see. Do NOT infer or guess.\n"
-                "- If a scene contains scattered litter, determine if it is primarily plant-based (dried leaves, twigs, fallen branches, piles of dry grass) or man-made waste (plastic, food wrappers, metal, glass, construction debris).\n"
-                "- If you see a sidewalk or roadside covered in significant dust, sand, gravel, or silt, explicitly mention 'sand on the road' or 'dust accumulation' in the description.\n"
-                "- Only describe an issue as 'sanitation' or 'garbage' if man-made waste, trash bags, or waste bins are clearly visible.\n"
-                "- If you see construction materials like rebar (iron rods), cement bags, or bricks piled on a road or sidewalk, explicitly mention them as 'construction material' or 'construction waste'.\n"
-                "- If the dominant objects are fallen or dried leaves or piles of grass, explicitly describe them as such and avoid the word 'garbage'.\n"
-                "- If you see flames/smoke/sparks near wires, a transformer, meter box, or electrical panel, "
-                "set primary_issue to 'electrical fire hazard' (NOT traffic congestion).\n"
-                "- If you see a train, railway platform, or railway station, say so EXPLICITLY "
-                "in the description — do NOT describe a railway platform as a 'sidewalk' or 'road'.\n"
-                "- If the dominant scene is heavy vehicle traffic, crowded roads, traffic jam, "
-                "or congestion with NO clear infrastructure damage, set primary_issue to "
-                "'traffic congestion' and description should reflect that.\n"
-                "- Never use 'traffic congestion' unless vehicles are clearly visible and dominant in the scene.\n"
-                "- Be specific: 'traffic congestion' / 'road damage' / 'waterlogging' / 'pipe leak' / "
-                "'broken street light' / 'fallen tree' / 'garbage dump' / 'dangling wire' / "
-                "'hawker encroachment' / 'illegal parking' / 'broken water pipe' / 'railway platform' / 'rebar on road' / 'vegetation pile' / 'sand accumulation'\n"
-                "- If stagnant water is visible near a broken road, pothole, or caved-in area, prioritize naming the infrastructure damage ('road damage' / 'pothole') as the primary issue.\n"
-                "- If you see a small dark object on the ground, do NOT assume it is a 'broken water pipe' unless it is clearly a metallic or PVC pipe and water is leaking. If it's just debris or animal waste, call it 'debris' or 'scattered litter'.\n"
-                "- If you see vendors, stalls, or hawkers blocking a sidewalk or road, use 'encroachment' or 'hawker blockage' as the primary issue.\n"
-                "- If the image is a phone screenshot, payment receipt, bank transaction, "
-                "UPI screen, chat message, or any digital/scanned document, set "
-                "primary_issue to 'non_civic_document' and description to describe it as such.\n"
-                "- Keep description under 40 words\n"
+                "- BE SPECIFIC: Use terms like 'damaged pavement' only if the paving stones themselves are broken or missing. Use 'construction material' if you see pipes or rebar.\n"
+                "- NO HALLUCINATIONS: Do not mention issues like 'broken pavement' if the primary subjects are construction materials or leaves.\n"
+                "- Electrical hazards: If you see flames/smoke/sparks near wires, a transformer, meter box, or electrical panel, set primary_issue to 'electrical fire hazard'.\n"
+                "- Railway scenes: If you see a train, railway platform, or railway station, say so EXPLICITLY in the description — do NOT describe a railway platform as a 'sidewalk'.\n"
+                "- Traffic: If the dominant scene is heavy vehicle traffic, crowded roads, traffic jam, or congestion with NO clear infrastructure damage, set primary_issue to 'traffic congestion'.\n"
+                "- Priority phrases: 'traffic congestion', 'road damage', 'waterlogging', 'pipe leak', 'broken street light', 'fallen tree', 'garbage dump', 'dangling wire', 'hawker encroachment', 'illegal parking', 'broken water pipe', 'railway platform', 'rebar on road', 'vegetation pile', 'sand accumulation', 'construction debris'.\n"
+                "- Infrastructure over water: If stagnant water is visible near a broken road, pothole, or caved-in area, prioritize naming the infrastructure damage ('road damage' / 'pothole') as the primary issue.\n"
+                "- Small dark objects: Do NOT assume small dark objects are 'broken water pipes' unless clearly metallic and leaking water. If it's just debris, call it 'debris' or 'scattered litter'.\n"
+                "- Encroachment: If you see vendors, stalls, or hawkers blocking a sidewalk or road, use 'encroachment' or 'hawker blockage' as the primary issue.\n"
+                "- Non-civic: If the image is a phone screenshot, payment receipt, bank transaction, UPI screen, chat message, or any digital/scanned document, set primary_issue to 'non_civic_document'.\n"
+                "- Keep the description concise, but you MUST list all distinct physical materials and objects present in the scene.\n"
                 "- No markdown, no explanation outside JSON"
             )
             _simple_prompt = (
@@ -581,8 +580,8 @@ class CivicClassifier:
                 "What is the main activity or condition visible in the scene? "
                 "Look for: garbage/litter, broken roads/potholes, leaking pipes, "
                 "fallen trees/branches, broken street lights, dangling wires, "
-                "stagnant water, or unauthorized vendors blocking pavements. "
-                "Describe in 2-3 factual sentences without guessing or assuming."
+                "stagnant water, construction materials, metal pipes, or unauthorized vendors blocking pavements. "
+                "Write a concise but dense 2-3 sentence description that explicitly lists all distinct physical materials and objects present. NEVER mistake large metal pipes for plant twigs."
             )
 
             def _build_kwargs(model_name: str) -> dict:

@@ -11,8 +11,10 @@ from jose import JWTError, jwt
 from app.classifier import CivicClassifier
 from app.geotagging import extract_location
 from app.database import get_database
+from app.database import get_ndmc_database
 from app.services.storage import storage_service
 from app.services.llm_queue import llm_queue_service
+from app.ndmc_api_client import call_ndmc_api, compare_classifications
 from app.auth import get_current_user, get_current_admin, get_current_admin_or_dept_head
 from app.schemas import (
     ComplaintCreate,
@@ -36,6 +38,7 @@ from app.services.priority import compute_priority
 from app.services.assignment import auto_assign, free_worker_slot
 from app.services.sanitization import sanitize_text
 from app.services.email_service import send_status_update_email
+from app.services.ndmc_audit import record_ndmc_analysis
 from app.category_utils import canonicalize_label
 from app.rate_limiter import limiter
 from PIL import Image
@@ -267,8 +270,21 @@ async def analyze_complaint(
     analysis_token = _build_analysis_token(user_id=user_id, image_url=file_path)
     absolute_file_path = storage_service.resolve_path(file_path)
 
-    # 2. Classify — offload sync model inference so the event loop stays responsive
-    classification = await asyncio.to_thread(classifier.classify, absolute_file_path)
+    # 2. Classify + NDMC — run both in parallel to save wall-clock time
+    classifier_task = asyncio.create_task(asyncio.to_thread(classifier.classify, absolute_file_path))
+    ndmc_task = None
+    if settings.ndmc_api_enabled:
+        ndmc_task = asyncio.create_task(asyncio.to_thread(call_ndmc_api, absolute_file_path))
+
+    # await classifier (must have local result to continue); await NDMC if available
+    classification = await classifier_task
+    ndmc_result = None
+    if ndmc_task is not None:
+        try:
+            ndmc_result = await ndmc_task
+        except Exception as e:
+            logger.error(f"NDMC background call failed: {e}")
+            ndmc_result = {"success": False, "error": str(e)}
 
     # Graceful degradation: if classifier hard-fails (Ollama unavailable / all tiers failed),
     # return a user-friendly retryable 503 payload.
@@ -282,6 +298,129 @@ async def analyze_complaint(
                 "retryable": True,
             },
         )
+
+    # 2b. Compare local and NDMC results (if we have NDMC output)
+    ndmc_comparison = None
+    ndmc_debug: dict[str, object] = {
+        "local_department": classification.get("department", classification.get("category", "Uncategorized")),
+        "local_confidence": classification.get("confidence", 0.0),
+        "ndmc_raw_rank1_department": None,
+        "ndmc_raw_rank1_category": None,
+        "ndmc_mapped_department": None,
+        "ndmc_selected_method": None,
+        "ndmc_selected_department": None,
+        "final_department": None,
+        "final_confidence": None,
+    }
+    try:
+        local_category_result = {
+            "category": classification.get("department", classification.get("category", "Uncategorized")),
+            "confidence": classification.get("confidence", 0.0),
+        }
+
+        # Build local candidate list using rule engine scores if vision payload exists
+        local_candidates = []
+        try:
+            vision_payload = classification.get("vision_payload") or {}
+            rule_result = classify_by_rules(vision_payload)
+            scores = rule_result.get("scores", {})
+            ranked = sorted(scores.items(), key=lambda x: x[1], reverse=True)[:5]
+            total = sum([s for _, s in ranked]) or 0.0
+            for name, score in ranked:
+                conf = (score / total) if total > 0 else 0.0
+                local_candidates.append({"department": name, "score": round(score, 3), "confidence": round(conf, 4)})
+        except Exception:
+            local_candidates = [{"department": local_category_result["category"], "score": None, "confidence": local_category_result.get("confidence", 0.0)}]
+
+        # Ensure ndmc_result dict exists
+        if ndmc_result is None:
+            ndmc_result = {"success": False, "error": "NDMC not called"}
+
+        if isinstance(ndmc_result, dict):
+            raw_response = ndmc_result.get("raw_response")
+            if isinstance(raw_response, dict):
+                best_prediction = raw_response.get("best_prediction")
+                if isinstance(best_prediction, dict):
+                    ndmc_debug["ndmc_raw_rank1_department"] = best_prediction.get("department")
+                    ndmc_debug["ndmc_raw_rank1_category"] = best_prediction.get("category")
+            ndmc_debug["ndmc_mapped_department"] = ndmc_result.get("category")
+
+        ndmc_comparison = compare_classifications(
+            local_category_result,
+            ndmc_result,
+            local_candidates=local_candidates,
+            ndmc_candidates=ndmc_result.get("candidates") or [],
+        )
+
+        # Attach candidates and explainability metadata
+        explain = {
+            "local_candidates": local_candidates,
+            "ndmc_candidates": ndmc_result.get("candidates") or [],
+            "selected_method": ndmc_comparison.get("method"),
+            "selected_department": ndmc_comparison.get("category"),
+            "decision_reason": ndmc_comparison.get("comparison", {}).get("reason") if ndmc_comparison else None,
+            "ndmc_raw_response": None if not ndmc_result else (ndmc_result.get("raw_response") if isinstance(ndmc_result, dict) else None),
+        }
+
+        # Apply selection (override) if NDMC chosen
+        if ndmc_comparison and ndmc_comparison.get("method") == "ndmc":
+            classification["department"] = ndmc_comparison["category"]
+            classification["category"] = ndmc_comparison["category"]
+            classification["confidence"] = ndmc_comparison["confidence"]
+            classification["ndmc_model_used"] = True
+        else:
+            classification["ndmc_model_used"] = False
+
+        ndmc_debug["ndmc_selected_method"] = ndmc_comparison.get("method") if ndmc_comparison else None
+        ndmc_debug["ndmc_selected_department"] = ndmc_comparison.get("category") if ndmc_comparison else None
+        ndmc_debug["final_department"] = classification.get("department", classification.get("category", "Uncategorized"))
+        ndmc_debug["final_confidence"] = classification.get("confidence", 0.0)
+
+        classification.setdefault("ai_metadata", {})
+        classification["ai_metadata"]["explainability"] = explain
+        classification["ndmc_comparison"] = ndmc_comparison
+
+        # Log an explicit routing decision summary so we can audit compare behavior
+        try:
+            logger.info(
+                "ndmc_routing_decision",
+                extra={
+                    "local_department": ndmc_debug.get("local_department"),
+                    "local_confidence": ndmc_debug.get("local_confidence"),
+                    "ndmc_raw_rank1_department": ndmc_debug.get("ndmc_raw_rank1_department"),
+                    "ndmc_mapped_department": ndmc_debug.get("ndmc_mapped_department"),
+                    "selected_method": ndmc_debug.get("ndmc_selected_method"),
+                    "selected_department": ndmc_debug.get("ndmc_selected_department"),
+                    "final_department": ndmc_debug.get("final_department"),
+                    "final_confidence": ndmc_debug.get("final_confidence"),
+                },
+            )
+        except Exception:
+            pass
+
+        # Log a compact explainability summary for easy grepping in container logs
+        try:
+            local_top = explain.get("local_candidates", [None])[0]
+            ndmc_top = (explain.get("ndmc_candidates") or [None])[0]
+            logger.info(
+                "explainability_summary",
+                extra={
+                    "image_url": file_path,
+                    "selected_method": explain.get("selected_method"),
+                    "selected_department": explain.get("selected_department"),
+                    "local_top": local_top,
+                    "ndmc_top": ndmc_top,
+                },
+            )
+        except Exception:
+            # Don't raise on logging failure
+            pass
+
+    except Exception as e:
+        logger.error(f"NDMC comparison failed (non-blocking): {e}")
+        classification.setdefault("ai_metadata", {})
+        classification["ai_metadata"]["explainability"] = {"error": str(e)}
+        classification["ndmc_comparison"] = {"error": str(e)}
 
     # Optional user-text routing assist: if user provides a clear grievance hint,
     # use deterministic text classification to improve department selection.
@@ -353,6 +492,7 @@ async def analyze_complaint(
         "analysis_token": analysis_token,
         "user_grievance_text": normalized_user_grievance,
         "image_url": file_path, # Return the path so frontend can pass it to /complaints
+        "ndmc_debug": ndmc_debug,
         "timings": {
             "vision_ms": classification.get("timings", {}).get("vision_ms", 0.0),
             "rule_engine_ms": classification.get("timings", {}).get("rule_engine_ms", 0.0),
@@ -472,6 +612,17 @@ async def create_complaint(
         str(complaint_dict.get("department") or complaint.department or "")
     )
     user_text_result = None
+    local_candidate = {
+        "department": resolved_department,
+        "confidence": 0.0,
+    }
+    try:
+        local_candidate["confidence"] = float((complaint_dict.get("ai_metadata") or {}).get("confidence_score", 0.0) or 0.0)
+    except (TypeError, ValueError):
+        local_candidate["confidence"] = 0.0
+
+    ndmc_result = {"success": False, "error": "NDMC not called", "category": resolved_department, "confidence": local_candidate["confidence"]}
+    ndmc_comparison = None
 
     if complaint_dict.get("user_grievance_text"):
         user_text_result = await asyncio.to_thread(
@@ -513,6 +664,48 @@ async def create_complaint(
         "detected_department": resolved_department,
         "labels": safe_labels or [resolved_department],
     }
+
+    # Re-run NDMC comparison at submit time so the saved complaint is decided
+    # server-side, even when the frontend only sends the local classification.
+    try:
+        ndmc_result = await asyncio.to_thread(call_ndmc_api, resolved_image_path)
+        ndmc_comparison = compare_classifications(
+            local_candidate,
+            ndmc_result,
+            ndmc_candidates=ndmc_result.get("candidates") or [],
+        )
+
+        explain = {
+            "local_candidates": [
+                {
+                    "department": local_candidate["department"],
+                    "score": None,
+                    "confidence": round(float(local_candidate["confidence"] or 0.0), 4),
+                }
+            ],
+            "ndmc_candidates": ndmc_result.get("candidates") or [],
+            "selected_method": ndmc_comparison.get("method"),
+            "selected_department": ndmc_comparison.get("category"),
+            "decision_reason": ndmc_comparison.get("comparison", {}).get("reason") if ndmc_comparison else None,
+            "ndmc_raw_response": ndmc_result.get("raw_response") if isinstance(ndmc_result, dict) else None,
+        }
+
+        if ndmc_comparison and ndmc_comparison.get("method") == "ndmc":
+            resolved_department = canonicalize_label(str(ndmc_comparison.get("category") or resolved_department))
+            complaint_dict["department"] = resolved_department
+            complaint_dict["ai_metadata"]["detected_department"] = resolved_department
+            complaint_dict["ai_metadata"]["confidence_score"] = max(
+                0.0,
+                min(float(ndmc_comparison.get("confidence", complaint_dict["ai_metadata"]["confidence_score"] or 0.0) or 0.0), 1.0),
+            )
+        complaint_dict["ai_metadata"]["explainability"] = explain
+        complaint_dict["ndmc_comparison"] = ndmc_comparison
+        complaint_dict["ndmc_model_used"] = bool(ndmc_comparison and ndmc_comparison.get("method") == "ndmc")
+    except Exception as ndmc_compare_error:
+        logger.warning("NDMC comparison at submit time failed: %s", ndmc_compare_error)
+        complaint_dict["ai_metadata"]["explainability"] = {"error": str(ndmc_compare_error)}
+        complaint_dict["ndmc_comparison"] = {"error": str(ndmc_compare_error)}
+        complaint_dict["ndmc_model_used"] = False
 
     # Resolve Authority routing metadata
     routing = route_authority(resolved_department)
@@ -577,6 +770,23 @@ async def create_complaint(
 
     # 3. Insert into DB
     result = await db["complaints"].insert_one(complaint_dict)
+
+    try:
+        await record_ndmc_analysis(
+            complaint_id=str(result.inserted_id),
+            user_id=user_id,
+            image_url=file_path,
+            analysis_token=analysis_token,
+            local_result=local_candidate,
+            ndmc_result=ndmc_result or {},
+            comparison=complaint_dict.get("ndmc_comparison") or ndmc_comparison,
+            explainability=complaint_dict.get("ai_metadata", {}).get("explainability"),
+            final_department=str(complaint_dict.get("department") or "Uncategorized"),
+            final_confidence=complaint_dict.get("ai_metadata", {}).get("confidence_score"),
+            user_text_result=user_text_result,
+        )
+    except Exception as ndmc_store_error:
+        logger.warning("NDMC audit write failed: %s", ndmc_store_error)
     
     # 4. Notify citizen that complaint was filed
     complaint_dict["_id"] = str(result.inserted_id)
@@ -659,6 +869,81 @@ async def list_complaints(
     return complaints
 
 
+@router.get("/ndmc-analysis/export/csv")
+async def export_ndmc_analysis_csv(
+    current_user: dict = Depends(get_current_admin),
+    ndmc_server_version: str | None = None,
+    selected_method: str | None = None,
+):
+    """Stream NDMC audit records from the dedicated NDMC database as CSV."""
+
+    try:
+        ndmc_db = get_ndmc_database()
+    except RuntimeError as exc:
+        raise HTTPException(status_code=503, detail=str(exc)) from exc
+
+    query: dict = {}
+    if ndmc_server_version:
+        query["ndmc_server_version"] = ndmc_server_version
+    if selected_method:
+        query["selected_method"] = selected_method
+
+    fieldnames = [
+        "complaint_id",
+        "user_id",
+        "image_url",
+        "ndmc_server_version",
+        "selected_method",
+        "selected_department",
+        "selected_confidence",
+        "local_category",
+        "local_confidence",
+        "ndmc_category",
+        "ndmc_confidence",
+        "decision_reason",
+        "created_at",
+        "updated_at",
+    ]
+
+    async def _csv_stream():
+        import csv as _csv
+        import io as _io
+
+        buf = _io.StringIO()
+        writer = _csv.DictWriter(buf, fieldnames=fieldnames, extrasaction="ignore")
+        writer.writeheader()
+        yield buf.getvalue()
+        buf.truncate(0)
+        buf.seek(0)
+
+        async for doc in ndmc_db[settings.ndmc_analysis_collection].find(query).sort("created_at", -1):
+            writer.writerow({
+                "complaint_id": doc.get("complaint_id", ""),
+                "user_id": doc.get("user_id", ""),
+                "image_url": doc.get("image_url", ""),
+                "ndmc_server_version": doc.get("ndmc_server_version", ""),
+                "selected_method": doc.get("selected_method", ""),
+                "selected_department": doc.get("selected_department", ""),
+                "selected_confidence": doc.get("selected_confidence", ""),
+                "local_category": doc.get("local_category", ""),
+                "local_confidence": doc.get("local_confidence", ""),
+                "ndmc_category": doc.get("ndmc_category", ""),
+                "ndmc_confidence": doc.get("ndmc_confidence", ""),
+                "decision_reason": doc.get("decision_reason", ""),
+                "created_at": doc.get("created_at", ""),
+                "updated_at": doc.get("updated_at", ""),
+            })
+            yield buf.getvalue()
+            buf.truncate(0)
+            buf.seek(0)
+
+    return StreamingResponse(
+        _csv_stream(),
+        media_type="text/csv",
+        headers={"Content-Disposition": "attachment; filename=ndmc_analysis_export.csv"},
+    )
+
+
 # ---------------------------------------------------------------------------
 # CSV export (admin only)
 # ---------------------------------------------------------------------------
@@ -737,6 +1022,23 @@ async def get_complaint(
     _assert_complaint_access(current_user, doc)
 
     return fix_id(doc)
+
+
+@router.get("/complaints/{complaint_id}/explain")
+async def get_complaint_explain(complaint_id: str, current_user: dict = Depends(get_current_user)):
+    if not ObjectId.is_valid(complaint_id):
+        raise HTTPException(status_code=400, detail="Invalid ID format")
+
+    db = get_database()
+    doc = await db["complaints"].find_one({"_id": ObjectId(complaint_id)})
+
+    if not doc:
+        raise HTTPException(status_code=404, detail="Complaint not found")
+
+    _assert_complaint_access(current_user, doc)
+
+    explain = (doc.get("ai_metadata") or {}).get("explainability")
+    return {"complaint_id": complaint_id, "explainability": explain}
 
 @router.patch("/complaints/{complaint_id}/status", response_model=ComplaintResponse)
 async def update_complaint_status(
