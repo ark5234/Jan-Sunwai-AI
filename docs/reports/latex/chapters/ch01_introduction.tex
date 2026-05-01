@@ -1,6 +1,5 @@
 % !TeX root = ../main.tex
 \chapter{Introduction}
-\label{chap:introduction}
 
 Jan-Sunwai AI is an end-to-end civic grievance redressal platform built to reduce the operational gap between citizen complaint submission and departmental action. The system transforms an image upload into a structured, auditable complaint workflow, then routes the case to accountable municipal actors. Instead of requiring citizens to understand bureaucratic departments in advance, the platform performs AI-assisted classification and drafting while preserving a human-governed correction path through triage and administrative controls [11, 12, 13, 17, 16].
 
@@ -84,11 +83,11 @@ Public institutions frequently operate under constraints where sensitive citizen
 
 \subsection{Hybrid Deterministic + AI Pipelines}
 
-To mitigate the unreliability of end-to-end deep learning models in high-stakes environments, hybrid pipelines integrate neural networks with symbolic reasoning architectures [5]. In this staged approach, a vision model is responsible only for perceptual tasksâ€”such as detecting debris or structural damageâ€”while a traditional rules engine handles the logical task of mapping those detections to specific departmental SLAs. This separation of concerns significantly reduces the hallucination risk inherent to large language models. Jan-Sunwai AI adopts this hybrid pattern to guarantee that even if the AI misinterprets an image, the resulting classification remains within a bounded set of valid municipal categories, ensuring the system behaves predictably under audit.
+To mitigate the unreliability of end-to-end deep learning models in high-stakes environments, hybrid pipelines integrate neural networks with symbolic reasoning architectures [5]. In this staged approach, a vision model is responsible only for perceptual tasks---such as detecting debris or structural damage---while a traditional rules engine handles the logical task of mapping those detections to specific departmental SLAs. This separation of concerns significantly reduces the hallucination risk inherent to large language models. Jan-Sunwai AI adopts this hybrid pattern to guarantee that even if the AI misinterprets an image, the resulting classification remains within a bounded set of valid municipal categories, ensuring the system behaves predictably under audit.
 
 \subsection{Governance, Explainability, and Auditability}
 
-Unlike commercial software, civic applications operate under strict mandates for public accountability and transparency. When an automated system denies or reroutes a citizen's service request, the decision cannot be a black box; explainability is a legal and ethical requirement. Research into Human-in-the-Loop (HITL) machine learning strongly advocates for systems where AI acts as a recommender rather than an autonomous agent, especially in domains affecting public welfare [6]. Consequently, Jan-Sunwai AI is designed with exhaustive decision provenance. Every state transition logs the actor, the timestamp, andâ€”in the case of auto-routingâ€”the exact confidence threshold that triggered the action. By forcing low-confidence AI decisions into a manual triage queue, the platform embodies HITL principles, ensuring that human administrators remain the ultimate arbiters of complex civic disputes [1, 9].
+Unlike commercial software, civic applications operate under strict mandates for public accountability and transparency. When an automated system denies or reroutes a citizen's service request, the decision cannot be a black box; explainability is a legal and ethical requirement. Research into Human-in-the-Loop (HITL) machine learning strongly advocates for systems where AI acts as a recommender rather than an autonomous agent, especially in domains affecting public welfare [6]. Consequently, Jan-Sunwai AI is designed with exhaustive decision provenance. Every state transition logs the actor, the timestamp, and---in the case of auto-routing---the exact confidence threshold that triggered the action. By forcing low-confidence AI decisions into a manual triage queue, the platform embodies HITL principles, ensuring that human administrators remain the ultimate arbiters of complex civic disputes [1, 9].
 
 \subsection{System Comparison}
 
@@ -96,15 +95,15 @@ To validate the necessity of the proposed architecture and transition from descr
 
 \begin{table}[H]
 \centering
-\begin{tabularx}{\textwidth}{|p{0.20\textwidth}|p{0.25\textwidth}|p{0.25\textwidth}|X|}
+\begin{tabularx}{\textwidth}{p{0.20\textwidth}p{0.25\textwidth}p{0.25\textwidth}X}
 \toprule
-\textbf{System Attribute} & \textbf{Traditional Portal} & \textbf{Pure Cloud AI System} & \textbf{Proposed Hybrid System} \\ \hline
+\textbf{System Attribute} & \textbf{Traditional Portal} & \textbf{Pure Cloud AI System} & \textbf{Proposed Hybrid System} \\
 \midrule
-Input Type & Manual Text/Forms & Unstructured Text/Image & Image + Text (AI assisted) \\ \hline
-Classification & Manual Selection & Non-deterministic LLM & Hybrid (Rules + Local VLM) \\ \hline
-Routing Accuracy & Low (Misrouting common) & Variable (Hallucination risk) & High (Governed rules) \\ \hline
-Infrastructure & Low requirement & High (Cloud APIs needed) & Moderate (Local GPU inference) \\ \hline
-Primary Limitation & High user friction & Privacy concerns, unpredictable & Requires specialized local hardware \\ \hline
+Input Type & Manual Text/Forms & Unstructured Text/Image & Image + Text (AI assisted) \\
+Classification & Manual Selection & Non-deterministic LLM & Hybrid (Rules + Local VLM) \\
+Routing Accuracy & Low (Misrouting common) & Variable (Hallucination risk) & High (Governed rules) \\
+Infrastructure & Low requirement & High (Cloud APIs needed) & Moderate (Local GPU inference) \\
+Primary Limitation & High user friction & Privacy concerns, unpredictable & Requires specialized local hardware \\
 \bottomrule
 \end{tabularx}
 \caption{Comparison of Grievance System Architectures}

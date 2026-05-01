@@ -1,34 +1,36 @@
-\documentclass[12pt,a4paper,oneside]{report}
+﻿\documentclass[12pt,a4paper,oneside]{report}
 
+% ===== FONT =====
 \usepackage{iftex}
 \ifPDFTeX
-\PackageError{JanSunwaiReport}{Compile this report with XeLaTeX to satisfy the Times New Roman requirement}{Use xelatex -interaction=nonstopmode main.tex}
+\PackageError{Report}{Compile with XeLaTeX}{Use xelatex}
 \fi
 \usepackage{fontspec}
 \setmainfont{Times New Roman}
+
+% ===== PAGE =====
 \usepackage[a4paper,left=3cm,right=2cm,top=2cm,bottom=2cm]{geometry}
 \usepackage{setspace}
+\setstretch{1.15}
+
+% ===== PACKAGES =====
 \usepackage{graphicx}
-\usepackage{longtable}
+\usepackage{amsmath}
 \usepackage{booktabs}
+\usepackage{longtable}
 \usepackage{tabularx}
 \usepackage{array}
-\usepackage{float}
 \usepackage{multirow}
-\usepackage{amsmath}
-\usepackage{enumitem}
+\usepackage{float}
 \usepackage{hyperref}
 \usepackage{caption}
-\usepackage{fancyhdr}
 \usepackage{titlesec}
-\usepackage{microtype}
-\usepackage{ragged2e}
-\usepackage{xcolor}
-\usepackage{etoolbox}
+\usepackage{fancyhdr}
 \usepackage{tocloft}
-\usepackage{newfloat} % Using newfloat for more robust float management
-
-\definecolor{headingblue}{RGB}{0,0,0}
+\usepackage{newfloat}
+\usepackage{enumitem}
+\usepackage{etoolbox}
+\usepackage{ragged2e}
 
 \hypersetup{
   colorlinks=true,
@@ -38,204 +40,62 @@
   pdftitle={Jan-Sunwai AI Final Project Report},
   pdfauthor={Project Team},
   pdfsubject={Civic Grievance Redressal Platform},
-  pdfkeywords={FastAPI, React, MongoDB, Ollama, Civic AI}
+  pdfkeywords={FastAPI, React, MongoDB, Ollama, Civic AI},
+  bookmarksnumbered=true,
+  breaklinks=true
 }
 
-% ===== tocloft configuration for TOC/LOF/LOT formatting =====
-% Set TOC/LOF/LOT title formatting to 12pt bold
-\renewcommand{\contentsname}{Contents}
-\renewcommand{\listfigurename}{List of Figures}
-\renewcommand{\listtablename}{List of Tables}
+% ===== SPACING FIX =====
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{3pt}
+\flushbottom
 
-% Format TOC title styling
-\renewcommand{\cfttoctitlefont}{\bfseries\normalsize}
-% Format LOF title styling
-\renewcommand{\cftloftitlefont}{\bfseries\normalsize}
-% Format LOT title styling
-\renewcommand{\cftlottitlefont}{\bfseries\normalsize}
-
-% Set spacing before and after TOC/LOF/LOT titles
-\setlength{\cftbeforetoctitleskip}{0pt}
-\setlength{\cftaftertoctitleskip}{14pt}
-\setlength{\cftbeforeloftitleskip}{0pt}
-\setlength{\cftafterloftitleskip}{14pt}
-\setlength{\cftbeforelottitleskip}{0pt}
-\setlength{\cftafterlottitleskip}{14pt}
-
-% Set chapter entries in TOC to 12pt normal font
-\renewcommand{\cftchapfont}{\normalsize}
-\renewcommand{\cftchappagefont}{\normalsize}
-
-% Set section entries in TOC to 12pt normal font
-\renewcommand{\cftsecfont}{\normalsize}
-\renewcommand{\cftsecpagefont}{\normalsize}
-
-% Set subsection entries in TOC to 12pt normal font
-\renewcommand{\cftsubsecfont}{\normalsize}
-\renewcommand{\cftsubsecpagefont}{\normalsize}
-
-% Set subsubsection entries in TOC to 12pt normal font
-\renewcommand{\cftsubsubsecfont}{\normalsize}
-\renewcommand{\cftsubsubsecpagefont}{\normalsize}
-
-% Figure and Table entries in LOF/LOT to 12pt
-\renewcommand{\cftfigfont}{\normalsize}
-\renewcommand{\cftfigpagefont}{\normalsize}
-\renewcommand{\cfttabfont}{\normalsize}
-\renewcommand{\cfttabpagefont}{\normalsize}
-
-% Proper indentation for TOC entries (left-aligned as per style guide)
-\setlength{\cftchapindent}{0em}
-\setlength{\cftsecindent}{0.8em}
-\setlength{\cftsubsecindent}{1.6em}
-\setlength{\cftsubsubsecindent}{2.4em}
-
-% Leader dots spacing for readability
-\renewcommand{\cftdotsep}{1}
-% ===== End tocloft configuration =====
-
-\setstretch{1.15}
+% ===== LIST AND TABLE FORMATTING =====
 \setcounter{secnumdepth}{3}
 \setcounter{tocdepth}{3}
 \setlength{\headheight}{14.5pt}
-\setlength{\emergencystretch}{6em}
-\setlength{\parindent}{0pt}
-\setlength{\parskip}{6pt}
+\setlength{\emergencystretch}{2em}
 \setlength{\tabcolsep}{4pt}
 \setlength{\extrarowheight}{2pt}
 \renewcommand{\arraystretch}{1.2}
-\renewcommand{\toprule}{\hline}
-\renewcommand{\midrule}{\hline}
-\renewcommand{\bottomrule}{\hline}
 \renewcommand{\tabularxcolumn}[1]{>{\RaggedRight\arraybackslash}p{#1}}
-% Suppress parskip inside all table environments to prevent inconsistent row gaps
-\AtBeginEnvironment{table}{\small\setlength{\parskip}{0pt}}
-\AtEndEnvironment{table}{\normalsize}
-\AtBeginEnvironment{tabular}{\setlength{\parskip}{0pt}}
-\AtBeginEnvironment{tabularx}{\setlength{\parskip}{0pt}}
-\AtBeginEnvironment{longtable}{\small\setlength{\parskip}{0pt}}
-\AtEndEnvironment{longtable}{\normalsize}
 \setlist[itemize,1]{label=\textbullet,leftmargin=2.0em,labelsep=0.6em,itemsep=0.35em,topsep=0.35em,parsep=0pt,partopsep=0pt}
 \setlist[itemize,2]{label=\textendash,leftmargin=2.2em,labelsep=0.5em,itemsep=0.25em,topsep=0.25em,parsep=0pt,partopsep=0pt}
 \setlist[enumerate,1]{label=\arabic*.,leftmargin=2.2em,labelsep=0.6em,itemsep=0.35em,topsep=0.35em,parsep=0pt,partopsep=0pt}
-\setlist[enumerate,2]{label=\alph*),leftmargin=2.5em,labelsep=0.6em,itemsep=0.25em,topsep=0.25em,parsep=0pt,partopsep=0pt}
-\setlist[enumerate,3]{label=\roman*),leftmargin=2.8em,labelsep=0.6em,itemsep=0.2em,topsep=0.2em,parsep=0pt,partopsep=0pt}
-\floatstyle{plaintop}
-\restylefloat{table}
+\setlist[enumerate,2]{label=\alph{enumii}.,leftmargin=2.5em,labelsep=0.6em,itemsep=0.25em,topsep=0.25em,parsep=0pt,partopsep=0pt}
+\setlist[enumerate,3]{label=\roman{enumiii}.,leftmargin=2.8em,labelsep=0.6em,itemsep=0.2em,topsep=0.2em,parsep=0pt,partopsep=0pt}
 \captionsetup{position=bottom,skip=6pt}
 \captionsetup[figure]{position=bottom,skip=6pt}
 \captionsetup[table]{position=top,skip=6pt}
 \captionsetup[longtable]{position=top,skip=6pt}
+
 \AtBeginDocument{\justifying}
 \fussy
 
-% Screenshot float type — produces its own auto-generated List of Screenshots
-\DeclareFloatingEnvironment[
-    fileext=los,
-    listname={List of Screenshots},
-    name=Screenshot,
-    placement=H,
-    within=chapter
-]{screenshot}
-\restylefloat{screenshot}
-
-% Customize the List of Screenshots style to match TOC/LOF
-\renewcommand{\thescreenshot}{S \thechapter.\arabic{screenshot}}
-
-% tocloft configuration for screenshots
-\newlength{\screenshotlabelwidth}
-\settowidth{\screenshotlabelwidth}{Screenshot 9.99}
-\addtolength{\screenshotlabelwidth}{1.5em}
-
-
-% Define tocloft-compatible lengths for the custom screenshot float
-\makeatletter
-\newlength{\cftscreenshotindent}
-\newlength{\cftscreenshotnumwidth}
-\setlength{\cftscreenshotindent}{0em}
-\setlength{\cftscreenshotnumwidth}{\screenshotlabelwidth}
-% Manual definition of the list command to avoid conflict with newfloat/tocloft defaults
-\renewcommand{\listofscreenshots}{%
-  \clearpage
-  \phantomsection
-  {\centering\bfseries\fontsize{16}{19}\selectfont List of Screenshots\par}
-  \vspace{1.5em}
-  {\normalsize\setstretch{1.15}\@starttoc{los}}%
-}
-\makeatother
-
-
-\titleformat{\chapter}[block]
-  {\bfseries\fontsize{16}{19}\selectfont\centering\color{headingblue}}
-  {\chaptername\ \thechapter:}
-  {0.6em}
-  {}
-\titleformat{name=\chapter,numberless}[block]
-  {\bfseries\fontsize{16}{19}\selectfont\centering\color{headingblue}}
-  {}
-  {0pt}
-  {}
-\titlespacing*{\chapter}{0pt}{6pt}{14pt}
+% ===== HEADINGS =====
+\titleformat{\chapter}
+{\bfseries\fontsize{16}{19}\selectfont\centering}
+{\chaptername\ \thechapter:}{0.5em}{}
 
 \titleformat{\section}
-  {\bfseries\fontsize{14}{17}\selectfont\color{headingblue}}
-  {\thesection}
-  {0.8em}
-  {}
-\titlespacing*{\section}{0pt}{10pt}{6pt}
+{\bfseries\fontsize{14}{17}\selectfont}
+{\thesection}{0.5em}{}
 
 \titleformat{\subsection}
-  {\bfseries\fontsize{13}{16}\selectfont\color{headingblue}}
-  {\thesubsection}
-  {0.8em}
-  {}
-\titlespacing*{\subsection}{1.27cm}{8pt}{4pt}
+{\bfseries\fontsize{13}{16}\selectfont}
+{\thesubsection}{0.5em}{}
 
-\makeatletter
-\renewcommand{\tableofcontents}{%
-  \clearpage
-  \phantomsection
-  \addcontentsline{toc}{chapter}{Contents}
-  {\centering\bfseries\fontsize{16}{19}\selectfont Contents\par}
-  \vspace{1.5em}
-  {\normalsize\setstretch{1.15}\@starttoc{toc}}%
-}
-\renewcommand{\listoffigures}{%
-  \clearpage
-  \phantomsection
-  \addcontentsline{toc}{chapter}{List of Figures}
-  {\centering\bfseries\fontsize{16}{19}\selectfont List of Figures\par}
-  \vspace{1.5em}
-  {\normalsize\setstretch{1.15}\@starttoc{lof}}%
-}
-\renewcommand{\listoftables}{%
-  \clearpage
-  \phantomsection
-  \addcontentsline{toc}{chapter}{List of Tables}
-  {\centering\bfseries\fontsize{16}{19}\selectfont List of Tables\par}
-  \vspace{1.5em}
-  {\normalsize\setstretch{1.15}\@starttoc{lot}}%
-}
-\makeatother
 \titleformat{\subsubsection}
-  {\bfseries\fontsize{12}{14}\selectfont\color{headingblue}}
-  {\thesubsubsection}
-  {0.8em}
-  {}
-\titlespacing*{\subsubsection}{2.54cm}{6pt}{3pt}
+{\bfseries\fontsize{12}{14}\selectfont}
+{\thesubsubsection}{0.5em}{}
 
+% ===== PAGE NUMBER =====
 \pagestyle{fancy}
 \fancyhf{}
 \fancyfoot[C]{\thepage}
 \renewcommand{\headrulewidth}{0pt}
-\renewcommand{\footrulewidth}{0pt}
+
 \fancypagestyle{plain}{%
-  \fancyhf{}
-  \fancyfoot[C]{\thepage}
-  \renewcommand{\headrulewidth}{0pt}
-  \renewcommand{\footrulewidth}{0pt}
-}
-\fancypagestyle{romanfront}{%
   \fancyhf{}
   \fancyfoot[C]{\thepage}
   \renewcommand{\headrulewidth}{0pt}
@@ -243,35 +103,40 @@
 }
 
 \newcommand{\setromanfooterstyles}{%
-  \pagestyle{romanfront}
-  \fancypagestyle{plain}{%
-    \fancyhf{}
-    \fancyfoot[C]{\thepage}
-    \renewcommand{\headrulewidth}{0pt}
-    \renewcommand{\footrulewidth}{0pt}
-  }
+  \pagestyle{plain}
 }
 
 \newcommand{\setarabicfooterstyles}{%
-  \fancyhf{}
-  \fancyfoot[C]{\thepage}
-  \renewcommand{\headrulewidth}{0pt}
-  \renewcommand{\footrulewidth}{0pt}
   \pagestyle{fancy}
-  \fancypagestyle{plain}{%
-    \fancyhf{}
-    \fancyfoot[C]{\thepage}
-    \renewcommand{\headrulewidth}{0pt}
-    \renewcommand{\footrulewidth}{0pt}
-  }
 }
 
-\newcommand{\cnchapter}[1]{\textbf{#1}}
-\newcommand{\cnsection}[1]{\hspace*{0.8em}#1}
-\newcommand{\cnsubsection}[1]{\hspace*{1.6em}#1}
-\newcommand{\linkrow}[4]{\hyperlink{#1}{#2} & \hyperlink{#1}{#3} & \hyperlink{#1}{#4} \\ \hline}
-\newcommand{\linkrowref}[4]{\hyperref[#1]{#2} & \hyperref[#1]{#3} & \hyperref[#1]{#4} \\ \hline}
+% ===== TOC STYLE =====
+\renewcommand{\cftchappresnum}{Chapter\ }
+\renewcommand{\cftchapaftersnum}{: }
+\setlength{\cftchapnumwidth}{6em}
 
+\setlength{\cftchapindent}{0em}
+\setlength{\cftsecindent}{1.5em}
+\setlength{\cftsubsecindent}{3em}
+
+\renewcommand{\cftdotsep}{1}
+
+% ===== CENTERED CONTENTS TITLE =====
+\makeatletter
+\renewcommand{\tableofcontents}{
+  \clearpage
+  \phantomsection
+  {\centering\bfseries\fontsize{16}{19}\selectfont Contents\par}
+  \vspace{1em}
+  \@starttoc{toc}
+}
+\makeatother
+
+% ===== LIST NAMES =====
+\renewcommand{\listfigurename}{List of Figures}
+\renewcommand{\listtablename}{List of Tables}
+
+% ===== CUSTOM COMMANDS =====
 \newcommand{\placeholderfigure}[2]{
 \begin{figure}[H]
 \centering
@@ -284,23 +149,6 @@
 \end{figure}
 }
 
-\newcommand{\screenshotfigure}[3]{
-\begin{figure}[H]
-\centering
-\IfFileExists{#2}{
-  \includegraphics[width=0.96\textwidth,height=0.32\textheight,keepaspectratio]{#2}
-}{
-  \fbox{\begin{minipage}[c][0.32\textheight][c]{0.90\textwidth}
-  \centering
-  \textbf{Screenshot Placeholder}\\[0.5em]
-  \small Missing file: \path{#2}
-  \end{minipage}}
-}
-\caption{#3}
-\label{#1}
-\end{figure}
-}
-
 \newcommand{\screenshotcard}[5][]{%
 \begin{screenshot}[H]
 \centering
@@ -310,7 +158,7 @@
   \fbox{\begin{minipage}[c][0.26\textheight][c]{0.90\textwidth}
   \centering
   \textbf{Screenshot Placeholder}\\[0.5em]
-  \small Missing file: \path{#4}
+  \small Missing file: #4
   \end{minipage}}%
 }
 \ifstrempty{#1}{%
@@ -322,37 +170,56 @@
 \end{screenshot}
 }
 
+% ===== SCREENSHOTS =====
+\DeclareFloatingEnvironment[
+    fileext=los,
+    listname={List of Screenshots},
+    name=Screenshot
+]{screenshot}
+
+\renewcommand{\thescreenshot}{\thechapter.\arabic{screenshot}}
+
+% ===== DOCUMENT START =====
 \begin{document}
 
-
-
-\clearpage
 \pagenumbering{roman}
 \setromanfooterstyles
-% Institutional requirement: Cover page and Inner page (identical content)
+
+% ===== FRONT MATTER =====
 \input{frontmatter/inner_title_page}
-\clearpage
+\newpage
 \input{frontmatter/inner_title_page}
-\clearpage
+\newpage
+\input{frontmatter/dedication}
+\newpage
 \input{frontmatter/student_declaration}
-\clearpage
+\newpage
 \input{frontmatter/supervisor_certificate}
-\clearpage
+\newpage
 \input{frontmatter/company_certificate}
-\clearpage
+\newpage
 \input{frontmatter/acknowledgement}
-\clearpage
+\newpage
 \input{frontmatter/abstract}
-\clearpage
+\newpage
+
+% ===== TOC =====
 \tableofcontents
-\clearpage
+\newpage
+
+\addcontentsline{toc}{chapter}{List of Tables}
 \listoftables
-\clearpage
+\newpage
+
+\addcontentsline{toc}{chapter}{List of Figures}
 \listoffigures
-\clearpage
+\newpage
+
 \addcontentsline{toc}{chapter}{List of Screenshots}
 \listofscreenshots
+\newpage
 
+% ===== MAIN =====
 \pagenumbering{arabic}
 \setarabicfooterstyles
 
@@ -365,5 +232,6 @@
 \input{chapters/ch07_testing}
 \input{chapters/ch08_limitations_future_scope}
 \input{chapters/ch09_conclusion_references}
+\input{chapters/ch10_appendices}
 
 \end{document}

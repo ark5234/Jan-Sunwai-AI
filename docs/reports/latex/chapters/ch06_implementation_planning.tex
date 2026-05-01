@@ -35,30 +35,30 @@ This ensures that local verification and deployment handover use the same operat
 
 \section{Tools \& Technologies Used}
 
-\begin{longtable}{|p{0.20\textwidth}|p{0.23\textwidth}|p{0.49\textwidth}|}
+\begin{longtable}{p{0.20\textwidth}p{0.23\textwidth}p{0.49\textwidth}}
 \caption{Implementation Toolchain and Use Cases}\\
 \toprule
-\textbf{Category} & \textbf{Tool/Library} & \textbf{Implementation Use} \\ \hline
+\textbf{Category} & \textbf{Tool/Library} & \textbf{Implementation Use} \\ \midrule
 \midrule
 \endfirsthead
 \toprule
-\textbf{Category} & \textbf{Tool/Library} & \textbf{Implementation Use} \\ \hline
+\textbf{Category} & \textbf{Tool/Library} & \textbf{Implementation Use} \\ \midrule
 \midrule
 \endhead
-Backend Framework & FastAPI & Route definitions, dependency injection, validation, middleware pipeline \\ \hline
-Data Validation & Pydantic [15] & Request/response schema validation and structured models \\ \hline
-Auth and Security & python-jose, passlib[bcrypt] & Cookie-session auth, JWT compatibility support, and password hashing \\ \hline
-HTTP Testing & httpx & Async API smoke and integration checks \\ \hline
-Database Driver & Motor/PyMongo stack & MongoDB async operations and collection access \\ \hline
-AI Runtime & Ollama & Local vision and reasoning model invocation \\ \hline
-Image Handling & Pillow & Upload payload validation and EXIF processing \\ \hline
-Frontend Framework & React & Role-aware SPA component and page architecture \\ \hline
-Build Tool & Vite & Fast frontend development and optimized production build \\ \hline
-Client HTTP & Axios & Frontend API communication layer \\ \hline
-Routing & react-router-dom & Protected routes and role-based navigation \\ \hline
-Containerization & Docker + Compose & Reproducible orchestration of backend/frontend/database services \\ \hline
-QA Automation & pytest, locust & Unit/integration/security/resilience/load test execution \\ \hline
-Documentation & Markdown + LaTeX & Runbooks, architecture docs, and final academic report \\ \hline
+Backend Framework & FastAPI & Route definitions, dependency injection, validation, middleware pipeline \\ \midrule
+Data Validation & Pydantic [15] & Request/response schema validation and structured models \\ \midrule
+Auth and Security & python-jose, passlib[bcrypt] & Cookie-session auth, JWT compatibility support, and password hashing \\ \midrule
+HTTP Testing & httpx & Async API smoke and integration checks \\ \midrule
+Database Driver & Motor/PyMongo stack & MongoDB async operations and collection access \\ \midrule
+AI Runtime & Ollama & Local vision and reasoning model invocation \\ \midrule
+Image Handling & Pillow & Upload payload validation and EXIF processing \\ \midrule
+Frontend Framework & React & Role-aware SPA component and page architecture \\ \midrule
+Build Tool & Vite & Fast frontend development and optimized production build \\ \midrule
+Client HTTP & Axios & Frontend API communication layer \\ \midrule
+Routing & react-router-dom & Protected routes and role-based navigation \\ \midrule
+Containerization & Docker + Compose & Reproducible orchestration of backend/frontend/database services \\ \midrule
+QA Automation & pytest, locust & Unit/integration/security/resilience/load test execution \\ \midrule
+Documentation & Markdown + LaTeX & Runbooks, architecture docs, and final academic report \\ \midrule
 \bottomrule
 \end{longtable}
 
@@ -198,17 +198,17 @@ Deliverables included the production compose profile, deployment guides, and API
 \centering
 \begin{tabularx}{\textwidth}{|p{0.10\textwidth}|p{0.33\textwidth}|X|}
 \toprule
-\textbf{Step} & \textbf{Implementation Activity} & \textbf{Dependency Consideration} \\ \hline
+\textbf{Step} & \textbf{Implementation Activity} & \textbf{Dependency Consideration} \\ \midrule
 \midrule
-1 & Establish backend skeleton and DB connectivity & Required before auth and complaint persistence \\ \hline
-2 & Build auth/session primitives & Required before protected API and role-specific frontend routes \\ \hline
-3 & Implement analyze pipeline and storage handling & Required before citizen intake flow can be tested end-to-end \\ \hline
-4 & Build frontend analyze/result workflow & Depends on stable analyze payload and auth behavior \\ \hline
-5 & Add assignment and lifecycle controls & Depends on complaint schema maturity and worker metadata \\ \hline
-6 & Add triage/analytics and governance endpoints & Depends on reliable complaint state and metadata richness \\ \hline
-7 & Add security and reliability hardening & Should follow core flow stability to avoid hidden regressions \\ \hline
-8 & Run tests and UAT cycles & Depends on complete feature slices and stable environments \\ \hline
-9 & Prepare production profile and handover docs & Depends on validated security/performance baseline \\ \hline
+1 & Establish backend skeleton and DB connectivity & Required before auth and complaint persistence \\ \midrule
+2 & Build auth/session primitives & Required before protected API and role-specific frontend routes \\ \midrule
+3 & Implement analyze pipeline and storage handling & Required before citizen intake flow can be tested end-to-end \\ \midrule
+4 & Build frontend analyze/result workflow & Depends on stable analyze payload and auth behavior \\ \midrule
+5 & Add assignment and lifecycle controls & Depends on complaint schema maturity and worker metadata \\ \midrule
+6 & Add triage/analytics and governance endpoints & Depends on reliable complaint state and metadata richness \\ \midrule
+7 & Add security and reliability hardening & Should follow core flow stability to avoid hidden regressions \\ \midrule
+8 & Run tests and UAT cycles & Depends on complete feature slices and stable environments \\ \midrule
+9 & Prepare production profile and handover docs & Depends on validated security/performance baseline \\ \midrule
 \bottomrule
 \end{tabularx}
 \caption{Implementation Sequence with Dependency Notes}
@@ -234,16 +234,16 @@ A notable planning correction during implementation was moving to one canonical 
 \centering
 \begin{tabularx}{\textwidth}{|p{0.27\textwidth}|X|}
 \toprule
-\textbf{Gate} & \textbf{Acceptance Criterion} \\ \hline
+\textbf{Gate} & \textbf{Acceptance Criterion} \\ \midrule
 \midrule
-Functional API baseline & Health endpoints and core auth routes return expected responses \\ \hline
-Analyze pipeline gate & Valid image upload produces structured classification and draft status output \\ \hline
-Lifecycle gate & Complaint create/update/assignment/notification chain works end-to-end \\ \hline
-Security gate & Upload hardening, sanitization, role checks, and headers validated in tests \\ \hline
-Reliability gate & Graceful fallback behavior under model/DB faults verified \\ \hline
-Deployment gate & Compose stack health checks pass and service topology is reproducible \\ \hline
-UAT gate & Citizen and admin scripts complete without blocking defects \\ \hline
-Documentation gate & Deployment, API, user manual, and report artifacts synchronized \\ \hline
+Functional API baseline & Health endpoints and core auth routes return expected responses \\ \midrule
+Analyze pipeline gate & Valid image upload produces structured classification and draft status output \\ \midrule
+Lifecycle gate & Complaint create/update/assignment/notification chain works end-to-end \\ \midrule
+Security gate & Upload hardening, sanitization, role checks, and headers validated in tests \\ \midrule
+Reliability gate & Graceful fallback behavior under model/DB faults verified \\ \midrule
+Deployment gate & Compose stack health checks pass and service topology is reproducible \\ \midrule
+UAT gate & Citizen and admin scripts complete without blocking defects \\ \midrule
+Documentation gate & Deployment, API, user manual, and report artifacts synchronized \\ \midrule
 \bottomrule
 \end{tabularx}
 \caption{Implementation Quality Gates}
@@ -262,23 +262,23 @@ This section captures implementation-level observations that are useful for main
 Each router group below shows how its implementation responsibilities were planned and what specific engineering decisions arose during delivery:
 
 
-\begin{longtable}{|p{0.22\textwidth}|p{0.30\textwidth}|p{0.40\textwidth}|}
+\begin{longtable}{p{0.22\textwidth}p{0.30\textwidth}p{0.40\textwidth}}
 \caption{Router-Level Implementation Planning Notes}\\
 \toprule
-\textbf{Router Group} & \textbf{Core Responsibilities} & \textbf{Planning/Implementation Considerations} \\ \hline
+\textbf{Router Group} & \textbf{Core Responsibilities} & \textbf{Planning/Implementation Considerations} \\ \midrule
 \midrule
 \endfirsthead
 \toprule
-\textbf{Router Group} & \textbf{Core Responsibilities} & \textbf{Planning/Implementation Considerations} \\ \hline
+\textbf{Router Group} & \textbf{Core Responsibilities} & \textbf{Planning/Implementation Considerations} \\ \midrule
 \midrule
 \endhead
-users & registration, login, profile update, password reset & Required generic forgot-password response to prevent account enumeration; reset tokens persisted as hashes with expiry lifecycle \\ \hline
-complaints & analyze, create, list, detail, update, transfer, escalate & Needed consistent status-history append behavior and role-aware update guards; analyze route required graceful 503 degrade path \\ \hline
-workers & assignment views, approval/rejection, service-area updates & Needed separation between worker self-actions and admin governance actions; assignment diagnostics endpoint added for ops clarity \\ \hline
-notifications & list, unread count, mark single/all read & Badge consistency required deterministic unread counter behavior and ownership checks \\ \hline
-triage & review queue and decision endpoint & Admin-only corrective path for low-confidence AI cases; decision audit notes required \\ \hline
-analytics/public & dashboards, heatmap, anonymized public listing & Query aggregation planning required pagination defaults and safe exposure model for public feed \\ \hline
-health & live/ready/models/gpu probes & Needed operationally meaningful readiness semantics and low-overhead liveness behavior \\ \hline
+users & registration, login, profile update, password reset & Required generic forgot-password response to prevent account enumeration; reset tokens persisted as hashes with expiry lifecycle \\ \midrule
+complaints & analyze, create, list, detail, update, transfer, escalate & Needed consistent status-history append behavior and role-aware update guards; analyze route required graceful 503 degrade path \\ \midrule
+workers & assignment views, approval/rejection, service-area updates & Needed separation between worker self-actions and admin governance actions; assignment diagnostics endpoint added for ops clarity \\ \midrule
+notifications & list, unread count, mark single/all read & Badge consistency required deterministic unread counter behavior and ownership checks \\ \midrule
+triage & review queue and decision endpoint & Admin-only corrective path for low-confidence AI cases; decision audit notes required \\ \midrule
+analytics/public & dashboards, heatmap, anonymized public listing & Query aggregation planning required pagination defaults and safe exposure model for public feed \\ \midrule
+health & live/ready/models/gpu probes & Needed operationally meaningful readiness semantics and low-overhead liveness behavior \\ \midrule
 \bottomrule
 \end{longtable}
 
@@ -291,14 +291,14 @@ The matrix below details the specific planning components necessary to operation
 \centering
 \begin{tabularx}{\textwidth}{|p{0.24\textwidth}|X|}
 \toprule
-\textbf{Service} & \textbf{Planning Note} \\ \hline
+\textbf{Service} & \textbf{Planning Note} \\ \midrule
 \midrule
-Assignment service & Location-aware proximity filtering with fallback behavior when location metadata is missing \\ \hline
-Storage service & Validation pipeline designed as extension + content-type + magic-number + payload decode sequence \\ \hline
-Sanitization service & Planned as reusable utility to keep payload cleaning centralized and testable \\ \hline
-LLM queue service & Introduced to absorb long-running draft generation and preserve responsive user experience \\ \hline
-Escalation loop & Planned as background process with authority parent mapping and timeline updates \\ \hline
-Email service & Implemented as environment-driven stub/relay abstraction for gradual production integration \\ \hline
+Assignment service & Location-aware proximity filtering with fallback behavior when location metadata is missing \\ \midrule
+Storage service & Validation pipeline designed as extension + content-type + magic-number + payload decode sequence \\ \midrule
+Sanitization service & Planned as reusable utility to keep payload cleaning centralized and testable \\ \midrule
+LLM queue service & Introduced to absorb long-running draft generation and preserve responsive user experience \\ \midrule
+Escalation loop & Planned as background process with authority parent mapping and timeline updates \\ \midrule
+Email service & Implemented as environment-driven stub/relay abstraction for gradual production integration \\ \midrule
 \bottomrule
 \end{tabularx}
 \caption{Service-Level Implementation Planning}
@@ -317,15 +317,15 @@ The matrix below details the specific planning components necessary to operation
 \centering
 \begin{tabularx}{\textwidth}{|p{0.12\textwidth}|p{0.24\textwidth}|X|}
 \toprule
-\textbf{Stage} & \textbf{Objective} & \textbf{Execution Checklist} \\ \hline
+\textbf{Stage} & \textbf{Objective} & \textbf{Execution Checklist} \\ \midrule
 \midrule
-R1 & Environment readiness & Verify host runtime versions, model availability, and environment variables \\ \hline
-R2 & Service bootstrap & Start MongoDB and backend; validate health/live and health/ready probes \\ \hline
-R3 & Frontend linkage & Start frontend/proxy path and verify API base routing behavior \\ \hline
-R4 & Functional smoke & Execute login, analyze, complaint creation, and notification badge checks \\ \hline
-R5 & Governance smoke & Validate admin triage, worker assignment controls, and export flow \\ \hline
-R6 & Hardening validation & Execute security/resilience test scripts and capture baseline metrics \\ \hline
-R7 & Handover sign-off & Archive logs, backups, and runbook evidence for deployment package \\ \hline
+R1 & Environment readiness & Verify host runtime versions, model availability, and environment variables \\ \midrule
+R2 & Service bootstrap & Start MongoDB and backend; validate health/live and health/ready probes \\ \midrule
+R3 & Frontend linkage & Start frontend/proxy path and verify API base routing behavior \\ \midrule
+R4 & Functional smoke & Execute login, analyze, complaint creation, and notification badge checks \\ \midrule
+R5 & Governance smoke & Validate admin triage, worker assignment controls, and export flow \\ \midrule
+R6 & Hardening validation & Execute security/resilience test scripts and capture baseline metrics \\ \midrule
+R7 & Handover sign-off & Archive logs, backups, and runbook evidence for deployment package \\ \midrule
 \bottomrule
 \end{tabularx}
 \caption{Deployment Rollout Stages}
@@ -344,24 +344,24 @@ Rollback planning was included to avoid high-impact downtime during deployment c
 
 \section{Operational Monitoring Plan}
 
-\begin{longtable}{|p{0.25\textwidth}|p{0.25\textwidth}|p{0.38\textwidth}|}
+\begin{longtable}{p{0.25\textwidth}p{0.25\textwidth}p{0.38\textwidth}}
 \caption{Operational Monitoring Matrix}\\
 \toprule
-\textbf{Signal} & \textbf{Collection Source} & \textbf{Operational Interpretation} \\ \hline
+\textbf{Signal} & \textbf{Collection Source} & \textbf{Operational Interpretation} \\ \midrule
 \midrule
 \endfirsthead
 \toprule
-\textbf{Signal} & \textbf{Collection Source} & \textbf{Operational Interpretation} \\ \hline
+\textbf{Signal} & \textbf{Collection Source} & \textbf{Operational Interpretation} \\ \midrule
 \midrule
 \endhead
-API process time & Response header \texttt{X-Process-Time} & Detect slow endpoints and regressions after deployments \\ \hline
-Readiness status & /health/ready endpoint & Indicates dependency-level degradation, mainly database health \\ \hline
-Model availability & /health/models endpoint & Confirms runtime model inventory and inference readiness \\ \hline
-GPU/model state & /health/gpu endpoint & Indicates active model and VRAM-related load behavior \\ \hline
-Notification backlog & unread-count behavior and list volume & Detects delayed event propagation or read-state anomalies \\ \hline
-Assignment queue growth & open/unassigned complaints and worker status & Helps identify staffing bottlenecks and area mismatch \\ \hline
-Triage queue size & low-confidence complaint count & Indicates classifier uncertainty trend and review load \\ \hline
-Error logs & rotating backend logs & Captures fault signatures for rapid remediation \\ \hline
+API process time & Response header \texttt{X-Process-Time} & Detect slow endpoints and regressions after deployments \\ \midrule
+Readiness status & /health/ready endpoint & Indicates dependency-level degradation, mainly database health \\ \midrule
+Model availability & /health/models endpoint & Confirms runtime model inventory and inference readiness \\ \midrule
+GPU/model state & /health/gpu endpoint & Indicates active model and VRAM-related load behavior \\ \midrule
+Notification backlog & unread-count behavior and list volume & Detects delayed event propagation or read-state anomalies \\ \midrule
+Assignment queue growth & open/unassigned complaints and worker status & Helps identify staffing bottlenecks and area mismatch \\ \midrule
+Triage queue size & low-confidence complaint count & Indicates classifier uncertainty trend and review load \\ \midrule
+Error logs & rotating backend logs & Captures fault signatures for rapid remediation \\ \midrule
 \bottomrule
 \end{longtable}
 

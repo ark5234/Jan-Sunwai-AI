@@ -120,12 +120,12 @@ Security and compliance maturity goals represent the delta between the current a
 \centering
 \begin{tabularx}{\textwidth}{|p{0.18\textwidth}|p{0.30\textwidth}|X|}
 \toprule
-\textbf{Horizon} & \textbf{Priority Area} & \textbf{Expected Deliverables} \\ \hline
+\textbf{Horizon} & \textbf{Priority Area} & \textbf{Expected Deliverables} \\ \midrule
 \midrule
-0--3 months & Stabilization and hardening & SMTP integration, expanded tests, deployment checklist closure \\ \hline
-3--6 months & AI and workflow maturity & Better triage intelligence, SLA policy engine, richer analytics \\ \hline
-6--12 months & Scale and institutionalization & Distributed queueing, observability stack, multi-zone deployment model \\ \hline
-12+ months & Advanced governance intelligence & Predictive demand analytics and department workload forecasting \\ \hline
+0--3 months & Stabilization and hardening & SMTP integration, expanded tests, deployment checklist closure \\ \midrule
+3--6 months & AI and workflow maturity & Better triage intelligence, SLA policy engine, richer analytics \\ \midrule
+6--12 months & Scale and institutionalization & Distributed queueing, observability stack, multi-zone deployment model \\ \midrule
+12+ months & Advanced governance intelligence & Predictive demand analytics and department workload forecasting \\ \midrule
 \bottomrule
 \end{tabularx}
 \caption{Indicative Post-Submission Roadmap}
@@ -133,36 +133,36 @@ Security and compliance maturity goals represent the delta between the current a
 
 \section{Risk-Prioritized Improvement Backlog}
 
-\begin{longtable}{|p{0.10\textwidth}|p{0.30\textwidth}|p{0.13\textwidth}|p{0.13\textwidth}|p{0.24\textwidth}|}
+\begin{longtable}{p{0.10\textwidth}p{0.30\textwidth}p{0.13\textwidth}p{0.13\textwidth}p{0.24\textwidth}}
 \caption{Future Backlog Prioritization Matrix}\\
 \toprule
-\textbf{ID} & \textbf{Improvement Item} & \textbf{Impact} & \textbf{Effort} & \textbf{Suggested Horizon} \\ \hline
+\textbf{ID} & \textbf{Improvement Item} & \textbf{Impact} & \textbf{Effort} & \textbf{Suggested Horizon} \\ \midrule
 \midrule
 \endfirsthead
 \toprule
-\textbf{ID} & \textbf{Improvement Item} & \textbf{Impact} & \textbf{Effort} & \textbf{Suggested Horizon} \\ \hline
+\textbf{ID} & \textbf{Improvement Item} & \textbf{Impact} & \textbf{Effort} & \textbf{Suggested Horizon} \\ \midrule
 \midrule
 \endhead
-FB-01 & SMTP relay production integration with delivery audit logs & High & Medium & 0--3 months \\ \hline
-FB-02 & Centralized secrets management and rotation policy & High & Medium & 0--6 months \\ \hline
-FB-03 & Distributed queue broker for LLM jobs & High & High & 3--9 months \\ \hline
-FB-04 & Expanded language support in generated drafts & Medium & Medium & 3--6 months \\ \hline
-FB-05 & Domain-adapted classifier tuning dataset & High & High & 6--12 months \\ \hline
-FB-06 & Duplicate complaint detection using embeddings & Medium & High & 6--12 months \\ \hline
-FB-07 & SLA rules engine with department-specific thresholds & High & Medium & 3--9 months \\ \hline
-FB-08 & Escalation policy simulator for governance review & Medium & Medium & 6--12 months \\ \hline
-FB-09 & Citizen voice intake and transcription & Medium & High & 9--15 months \\ \hline
-FB-10 & Geo-aware workload balancing with travel-time estimation & Medium & High & 6--12 months \\ \hline
-FB-11 & Real-time websocket notification stream & Medium & Medium & 3--6 months \\ \hline
-FB-12 & Expanded public analytics visualizations & Medium & Medium & 3--9 months \\ \hline
-FB-13 & Multi-tenant authority hierarchy support & High & High & 9--18 months \\ \hline
-FB-14 & Formal accessibility conformance audit (WCAG) & High & Medium & 0--6 months \\ \hline
-FB-15 & Integrated vulnerability scanning in CI pipeline & High & Low & 0--3 months \\ \hline
-FB-16 & Observability stack with trace correlation & High & Medium & 3--9 months \\ \hline
-FB-17 & Offline-first synchronization for field staff app mode & Medium & High & 9--18 months \\ \hline
-FB-18 & Complaint closure quality scoring and follow-up loop & Medium & Medium & 3--9 months \\ \hline
-FB-19 & Auto-generated administrative weekly digest reports & Low & Low & 0--3 months \\ \hline
-FB-20 & Predictive hotspot forecasting for civic incidents & Medium & High & 12+ months \\ \hline
+FB-01 & SMTP relay production integration with delivery audit logs & High & Medium & 0--3 months \\ \midrule
+FB-02 & Centralized secrets management and rotation policy & High & Medium & 0--6 months \\ \midrule
+FB-03 & Distributed queue broker for LLM jobs & High & High & 3--9 months \\ \midrule
+FB-04 & Expanded language support in generated drafts & Medium & Medium & 3--6 months \\ \midrule
+FB-05 & Domain-adapted classifier tuning dataset & High & High & 6--12 months \\ \midrule
+FB-06 & Duplicate complaint detection using embeddings & Medium & High & 6--12 months \\ \midrule
+FB-07 & SLA rules engine with department-specific thresholds & High & Medium & 3--9 months \\ \midrule
+FB-08 & Escalation policy simulator for governance review & Medium & Medium & 6--12 months \\ \midrule
+FB-09 & Citizen voice intake and transcription & Medium & High & 9--15 months \\ \midrule
+FB-10 & Geo-aware workload balancing with travel-time estimation & Medium & High & 6--12 months \\ \midrule
+FB-11 & Real-time websocket notification stream & Medium & Medium & 3--6 months \\ \midrule
+FB-12 & Expanded public analytics visualizations & Medium & Medium & 3--9 months \\ \midrule
+FB-13 & Multi-tenant authority hierarchy support & High & High & 9--18 months \\ \midrule
+FB-14 & Formal accessibility conformance audit (WCAG) & High & Medium & 0--6 months \\ \midrule
+FB-15 & Integrated vulnerability scanning in CI pipeline & High & Low & 0--3 months \\ \midrule
+FB-16 & Observability stack with trace correlation & High & Medium & 3--9 months \\ \midrule
+FB-17 & Offline-first synchronization for field staff app mode & Medium & High & 9--18 months \\ \midrule
+FB-18 & Complaint closure quality scoring and follow-up loop & Medium & Medium & 3--9 months \\ \midrule
+FB-19 & Auto-generated administrative weekly digest reports & Low & Low & 0--3 months \\ \midrule
+FB-20 & Predictive hotspot forecasting for civic incidents & Medium & High & 12+ months \\ \midrule
 \bottomrule
 \end{longtable}
 

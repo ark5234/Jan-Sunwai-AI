@@ -65,28 +65,28 @@ This approach was chosen over a strict waterfall model because AI behavior and U
 The milestone table below maps each delivery phase to its planned completion gate and primary acceptance criterion.
 
 
-\begin{longtable}{|p{0.12\textwidth}|p{0.24\textwidth}|p{0.43\textwidth}|p{0.13\textwidth}|}
+\begin{longtable}{p{0.12\textwidth}p{0.24\textwidth}p{0.43\textwidth}p{0.13\textwidth}}
 \caption{Milestone Summary and Deliverables}\\
 \toprule
-\textbf{Window} & \textbf{Theme} & \textbf{Key Deliverables} & \textbf{Status} \\ \hline
+\textbf{Window} & \textbf{Theme} & \textbf{Key Deliverables} & \textbf{Status} \\
 \midrule
 \endfirsthead
 \toprule
-\textbf{Window} & \textbf{Theme} & \textbf{Key Deliverables} & \textbf{Status} \\ \hline
+\textbf{Window} & \textbf{Theme} & \textbf{Key Deliverables} & \textbf{Status} \\
 \midrule
 \endhead
-Weeks 1--2 & Foundation & Repo setup, environment bootstrap, backend skeleton, DB connectivity, auth schema, complaint schema, initial CRUD and upload service & Completed \\ \hline
-Weeks 3--5 & AI Pipeline & Model research, classifier iterations, geotagging, reverse geocoding, generation service, analyze endpoint integration & Completed \\ \hline
-Week 6 & Frontend Base & Routing, upload flow, analyze hook, result view, integration with backend auth and analyze pipeline & Completed \\ \hline
-Week 7 & Flow Closure & Map marker improvements, local draft persistence, error boundary, 404 route, full persona walkthrough & Completed \\ \hline
-Week 8 & Security Layer & Upload hardening, rate limiting, sanitization, CORS lockdown, security headers, index hardening & Completed \\ \hline
-Week 9 & NDMC Feature Pack & Worker panel, assignment engine, audit trail, analytics/heatmap, SLA badges, bulk actions/exports & Completed \\ \hline
-Week 10 & Notification and Communication & Navbar badge, status-triggered notifications, email stub, forgot/reset password, profile editing, E2E notification chain test & Completed \\ \hline
-Week 11 & Performance and Reliability & Image compression, lazy loading, graceful 503 degrade, profiling, resilience tests & Completed \\ \hline
-Week 12 & Production Hardening & Docker production files, compose profile, env plan, API versioning, backup strategy, UI audit & Completed \\ \hline
-Weeks 13--14 & Testing and Pre-Handover & Unit/integration/security/load tests, mobile fixes, handover guide, API reference, repository cleanup, CI workflows & Completed \\ \hline
-Weeks 15--16 & UAT and Staging Validation & Clean deploy simulation, production verification, UAT persona runs, feedback loop and polish pass & Completed \\ \hline
-Weeks 17--18 & Reporting and Submission & Technical report artifacts, screenshots, presentation, final submission hygiene and release tagging & Completed \\ \hline
+Weeks 1--2 & Foundation & Repo setup, environment bootstrap, backend skeleton, DB connectivity, auth schema, complaint schema, initial CRUD and upload service & Completed \\
+Weeks 3--5 & AI Pipeline & Model research, classifier iterations, geotagging, reverse geocoding, generation service, analyze endpoint integration & Completed \\
+Week 6 & Frontend Base & Routing, upload flow, analyze hook, result view, integration with backend auth and analyze pipeline & Completed \\
+Week 7 & Flow Closure & Map marker improvements, local draft persistence, error boundary, 404 route, full persona walkthrough & Completed \\
+Week 8 & Security Layer & Upload hardening, rate limiting, sanitization, CORS lockdown, security headers, index hardening & Completed \\
+Week 9 & NDMC Feature Pack & Worker panel, assignment engine, audit trail, analytics/heatmap, SLA badges, bulk actions/exports & Completed \\
+Week 10 & Notification and Communication & Navbar badge, status-triggered notifications, email stub, forgot/reset password, profile editing, E2E notification chain test & Completed \\
+Week 11 & Performance and Reliability & Image compression, lazy loading, graceful 503 degrade, profiling, resilience tests & Completed \\
+Week 12 & Production Hardening & Docker production files, compose profile, env plan, API versioning, backup strategy, UI audit & Completed \\
+Weeks 13--14 & Testing and Pre-Handover & Unit/integration/security/load tests, mobile fixes, handover guide, API reference, repository cleanup, CI workflows & Completed \\
+Weeks 15--16 & UAT and Staging Validation & Clean deploy simulation, production verification, UAT persona runs, feedback loop and polish pass & Completed \\
+Weeks 17--18 & Reporting and Submission & Technical report artifacts, screenshots, presentation, final submission hygiene and release tagging & Completed \\
 \bottomrule
 \end{longtable}
 
@@ -117,18 +117,18 @@ The structured breakdown below maps the project lifecycle into actionable, track
 
 \begin{table}[H]
 \centering
-\begin{tabularx}{\textwidth}{|p{0.26\textwidth}|X|}
+\begin{tabularx}{\textwidth}{p{0.26\textwidth}X}
 \toprule
-\textbf{Role Area} & \textbf{Responsibilities} \\ \hline
+\textbf{Role Area} & \textbf{Responsibilities} \\
 \midrule
-Backend Engineering & API design, schema validation, business logic, role authorization, lifecycle transitions, notification hooks \\ \hline
-Frontend Engineering & Route architecture, role dashboards, analyze/result flow, user session handling, responsive behavior \\ \hline
-AI and Classification & Vision model integration, rule engine tuning, reasoning fallback, draft generation quality checks \\ \hline
-Data and Persistence & MongoDB collection design, indexes, query access paths, reset token TTL and audit metadata \\ \hline
-Security and Reliability & Input sanitization, upload hardening, CORS and headers, degrade behavior, readiness/liveness semantics \\ \hline
-Testing and QA & Unit and integration tests, resilience and security validation, load profiling, UAT scripts \\ \hline
-DevOps and Deployment & Compose consolidation, environment normalization, production verification scripts, backup runbooks \\ \hline
-Documentation and Handover & API reference, deployment guides, user manual, architecture and report compilation \\ \hline
+Backend Engineering & API design, schema validation, business logic, role authorization, lifecycle transitions, notification hooks \\
+Frontend Engineering & Route architecture, role dashboards, analyze/result flow, user session handling, responsive behavior \\
+AI and Classification & Vision model integration, rule engine tuning, reasoning fallback, draft generation quality checks \\
+Data and Persistence & MongoDB collection design, indexes, query access paths, reset token TTL and audit metadata \\
+Security and Reliability & Input sanitization, upload hardening, CORS and headers, degrade behavior, readiness/liveness semantics \\
+Testing and QA & Unit and integration tests, resilience and security validation, load profiling, UAT scripts \\
+DevOps and Deployment & Compose consolidation, environment normalization, production verification scripts, backup runbooks \\
+Documentation and Handover & API reference, deployment guides, user manual, architecture and report compilation \\
 \bottomrule
 \end{tabularx}
 \caption{Role Responsibility Matrix (Project Execution)}
@@ -150,24 +150,24 @@ Dependency risks were controlled through health endpoints, fallback behaviors, a
 
 \section{Risk Management}
 
-\begin{longtable}{|p{0.24\textwidth}|p{0.15\textwidth}|p{0.15\textwidth}|p{0.38\textwidth}|}
+\begin{longtable}{p{0.24\textwidth}p{0.15\textwidth}p{0.15\textwidth}p{0.38\textwidth}}
 \caption{Risk Register and Mitigation Plan}\\
 \toprule
-\textbf{Risk} & \textbf{Likelihood} & \textbf{Impact} & \textbf{Mitigation} \\ \hline
+\textbf{Risk} & \textbf{Likelihood} & \textbf{Impact} & \textbf{Mitigation} \\ \midrule
 \midrule
 \endfirsthead
 \toprule
-\textbf{Risk} & \textbf{Likelihood} & \textbf{Impact} & \textbf{Mitigation} \\ \hline
+\textbf{Risk} & \textbf{Likelihood} & \textbf{Impact} & \textbf{Mitigation} \\ \midrule
 \midrule
 \endhead
-Model unavailability or timeout & Medium & High & Multi-tier vision fallback, queue-based generation, retryable 503 responses \\ \hline
-Wrong department classification & Medium & High & Deterministic rule engine, triage queue, admin correction workflow \\ \hline
-Invalid/malicious uploads & Medium & High & Extension + MIME + magic number + image decode validation, max size enforcement \\ \hline
-Unauthorized route access & Low & High & Cookie-session auth (JWT compatibility), role-gated dependencies, integration tests for permission boundaries \\ \hline
-Configuration drift across environments & Medium & Medium & Unified backend environment strategy and scripted deployment checks \\ \hline
-Notification inconsistency & Low & Medium & Automated notification-chain tests and mark-all-read verification \\ \hline
-Performance degradation under load & Medium & Medium & Profiling, timing logs, load-testing matrix, controlled fallback behavior \\ \hline
-Documentation mismatch at handover & Medium & Medium & NDMC deployment guide, API reference sync, verification procedure chapter \\ \hline
+Model unavailability or timeout & Medium & High & Multi-tier vision fallback, queue-based generation, retryable 503 responses \\ \midrule
+Wrong department classification & Medium & High & Deterministic rule engine, triage queue, admin correction workflow \\ \midrule
+Invalid/malicious uploads & Medium & High & Extension + MIME + magic number + image decode validation, max size enforcement \\ \midrule
+Unauthorized route access & Low & High & Cookie-session auth (JWT compatibility), role-gated dependencies, integration tests for permission boundaries \\ \midrule
+Configuration drift across environments & Medium & Medium & Unified backend environment strategy and scripted deployment checks \\ \midrule
+Notification inconsistency & Low & Medium & Automated notification-chain tests and mark-all-read verification \\ \midrule
+Performance degradation under load & Medium & Medium & Profiling, timing logs, load-testing matrix, controlled fallback behavior \\ \midrule
+Documentation mismatch at handover & Medium & Medium & NDMC deployment guide, API reference sync, verification procedure chapter \\ \midrule
 \bottomrule
 \end{longtable}
 

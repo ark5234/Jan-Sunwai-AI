@@ -1,0 +1,31 @@
+\chapter*{List of Definitions}
+\addcontentsline{toc}{chapter}{List of Definitions}
+\label{chap:list-definitions}
+
+\begin{longtable}{p{0.30\textwidth}p{0.64\textwidth}}
+\hline
+\textbf{Term} & \textbf{Definition} \\ \hline
+\endfirsthead
+\hline
+\textbf{Term} & \textbf{Definition} \\ \hline
+\endhead
+Civic Complaint & A citizen-reported issue related to municipal infrastructure, utilities, sanitation, public safety, or governance services. \\ \hline
+Complaint Lifecycle & Ordered state progression of a complaint such as Open, In Progress, Resolved, and Rejected. \\ \hline
+Status History & Auditable log of state changes with timestamp, actor identity, and note. \\ \hline
+Authority Routing & Mapping from classified category to responsible authority identifier and escalation parent. \\ \hline
+Triage Queue & Review queue for low-confidence AI outputs requiring administrator decision. \\ \hline
+Service Area & Worker-specific geospatial zone defined by latitude, longitude, and radius in kilometers. \\ \hline
+Auto-Assignment & Rule-based process selecting an eligible worker based on department, availability, and workload. \\ \hline
+Escalation Loop & Background process that pushes unresolved complaints to higher authorities when SLA conditions fail. \\ \hline
+Rule Engine & Deterministic keyword and scoring logic used to improve category stability before optional LLM reasoning. \\ \hline
+Hybrid Pipeline & Multi-stage architecture combining vision extraction, deterministic rules, and selective reasoning model invocation. \\ \hline
+Draft Generation & AI-assisted creation of formal grievance text from image evidence and extracted metadata. \\ \hline
+Graceful Degradation & Controlled failure behavior where the API returns meaningful retryable errors without service crash. \\ \hline
+Magic Number Validation & File integrity check that verifies image binary headers against extension and MIME type. \\ \hline
+Public Transparency Feed & Anonymized read-only endpoint exposing selected complaint records for public visibility. \\ \hline
+Readiness Probe & Endpoint validating dependency availability, especially MongoDB and model runtime health. \\ \hline
+Rate Limiting & Request throttling control to mitigate abuse and resource exhaustion. \\ \hline
+Token Hashing & Storage of reset-token digest instead of raw token to reduce credential leakage risk. \\ \hline
+Canonical Taxonomy & Standardized department labels used across classifier output, dashboards, and routing. \\ \hline
+Operational Governance & Administrative controls for approvals, transfers, notes, audit review, and reporting. \\ \hline
+\end{longtable}
