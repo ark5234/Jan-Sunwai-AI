@@ -537,43 +537,20 @@ class CivicClassifier:
 
             # Prompt strings — defined once, selected per tier inside the loop
             _json_prompt = (
-                "You are a civic-issue vision analyst for Indian municipal complaints. "
-                "Analyze the image and return strict JSON only.\n\n"
+                "You are an AI vision assistant analyzing images of civic issues. Analyze the image carefully and return ONLY valid JSON.\n\n"
                 "JSON schema:\n"
                 "{\n"
-                '  "description": "2-3 sentence factual description of what you CLEARLY see",\n'
-                '  "visible_objects": ["object1", "object2"],\n'
-                '  "primary_issue": "single phrase — the DOMINANT problem visible",\n'
+                '  "visible_objects": ["object1", "object2", "object3"],\n'
+                '  "primary_issue": "short phrase describing the main problem",\n'
+                '  "description": "2 sentence factual description of the main objects and the environment",\n'
                 '  "secondary_issue": "single phrase or empty string",\n'
-                '  "hazards": ["hazard1", "hazard2"],\n'
-                '  "setting": "road/park/drain/building/railway station/train platform/etc",\n'
-                '  "confidence": "low/medium/high",\n'
-                '  "candidates": [\n'
-                '    {"category": "Civil Department", "confidence": 0.95, "reason": "visible potholes"},\n'
-                '    {"category": "Health Department", "confidence": 0.05, "reason": "some debris"}\n'
-                '  ]\n'
+                '  "hazards": ["hazard1"],\n'
+                '  "setting": "environment type",\n'
+                '  "confidence": "low/medium/high"\n'
                 "}\n\n"
-                "STRICT RULES:\n"
-                "- PRIORITY IDENTIFICATION: (1) Infrastructure failure (potholes, broken roads, damaged footpaths), (2) Construction material/debris (metal pipes, iron rods, bricks, cement bags), (3) Sanitation issues (garbage dumps, overflowing bins), (4) Horticulture (fallen trees, overgrown parks, leaf litter).\n"
-                "- CANDIDATES: Provide 2-3 most likely categories with confidence scores (0.0-1.0). Confidence scores should sum to ≤ 1.0. Use primary_issue to determine the top candidate.\n"
-                "- DOMINANCE: Identify and describe the MOST DOMINANT object or condition in the foreground. Do not describe background textures (like cracks in concrete) as the primary issue if there are large objects (like pipes or garbage) in the foreground.\n"
-                "- MATERIAL DISTINCTION: Carefully distinguish between:\n"
-                "  * Natural materials: leaves, twigs, branches, sand, soil, mud, wood\n"
-                "  * Man-made materials: metal pipes, iron rods, plastic bottles, bricks, cement bags, PVC pipes, steel rebar\n"
-                "  * NEVER call large cylindrical metal objects 'twigs' or 'branches'.\n"
-                "- ONLY describe what you can CLEARLY and DIRECTLY see. Do NOT infer or guess.\n"
-                "- BE SPECIFIC: Use terms like 'damaged pavement' only if the paving stones themselves are broken or missing. Use 'construction material' if you see pipes or rebar.\n"
-                "- NO HALLUCINATIONS: Do not mention issues like 'broken pavement' if the primary subjects are construction materials or leaves.\n"
-                "- Electrical hazards: If you see flames/smoke/sparks near wires, a transformer, meter box, or electrical panel, set primary_issue to 'electrical fire hazard'.\n"
-                "- Railway scenes: If you see a train, railway platform, or railway station, say so EXPLICITLY in the description — do NOT describe a railway platform as a 'sidewalk'.\n"
-                "- Traffic: If the dominant scene is heavy vehicle traffic, crowded roads, traffic jam, or congestion with NO clear infrastructure damage, set primary_issue to 'traffic congestion'.\n"
-                "- Priority phrases: 'traffic congestion', 'road damage', 'waterlogging', 'pipe leak', 'broken street light', 'fallen tree', 'garbage dump', 'dangling wire', 'hawker encroachment', 'illegal parking', 'broken water pipe', 'railway platform', 'rebar on road', 'vegetation pile', 'sand accumulation', 'construction debris'.\n"
-                "- Infrastructure over water: If stagnant water is visible near a broken road, pothole, or caved-in area, prioritize naming the infrastructure damage ('road damage' / 'pothole') as the primary issue.\n"
-                "- Small dark objects: Do NOT assume small dark objects are 'broken water pipes' unless clearly metallic and leaking water. If it's just debris, call it 'debris' or 'scattered litter'.\n"
-                "- Encroachment: If you see vendors, stalls, or hawkers blocking a sidewalk or road, use 'encroachment' or 'hawker blockage' as the primary issue.\n"
-                "- Non-civic: If the image is a phone screenshot, payment receipt, bank transaction, UPI screen, chat message, or any digital/scanned document, set primary_issue to 'non_civic_document'.\n"
-                "- Keep the description concise, but you MUST list all distinct physical materials and objects present in the scene.\n"
-                "- No markdown, no explanation outside JSON"
+                "RULES:\n"
+                "- DO NOT hallucinate. ONLY describe objects that are clearly visible in the image.\n"
+                "- Output ONLY valid JSON matching the exact schema above.\n"
             )
             _simple_prompt = (
                 "Look at this image carefully and describe ONLY what you can clearly see. "
