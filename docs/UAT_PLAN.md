@@ -46,7 +46,7 @@ For notification-chain script on local demo data, set env vars before running:
 
 Pass criteria:
 
-- No blocking error in upload/analyze/submit flow.
+- No blocking error in upload/api/v1/analyze/submit flow.
 - Complaint ID generated and visible.
 - Status and timeline render correctly.
 

@@ -9,14 +9,14 @@ System architecture design was developed to ensure clear separation of concerns 
 
 \subsection{Architectural Style}
 
-The platform follows a layered service architecture:
+The platform follows a rigorous \textbf{Client-Server architecture} with a layered service approach:
 
 \begin{itemize}
-\item Presentation Layer: React SPA with role-aware route protection.
-\item API Layer: FastAPI routers grouped by domain concern.
-\item Service Layer: Assignment, queueing, sanitization, and utility services.
-\item Data Layer: MongoDB collections and indexes.
-\item AI Runtime Layer: Ollama-hosted models with staged invocation.
+\item \textbf{Presentation Layer}: React SPA (using React Router v7 and Vite) with role-aware route protection and Tailwind v4 styling.
+\item \textbf{API Layer}: FastAPI routers strictly enforced under the \texttt{/api/v1} namespace grouped by domain concern (Complaints, Users, Health, Triage, Analytics, Workers).
+\item \textbf{Service Layer}: In-memory async AI Queues, Automated Worker Assignment, sanitization grids, robust Rate Limiting (\texttt{slowapi}), and background escalation loops (\texttt{escalation\_loop()}).
+\item \textbf{Data Layer}: Primary MongoDB collections (with \texttt{2dsphere} indexes) alongside a dedicated NDMC Audit Database.
+\item \textbf{AI Runtime Layer}: Ollama-hosted local models utilizing a vision classification pipeline and a reasoning fallback.
 \end{itemize}
 
 \placeholderfigure{Overall System Context Diagram}{Users interact with the frontend, which communicates with backend APIs. Backend coordinates MongoDB, uploads storage, AI runtime, notification logic, and escalation loop.}

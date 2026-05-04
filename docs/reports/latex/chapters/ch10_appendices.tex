@@ -16,36 +16,36 @@ This appendix summarizes the primary endpoint inventory implemented in the curre
 \textbf{Method} & \textbf{Endpoint} & \textbf{Auth} & \textbf{Purpose} \\ \midrule
 \midrule
 \endhead
-POST & \path|/users/register| & No & Citizen/worker self-registration \\ \midrule
-POST & \path|/users/login| & No & Cookie-session login (JWT compatibility optional) \\ \midrule
-POST & \path|/users/logout| & No & Clear auth cookie/session \\ \midrule
-GET & \path|/users/me| & Yes & Current user profile \\ \midrule
-PATCH & \path|/users/me| & Yes & Profile update \\ \midrule
-POST & \path|/users/forgot-password| & No & Reset token issuance request \\ \midrule
-POST & \path|/users/reset-password| & No & Password reset submission \\ \midrule
+POST & \path|/api/v1/users/register| & No & Citizen/worker self-registration \\ \midrule
+POST & \path|/api/v1/users/login| & No & Cookie-session login (JWT compatibility optional) \\ \midrule
+POST & \path|/api/v1/users/logout| & No & Clear auth cookie/session \\ \midrule
+GET & \path|/api/v1/users/me| & Yes & Current user profile \\ \midrule
+PATCH & \path|/api/v1/users/me| & Yes & Profile update \\ \midrule
+POST & \path|/api/v1/users/forgot-password| & No & Reset token issuance request \\ \midrule
+POST & \path|/api/v1/users/reset-password| & No & Password reset submission \\ \midrule
 \midrule
-POST & \path|/analyze| & Yes & Image analysis and draft initiation \\ \midrule
-POST & \path|/analyze/regenerate| & Yes & Regenerate complaint draft \\ \midrule
-GET & \path|/complaints/generation/{job_id}| & Yes & Poll queued generation status \\ \midrule
+POST & \path|/api/v1/analyze| & Yes & Image analysis and draft initiation \\ \midrule
+POST & \path|/api/v1/analyze/regenerate| & Yes & Regenerate complaint draft \\ \midrule
+GET & \path|/api/v1/complaints/generation/{job_id}| & Yes & Poll queued generation status \\ \midrule
 \midrule
-POST & \path|/complaints| & Yes & Create complaint \\ \midrule
-GET & \path|/complaints| & Yes & Role-filtered complaint list \\ \midrule
-GET & \path|/complaints/{complaint_id}| & Yes & Complaint detail \\ \midrule
-PATCH & \path|/complaints/{complaint_id}/status| & Admin/Dept Head & Status transition \\ \midrule
-PATCH & \path|/complaints/{complaint_id}/transfer| & Admin/Dept Head & Department transfer \\ \midrule
-POST & \path|/complaints/{complaint_id}/escalate| & Admin/Dept Head & Authority escalation \\ \midrule
-POST & \path|/complaints/{complaint_id}/feedback| & Citizen owner & Resolution feedback \\ \midrule
-POST & \path|/complaints/{complaint_id}/notes| & Admin/Dept Head & Internal department notes \\ \midrule
-GET & \path|/complaints/{complaint_id}/notes| & Admin/Dept Head & Fetch department notes \\ \midrule
-POST & \path|/complaints/{complaint_id}/comments| & Yes & Add collaborative comment \\ \midrule
-GET & \path|/complaints/{complaint_id}/comments| & Yes & Read collaborative thread \\ \midrule
-POST & \path|/complaints/bulk/status| & Admin & Bulk status updates \\ \midrule
-POST & \path|/complaints/bulk/transfer| & Admin & Bulk transfer updates \\ \midrule
-GET & \path|/complaints/export/csv| & Admin & CSV export \\ \midrule
+POST & \path|/api/v1/complaints| & Yes & Create complaint \\ \midrule
+GET & \path|/api/v1/complaints| & Yes & Role-filtered complaint list \\ \midrule
+GET & \path|/api/v1/complaints/{complaint_id}| & Yes & Complaint detail \\ \midrule
+PATCH & \path|/api/v1/complaints/{complaint_id}/status| & Admin/Dept Head & Status transition \\ \midrule
+PATCH & \path|/api/v1/complaints/{complaint_id}/transfer| & Admin/Dept Head & Department transfer \\ \midrule
+POST & \path|/api/v1/complaints/{complaint_id}/escalate| & Admin/Dept Head & Authority escalation \\ \midrule
+POST & \path|/api/v1/complaints/{complaint_id}/feedback| & Citizen owner & Resolution feedback \\ \midrule
+POST & \path|/api/v1/complaints/{complaint_id}/notes| & Admin/Dept Head & Internal department notes \\ \midrule
+GET & \path|/api/v1/complaints/{complaint_id}/notes| & Admin/Dept Head & Fetch department notes \\ \midrule
+POST & \path|/api/v1/complaints/{complaint_id}/comments| & Yes & Add collaborative comment \\ \midrule
+GET & \path|/api/v1/complaints/{complaint_id}/comments| & Yes & Read collaborative thread \\ \midrule
+POST & \path|/api/v1/complaints/bulk/status| & Admin & Bulk status updates \\ \midrule
+POST & \path|/api/v1/complaints/bulk/transfer| & Admin & Bulk transfer updates \\ \midrule
+GET & \path|/api/v1/complaints/export/csv| & Admin & CSV export \\ \midrule
 \midrule
 GET & \path|/workers/me| & Worker & Worker profile and workload \\ \midrule
 PATCH & \path|/workers/me/status| & Worker & Availability update \\ \midrule
-PATCH & \path|/workers/me/complaints/{complaint_id}/done| & Worker & Mark assigned complaint done \\ \midrule
+PATCH & \path|/workers/me/api/v1/complaints/{complaint_id}/done| & Worker & Mark assigned complaint done \\ \midrule
 GET & \path|/workers| & Admin & List workers (pending/all) \\ \midrule
 GET & \path|/workers/my-department| & Admin/Dept Head & Department worker listing \\ \midrule
 PATCH & \path|/workers/{worker_id}/approve| & Admin & Approve worker \\ \midrule
@@ -55,21 +55,21 @@ PATCH & \path|/workers/{worker_id}/area| & Admin & Update worker service area \\
 GET & \path|/workers/assignment-debug| & Admin & Assignment diagnostics \\ \midrule
 POST & \path|/workers/reassign-unassigned| & Admin & Retry assignment for open queue \\ \midrule
 \midrule
-GET & \path|/notifications| & Yes & Notification list \\ \midrule
-GET & \path|/notifications/unread-count| & Yes & Unread badge count \\ \midrule
-PATCH & \path|/notifications/{notification_id}/read| & Yes & Mark single notification read \\ \midrule
-PATCH & \path|/notifications/read-all| & Yes & Mark all notifications read \\ \midrule
+GET & \path|/api/v1/notifications| & Yes & Notification list \\ \midrule
+GET & \path|/api/v1/notifications/unread-count| & Yes & Unread badge count \\ \midrule
+PATCH & \path|/api/v1/notifications/{notification_id}/read| & Yes & Mark single notification read \\ \midrule
+PATCH & \path|/api/v1/notifications/read-all| & Yes & Mark all notifications read \\ \midrule
 \midrule
 GET & \path|/triage/review-queue| & Admin & Retrieve low-confidence queue \\ \midrule
 POST & \path|/triage/review-queue/decision| & Admin & Apply triage decision \\ \midrule
 \midrule
-GET & \path|/analytics/overview| & Admin & Overview metrics \\ \midrule
-GET & \path|/analytics/heatmap| & Admin/Dept Head & Geospatial complaint distribution \\ \midrule
-GET & \path|/public/complaints| & No & Public anonymized complaint feed \\ \midrule
-GET & \path|/health/live| & No & Liveness probe \\ \midrule
-GET & \path|/health/ready| & No & Readiness probe \\ \midrule
-GET & \path|/health/models| & No & Model availability status \\ \midrule
-GET & \path|/health/gpu| & No & GPU/model load status \\ \midrule
+GET & \path|/api/v1/analytics/overview| & Admin & Overview metrics \\ \midrule
+GET & \path|/api/v1/analytics/heatmap| & Admin/Dept Head & Geospatial complaint distribution \\ \midrule
+GET & \path|/api/v1/public/api/v1/complaints| & No & Public anonymized complaint feed \\ \midrule
+GET & \path|/api/v1/health/live| & No & Liveness probe \\ \midrule
+GET & \path|/api/v1/health/ready| & No & Readiness probe \\ \midrule
+GET & \path|/api/v1/health/models| & No & Model availability status \\ \midrule
+GET & \path|/api/v1/health/gpu| & No & GPU/model load status \\ \midrule
 \bottomrule
 \end{longtable}
 \normalsize

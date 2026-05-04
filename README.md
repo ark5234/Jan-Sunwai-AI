@@ -8,16 +8,22 @@ Automated visual classification, routing, and lifecycle tracking for civic griev
 
 Jan-Sunwai AI is a full-stack platform where a citizen uploads an issue photo, the backend classifies the department, drafts a formal grievance, captures location, and routes it for departmental action. The stack is built for local-first operation with optional production deployment via Docker Compose.
 
-## What Is Implemented
+## Core Features & Architecture
 
-- FastAPI backend with JWT auth, role-aware access control, and MongoDB persistence.
-- Dedicated NDMC MongoDB audit store for comparison history and server-version tracking.
-- React frontend with dedicated flows for citizen, worker, department head, and admin.
-- Hybrid AI pipeline: Vision -> Rule Engine -> Optional Reasoning -> Draft Writer.
-- Worker auto-assignment using department + service-area distance logic.
-- Triage queue for low-confidence complaints.
-- Status history, feedback, comments, notes, notifications, escalation loop, analytics, and public transparency endpoint.
-- API version aliases under `/api/v1` for all major routes.
+**Backend (FastAPI, Python):**
+- **Robust Versioning & Structure:** All primary REST API routes are namespaced under `/api/v1` (endpoints cover Complaints, Users, Health, Triage, Notifications, Analytics, Public API, and Workers).
+- **AI Asynchronous Queue:** Integrates an in-memory LLM queue referencing local Ollama instances for vision classification/reasoning without blocking web threads.
+- **Background Processes:** Includes an asynchronous `escalation_loop` running as a background task mapped dynamically with FastAPI lifespan events for tracking unresolved issues.
+- **Security & Integrity:** Advanced runtime security layers including strict CORS policies, configurable Rate Limiting via `slowapi`, enforced strong JWT secrets validation, and rigorous headers (Content-Security-Policy, HSTS, X-Frame-Options).
+- **Persistent Data:** Native connections with MongoDB instances along with an NDMC Database instance for triaged data/logs tracking. 
+
+**Frontend (React, Vite):**
+- **Current Stack:** React 18, React Router v7, styling exclusively with modern Tailwind CSS v4, bundled aggressively through Vite.
+- **Geospatial Implementation:** Deep mapping and visual heatmaps utilizing `react-leaflet`, `leaflet.heat`, and `maplibre-gl` for precision analytics layout.
+- **Optimization:** Utilizes local optimizations like `browser-image-compression` to resize visual uploads directly in the client side to preserve bandwidth.
+
+**DevOps & Scripts:**
+Docker containers combined with excessive pipeline scripts spanning load testing (Locust), security auditing, resilience checking, automated Lighthouse scores capturing, and triage setups.
 
 ## High-Level Architecture
 
@@ -28,19 +34,16 @@ flowchart LR
     DeptHead[Dept Head Browser] --> FE
     Admin[Admin Browser] --> FE
 
-    FE -->|JWT + REST| API[FastAPI Backend]
+    FE -->|JWT + /api/v1| API[FastAPI Backend]
 
     API --> DB[(MongoDB)]
-    API --> NDMC_DB[(NDMC MongoDB)]
+    API --> NDMC_DB[(NDMC Audit DB)]
     API --> Uploads[(uploads/)]
-    API --> Queue[In-memory LLM Queue]
-    Queue --> Ollama[Ollama Runtime]
+    API --> Queue[In-memory LLM Queue & Escalation Loop]
+    Queue --> Ollama[Local Ollama]
 
-    API --> Triage[Triage Audit CSV]
     API --> Logs[Rotating App Logs]
-
     API --> Notify[In-app Notifications]
-    API --> Mail[SMTP Email Stub/Relay]
 ```
 
 ## Screenshots

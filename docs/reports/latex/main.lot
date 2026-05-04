@@ -17,7 +17,7 @@
 \contentsline {table}{\numberline {4.2}{\ignorespaces Traceability from Requirements to Proposed Modules}}{27}{table.4.2}%
 \contentsline {table}{\numberline {4.3}{\ignorespaces Inter-Module Contract Summary}}{28}{table.4.3}%
 \addvspace {10\p@ }
-\contentsline {table}{\numberline {5.1}{\ignorespaces Major Design Decisions and Rationale}}{32}{table.caption.17}%
+\contentsline {table}{\numberline {5.1}{\ignorespaces Major Design Decisions and Rationale}}{33}{table.caption.17}%
 \contentsline {table}{\numberline {5.2}{\ignorespaces Indexing Strategy by Collection}}{38}{table.caption.25}%
 \contentsline {table}{\numberline {5.3}{\ignorespaces GUI Areas and Purpose}}{39}{table.caption.26}%
 \addvspace {10\p@ }
@@ -46,5 +46,5 @@
 \addvspace {10\p@ }
 \contentsline {table}{\numberline {10.1}{\ignorespaces API Endpoint Snapshot}}{79}{table.10.1}%
 \contentsline {table}{\numberline {10.2}{\ignorespaces Core Backend Environment Variables}}{82}{table.10.2}%
-\contentsline {table}{\numberline {10.3}{\ignorespaces Department to Authority Mapping Snapshot}}{83}{table.10.3}%
+\contentsline {table}{\numberline {10.3}{\ignorespaces Department to Authority Mapping Snapshot}}{84}{table.10.3}%
 \contentsline {table}{\numberline {10.4}{\ignorespaces Requirement-to-Test Traceability Matrix}}{84}{table.10.4}%

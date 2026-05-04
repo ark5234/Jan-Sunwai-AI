@@ -59,8 +59,8 @@ scripts\run_cookie_smoke_test.bat
 Covered checks include:
 
 - Upload magic-number mismatch rejection.
-- Graceful `/analyze` `503` behavior on classifier failure.
-- `/health/ready` degraded response when DB ping fails.
+- Graceful `/api/v1/analyze` `503` behavior on classifier failure.
+- `/api/v1/health/ready` degraded response when DB ping fails.
 - Sanitization of script payloads.
 - Notification chain behavior for status updates.
 - Mark-all-read unread-counter behavior.
@@ -100,7 +100,7 @@ Expected: `403`
 Upload mismatched extension/content:
 
 ```bash
-curl -X POST http://localhost:8000/analyze \
+curl -X POST http://localhost:8000/api/v1/analyze \
   -H "Authorization: Bearer <token>" \
   -F "file=@fake.jpg" \
   -F "language=en"
@@ -114,7 +114,7 @@ Inject script payload in complaint note or comment body and verify script text i
 
 ## 5) Notification Ownership
 
-Call `PATCH /notifications/{id}/read` with another user's notification ID.
+Call `PATCH /api/v1/notifications/{id}/read` with another user's notification ID.
 
 Expected: `404` (not found for current user scope).
 

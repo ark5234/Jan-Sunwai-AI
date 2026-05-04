@@ -17,10 +17,10 @@ flowchart LR
     Dashboard --> DeptDash[/dept_head role/]
     Dashboard --> AdminDash[/admin role/]
 
-    CitizenDash --> Analyze[/analyze/]
+    CitizenDash --> Analyze[/api/v1/analyze/]
     Analyze --> Result[/result/]
     CitizenDash --> Profile[/profile/]
-    CitizenDash --> Notifications[/notifications/]
+    CitizenDash --> Notifications[/api/v1/notifications/]
 
     WorkerDash --> Notifications
     DeptDash --> Map[/map/]
@@ -28,12 +28,12 @@ flowchart LR
     DeptDash --> Notifications
 
     AdminDash --> Triage[/triage-review/]
-    AdminDash --> Analytics[/analytics/]
+    AdminDash --> Analytics[/api/v1/analytics/]
     AdminDash --> Map
     AdminDash --> Heatmap
     AdminDash --> Notifications
 
-    Home --> PublicBoard[/public/]
+    Home --> PublicBoard[/api/v1/public/]
 ```
 
 ## Citizen Submission Wireframe
@@ -96,28 +96,28 @@ flowchart TB
 sequenceDiagram
     participant User as Logged-in User
     participant Nav as Navbar Bell
-    participant API as /notifications API
+    participant API as /api/v1/notifications API
 
     User->>Nav: Open app
-    Nav->>API: GET /notifications/unread-count
+    Nav->>API: GET /api/v1/notifications/unread-count
     API-->>Nav: count
 
     User->>Nav: Open bell panel
-    Nav->>API: GET /notifications?limit=10
+    Nav->>API: GET /api/v1/notifications?limit=10
     API-->>Nav: latest notifications
 
     User->>Nav: Mark one as read
-    Nav->>API: PATCH /notifications/{id}/read
+    Nav->>API: PATCH /api/v1/notifications/{id}/read
     API-->>Nav: ok
 
     User->>Nav: Mark all as read
-    Nav->>API: PATCH /notifications/read-all
+    Nav->>API: PATCH /api/v1/notifications/read-all
     API-->>Nav: ok
 ```
 
 ## Layout Notes
 
 - Frontend routes are role-gated in `frontend/src/App.jsx`.
-- Public transparency board is available at `/public` without authentication.
+- Public transparency board is available at `/api/v1/public` without authentication.
 - Primary complaint map uses MapLibre via `react-map-gl`; grievance heatmap page currently uses Leaflet.
 - Mobile responsiveness is supported across dashboard and submission flows.

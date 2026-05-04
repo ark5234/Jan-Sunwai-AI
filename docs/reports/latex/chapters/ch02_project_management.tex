@@ -12,10 +12,12 @@ The feasibility study was carried out before deep implementation to ensure that 
 The selected stack (React, FastAPI, MongoDB, Ollama) was technically feasible for local-first civic deployment due to mature ecosystem support, strong documentation, and compatibility with available development infrastructure [11, 12, 13, 17, 16]. Key feasibility observations were:
 
 \begin{itemize}
-\item FastAPI provided rapid API development, typed schemas, and OpenAPI generation.
+\item FastAPI provided rapid API development, typed schemas, strict \texttt{/api/v1} namespace versioning, and OpenAPI generation.
 \item MongoDB supported flexible document structures suited to complaint histories, comments, and embedded metadata.
-\item React enabled role-specific UI composition with route guards and dashboard specialization.
-\item Ollama provided local model execution with configurable model tiers.
+\item React (v18 with React Router v7) enabled role-specific UI composition with route guards and dashboard specialization.
+\item Vite bundled the application with extreme speed, while Tailwind CSS v4 provided aggressive, utility-first UI styling.
+\item Ollama provided local model execution with an in-memory background processing queue.
+\item slowapi was integrated natively into the FastAPI lifecycle to handle Rate Limiting effectively.
 \item Docker Compose enabled reproducible environment orchestration across development and production-like setups.
 \end{itemize}
 

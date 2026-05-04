@@ -19,30 +19,30 @@ flowchart LR
     API --> Mongo[(MongoDB)]
     API --> Ollama[Ollama Models]
 
-    Locust -->|/users/login| API
-    Locust -->|/public/complaints| API
-    Locust -->|/health/live| API
-    Locust -->|/notifications/unread-count| API
-    Locust -->|/analyze multipart| API
+    Locust -->|/api/v1/users/login| API
+    Locust -->|/api/v1/public/api/v1/complaints| API
+    Locust -->|/api/v1/health/live| API
+    Locust -->|/api/v1/notifications/unread-count| API
+    Locust -->|/api/v1/analyze multipart| API
 ```
 
 ## Endpoint Mix (Current Locust Tasks)
 
 Task weights in `locustfile.py`:
 
-- `4` -> `GET /public/complaints`
-- `3` -> `GET /health/live`
-- `2` -> `GET /notifications/unread-count` (authenticated request)
-- `1` -> `POST /analyze` (multipart image upload)
+- `4` -> `GET /api/v1/public/api/v1/complaints`
+- `3` -> `GET /api/v1/health/live`
+- `2` -> `GET /api/v1/notifications/unread-count` (authenticated request)
+- `1` -> `POST /api/v1/analyze` (multipart image upload)
 
 ## Acceptance Rules in Locust Script
 
-- `GET /public/complaints` must return `200`.
-- `GET /health/live` must return `200`.
-- `GET /notifications/unread-count` accepts `200` or `401`.
-- `POST /analyze` accepts `200`, `429`, or `503`.
+- `GET /api/v1/public/api/v1/complaints` must return `200`.
+- `GET /api/v1/health/live` must return `200`.
+- `GET /api/v1/notifications/unread-count` accepts `200` or `401`.
+- `POST /api/v1/analyze` accepts `200`, `429`, or `503`.
 
-`429` and `503` on `/analyze` are treated as controlled degradation under pressure.
+`429` and `503` on `/api/v1/analyze` are treated as controlled degradation under pressure.
 
 ## Prerequisites
 
@@ -119,7 +119,7 @@ For each run, record:
 1. P95 and P99 latency per endpoint.
 2. Request throughput (req/s).
 3. Failure rate by endpoint and status code.
-4. `/analyze` distribution of `200`, `429`, `503`.
+4. `/api/v1/analyze` distribution of `200`, `429`, `503`.
 5. CPU/RAM for backend and MongoDB.
 6. Model response behavior (slow vs unavailable windows).
 
@@ -127,11 +127,11 @@ For each run, record:
 
 ```mermaid
 flowchart TD
-    Start[Run Finished] --> A{High /analyze 503?}
+    Start[Run Finished] --> A{High /api/v1/analyze 503?}
     A -->|Yes| A1[Check Ollama process and model availability]
-    A -->|No| B{High /analyze 429?}
+    A -->|No| B{High /api/v1/analyze 429?}
     B -->|Yes| B1[Rate limiting reached; tune limits or worker count]
-    B -->|No| C{High p95 on public/health?}
+    B -->|No| C{High p95 on public/api/v1/health?}
     C -->|Yes| C1[Investigate backend and MongoDB bottlenecks]
     C -->|No| D[Run considered stable for tested profile]
 ```

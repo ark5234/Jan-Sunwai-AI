@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.141592653-2.6-0.999998 (TeX Live 2026) (preloaded format=xelatex 2026.4.7)  30 APR 2026 14:55
+This is XeTeX, Version 3.141592653-2.6-0.999998 (TeX Live 2026) (preloaded format=xelatex 2026.4.7)  4 MAY 2026 11:53
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -682,54 +682,51 @@ Underfull \hbox (badness 2237) in paragraph at lines 108--108
 
 ) (./chapters/ch02_project_management.tex [5]
 Chapter 2.
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [6
+[6
 
 ] [7]
-Underfull \hbox (badness 10000) in paragraph at lines 78--78
+Underfull \hbox (badness 10000) in paragraph at lines 80--80
 []|\TU/TimesNewRoman(0)/m/n/12 Repo setup, environment bootstrap,
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 78--78
+Underfull \hbox (badness 10000) in paragraph at lines 80--80
 \TU/TimesNewRoman(0)/m/n/12 backend skeleton, DB connectivity,
  []
 
 
-Underfull \hbox (badness 1048) in paragraph at lines 83--83
+Underfull \hbox (badness 1048) in paragraph at lines 85--85
 []|\TU/TimesNewRoman(0)/m/n/12 Worker panel, assignment engine, au-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 87--87
+Underfull \hbox (badness 10000) in paragraph at lines 89--89
 []|\TU/TimesNewRoman(0)/m/n/12 Testing and Pre-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 89--89
+Underfull \hbox (badness 10000) in paragraph at lines 91--91
 []|\TU/TimesNewRoman(0)/m/n/12 Reporting and Sub-
  []
 
 
-Underfull \hbox (badness 1371) in paragraph at lines 89--89
+Underfull \hbox (badness 1371) in paragraph at lines 91--91
 []|\TU/TimesNewRoman(0)/m/n/12 Technical report artifacts, screenshots,
  []
 
 
-Underfull \hbox (badness 1184) in paragraph at lines 89--89
+Underfull \hbox (badness 1184) in paragraph at lines 91--91
 \TU/TimesNewRoman(0)/m/n/12 presentation, final submission hygiene
  []
 
 
 ignored: Infinite glue shrinkage found in box being split [8]
-Underfull \hbox (badness 10000) in paragraph at lines 133--133
+Underfull \hbox (badness 10000) in paragraph at lines 135--135
 []|\TU/TimesNewRoman(0)/m/n/12 DevOps and Deploy-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 133--133
+Underfull \hbox (badness 10000) in paragraph at lines 135--135
 []|\TU/TimesNewRoman(0)/m/n/12 Documentation and
  []
 
@@ -737,47 +734,47 @@ Underfull \hbox (badness 10000) in paragraph at lines 133--133
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [9]
-Underfull \hbox (badness 10000) in paragraph at lines 163--163
+Underfull \hbox (badness 10000) in paragraph at lines 165--165
 []|\TU/TimesNewRoman(0)/m/n/12 Model unavailability
  []
 
 
-Underfull \hbox (badness 2221) in paragraph at lines 163--163
+Underfull \hbox (badness 2221) in paragraph at lines 165--165
 []|\TU/TimesNewRoman(0)/m/n/12 Multi-tier vision fallback, queue-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 164--164
+Underfull \hbox (badness 10000) in paragraph at lines 166--166
 []|\TU/TimesNewRoman(0)/m/n/12 Wrong department
  []
 
 
-Underfull \hbox (badness 4792) in paragraph at lines 164--164
+Underfull \hbox (badness 4792) in paragraph at lines 166--166
 []|\TU/TimesNewRoman(0)/m/n/12 Deterministic rule engine, triage
  []
 
 
-Underfull \hbox (badness 7326) in paragraph at lines 165--165
+Underfull \hbox (badness 7326) in paragraph at lines 167--167
 []|\TU/TimesNewRoman(0)/m/n/12 Invalid/malicious up-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 167--167
+Underfull \hbox (badness 10000) in paragraph at lines 169--169
 []|\TU/TimesNewRoman(0)/m/n/12 Configuration drift
  []
 
 
-Underfull \hbox (badness 3579) in paragraph at lines 168--168
+Underfull \hbox (badness 3579) in paragraph at lines 170--170
 []|\TU/TimesNewRoman(0)/m/n/12 Notification inconsis-
  []
 
 
-Underfull \hbox (badness 1286) in paragraph at lines 168--168
+Underfull \hbox (badness 1286) in paragraph at lines 170--170
 []|\TU/TimesNewRoman(0)/m/n/12 Automated notification-chain tests
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 170--170
+Underfull \hbox (badness 10000) in paragraph at lines 172--172
 []|\TU/TimesNewRoman(0)/m/n/12 Documentation mis-
  []
 
@@ -1231,7 +1228,15 @@ Underfull \hbox (badness 10000) in paragraph at lines 170--170
 
 ignored: Infinite glue shrinkage found in box being split [28] [29]) (./chapters/ch05_system_design.tex [30]
 Chapter 5.
-[31
+
+Overfull \hbox (26.4056pt too wide) in paragraph at lines 17--18
+\TU/TimesNewRoman(0)/m/n/12 grids, robust Rate Limiting (\TU/lmtt/m/n/12 slowapi\TU/TimesNewRoman(0)/m/n/12 ), and background escalation loops (\TU/lmtt/m/n/12 escalation_loop()\TU/TimesNewRoman(0)/m/n/12 ). 
+ []
+
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [31
 
 ]
 Underfull \hbox (badness 2111) in paragraph at lines 44--44
@@ -1239,14 +1244,17 @@ Underfull \hbox (badness 2111) in paragraph at lines 44--44
  []
 
 
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [32]
 Overfull \hbox (2.33772pt too wide) in paragraph at lines 51--52
 \TU/TimesNewRoman(0)/m/n/12 To ensure reliable routing, the AI component employs a hybrid model combining vision-language
  []
 
-[32]
+
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [33] [34] [35] [36]
+ [33] [34] [35] [36] [37]
 Underfull \hbox (badness 10000) in paragraph at lines 156--156
 []|\TU/TimesNewRoman(0)/m/n/12 unique(username),
  []
@@ -1254,7 +1262,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 156--156
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [37]
+ [38]
 Underfull \hbox (badness 10000) in paragraph at lines 197--197
 []|\TU/TimesNewRoman(0)/m/n/12 Analyze and Result
  []
@@ -1264,16 +1272,9 @@ Underfull \hbox (badness 10000) in paragraph at lines 197--197
 []|\TU/TimesNewRoman(0)/m/n/12 Department Head
  []
 
-
-Underfull \vbox (badness 1057) has occurred while \output is active []
-
- [38]
 File: ../../images/GUI_Wireframe.png Graphic file (type bmp)
 <../../images/GUI_Wireframe.png>
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [39]
+[39]
 File: ../../images/screenshots/S01_home_desktop.png Graphic file (type bmp)
 <../../images/screenshots/S01_home_desktop.png>
 Package hyperref Info: bookmark level for unknown screenshot defaults to 0 on input line 219.
@@ -1398,6 +1399,11 @@ Underfull \hbox (badness 5022) in paragraph at lines 278--278
  []
 
 
+Overfull \hbox (9.15239pt too wide) in paragraph at lines 280--280
+[]|\TU/TimesNewRoman(0)/m/n/12 analytics/api/v1/public| 
+ []
+
+
 Underfull \hbox (badness 10000) in paragraph at lines 280--280
 []|\TU/TimesNewRoman(0)/m/n/12 dashboards, heatmap,
  []
@@ -1426,13 +1432,18 @@ Underfull \hbox (badness 10000) in paragraph at lines 357--357
  []
 
 
+Underfull \hbox (badness 10000) in paragraph at lines 358--358
+[]|\TU/TimesNewRoman(0)/m/n/12 /api/v1/health/ready
+ []
+
+
 Underfull \hbox (badness 2205) in paragraph at lines 358--358
 []|\TU/TimesNewRoman(0)/m/n/12 Indicates dependency-level degra-
  []
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 359--359
-[]|\TU/TimesNewRoman(0)/m/n/12 /health/models end-
+[]|\TU/TimesNewRoman(0)/m/n/12 /api/v1/health/models
  []
 
 
@@ -1919,7 +1930,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 28--28
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 29--29
-[]|$[][][][][][][][][][][] [] [][][][][][][][][][] [] [][][][] []
+[]|$[][][][] [] [][] [] [][][][][][][][][][] [] [][][][][][][][][][] []
  []
 
 
@@ -1933,8 +1944,13 @@ Underfull \hbox (badness 10000) in paragraph at lines 32--32
  []
 
 
+Underfull \hbox (badness 10000) in paragraph at lines 33--33
+[]|$[][][][] [] [][] [] [][][][][][][][][][] [] [][][][][][][][][][] []
+ []
+
+
 Underfull \hbox (badness 10000) in paragraph at lines 34--34
-[]|$[][][][][][][][][][][] [] [][][][][][][][][][] [] [][][] []
+[]|$[][][][] [] [][] [] [][][][][][][][][][] [] [][][][][][][][][][] []
  []
 
 
@@ -1944,7 +1960,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 34--34
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 35--35
-[]|$[][][][][][][][][][][] [] [][][][][][][][][][] [] [][][] []
+[]|$[][][][] [] [][] [] [][][][][][][][][][] [] [][][][][][][][][][] []
  []
 
 
@@ -1954,7 +1970,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 35--35
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 36--36
-[]|$[][][][][][][][][][][] [] [][][][][][][][][][] [] [][][] []
+[]|$[][][][] [] [][] [] [][][][][][][][][][] [] [][][][][][][][][][] []
  []
 
 
@@ -1964,12 +1980,12 @@ Underfull \hbox (badness 10000) in paragraph at lines 36--36
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 37--37
-[]|$[][][][][][][][][][][] [] [][][][][][][][][][] [] [][][] []
+[]|$[][][][] [] [][] [] [][][][][][][][][][] [] [][][][][][][][][][] []
  []
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 38--38
-[]|$[][][][][][][][][][][] [] [][][][][][][][][][] [] [][][] []
+[]|$[][][][] [] [][] [] [][][][][][][][][][] [] [][][][][][][][][][] []
  []
 
 
@@ -1979,7 +1995,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 38--38
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 39--39
-[]|$[][][][][][][][][][][] [] [][][][][][][][][][] [] [][][] []
+[]|$[][][][] [] [][] [] [][][][][][][][][][] [] [][][][][][][][][][] []
  []
 
 
@@ -1989,7 +2005,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 39--39
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 40--40
-[]|$[][][][][][][][][][][] [] [][][][][][][][][][] [] [][][] []
+[]|$[][][][] [] [][] [] [][][][][][][][][][] [] [][][][][][][][][][] []
  []
 
 
@@ -1999,12 +2015,17 @@ Underfull \hbox (badness 4608) in paragraph at lines 40--40
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 41--41
-[]|$[][][][][][][][][][][] [] [][][][][][][][][][] [] [][][] []
+[]|$[][][][] [] [][] [] [][][][][][][][][][] [] [][][][][][][][][][] []
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 43--43
+[]|$[][][][] [] [][] [] [][][][][][][][][][] [] [][][][] []
  []
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 48--48
-[]|$[][][][][][][][] [] [][] [] [][][][][][][][][][] []
+[]|$[][][][][][][][] [] [][] [] [][][] [] [][] [] [][][][][][][][][][] []
  []
 
 
@@ -2023,8 +2044,13 @@ Underfull \hbox (badness 10000) in paragraph at lines 54--54
  []
 
 
+Underfull \hbox (badness 10000) in paragraph at lines 59--59
+[]|$[][][][] [] [][] [] [][][][][][][][][][][][][] []
+ []
+
+
 Underfull \hbox (badness 10000) in paragraph at lines 60--60
-[]|$[][][][][][][][][][][][][][] [] [][][][][][][][][][][][][] []
+[]|$[][][][] [] [][] [] [][][][][][][][][][][][][] []
  []
 
 
@@ -2043,10 +2069,16 @@ Underfull \hbox (badness 10000) in paragraph at lines 67--67
  []
 
 
+Underfull \hbox (badness 10000) in paragraph at lines 68--68
+[]|$[][][][] [] [][] [] [][][][][][] [] [][][] [] [][] []
+ []
+
+
 ignored: Infinite glue shrinkage found in box being split [79
 
 ]
 ignored: Infinite glue shrinkage found in box being split [80]
+ignored: Infinite glue shrinkage found in box being split [81]
 Underfull \hbox (badness 10000) in paragraph at lines 89--89
 []|\TU/TimesNewRoman(0)/m/n/12 Runtime mode (develop-
  []
@@ -2122,16 +2154,12 @@ Underfull \hbox (badness 10000) in paragraph at lines 115--115
  []
 
 
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [81]
 ignored: Infinite glue shrinkage found in box being split [82]
 Overfull \hbox (9.807pt too wide) in paragraph at lines 136--136
 []|\TU/TimesNewRoman(0)/m/n/12 MUNI_HORTICULTURE| 
  []
 
-
-ignored: Infinite glue shrinkage found in box being split [83]
+[83]
 Underfull \hbox (badness 10000) in paragraph at lines 152--152
 []|\TU/TimesNewRoman(0)/b/n/10.95 Requirement
  []
@@ -2183,10 +2211,10 @@ Package rerunfilecheck Info: File `main.out' has not changed.
 Here is how much of TeX's memory you used:
  15478 strings out of 467992
  302172 string characters out of 5433178
- 865430 words of memory out of 5000000
+ 872430 words of memory out of 5000000
  44108 multiletter control sequences out of 15000+600000
  632887 words of font info for 89 fonts, out of 8000000 for 9000
  1348 hyphenation exceptions out of 8191
  73i,12n,93p,1203b,539s stack positions out of 10000i,1000n,20000p,200000b,200000s
 
-Output written on main.xdv (104 pages, 1849100 bytes).
+Output written on main.xdv (104 pages, 1861200 bytes).

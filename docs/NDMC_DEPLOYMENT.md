@@ -82,10 +82,10 @@ python backend/create_test_users.py
 ## Health Verification
 
 ```bash
-curl http://localhost:8000/health/live
-curl http://localhost:8000/health/ready
-curl http://localhost:8000/health/models
-curl http://localhost:8000/health/gpu
+curl http://localhost:8000/api/v1/health/live
+curl http://localhost:8000/api/v1/health/ready
+curl http://localhost:8000/api/v1/health/models
+curl http://localhost:8000/api/v1/health/gpu
 ```
 
 UI verification:

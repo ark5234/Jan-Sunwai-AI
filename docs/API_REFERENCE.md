@@ -36,45 +36,45 @@ flowchart LR
 
   subgraph Users
     direction TB
-    U["/users"] --> U1["POST /users/register"]
-    U --> U2["POST /users/login"]
-    U --> U3["POST /users/logout"]
-    U --> U4["GET /users/me"]
-    U --> U5["PATCH /users/me"]
-    U --> U6["POST /users/forgot-password"]
-    U --> U7["POST /users/reset-password"]
+    U["/api/v1/users"] --> U1["POST /api/v1/users/register"]
+    U --> U2["POST /api/v1/users/login"]
+    U --> U3["POST /api/v1/users/logout"]
+    U --> U4["GET /api/v1/users/me"]
+    U --> U5["PATCH /api/v1/users/me"]
+    U --> U6["POST /api/v1/users/forgot-password"]
+    U --> U7["POST /api/v1/users/reset-password"]
   end
 
   subgraph Analyze
     direction TB
-    A["/analyze"] --> A1["POST /analyze"]
-    A --> A2["POST /analyze/regenerate"]
-    A --> A3["GET /complaints/generation/{job_id}"]
+    A["/api/v1/analyze"] --> A1["POST /api/v1/analyze"]
+    A --> A2["POST /api/v1/analyze/regenerate"]
+    A --> A3["GET /api/v1/complaints/generation/{job_id}"]
   end
 
   subgraph Complaints
     direction TB
-    C["/complaints"] --> C1["POST /complaints"]
-    C --> C2["GET /complaints"]
-    C --> C3["GET /complaints/{complaint_id}"]
-    C --> C4["PATCH /complaints/{complaint_id}/status"]
-    C --> C5["PATCH /complaints/{complaint_id}/transfer"]
-    C --> C6["POST /complaints/{complaint_id}/escalate"]
-    C --> C7["POST /complaints/{complaint_id}/feedback"]
-    C --> C8["POST /complaints/{complaint_id}/notes"]
-    C --> C9["GET /complaints/{complaint_id}/notes"]
-    C --> C10["POST /complaints/{complaint_id}/comments"]
-    C --> C11["GET /complaints/{complaint_id}/comments"]
-    C --> C12["POST /complaints/bulk/status"]
-    C --> C13["POST /complaints/bulk/transfer"]
-    C --> C14["GET /complaints/export/csv"]
+    C["/api/v1/complaints"] --> C1["POST /api/v1/complaints"]
+    C --> C2["GET /api/v1/complaints"]
+    C --> C3["GET /api/v1/complaints/{complaint_id}"]
+    C --> C4["PATCH /api/v1/complaints/{complaint_id}/status"]
+    C --> C5["PATCH /api/v1/complaints/{complaint_id}/transfer"]
+    C --> C6["POST /api/v1/complaints/{complaint_id}/escalate"]
+    C --> C7["POST /api/v1/complaints/{complaint_id}/feedback"]
+    C --> C8["POST /api/v1/complaints/{complaint_id}/notes"]
+    C --> C9["GET /api/v1/complaints/{complaint_id}/notes"]
+    C --> C10["POST /api/v1/complaints/{complaint_id}/comments"]
+    C --> C11["GET /api/v1/complaints/{complaint_id}/comments"]
+    C --> C12["POST /api/v1/complaints/bulk/status"]
+    C --> C13["POST /api/v1/complaints/bulk/transfer"]
+    C --> C14["GET /api/v1/complaints/export/csv"]
   end
 
   subgraph Workers
     direction TB
     W["/workers"] --> W1["GET /workers/me"]
     W --> W2["PATCH /workers/me/status"]
-    W --> W3["PATCH /workers/me/complaints/{complaint_id}/done"]
+    W --> W3["PATCH /workers/me/api/v1/complaints/{complaint_id}/done"]
     W --> W4["GET /workers"]
     W --> W5["GET /workers/my-department"]
     W --> W6["PATCH /workers/{worker_id}/approve"]
@@ -87,10 +87,10 @@ flowchart LR
 
   subgraph Notifications
     direction TB
-    N["/notifications"] --> N1["GET /notifications"]
-    N --> N2["GET /notifications/unread-count"]
-    N --> N3["PATCH /notifications/{notification_id}/read"]
-    N --> N4["PATCH /notifications/read-all"]
+    N["/api/v1/notifications"] --> N1["GET /api/v1/notifications"]
+    N --> N2["GET /api/v1/notifications/unread-count"]
+    N --> N3["PATCH /api/v1/notifications/{notification_id}/read"]
+    N --> N4["PATCH /api/v1/notifications/read-all"]
   end
 
   subgraph Triage
@@ -101,13 +101,13 @@ flowchart LR
 
   subgraph AnalyticsPublicHealth
     direction TB
-    X["/analytics, /public, /health"] --> X1["GET /analytics/overview"]
-    X --> X2["GET /analytics/heatmap"]
-    X --> X3["GET /public/complaints"]
-    X --> X4["GET /health/live"]
-    X --> X5["GET /health/ready"]
-    X --> X6["GET /health/models"]
-    X --> X7["GET /health/gpu"]
+    X["/api/v1/analytics, /api/v1/public, /api/v1/health"] --> X1["GET /api/v1/analytics/overview"]
+    X --> X2["GET /api/v1/analytics/heatmap"]
+    X --> X3["GET /api/v1/public/api/v1/complaints"]
+    X --> X4["GET /api/v1/health/live"]
+    X --> X5["GET /api/v1/health/ready"]
+    X --> X6["GET /api/v1/health/models"]
+    X --> X7["GET /api/v1/health/gpu"]
   end
 ```
 
@@ -117,40 +117,40 @@ flowchart LR
 
 | Method | Endpoint | Auth | Notes |
 | --- | --- | --- | --- |
-| `POST` | `/users/register` | No | Registers `citizen` or `worker` only |
-| `POST` | `/users/login` | No | OAuth2 form login |
-| `POST` | `/users/logout` | No | Clears auth cookie if present |
-| `GET` | `/users/me` | Yes | Returns current user profile |
-| `PATCH` | `/users/me` | Yes | Updates `full_name` and/or `phone_number` |
-| `POST` | `/users/forgot-password` | No | Always generic response; no account enumeration |
-| `POST` | `/users/reset-password` | No | Uses reset token |
+| `POST` | `/api/v1/users/register` | No | Registers `citizen` or `worker` only |
+| `POST` | `/api/v1/users/login` | No | OAuth2 form login |
+| `POST` | `/api/v1/users/logout` | No | Clears auth cookie if present |
+| `GET` | `/api/v1/users/me` | Yes | Returns current user profile |
+| `PATCH` | `/api/v1/users/me` | Yes | Updates `full_name` and/or `phone_number` |
+| `POST` | `/api/v1/users/forgot-password` | No | Always generic response; no account enumeration |
+| `POST` | `/api/v1/users/reset-password` | No | Uses reset token |
 
 ## Analyze + Draft
 
 | Method | Endpoint | Auth | Notes |
 | --- | --- | --- | --- |
-| `POST` | `/analyze` | Yes | Upload image + optional language; returns classification + location + draft status |
-| `POST` | `/analyze/regenerate` | Yes | Re-queues draft generation for existing analyzed image |
-| `GET` | `/complaints/generation/{job_id}` | Yes | Poll queued generation result |
+| `POST` | `/api/v1/analyze` | Yes | Upload image + optional language; returns classification + location + draft status |
+| `POST` | `/api/v1/analyze/regenerate` | Yes | Re-queues draft generation for existing analyzed image |
+| `GET` | `/api/v1/complaints/generation/{job_id}` | Yes | Poll queued generation result |
 
 ## Complaints
 
 | Method | Endpoint | Auth | Notes |
 | --- | --- | --- | --- |
-| `POST` | `/complaints` | Yes | Creates complaint from analyzed payload (supports `analysis_token`) |
-| `GET` | `/complaints` | Yes | Role-filtered listing |
-| `GET` | `/complaints/{complaint_id}` | Yes | Complaint details |
-| `PATCH` | `/complaints/{complaint_id}/status` | Admin/Dept Head | Appends `status_history` and triggers notification/email |
-| `PATCH` | `/complaints/{complaint_id}/transfer` | Admin/Dept Head | Department override transfer |
-| `POST` | `/complaints/{complaint_id}/escalate` | Admin/Dept Head | Escalates authority level |
-| `POST` | `/complaints/{complaint_id}/feedback` | Citizen owner | One-time post-resolution feedback |
-| `POST` | `/complaints/{complaint_id}/notes` | Admin/Dept Head | Internal department notes |
-| `GET` | `/complaints/{complaint_id}/notes` | Admin/Dept Head | Fetch internal notes |
-| `POST` | `/complaints/{complaint_id}/comments` | Yes | Shared complaint thread |
-| `GET` | `/complaints/{complaint_id}/comments` | Yes | Shared complaint thread |
-| `POST` | `/complaints/bulk/status` | Admin | Bulk status update |
-| `POST` | `/complaints/bulk/transfer` | Admin | Bulk department transfer |
-| `GET` | `/complaints/export/csv` | Admin | CSV export |
+| `POST` | `/api/v1/complaints` | Yes | Creates complaint from analyzed payload (supports `analysis_token`) |
+| `GET` | `/api/v1/complaints` | Yes | Role-filtered listing |
+| `GET` | `/api/v1/complaints/{complaint_id}` | Yes | Complaint details |
+| `PATCH` | `/api/v1/complaints/{complaint_id}/status` | Admin/Dept Head | Appends `status_history` and triggers notification/email |
+| `PATCH` | `/api/v1/complaints/{complaint_id}/transfer` | Admin/Dept Head | Department override transfer |
+| `POST` | `/api/v1/complaints/{complaint_id}/escalate` | Admin/Dept Head | Escalates authority level |
+| `POST` | `/api/v1/complaints/{complaint_id}/feedback` | Citizen owner | One-time post-resolution feedback |
+| `POST` | `/api/v1/complaints/{complaint_id}/notes` | Admin/Dept Head | Internal department notes |
+| `GET` | `/api/v1/complaints/{complaint_id}/notes` | Admin/Dept Head | Fetch internal notes |
+| `POST` | `/api/v1/complaints/{complaint_id}/comments` | Yes | Shared complaint thread |
+| `GET` | `/api/v1/complaints/{complaint_id}/comments` | Yes | Shared complaint thread |
+| `POST` | `/api/v1/complaints/bulk/status` | Admin | Bulk status update |
+| `POST` | `/api/v1/complaints/bulk/transfer` | Admin | Bulk department transfer |
+| `GET` | `/api/v1/complaints/export/csv` | Admin | CSV export |
 
 ## Workers
 
@@ -158,7 +158,7 @@ flowchart LR
 | --- | --- | --- | --- |
 | `GET` | `/workers/me` | Worker | Profile + active + resolved history |
 | `PATCH` | `/workers/me/status` | Worker | Only `available`/`offline` allowed manually |
-| `PATCH` | `/workers/me/complaints/{complaint_id}/done` | Worker | Marks complaint resolved and frees slot |
+| `PATCH` | `/workers/me/api/v1/complaints/{complaint_id}/done` | Worker | Marks complaint resolved and frees slot |
 | `GET` | `/workers` | Admin | Lists workers; supports `pending_only` |
 | `GET` | `/workers/my-department` | Admin/Dept Head | Department-scoped workers |
 | `PATCH` | `/workers/{worker_id}/approve` | Admin | Approves worker account |
@@ -172,10 +172,10 @@ flowchart LR
 
 | Method | Endpoint | Auth | Notes |
 | --- | --- | --- | --- |
-| `GET` | `/notifications` | Yes | List notifications (`skip`, `limit`, `unread_only`) |
-| `GET` | `/notifications/unread-count` | Yes | Badge counter |
-| `PATCH` | `/notifications/{notification_id}/read` | Yes | Mark single as read |
-| `PATCH` | `/notifications/read-all` | Yes | Mark all as read |
+| `GET` | `/api/v1/notifications` | Yes | List notifications (`skip`, `limit`, `unread_only`) |
+| `GET` | `/api/v1/notifications/unread-count` | Yes | Badge counter |
+| `PATCH` | `/api/v1/notifications/{notification_id}/read` | Yes | Mark single as read |
+| `PATCH` | `/api/v1/notifications/read-all` | Yes | Mark all as read |
 
 ## Triage
 
@@ -188,20 +188,20 @@ flowchart LR
 
 | Method | Endpoint | Auth | Notes |
 | --- | --- | --- | --- |
-| `GET` | `/analytics/overview` | Admin | Status, department, trend, resolution stats |
-| `GET` | `/analytics/heatmap` | Admin/Dept Head | Geospatial aggregate points |
-| `GET` | `/public/complaints` | No | Anonymized public complaint feed |
-| `GET` | `/health/live` | No | Liveness probe |
-| `GET` | `/health/ready` | No | DB readiness probe |
-| `GET` | `/health/models` | No | Ollama model readiness |
-| `GET` | `/health/gpu` | No | Active model GPU/VRAM status |
+| `GET` | `/api/v1/analytics/overview` | Admin | Status, department, trend, resolution stats |
+| `GET` | `/api/v1/analytics/heatmap` | Admin/Dept Head | Geospatial aggregate points |
+| `GET` | `/api/v1/public/api/v1/complaints` | No | Anonymized public complaint feed |
+| `GET` | `/api/v1/health/live` | No | Liveness probe |
+| `GET` | `/api/v1/health/ready` | No | DB readiness probe |
+| `GET` | `/api/v1/health/models` | No | Ollama model readiness |
+| `GET` | `/api/v1/health/gpu` | No | Active model GPU/VRAM status |
 
 ## Request Examples
 
 ### Login
 
 ```http
-POST /users/login
+POST /api/v1/users/login
 Content-Type: application/x-www-form-urlencoded
 
 username=<your_username>&password=<your_password>
@@ -210,7 +210,7 @@ username=<your_username>&password=<your_password>
 ### Analyze
 
 ```http
-POST /analyze
+POST /api/v1/analyze
 Content-Type: multipart/form-data
 
 file=<image>
@@ -219,17 +219,17 @@ language=en
 
 ### Authentication Usage
 
-Browser clients should use the cookie session set by `/users/login`.
+Browser clients should use the cookie session set by `/api/v1/users/login`.
 
 ```http
-GET /complaints
+GET /api/v1/complaints
 Cookie: js_access_token=<jwt>
 ```
 
 API clients can still use the compatibility bearer header:
 
 ```http
-GET /complaints
+GET /api/v1/complaints
 Authorization: Bearer <jwt>
 ```
 
@@ -269,14 +269,14 @@ Authorization: Bearer <jwt>
 
 ## Analyze Response Notes
 
-`POST /analyze` includes:
+`POST /api/v1/analyze` includes:
 
 - `classification`: department decision + confidence + model metadata
 - `location`: EXIF-derived or fallback result
 - `generated_complaint`: drafted text, queued placeholder, or fallback text
 - `generation_status`: `completed`, `queued`, `failed`, or `skipped`
 - `generation_job_id`: poll key for queued generation
-- `analysis_token`: binding token for secure `/complaints` creation flow
+- `analysis_token`: binding token for secure `/api/v1/complaints` creation flow
 - `timings`: `vision_ms`, `rule_engine_ms`, `reasoning_ms`, `total_analyze_ms`
 
 ## Error Semantics

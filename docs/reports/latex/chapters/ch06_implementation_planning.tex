@@ -205,7 +205,7 @@ Deliverables included the production compose profile, deployment guides, and API
 3 & Implement analyze pipeline and storage handling & Required before citizen intake flow can be tested end-to-end \\ \midrule
 4 & Build frontend analyze/result workflow & Depends on stable analyze payload and auth behavior \\ \midrule
 5 & Add assignment and lifecycle controls & Depends on complaint schema maturity and worker metadata \\ \midrule
-6 & Add triage/analytics and governance endpoints & Depends on reliable complaint state and metadata richness \\ \midrule
+6 & Add triage/api/v1/analytics and governance endpoints & Depends on reliable complaint state and metadata richness \\ \midrule
 7 & Add security and reliability hardening & Should follow core flow stability to avoid hidden regressions \\ \midrule
 8 & Run tests and UAT cycles & Depends on complete feature slices and stable environments \\ \midrule
 9 & Prepare production profile and handover docs & Depends on validated security/performance baseline \\ \midrule
@@ -277,7 +277,7 @@ complaints & analyze, create, list, detail, update, transfer, escalate & Needed 
 workers & assignment views, approval/rejection, service-area updates & Needed separation between worker self-actions and admin governance actions; assignment diagnostics endpoint added for ops clarity \\ \midrule
 notifications & list, unread count, mark single/all read & Badge consistency required deterministic unread counter behavior and ownership checks \\ \midrule
 triage & review queue and decision endpoint & Admin-only corrective path for low-confidence AI cases; decision audit notes required \\ \midrule
-analytics/public & dashboards, heatmap, anonymized public listing & Query aggregation planning required pagination defaults and safe exposure model for public feed \\ \midrule
+analytics/api/v1/public & dashboards, heatmap, anonymized public listing & Query aggregation planning required pagination defaults and safe exposure model for public feed \\ \midrule
 health & live/ready/models/gpu probes & Needed operationally meaningful readiness semantics and low-overhead liveness behavior \\ \midrule
 \bottomrule
 \end{longtable}
@@ -355,9 +355,9 @@ Rollback planning was included to avoid high-impact downtime during deployment c
 \midrule
 \endhead
 API process time & Response header \texttt{X-Process-Time} & Detect slow endpoints and regressions after deployments \\ \midrule
-Readiness status & /health/ready endpoint & Indicates dependency-level degradation, mainly database health \\ \midrule
-Model availability & /health/models endpoint & Confirms runtime model inventory and inference readiness \\ \midrule
-GPU/model state & /health/gpu endpoint & Indicates active model and VRAM-related load behavior \\ \midrule
+Readiness status & /api/v1/health/ready endpoint & Indicates dependency-level degradation, mainly database health \\ \midrule
+Model availability & /api/v1/health/models endpoint & Confirms runtime model inventory and inference readiness \\ \midrule
+GPU/model state & /api/v1/health/gpu endpoint & Indicates active model and VRAM-related load behavior \\ \midrule
 Notification backlog & unread-count behavior and list volume & Detects delayed event propagation or read-state anomalies \\ \midrule
 Assignment queue growth & open/unassigned complaints and worker status & Helps identify staffing bottlenecks and area mismatch \\ \midrule
 Triage queue size & low-confidence complaint count & Indicates classifier uncertainty trend and review load \\ \midrule
