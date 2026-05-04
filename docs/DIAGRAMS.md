@@ -84,29 +84,29 @@ erDiagram
 ### 5.2.2 Use Case Diagram
 
 ```mermaid
-usecaseDiagram
-    actor Citizen
-    actor Worker
-    actor DeptHead as "Department Head"
-    actor Admin
+flowchart LR
+    Citizen((Citizen))
+    Worker((Worker))
+    DeptHead((Department Head))
+    Admin((Admin))
     
-    Citizen --> (Upload Issue Photo)
-    Citizen --> (Review Generated Draft)
-    Citizen --> (Track Complaint Status)
+    Citizen --> UC1([Upload Issue Photo])
+    Citizen --> UC2([Review Generated Draft])
+    Citizen --> UC3([Track Complaint Status])
     
-    Worker --> (View Assigned Tasks)
-    Worker --> (Resolve Complaints)
-    Worker --> (Update Status)
+    Worker --> UC4([View Assigned Tasks])
+    Worker --> UC5([Resolve Complaints])
+    Worker --> UC6([Update Status])
     
-    DeptHead --> (Monitor Department Queue)
-    DeptHead --> (Handle Escalations)
-    DeptHead --> (View Analytics)
+    DeptHead --> UC7([Monitor Department Queue])
+    DeptHead --> UC8([Handle Escalations])
+    DeptHead --> UC9([View Analytics])
     
-    Admin --> (Manage Users & Roles)
-    Admin --> (Triage Low-Confidence Issues)
-    Admin --> (System Configurations)
+    Admin --> UC10([Manage Users & Roles])
+    Admin --> UC11([Triage Low-Confidence Issues])
+    Admin --> UC12([System Configurations])
     
-    (Upload Issue Photo) ..> (AI Classification) : <<includes>>
+    UC1 -.->|includes| UC13([AI Classification])
 ```
 *(Note: Mermaid flowchart can also depict use case functionality if actual Use Case UML is not fully supported in your renderer, standard UML boundaries apply)*
 
