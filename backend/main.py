@@ -139,8 +139,8 @@ async def add_security_headers(request: Request, call_next):
         f"img-src 'self' data: blob: {img_connect_sources}; "
         f"connect-src 'self' {img_connect_sources}; "
         # BL-05: 'unsafe-inline' kept for now — nonce-based CSP is a Phase 4 item
-        "style-src 'self' 'unsafe-inline'; "
-        "script-src 'self'; "
+        "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; "
+        "script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; "
         "frame-ancestors 'none'"
     )
     if settings.is_production:
