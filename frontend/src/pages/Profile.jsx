@@ -26,9 +26,13 @@ export default function Profile() {
     if (!user) return;
     try {
       setLoading(true);
+      const headers = {};
+      if (user?.access_token && user.access_token !== '__cookie__') {
+        headers.Authorization = `Bearer ${user.access_token}`;
+      }
       const [profileRes, complaintsRes] = await Promise.all([
-        fetch(`${API}/users/me`),
-        fetch(`${API}/complaints`),
+        fetch(`${API}/users/me`, { credentials: 'include', headers }),
+        fetch(`${API}/complaints`, { credentials: 'include', headers }),
       ]);
 
       if (profileRes.ok) {
@@ -64,11 +68,16 @@ export default function Profile() {
     setSavingProfile(true);
     setProfileMessage(null);
     try {
+      const headers = {
+        'Content-Type': 'application/json',
+      };
+      if (user?.access_token && user.access_token !== '__cookie__') {
+        headers.Authorization = `Bearer ${user.access_token}`;
+      }
       const response = await fetch(`${API}/users/me`, {
         method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        credentials: 'include',
+        headers,
         body: JSON.stringify({
           full_name: profileForm.full_name,
           phone_number: profileForm.phone_number,

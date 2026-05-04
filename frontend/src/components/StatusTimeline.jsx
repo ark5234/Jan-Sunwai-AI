@@ -27,7 +27,7 @@ export default function StatusTimeline({ items = [] }) {
       <p className="text-xs font-semibold uppercase tracking-wide text-slate-600">Status Timeline</p>
       <ul className="mt-2 space-y-2">
         {sorted.map((entry, idx) => (
-          <li key={`${entry.status}-${entry.timestamp || idx}`} className="flex gap-2.5">
+          <li key={`${entry.status}-${entry.timestamp || 'no-time'}-${idx}`} className="flex gap-2.5">
             <span className="mt-1 inline-block h-2 w-2 rounded-full bg-blue-500" />
             <div className="min-w-0">
               <p className="text-xs font-medium text-slate-800">{entry.status || 'Unknown status'}</p>
