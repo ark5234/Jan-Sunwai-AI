@@ -202,7 +202,33 @@ stateDiagram-v2
     CitizenReview --> [*]
 ```
 
-### 5.2.6 DFD Diagram (Data Flow Diagram - Level 1)
+### 5.2.6 DFD Diagram (Data Flow Diagram - Context & Level 1)
+
+#### Level 0 DFD (Context Diagram)
+
+```mermaid
+flowchart TD
+    Citizen((Citizen))
+    Worker((Worker))
+    Admin((Admin))
+    DeptHead((Department Head))
+    
+    System[0\nJan-Sunwai AI System]
+    
+    Citizen -->|Uploads Image & Submits Form| System
+    System -->|Generated Draft & Status Updates| Citizen
+    
+    Worker -->|Resolves Complaints| System
+    System -->|Assigned Tasks| Worker
+    
+    DeptHead -->|Escalations & Approvals| System
+    System -->|Department Analytics| DeptHead
+    
+    Admin -->|Triage Operations & Configs| System
+    System -->|Low-Confidence Queue| Admin
+```
+
+#### Level 1 DFD
 
 ```mermaid
 flowchart TD
@@ -251,14 +277,59 @@ flowchart TD
         end
     end
     
-    Client Browser -->|HTTPS| Frontend_Container
-    Client Browser -->|API/REST| Backend_Container
+    ClientBrowser[Client Browser] -->|HTTPS| Frontend_Container
+    ClientBrowser -->|API/REST| Backend_Container
     
     Backend_Container -->|Python Motor| Database_Containers
     Backend_Container -->|HTTP/REST| AI_Container
 ```
 
 ## 5.3 Database Design
+
+### Database Schema & Indexing Architecture
+
+Because Jan-Sunwai AI uses **MongoDB** (a NoSQL document database), strict relational mapping is replaced by references and embedding. The diagram below illustrates how collections interlock, where data is embedded for read-performance, and which fields are heavily indexed:
+
+```mermaid
+classDiagram
+    class Users_Collection {
+        +ObjectId _id [PK]
+        +String username [Unique Index]
+        +String email [Unique Index]
+        +String role
+        +String password_hash
+    }
+    class Complaints_Collection {
+        +ObjectId _id [PK]
+        +ObjectId user_id [Reference]
+        +ObjectId assigned_worker_id [Reference]
+        +String category [Text Index]
+        +String draft [Text Index]
+        +String status [Compound Index]
+        +DateTime created_at [Compound Index]
+        +Object location [2dsphere Geospatial Index]
+        +List status_history [Embedded]
+        +List notes [Embedded]
+    }
+    class Workers_Collection {
+        +ObjectId _id [PK]
+        +ObjectId user_id [Reference]
+        +ObjectId department_id [Reference]
+        +GeoJSON service_area
+        +Boolean is_active
+    }
+    class Departments_Collection {
+        +ObjectId _id [PK]
+        +String name
+        +ObjectId head_user_id [Reference]
+    }
+    
+    Users_Collection <-- Complaints_Collection : References
+    Workers_Collection <-- Complaints_Collection : References
+    Users_Collection <-- Workers_Collection : References
+    Users_Collection <-- Departments_Collection : References
+    Departments_Collection <-- Workers_Collection : References
+```
 
 ### 5.3.1 Table Design and Relationships
 Because Jan-Sunwai AI uses **MongoDB** (a NoSQL document database), "Tables" map to **Collections** and "Rows" map to **Documents**. 
