@@ -7,7 +7,9 @@ __pycache__/
 # The previous !backend/.env exception has been removed intentionally.
 .env
 **/.env
+**.env.*
 *.env.prod
+!**/.env*.example
 venv/
 .venv/
 env/

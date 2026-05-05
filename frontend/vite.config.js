@@ -7,9 +7,10 @@ export default defineConfig({
   server: {
     proxy: {
       // Proxy API calls to FastAPI backend during development
-      '/api': {
-        target: 'http://localhost:8000',
+      '/jan_sunwai_api': {
+        target: 'https://askai.bisag-n.gov.in',
         changeOrigin: true,
+        secure: false,
       },
       // Proxy static uploads (images) to backend during development
       '/uploads': {
