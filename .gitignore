@@ -58,7 +58,7 @@ backend/ai_sorted_dataset/
 ai_resort_report.csv
 backend/ai_resort_report.csv
 
-# Never commit image assets/datasets
+# Never commit image assets/datasets/raw project images
 *.png
 *.jpg
 *.jpeg
@@ -67,9 +67,14 @@ backend/ai_resort_report.csv
 *.tiff
 *.gif
 
-# Except documentation wireframes
-!docs/*.png
-!docs/images/*.png
+# Explicitly ignore all image-heavy documentation folders
+docs/project images/
+docs/project images/**
+docs/images/
+docs/images/**
+
+# Keep only the essential docs folder structure, but ignore binary assets
+# (Removing the documentation image whitelist as requested)
 
 # Evaluation output (generated files, not source)
 backend/evaluation_report_v2.csv

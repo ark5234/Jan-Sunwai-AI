@@ -1,4 +1,4 @@
-﻿# Jan-Sunwai AI
+# Jan-Sunwai AI
 
 ![CI](https://img.shields.io/github/actions/workflow/status/ark5234/Jan-Sunwai-AI/ci.yml?branch=main&label=CI)
 ![Release](https://img.shields.io/badge/release-v1.0--rc1-blue)
@@ -27,24 +27,7 @@ Docker containers combined with excessive pipeline scripts spanning load testing
 
 ## High-Level Architecture
 
-```mermaid
-flowchart LR
-    Citizen[Citizen Browser] --> FE[Frontend React + Vite]
-    Worker[Worker Browser] --> FE
-    DeptHead[Dept Head Browser] --> FE
-    Admin[Admin Browser] --> FE
-
-    FE -->|JWT + /api/v1| API[FastAPI Backend]
-
-    API --> DB[(MongoDB)]
-    API --> NDMC_DB[(NDMC Audit DB)]
-    API --> Uploads[(uploads/)]
-    API --> Queue[In-memory LLM Queue & Escalation Loop]
-    Queue --> Ollama[Local Ollama]
-
-    API --> Logs[Rotating App Logs]
-    API --> Notify[In-app Notifications]
-```
+![High-Level Architecture](./docs/images/System%20context%20diagram.png)
 
 ## Screenshots
 
@@ -53,45 +36,11 @@ flowchart LR
 
 ## AI Pipeline
 
-```mermaid
-flowchart TD
-    A[Image Upload] --> B[Storage Validation + Save]
-    B --> C[Vision Model Cascade]
-    C --> D[Rule Engine Scoring]
-    D --> E{Ambiguous?}
-    E -->|No| F[Category Finalized]
-    E -->|Yes| G[Reasoning Model]
-    G --> F
-    F --> H[Queue Draft Generation]
-    H --> I[Formal Complaint Draft]
-    I --> J[Citizen Review + Submit]
-    J --> K[Complaint Saved + Routed]
-```
+![AI Pipeline](./docs/images/architecture.png)
 
 ## Complaint Lifecycle
 
-```mermaid
-sequenceDiagram
-    actor Citizen
-    participant FE as Frontend
-    participant API as FastAPI
-    participant AI as AI Pipeline
-    participant DB as MongoDB
-    participant ASSIGN as Assignment Service
-
-    Citizen->>FE: Upload image + language
-    FE->>API: POST /analyze
-    API->>AI: classify + draft
-    AI-->>API: category + confidence + draft
-    API-->>FE: analysis payload
-
-    Citizen->>FE: Edit draft + confirm location
-    FE->>API: POST /complaints
-    API->>DB: store complaint (status=Open)
-    API->>ASSIGN: auto_assign()
-    ASSIGN->>DB: assign worker + set In Progress (if eligible)
-    API-->>FE: complaint created
-```
+![Complaint Lifecycle](./docs/images/sequence%20diagram.png)
 
 ## Repository Layout
 

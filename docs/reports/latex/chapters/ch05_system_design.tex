@@ -19,9 +19,19 @@ The platform follows a rigorous \textbf{Client-Server architecture} with a layer
 \item \textbf{AI Runtime Layer}: Ollama-hosted local models utilizing a multi-tier vision cascade (Qwen2.5-VL, IBM Granite-3.2, Moondream2) with deterministic rule-engine scoring and an NDMC AI API comparison layer.
 \end{itemize}
 
-\placeholderfigure{Overall System Context Diagram}{Users interact with the frontend, which communicates with backend APIs. Backend coordinates MongoDB, uploads storage, AI runtime, notification logic, and escalation loop.}
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.85\textwidth]{../../images/System context diagram.png}
+\caption{Overall System Context Diagram}
+\label{fig:system-context}
+\end{figure}
 
-\placeholderfigure{Component Architecture Diagram}{Frontend modules map to backend routers and services. Persistence collections and model runtime are isolated behind service interfaces for maintainability and testability.}
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.85\textwidth]{../../images/architecture.png}
+\caption{Component Architecture Diagram}
+\label{fig:component-architecture}
+\end{figure}
 
 \subsection{Key Architectural Decisions}
 
@@ -71,31 +81,56 @@ The following diagrams are aligned with the implemented module boundaries, routi
 
 \subsection{E-R Diagram}
 
-\placeholderfigure{E-R Diagram}{Primary entities: User, Complaint, Notification, and PasswordReset token. Relationships include complaint ownership, assignment, and notification generation.}
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.85\textwidth]{../../images/new er.png}
+\caption{E-R Diagram}
+\label{fig:er-diagram}
+\end{figure}
 
 \textbf{Data Flow \& Rationale:} This diagram shows how complaint records act as the central nexus linking users, workers, and notifications. By embedding status history directly within the Complaint entity, the database minimizes costly relational joins during dashboard rendering.
 
 \subsection{Use Case Diagram}
 
-\placeholderfigure{Use Case Diagram}{Citizen submits and tracks complaints; worker resolves assignments; department head updates status; admin governs approvals, triage, and analytics.}
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.85\textwidth]{../../images/flowchart.png}
+\caption{Use Case Diagram (System Flow)}
+\label{fig:use-case}
+\end{figure}
 
 \textbf{Role Segregation \& Governance:} This diagram captures the strict access boundaries enforced by the system. While citizens have broad permission to create and track records, state mutations (such as resolving or rejecting a complaint) are heavily restricted to authenticated workers and department heads. It visually demonstrates the governance principle that AI assists but humans hold final approval authority.
 
 \subsection{Class Diagram}
 
-\placeholderfigure{Class Diagram}{Schema-level classes represent User, Complaint, and Notification with association to role, status, and metadata properties.}
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.85\textwidth]{../../images/class diagram.png}
+\caption{Class Diagram}
+\label{fig:class-diagram}
+\end{figure}
 
 \textbf{Data Encapsulation:} The class structure reflects the document-oriented database design where complex types like Geolocation and Timestamps are embedded rather than relationally linked. This tradeoff sacrifices some normalization but ensures that fetching a single Complaint object provides the frontend with the complete operational context needed to render a dashboard.
 
 \subsection{Sequence Diagram}
 
-\placeholderfigure{Sequence Diagram}{Upload -> analyze -> generate draft -> submit complaint -> auto-assign -> status updates -> notifications.}
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.85\textwidth]{../../images/sequence diagram.png}
+\caption{Sequence Diagram}
+\label{fig:sequence-diagram}
+\end{figure}
 
 \textbf{Flow \& Bottlenecks:} This sequence outlines the chronological journey of a grievance. It highlights the AI inference step as the primary synchronous bottleneck. To prevent browser timeouts, the system restricts the analysis time window and degrades gracefully to a manual form if inference times out.
 
 \subsection{Activity Diagram}
 
-\placeholderfigure{Activity Diagram}{Lifecycle from citizen intake through operational processing and closure with feedback and audit logging.}
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.85\textwidth]{../../images/avtivity diagram.png}
+\caption{Activity Diagram}
+\label{fig:activity-diagram}
+\end{figure}
 
 \textbf{State Machine Constraints:} This diagram tracks the rigid state transitions a complaint undergoes (e.g., from `Pending` to `In Progress` to `Resolved`). It illustrates the system's fail-safes: if the AI classification confidence is low, the activity branches into the administrative triage queue rather than failing silently, preventing black-hole scenarios in civic reporting.
 
@@ -107,7 +142,12 @@ The following diagrams are aligned with the implemented module boundaries, routi
 
 \subsection{Deployment Diagram}
 
-\placeholderfigure{Deployment Diagram}{Browser clients access frontend service; frontend proxies API calls to backend service; backend communicates with MongoDB and host-level Ollama runtime.}
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.85\textwidth]{../../images/deployment diagram.png}
+\caption{Deployment Diagram}
+\label{fig:deployment-diagram}
+\end{figure}
 
 \textbf{Local-First Architecture:} The deployment topology explicitly avoids managed cloud dependencies to comply with municipal security constraints. By keeping the React bundle, FastAPI server, MongoDB, and Ollama LLM isolated within a Docker Compose network, the diagram proves that the entire grievance platform can be air-gapped or run on constrained on-premises infrastructure.
 
@@ -222,14 +262,24 @@ The following figure provides a visual reference that complements the explanator
 
 The screenshot gallery below restores representative evidence from the implementation while keeping the report compact enough for submission.
 
-\screenshotcard[Home Page Hero]{0.48\textwidth}{fig:s01}{../../images/screenshots/S01_home_desktop.png}{Home Page Hero and Public Entry CTA}
-\screenshotcard[AI Analysis Result]{0.48\textwidth}{fig:s02}{../../images/screenshots/S02_analyze_result.png}{AI Analysis Result and Draft Review}
+\screenshotcard[Home Page Hero]{0.48\textwidth}{fig:s01}{../../images/citizen homepage.png}{Home Page Hero and Public Entry CTA}
+\screenshotcard[AI Analysis Result]{0.48\textwidth}{fig:s02}{../../images/complaint review with geo-tag.png}{AI Analysis Result and Draft Review}
 
-\screenshotcard[Citizen Tracking Dashboard]{0.48\textwidth}{fig:s03}{../../images/screenshots/S03_citizen_dashboard.png}{Citizen Complaint Tracking Dashboard}
-\screenshotcard[Worker Assignment Queue]{0.48\textwidth}{fig:s04}{../../images/screenshots/S04_worker_dashboard.png}{Worker Assignment Queue}
+\screenshotcard[Citizen Tracking Dashboard]{0.48\textwidth}{fig:s03}{../../images/Grievance Status Tracker.png}{Citizen Complaint Tracking Dashboard}
+\screenshotcard[Worker Assignment Queue]{0.48\textwidth}{fig:s04}{../../images/admin- worker task assignment pannel.png}{Worker Assignment Queue}
 
-\screenshotcard[Admin Dashboard]{0.96\textwidth}{fig:s05}{../../images/screenshots/S05_admin_dashboard_desktop.png}{Admin Dashboard --- shows real-time complaint volume and department breakdown.}
-\screenshotcard[Admin Triage Queue]{0.96\textwidth}{fig:s06}{../../images/screenshots/S06_triage_queue.png}{Administrative Triage Queue --- displays low-confidence AI classifications.}
+\screenshotcard[Admin Dashboard]{0.96\textwidth}{fig:s05}{../../images/admin dashboard.png}{Admin Dashboard --- shows real-time complaint volume and department breakdown.}
+\screenshotcard[Admin Triage Queue]{0.96\textwidth}{fig:s06}{../../images/admin- Human complaint review pannel.png}{Administrative Triage Queue --- displays low-confidence AI classifications.}
+
+\screenshotcard[Grievance Heatmap]{0.48\textwidth}{fig:s07}{../../images/Grievance Heatmap.png}{Geospatial aggregation of complaints across the municipal area.}
+\screenshotcard[Satellite Analysis]{0.48\textwidth}{fig:s08}{../../images/satellite complaint image.png}{Satellite-view analysis of infrastructure failure sites.}
+
+\screenshotcard[Detailed Complaint View]{0.96\textwidth}{fig:s09}{../../images/admin english complaint view.png}{Detailed view of a resolved complaint with AI metadata and status history.}
+
+\screenshotcard[Login \& Registration]{0.48\textwidth}{fig:s10}{../../images/login page.png}{Secure persona-based login entry.}
+\screenshotcard[Notification Panel]{0.48\textwidth}{fig:s11}{../../images/notification pannel.png}{Real-time event feed for status updates.}
+
+
 
 \section{Chapter Summary}
 

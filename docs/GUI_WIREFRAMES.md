@@ -1,6 +1,10 @@
-﻿# GUI Wireframes (Mermaid Canonical)
+# GUI Wireframes (Mermaid Canonical)
 
-This document is the canonical wireframe source for the current UI. Mermaid diagrams replace static image wireframes.
+This document is the canonical wireframe source for the current UI. 
+
+![Canonical GUI Wireframe](./images/GUI_Wireframe.png)
+
+Mermaid diagrams below provide the functional logic and flow for the wireframes.
 
 ## App Navigation Map
 

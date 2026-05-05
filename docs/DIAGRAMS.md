@@ -38,6 +38,7 @@ flowchart TD
     M --> N[Citizen Review + Submit]
     N --> O[Complaint Saved + Auto-Routed]
 ```
+![AI Classification Pipeline](./images/System context diagram.png)
 
 ## 5.2 UML Diagrams
 
@@ -72,6 +73,7 @@ erDiagram
         datetime created_at
     }
 ```
+![E-R Diagram](./images/new er.png)
 
 ### 5.2.2 Use Case Diagram
 
@@ -100,6 +102,7 @@ flowchart LR
     
     UC1 -.->|includes| UC13([AI Classification])
 ```
+![Use Case Diagram](./images/flowchart.png)
 *(Note: Mermaid flowchart can also depict use case functionality if actual Use Case UML is not fully supported in your renderer, standard UML boundaries apply)*
 
 ### 5.2.3 Class Diagram
@@ -137,6 +140,7 @@ classDiagram
     ComplaintRouter --> AssignmentService : triggers
     WorkerRouter --> AssignmentService : uses
 ```
+![Class Diagram](./images/class diagram.png)
 
 ### 5.2.4 Sequence Diagram
 (Complaint Lifecycle Sequence)
@@ -163,6 +167,7 @@ sequenceDiagram
     ASSIGN->>DB: Update complaint to (Assigned/In Progress)
     API-->>FE: Success, Complaint ID
 ```
+![Sequence Diagram](./images/sequence diagram.png)
 
 ### 5.2.5 Activity Diagram
 (Image Analysis & Triage Activity)
@@ -188,6 +193,7 @@ stateDiagram-v2
     GenerateDraft --> CitizenReview
     CitizenReview --> [*]
 ```
+![Activity Diagram](./images/avtivity diagram.png)
 
 ### 5.2.6 DFD Diagram (Data Flow Diagram - Context & Level 1)
 
@@ -236,6 +242,7 @@ flowchart TD
     DB -->|Task List| P4
     P4 -->|Status Updates| DB
 ```
+![DFD Level 1](./images/architecture.png)
 
 ### 5.2.7 Deployment Diagram
 
@@ -275,6 +282,7 @@ flowchart TD
     Backend_Container -->|HTTP/REST| AI_Container
     Backend_Container -->|HTTP/REST| NDMC_API
 ```
+![Deployment Diagram](./images/deployment diagram.png)
 
 ## 5.3 Database Design
 
