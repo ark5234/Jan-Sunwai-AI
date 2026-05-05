@@ -16,7 +16,7 @@ The platform follows a rigorous \textbf{Client-Server architecture} with a layer
 \item \textbf{API Layer}: FastAPI routers strictly enforced under the \texttt{/api/v1} namespace grouped by domain concern (Complaints, Users, Health, Triage, Analytics, Workers).
 \item \textbf{Service Layer}: In-memory async AI Queues, Automated Worker Assignment, sanitization grids, robust Rate Limiting (\texttt{slowapi}), and background escalation loops (\texttt{escalation\_loop()}).
 \item \textbf{Data Layer}: Primary MongoDB collections (with \texttt{2dsphere} indexes) alongside a dedicated NDMC Audit Database.
-\item \textbf{AI Runtime Layer}: Ollama-hosted local models utilizing a vision classification pipeline and a reasoning fallback.
+\item \textbf{AI Runtime Layer}: Ollama-hosted local models utilizing a multi-tier vision cascade (Qwen2.5-VL, IBM Granite-3.2, Moondream2) with deterministic rule-engine scoring and an NDMC AI API comparison layer.
 \end{itemize}
 
 \placeholderfigure{Overall System Context Diagram}{Users interact with the frontend, which communicates with backend APIs. Backend coordinates MongoDB, uploads storage, AI runtime, notification logic, and escalation loop.}
@@ -47,13 +47,23 @@ Versioned API alias (/api/v1) & Improves long-term integration stability for ext
 
 \subsection{AI Classification Pipeline}
 
-To ensure reliable routing, the AI component employs a hybrid model combining vision-language inference with deterministic thresholding. When an image is uploaded, the vision model generates class probabilities. The final confidence score is formulated as the maximum probability across predefined civic categories:
+To ensure reliable routing, the AI component employs a \textbf{Vision Cascade} combined with deterministic rule-based scoring. When an image is uploaded, it is processed through a sequence of models:
+\begin{enumerate}
+    \item \textbf{Primary Vision Model (Qwen2.5-VL)}: Extracts detailed visual attributes.
+    \item \textbf{Non-Civic Guard}: Immediately flags irrelevant uploads (selfies, food, etc.).
+    \item \textbf{Rule Engine Scoring}: Applies weighted keyword matching to the vision output (e.g., "pothole" + "road" $\to$ Civil).
+    \item \textbf{Cascade Fallback}: If the primary model is ambiguous or times out, the system retries with IBM Granite-3.2 or Moondream2.
+    \item \textbf{NDMC AI Comparison}: Final local predictions are cross-referenced with the external NDMC AI API to ensure alignment with municipal standards.
+\end{enumerate}
 
-\begin{equation}
-\text{Confidence} = \max_{i} (P(\text{class}_i \mid \text{image}))
-\end{equation}
+The system implements \textbf{Contextual Priority Rules} to resolve common biases:
+\begin{itemize}
+    \item \textbf{Source-over-Symptom}: Prioritizes Civil (e.g., pipe leak) over VBD (e.g., stagnant water) when infrastructure failure is detected.
+    \item \textbf{Infrastructure-over-Landscape}: Prioritizes Civil (e.g., sand/construction) over Horticulture (e.g., leaves) on roadsides.
+    \item \textbf{Activity-over-Infrastructure}: Prioritizes Enforcement (e.g., hawkers) over minor pavement issues.
+\end{itemize}
 
-If this $\text{Confidence}$ exceeds the system's acceptable threshold (e.g., $0.70$), the complaint is auto-routed to the corresponding department. If the confidence falls below this threshold, the system flags the submission for the administrative triage queue, ensuring human oversight handles ambiguous cases.
+The final confidence score determines if the complaint is auto-routed (threshold $\ge 0.70$) or sent to the Administrative Triage Queue.
 
 \section{UML Diagrams}
 
