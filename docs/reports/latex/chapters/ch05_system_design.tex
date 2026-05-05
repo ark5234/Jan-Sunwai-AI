@@ -30,20 +30,19 @@ Key design decisions are summarized below:
 
 \begin{table}[H]
 \centering
-\begin{tabularx}{\textwidth}{|p{0.33\textwidth}|X|}
-\toprule
-\textbf{Decision} & \textbf{Rationale} \\ \midrule
-\midrule
-Hybrid AI pipeline (vision + rules + optional reasoning) & Reduces hallucination risk, lowers VRAM pressure, and improves deterministic routing for common civic scenes \\ \midrule
-Document model in MongoDB & Supports rich complaint lifecycle payloads and embedded audit metadata without heavy relational join overhead \\ \midrule
-Role-specific route gates & Enforces operational boundaries between citizen, worker, department head, and admin personas \\ \midrule
-Queue-based draft generation fallback & Prevents long-running model calls from blocking frontend experience \\ \midrule
-Security middleware and sanitization by default & Reduces exploit surface for API consumers and file uploads \\ \midrule
-Versioned API alias (/api/v1) & Improves long-term integration stability for external municipal consumers \\ \midrule
-\bottomrule
-\end{tabularx}
 \caption{Major Design Decisions and Rationale}
 \label{tab:design-decisions}
+\begin{tabular}{|p{0.33\textwidth}|p{0.59\textwidth}|}
+\hline
+\textbf{Decision} & \textbf{Rationale} \\ \hline
+\hline
+Hybrid AI pipeline (vision + rules + optional reasoning) & Reduces hallucination risk, lowers VRAM pressure, and improves deterministic routing for common civic scenes \\ \hline
+Document model in MongoDB & Supports rich complaint lifecycle payloads and embedded audit metadata without heavy relational join overhead \\ \hline
+Role-specific route gates & Enforces operational boundaries between citizen, worker, department head, and admin personas \\ \hline
+Queue-based draft generation fallback & Prevents long-running model calls from blocking frontend experience \\ \hline
+Security middleware and sanitization by default & Reduces exploit surface for API consumers and file uploads \\ \hline
+Versioned API alias (/api/v1) & Improves long-term integration stability for external municipal consumers \\ \hline
+\end{tabular}
 \end{table}
 
 \subsection{AI Classification Pipeline}
@@ -138,24 +137,23 @@ Key indexing strategies are summarized below:
 
 \begin{table}[H]
 \centering
-\begin{tabularx}{\textwidth}{|p{0.22\textwidth}|p{0.31\textwidth}|X|}
-\toprule
-\textbf{Collection} & \textbf{Index} & \textbf{Purpose} \\ \midrule
-\midrule
-users & unique(username), unique(email) & Fast auth lookups and uniqueness enforcement \\ \midrule
-complaints & (user\_id, created\_at) & Efficient citizen dashboard history retrieval \\ \midrule
-complaints & (status, created\_at) & Queue and status-oriented admin filtering \\ \midrule
-complaints & (department, created\_at) & Department-level operational listing \\ \midrule
-complaints & authority\_id & Escalation and authority review queries \\ \midrule
-notifications & (user\_id, created\_at) & Ordered notification feed retrieval \\ \midrule
-notifications & (user\_id, is\_read) & Unread badge counter queries \\ \midrule
-password\_resets & unique(token\_hash) & Token lookup and collision prevention \\ \midrule
-password\_resets & (user\_id, used) & Active token invalidation management \\ \midrule
-password\_resets & TTL(expires\_at) & Automatic expired-token cleanup \\ \midrule
-\bottomrule
-\end{tabularx}
 \caption{Indexing Strategy by Collection}
 \label{tab:indexing-strategy}
+\begin{tabular}{|p{0.22\textwidth}|p{0.31\textwidth}|p{0.39\textwidth}|}
+\hline
+\textbf{Collection} & \textbf{Index} & \textbf{Purpose} \\ \hline
+\hline
+users & unique(username), unique(email) & Fast auth lookups and uniqueness enforcement \\ \hline
+complaints & (user\_id, created\_at) & Efficient citizen dashboard history retrieval \\ \hline
+complaints & (status, created\_at) & Queue and status-oriented admin filtering \\ \hline
+complaints & (department, created\_at) & Department-level operational listing \\ \hline
+complaints & authority\_id & Escalation and authority review queries \\ \hline
+notifications & (user\_id, created\_at) & Ordered notification feed retrieval \\ \hline
+notifications & (user\_id, is\_read) & Unread badge counter queries \\ \hline
+password\_resets & unique(token\_hash) & Token lookup and collision prevention \\ \hline
+password\_resets & (user\_id, used) & Active token invalidation management \\ \hline
+password\_resets & TTL(expires\_at) & Automatic expired-token cleanup \\ \hline
+\end{tabular}
 \end{table}
 
 \section{GUI Design}
@@ -180,23 +178,22 @@ Key interface areas are summarized below:
 
 \begin{table}[H]
 \centering
-\begin{tabularx}{\textwidth}{|p{0.25\textwidth}|X|}
-\toprule
-\textbf{Interface Area} & \textbf{Purpose} \\ \midrule
-\midrule
-Public Home & Awareness, role entry points, and transparency access \\ \midrule
-Authentication Screens & Login, registration, forgot password, reset password \\ \midrule
-Analyze and Result Views & Upload, AI analysis display, map interaction, draft review \\ \midrule
-Citizen Dashboard & Complaint list, timeline, feedback, and progress visibility \\ \midrule
-Worker Dashboard & Assigned queue and completion updates \\ \midrule
-Department Head Dashboard & Department-level filtering, status updates, and notes \\ \midrule
-Admin Dashboard & Global queue, approvals, triage, bulk actions, analytics, exports \\ \midrule
-Notification Panel & Event feed and read-state management \\ \midrule
-Profile Screen & Personal information update controls \\ \midrule
-\bottomrule
-\end{tabularx}
 \caption{GUI Areas and Purpose}
 \label{tab:gui-areas-purpose}
+\begin{tabular}{|p{0.30\textwidth}|p{0.62\textwidth}|}
+\hline
+\textbf{Interface Area} & \textbf{Purpose} \\ \hline
+\hline
+Public Home & Awareness, role entry points, and transparency access \\ \hline
+Authentication Screens & Login, registration, forgot password, reset password \\ \hline
+Analyze and Result Views & Upload, AI analysis display, map interaction, draft review \\ \hline
+Citizen Dashboard & Complaint list, timeline, feedback, and progress visibility \\ \hline
+Worker Dashboard & Assigned queue and completion updates \\ \hline
+Department Head Dashboard & Department-level filtering, status updates, and notes \\ \hline
+Admin Dashboard & Global queue, approvals, triage, bulk actions, analytics, exports \\ \hline
+Notification Panel & Event feed and read-state management \\ \hline
+Profile Screen & Personal information update controls \\ \hline
+\end{tabular}
 \end{table}
 
 \subsection{Wireframe Reference}
@@ -215,24 +212,14 @@ The following figure provides a visual reference that complements the explanator
 
 The screenshot gallery below restores representative evidence from the implementation while keeping the report compact enough for submission.
 
-\begin{center}
-\screenshotcard[Home Page Hero]{0.47\textwidth}{fig:s01}{../../images/screenshots/S01_home_desktop.png}{Home Page Hero and Public Entry CTA}\hfill
-\screenshotcard[AI Analysis Result]{0.47\textwidth}{fig:s02}{../../images/screenshots/S02_analyze_result.png}{AI Analysis Result and Draft Review}
-\end{center}
+\screenshotcard[Home Page Hero]{0.48\textwidth}{fig:s01}{../../images/screenshots/S01_home_desktop.png}{Home Page Hero and Public Entry CTA}
+\screenshotcard[AI Analysis Result]{0.48\textwidth}{fig:s02}{../../images/screenshots/S02_analyze_result.png}{AI Analysis Result and Draft Review}
 
-\vspace{1em}
+\screenshotcard[Citizen Tracking Dashboard]{0.48\textwidth}{fig:s03}{../../images/screenshots/S03_citizen_dashboard.png}{Citizen Complaint Tracking Dashboard}
+\screenshotcard[Worker Assignment Queue]{0.48\textwidth}{fig:s04}{../../images/screenshots/S04_worker_dashboard.png}{Worker Assignment Queue}
 
-\begin{center}
-\screenshotcard[Citizen Tracking Dashboard]{0.47\textwidth}{fig:s03}{../../images/screenshots/S03_citizen_dashboard.png}{Citizen Complaint Tracking Dashboard}\hfill
-\screenshotcard[Worker Assignment Queue]{0.47\textwidth}{fig:s04}{../../images/screenshots/S04_worker_dashboard.png}{Worker Assignment Queue}
-\end{center}
-
-\vspace{1em}
-
-\begin{center}
-\screenshotcard[Admin Dashboard]{0.47\textwidth}{fig:s05}{../../images/screenshots/S05_admin_dashboard_desktop.png}{Admin Dashboard --- shows real-time complaint volume, department breakdown, and pending approvals. The admin can initiate bulk status updates or export records from this single view.}\hfill
-\screenshotcard[Admin Triage Queue]{0.47\textwidth}{fig:s06}{../../images/screenshots/S06_triage_queue.png}{Administrative Triage Queue --- displays low-confidence AI classifications awaiting human review. The confidence score, AI-suggested category, and uploaded image are shown side-by-side so the admin can approve, reject, or relabel in one action.}
-\end{center}
+\screenshotcard[Admin Dashboard]{0.96\textwidth}{fig:s05}{../../images/screenshots/S05_admin_dashboard_desktop.png}{Admin Dashboard --- shows real-time complaint volume and department breakdown.}
+\screenshotcard[Admin Triage Queue]{0.96\textwidth}{fig:s06}{../../images/screenshots/S06_triage_queue.png}{Administrative Triage Queue --- displays low-confidence AI classifications.}
 
 \section{Chapter Summary}
 

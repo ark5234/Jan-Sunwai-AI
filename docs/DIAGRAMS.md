@@ -21,17 +21,22 @@ Jan-Sunwai AI follows a **Client-Server architecture** with a clear separation o
 
 ```mermaid
 flowchart TD
-    A[Image Upload] --> B[Storage Validation + Save]
-    B --> C[Vision Model Cascade]
-    C --> D[Rule Engine Scoring]
-    D --> E{Ambiguous?}
-    E -->|No| F[Category Finalized]
-    E -->|Yes| G[Reasoning Model]
-    G --> F
-    F --> H[Queue Draft Generation]
-    H --> I[Formal Complaint Draft]
-    I --> J[Citizen Review + Submit]
-    J --> K[Complaint Saved + Routed]
+    A[Image Upload] --> B[Storage + Geotag Extraction]
+    B --> C[Vision Cascade: Qwen2.5-VL / Granite / Moondream]
+    C --> D{Non-Civic Guard?}
+    D -->|Yes| E[Invalid/Uncategorized]
+    D -->|No| F[Rule Engine Scoring]
+    F --> G{Ambiguous or Uncategorized?}
+    G -->|Yes| H[Vision Retry w/ Alt Model]
+    H --> I{Still Ambiguous?}
+    I -->|Yes| J[Llama 3.2 Reasoning Model]
+    I -->|No| K[Finalize Category]
+    J --> K
+    G -->|No| K
+    K --> L[NDMC AI API Comparison]
+    L --> M[Queue Draft Generation]
+    M --> N[Citizen Review + Submit]
+    N --> O[Complaint Saved + Auto-Routed]
 ```
 
 ## 5.2 UML Diagrams
@@ -40,10 +45,7 @@ flowchart TD
 
 ```mermaid
 erDiagram
-    USER ||--o{ COMPLAINT : creates
-    WORKER ||--o{ COMPLAINT : assigned_to
-    DEPARTMENT ||--o{ WORKER : employs
-    DEPARTMENT ||--o{ COMPLAINT : handles
+    USER ||--o{ COMPLAINT : "creates / handles (if worker)"
     COMPLAINT ||--o{ NOTIFICATION : triggers
     
     USER {
@@ -52,32 +54,22 @@ erDiagram
         string email
         string password_hash
         string role
-    }
-    
-    WORKER {
-        ObjectId _id PK
-        ObjectId user_id FK
-        ObjectId department_id FK
+        string department
+        string worker_status
         object service_area
-        boolean is_active
+        boolean is_approved
     }
     
     COMPLAINT {
         ObjectId _id PK
         ObjectId user_id FK
-        ObjectId assigned_worker_id FK
-        string category
+        ObjectId assigned_to FK
+        string department
         float confidence
-        string draft
+        string description
         string status
         object location
         datetime created_at
-    }
-    
-    DEPARTMENT {
-        ObjectId _id PK
-        string name
-        ObjectId head_user_id FK
     }
 ```
 
@@ -114,41 +106,36 @@ flowchart LR
 
 ```mermaid
 classDiagram
-    class User {
-        +ObjectId id
-        +String username
-        +String email
-        +String role
-        +login()
+    class UserRouter {
         +register()
+        +login()
+        +updateProfile()
     }
-    class Complaint {
-        +ObjectId id
-        +ObjectId userId
-        +String category
-        +String status
-        +Location loc
-        +String draftText
-        +submit()
+    class ComplaintRouter {
+        +analyze()
+        +create()
         +updateStatus()
-        +assignWorker()
+        +escalate()
     }
-    class WorkerInfo {
-        +ObjectId departmentId
-        +GeoJSON serviceArea
-        +Boolean isActive
-        +getAssignedComplaints()
+    class WorkerRouter {
+        +updateStatus()
+        +markDone()
+        +assignTask()
     }
-    class AIPipeline {
-        +runVision(image)
-        +analyzeRules(visionOutput)
-        +generateDraft(category)
+    class AIPipelineService {
+        +runVisionCascade()
+        +runRuleEngine()
+        +runReasoning()
+        +generateDraft()
+    }
+    class AssignmentService {
+        +autoAssign()
+        +freeSlot()
     }
     
-    User "1" -- "many" Complaint : files
-    WorkerInfo "1" -- "many" Complaint : handles
-    User <|-- WorkerInfo : extends via relation
-    Complaint --> AIPipeline : uses for triage
+    ComplaintRouter --> AIPipelineService : uses
+    ComplaintRouter --> AssignmentService : triggers
+    WorkerRouter --> AssignmentService : uses
 ```
 
 ### 5.2.4 Sequence Diagram
@@ -276,12 +263,17 @@ flowchart TD
             Ollama[Ollama Server]
         end
     end
+
+    subgraph "External Services"
+        NDMC_API[NDMC AI API]
+    end
     
     ClientBrowser[Client Browser] -->|HTTPS| Frontend_Container
     ClientBrowser -->|API/REST| Backend_Container
     
     Backend_Container -->|Python Motor| Database_Containers
     Backend_Container -->|HTTP/REST| AI_Container
+    Backend_Container -->|HTTP/REST| NDMC_API
 ```
 
 ## 5.3 Database Design
@@ -297,46 +289,43 @@ classDiagram
         +String username [Unique Index]
         +String email [Unique Index]
         +String role
-        +String password_hash
+        +String department
+        +String worker_status
+        +Object service_area
+        +Boolean is_approved
     }
     class Complaints_Collection {
         +ObjectId _id [PK]
         +ObjectId user_id [Reference]
-        +ObjectId assigned_worker_id [Reference]
-        +String category [Text Index]
-        +String draft [Text Index]
+        +ObjectId assigned_to [Reference]
+        +String department [Text Index]
+        +String description [Text Index]
         +String status [Compound Index]
         +DateTime created_at [Compound Index]
         +Object location [2dsphere Geospatial Index]
         +List status_history [Embedded]
-        +List notes [Embedded]
+        +List dept_notes [Embedded]
+        +List comments [Embedded]
     }
-    class Workers_Collection {
+    class Notifications_Collection {
         +ObjectId _id [PK]
         +ObjectId user_id [Reference]
-        +ObjectId department_id [Reference]
-        +GeoJSON service_area
-        +Boolean is_active
-    }
-    class Departments_Collection {
-        +ObjectId _id [PK]
-        +String name
-        +ObjectId head_user_id [Reference]
+        +String type
+        +String title
+        +String message
+        +Boolean is_read
     }
     
     Users_Collection <-- Complaints_Collection : References
-    Workers_Collection <-- Complaints_Collection : References
-    Users_Collection <-- Workers_Collection : References
-    Users_Collection <-- Departments_Collection : References
-    Departments_Collection <-- Workers_Collection : References
+    Users_Collection <-- Notifications_Collection : References
 ```
 
-### 5.3.1 Table Design and Relationships
+### 5.3.1 Collection Design and Relationships
 Because Jan-Sunwai AI uses **MongoDB** (a NoSQL document database), "Tables" map to **Collections** and "Rows" map to **Documents**. 
-- **Users Collection**: Core user identity.
-- **Workers Collection**: Operational metadata for worker roles linking back to ``user_id``.
-- **Complaints Collection**: The central entity linking `user_id`, `category`, and `worker_id`. Contains nested structures for `location` (GeoJSON) and arrays for `status_history`.
-- **Departments Collection**: Organizational divisions linking to `head_user_id`.
+- **Users Collection**: Core identity and role metadata. Citizens, Workers, Dept Heads, and Admins are all stored here.
+- **Complaints Collection**: The central entity linking `user_id`, `department`, and `assigned_to` (worker). Contains nested structures for `location` (GeoJSON), `status_history`, `dept_notes`, and `comments`.
+- **Notifications Collection**: Tracks alerts for status changes, assignments, and escalations.
+- **Audit Logs (NDMC MongoDB)**: A secondary database used for recording AI classification agreement between local models and NDMC's API.
 
 ### 5.3.2 Normalization
 Instead of strict 3NF (Third Normal Form) typical of Relational DBs, MongoDB relies on a hybrid approach:

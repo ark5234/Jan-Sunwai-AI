@@ -95,18 +95,17 @@ To validate the necessity of the proposed architecture and transition from descr
 
 \begin{table}[H]
 \centering
-\begin{tabularx}{\textwidth}{p{0.20\textwidth}p{0.25\textwidth}p{0.25\textwidth}X}
-\toprule
-\textbf{System Attribute} & \textbf{Traditional Portal} & \textbf{Pure Cloud AI System} & \textbf{Proposed Hybrid System} \\
-\midrule
-Input Type & Manual Text/Forms & Unstructured Text/Image & Image + Text (AI assisted) \\
-Classification & Manual Selection & Non-deterministic LLM & Hybrid (Rules + Local VLM) \\
-Routing Accuracy & Low (Misrouting common) & Variable (Hallucination risk) & High (Governed rules) \\
-Infrastructure & Low requirement & High (Cloud APIs needed) & Moderate (Local GPU inference) \\
-Primary Limitation & High user friction & Privacy concerns, unpredictable & Requires specialized local hardware \\
-\bottomrule
-\end{tabularx}
 \caption{Comparison of Grievance System Architectures}
+\begin{tabular}{|p{0.20\textwidth}|p{0.25\textwidth}|p{0.25\textwidth}|p{0.22\textwidth}|}
+\hline
+\textbf{System Attribute} & \textbf{Traditional Portal} & \textbf{Pure Cloud AI System} & \textbf{Proposed Hybrid System} \\ \hline
+\hline
+Input Type & Manual Text/Forms & Unstructured Text/Image & Image + Text (AI assisted) \\ \hline
+Classification & Manual Selection & Non-deterministic LLM & Hybrid (Rules + Local VLM) \\ \hline
+Routing Accuracy & Low (Misrouting common) & Variable (Hallucination risk) & High (Governed rules) \\ \hline
+Infrastructure & Low requirement & High (Cloud APIs needed) & Moderate (Local GPU inference) \\ \hline
+Primary Limitation & High user friction & Privacy concerns, unpredictable & Requires specialized local hardware \\ \hline
+\end{tabular}
 \end{table}
 
 The project design aligns with development principles and platform guidance from FastAPI, React, MongoDB, and OWASP references listed in Chapter 9 [11, 12, 13, 7, 8].

@@ -67,73 +67,82 @@ This approach was chosen over a strict waterfall model because AI behavior and U
 The milestone table below maps each delivery phase to its planned completion gate and primary acceptance criterion.
 
 
-\begin{longtable}{p{0.12\textwidth}p{0.24\textwidth}p{0.43\textwidth}p{0.13\textwidth}}
+\begin{longtable}{|p{0.12\textwidth}|p{0.24\textwidth}|p{0.43\textwidth}|p{0.13\textwidth}|}
 \caption{Milestone Summary and Deliverables}\\
-\toprule
+\hline
 \textbf{Window} & \textbf{Theme} & \textbf{Key Deliverables} & \textbf{Status} \\
-\midrule
+\hline
 \endfirsthead
-\toprule
+\hline
 \textbf{Window} & \textbf{Theme} & \textbf{Key Deliverables} & \textbf{Status} \\
-\midrule
+\hline
 \endhead
-Weeks 1--2 & Foundation & Repo setup, environment bootstrap, backend skeleton, DB connectivity, auth schema, complaint schema, initial CRUD and upload service & Completed \\
-Weeks 3--5 & AI Pipeline & Model research, classifier iterations, geotagging, reverse geocoding, generation service, analyze endpoint integration & Completed \\
-Week 6 & Frontend Base & Routing, upload flow, analyze hook, result view, integration with backend auth and analyze pipeline & Completed \\
-Week 7 & Flow Closure & Map marker improvements, local draft persistence, error boundary, 404 route, full persona walkthrough & Completed \\
-Week 8 & Security Layer & Upload hardening, rate limiting, sanitization, CORS lockdown, security headers, index hardening & Completed \\
-Week 9 & NDMC Feature Pack & Worker panel, assignment engine, audit trail, analytics/heatmap, SLA badges, bulk actions/exports & Completed \\
-Week 10 & Notification and Communication & Navbar badge, status-triggered notifications, email stub, forgot/reset password, profile editing, E2E notification chain test & Completed \\
-Week 11 & Performance and Reliability & Image compression, lazy loading, graceful 503 degrade, profiling, resilience tests & Completed \\
-Week 12 & Production Hardening & Docker production files, compose profile, env plan, API versioning, backup strategy, UI audit & Completed \\
-Weeks 13--14 & Testing and Pre-Handover & Unit/integration/security/load tests, mobile fixes, handover guide, API reference, repository cleanup, CI workflows & Completed \\
-Weeks 15--16 & UAT and Staging Validation & Clean deploy simulation, production verification, UAT persona runs, feedback loop and polish pass & Completed \\
-Weeks 17--18 & Reporting and Submission & Technical report artifacts, screenshots, presentation, final submission hygiene and release tagging & Completed \\
-\bottomrule
+Weeks 1--2 & Foundation & Repo setup, environment bootstrap, backend skeleton, DB connectivity, auth schema, complaint schema, initial CRUD and upload service & Completed \\ \hline
+Weeks 3--5 & AI Pipeline & Model research, classifier iterations, geotagging, reverse geocoding, generation service, analyze endpoint integration & Completed \\ \hline
+Week 6 & Frontend Base & Routing, upload flow, analyze hook, result view, integration with backend auth and analyze pipeline & Completed \\ \hline
+Week 7 & Flow Closure & Map marker improvements, local draft persistence, error boundary, 404 route, full persona walkthrough & Completed \\ \hline
+Week 8 & Security Layer & Upload hardening, rate limiting, sanitization, CORS lockdown, security headers, index hardening & Completed \\ \hline
+Week 9 & NDMC Feature Pack & Worker panel, assignment engine, audit trail, analytics/heatmap, SLA badges, bulk actions/exports & Completed \\ \hline
+Week 10 & Notification and Communication & Navbar badge, status-triggered notifications, email stub, forgot/reset password, profile editing, E2E notification chain test & Completed \\ \hline
+Week 11 & Performance and Reliability & Image compression, lazy loading, graceful 503 degrade, profiling, resilience tests & Completed \\ \hline
+Week 12 & Production Hardening & Docker production files, compose profile, env plan, API versioning, backup strategy, UI audit & Completed \\ \hline
+Weeks 13--14 & Testing and Pre-Handover & Unit/integration/security/load tests, mobile fixes, handover guide, API reference, repository cleanup, CI workflows & Completed \\ \hline
+Weeks 15--16 & UAT and Staging Validation & Clean deploy simulation, production verification, UAT persona runs, feedback loop and polish pass & Completed \\ \hline
+Weeks 17--18 & Reporting and Submission & Technical report artifacts, screenshots, presentation, final submission hygiene and release tagging & Completed \\ \hline
 \end{longtable}
 
 \subsection{Project Timeline (Gantt Chart)}
 
-The Gantt chart below provides a visual representation of the week-by-week delivery schedule, illustrating how development streams overlapped and how hardening, testing, and documentation phases were sequenced relative to feature delivery.
-
-\begin{figure}[H]
-\centering
-\fbox{%
-  \begin{minipage}[c][7cm][c]{0.92\textwidth}
-    \centering
-    {\large\bfseries [ Gantt Chart --- Insert Image Here ]}\\[0.8em]
-    \small Save your image as: \texttt{docs/images/screenshots/gantt\_chart.png}\\[0.5em]
-    \small Then replace this entire \texttt{\textbackslash fbox\{...\}} block with:\\[0.3em]
-    \texttt{\textbackslash includegraphics[width=0.92\textbackslash textwidth]}\\
-    \texttt{\{../../images/screenshots/gantt\_chart.png\}}
-  \end{minipage}%
-}
-\caption{Project Gantt Chart --- Week-by-Week Delivery Schedule}
-\label{fig:gantt-chart}
-\end{figure}
+The week-by-week delivery calendar below maps each sprint to its date window, primary execution focus, and key management outcome [11, 12, 13, 16, 17].
 
 
+\begin{longtable}{|p{0.06\textwidth}|p{0.18\textwidth}|p{0.42\textwidth}|p{0.24\textwidth}|}
+\caption{Week-by-Week Project Execution Calendar}\\
+\hline
+\textbf{Week} & \textbf{Date Range} & \textbf{Primary Execution Focus} & \textbf{Management Outcome} \\ \hline
+\hline
+\endfirsthead
+\hline
+\textbf{Week} & \textbf{Date Range} & \textbf{Primary Execution Focus} & \textbf{Management Outcome} \\ \hline
+\hline
+\endhead
+W1 & Jan 28--Jan 31 & Repository initialization, environment setup, architecture notes, backend bootstrap & Foundation controls established \\ \hline
+W2 & Feb 02--Feb 07 & Mongo connectivity, schema definitions, early CRUD and upload service & Core API base-line available \\ \hline
+W3 & Feb 09--Feb 14 & Authentication hardening and classifier exploration & Security and AI direction validated \\ \hline
+W4 & Feb 16--Feb 21 & EXIF location extraction and reverse-geocoding integration & Analyze pipeline readiness achieved \\ \hline
+W5 & Feb 23--Feb 28 & Local model runtime setup and draft generation service & AI drafting integrated \\ \hline
+W6 & Mar 02--Mar 07 & Frontend routing, upload/result flow, end-to-end integration & Citizen flow stabilized \\ \hline
+W7 & Mar 09--Mar 14 & Map refinement, draft persistence, error boundaries, full walkthroughs & Baseline UX hardening complete \\ \hline
+W8 & Mar 16--Mar 21 & Security layer (headers, sanitizer, upload validation, limits, indexes) & Production-risk exposure reduced \\ \hline
+W9 & Mar 23--Mar 28 & Worker panel, assignment engine, audit trail, analytics and heatmap & NDMC governance features delivered \\ \hline
+W10 & Mar 30--Apr 04 & Notification chain, email stub, password reset, profile editing & Communication layer complete \\ \hline
+W11 & Apr 06--Apr 11 & Image compression, lazy loading, graceful 503, resilience testing & Platform reliability validated \\ \hline
+W12 & Apr 13--Apr 18 & Docker production profile, compose consolidation, API versioning & Production-ready stack confirmed \\ \hline
+W13--14 & Apr 20--May 02 & Full test suite, mobile fixes, handover guide, repository cleanup & QA sign-off achieved \\ \hline
+W15--16 & May 04--May 16 & UAT persona runs, staging deploy, production verification & Delivery confidence established \\ \hline
+W17--18 & May 18--May 27 & Technical report, screenshots, presentation, submission hygiene & Final handover complete \\ \hline
+\end{longtable}
 
-The structured breakdown below maps the project lifecycle into actionable, tracked deliverables.
+\subsection{Group Roles and Responsibilities}
 
+The responsibility matrix below defines the cross-functional ownership areas covered during delivery.
 
 \begin{table}[H]
 \centering
-\begin{tabularx}{\textwidth}{p{0.26\textwidth}X}
-\toprule
-\textbf{Role Area} & \textbf{Responsibilities} \\
-\midrule
-Backend Engineering & API design, schema validation, business logic, role authorization, lifecycle transitions, notification hooks \\
-Frontend Engineering & Route architecture, role dashboards, analyze/result flow, user session handling, responsive behavior \\
-AI and Classification & Vision model integration, rule engine tuning, reasoning fallback, draft generation quality checks \\
-Data and Persistence & MongoDB collection design, indexes, query access paths, reset token TTL and audit metadata \\
-Security and Reliability & Input sanitization, upload hardening, CORS and headers, degrade behavior, readiness/liveness semantics \\
-Testing and QA & Unit and integration tests, resilience and security validation, load profiling, UAT scripts \\
-DevOps and Deployment & Compose consolidation, environment normalization, production verification scripts, backup runbooks \\
-Documentation and Handover & API reference, deployment guides, user manual, architecture and report compilation \\
-\bottomrule
-\end{tabularx}
 \caption{Role Responsibility Matrix (Project Execution)}
+\begin{tabular}{|p{0.28\textwidth}|p{0.64\textwidth}|}
+\hline
+\textbf{Role Area} & \textbf{Responsibilities} \\ \hline
+\hline
+Backend Engineering & API design, schema validation, business logic, role authorization, lifecycle transitions, notification hooks \\ \hline
+Frontend Engineering & Route architecture, role dashboards, analyze/result flow, user session handling, responsive behavior \\ \hline
+AI and Classification & Vision model integration, rule engine tuning, reasoning fallback, draft generation quality checks \\ \hline
+Data and Persistence & MongoDB collection design, indexes, query access paths, reset token TTL and audit metadata \\ \hline
+Security and Reliability & Input sanitization, upload hardening, CORS and headers, degrade behavior, readiness/liveness semantics \\ \hline
+Testing and QA & Unit and integration tests, resilience and security validation, load profiling, UAT scripts \\ \hline
+DevOps and Deployment & Compose consolidation, environment normalization, production verification scripts, backup runbooks \\ \hline
+Documentation and Handover & API reference, deployment guides, user manual, architecture and report compilation \\ \hline
+\end{tabular}
 \end{table}
 
 \subsection{Group Dependencies}
@@ -152,25 +161,25 @@ Dependency risks were controlled through health endpoints, fallback behaviors, a
 
 \section{Risk Management}
 
-\begin{longtable}{p{0.24\textwidth}p{0.15\textwidth}p{0.15\textwidth}p{0.38\textwidth}}
+\begin{longtable}{|p{0.24\textwidth}|p{0.15\textwidth}|p{0.15\textwidth}|p{0.38\textwidth}|}
 \caption{Risk Register and Mitigation Plan}\\
-\toprule
-\textbf{Risk} & \textbf{Likelihood} & \textbf{Impact} & \textbf{Mitigation} \\ \midrule
-\midrule
+\hline
+\textbf{Risk} & \textbf{Likelihood} & \textbf{Impact} & \textbf{Mitigation} \\ \hline
+\hline
 \endfirsthead
-\toprule
-\textbf{Risk} & \textbf{Likelihood} & \textbf{Impact} & \textbf{Mitigation} \\ \midrule
-\midrule
+\hline
+\textbf{Risk} & \textbf{Likelihood} & \textbf{Impact} & \textbf{Mitigation} \\ \hline
+\hline
 \endhead
-Model unavailability or timeout & Medium & High & Multi-tier vision fallback, queue-based generation, retryable 503 responses \\ \midrule
-Wrong department classification & Medium & High & Deterministic rule engine, triage queue, admin correction workflow \\ \midrule
-Invalid/malicious uploads & Medium & High & Extension + MIME + magic number + image decode validation, max size enforcement \\ \midrule
-Unauthorized route access & Low & High & Cookie-session auth (JWT compatibility), role-gated dependencies, integration tests for permission boundaries \\ \midrule
-Configuration drift across environments & Medium & Medium & Unified backend environment strategy and scripted deployment checks \\ \midrule
-Notification inconsistency & Low & Medium & Automated notification-chain tests and mark-all-read verification \\ \midrule
-Performance degradation under load & Medium & Medium & Profiling, timing logs, load-testing matrix, controlled fallback behavior \\ \midrule
-Documentation mismatch at handover & Medium & Medium & NDMC deployment guide, API reference sync, verification procedure chapter \\ \midrule
-\bottomrule
+Model unavailability or timeout & Medium & High & Multi-tier vision fallback, queue-based generation, retryable 503 responses \\ \hline
+Wrong department classification & Medium & High & Deterministic rule engine, triage queue, admin correction workflow \\ \hline
+Invalid/malicious uploads & Medium & High & Extension + MIME + magic number + image decode validation, max size enforcement \\ \hline
+Unauthorized route access & Low & High & Cookie-session auth (JWT compatibility), role-gated dependencies, integration tests for permission boundaries \\ \hline
+Configuration drift across environments & Medium & Medium & Unified backend environment strategy and scripted deployment checks \\ \hline
+Notification inconsistency & Low & Medium & Automated notification-chain tests and mark-all-read verification \\ \hline
+Performance degradation under load & Medium & Medium & Profiling, timing logs, load-testing matrix, controlled fallback behavior \\ \hline
+Documentation mismatch at handover & Medium & Medium & NDMC deployment guide, API reference sync, verification procedure chapter \\ \hline
+\hline
 \end{longtable}
 
 \section{Management Outcomes}

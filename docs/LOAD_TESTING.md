@@ -1,4 +1,4 @@
-﻿# Load Testing Guide
+# Load Testing Guide
 
 This runbook is aligned with `backend/locustfile.py` and `scripts/run_load_test.*`.
 
@@ -20,7 +20,7 @@ flowchart LR
     API --> Ollama[Ollama Models]
 
     Locust -->|/api/v1/users/login| API
-    Locust -->|/api/v1/public/api/v1/complaints| API
+    Locust -->|/api/v1/public/complaints| API
     Locust -->|/api/v1/health/live| API
     Locust -->|/api/v1/notifications/unread-count| API
     Locust -->|/api/v1/analyze multipart| API
@@ -30,14 +30,14 @@ flowchart LR
 
 Task weights in `locustfile.py`:
 
-- `4` -> `GET /api/v1/public/api/v1/complaints`
+- `4` -> `GET /api/v1/public/complaints`
 - `3` -> `GET /api/v1/health/live`
 - `2` -> `GET /api/v1/notifications/unread-count` (authenticated request)
 - `1` -> `POST /api/v1/analyze` (multipart image upload)
 
 ## Acceptance Rules in Locust Script
 
-- `GET /api/v1/public/api/v1/complaints` must return `200`.
+- `GET /api/v1/public/complaints` must return `200`.
 - `GET /api/v1/health/live` must return `200`.
 - `GET /api/v1/notifications/unread-count` accepts `200` or `401`.
 - `POST /api/v1/analyze` accepts `200`, `429`, or `503`.

@@ -27,7 +27,7 @@ This module handles registration, login, session identity, profile updates, and 
 
 \subsection{Analyze and Complaint Intake Module}
 
-This module processes uploaded images, invokes the hybrid classifier pipeline, extracts location metadata, and orchestrates draft generation. It supports both immediate and queued generation paths and returns timing metadata for observability.
+This module processes uploaded images, invokes the hybrid classifier pipeline, extracts location metadata, and orchestrates draft generation. It supports both immediate and queued generation paths and returns timing metadata for observability [3, 4, 5, 17].
 
 \subsection{Complaint Lifecycle Module}
 
@@ -35,7 +35,7 @@ This module persists complaints and manages state transitions, including status 
 
 \subsection{Assignment and Worker Operations Module}
 
-This module auto-assigns complaints to eligible workers using department matching, optional geospatial service-area checks, and load balancing by active tasks. It also provides worker status controls and completion signaling.
+This module auto-assigns complaints to eligible workers using department matching, optional geospatial service-area checks, and load balancing by active tasks. It also provides worker status controls and completion signaling [11, 13].
 
 \subsection{Notification and Communication Module}
 
@@ -43,7 +43,7 @@ This module creates in-app notifications for complaint lifecycle events and main
 
 \subsection{Triage and Governance Module}
 
-This module supports admin review of low-confidence classifications. It enables decision actions such as approve, reject, or relabel. The triage path acts as a governance safety net against AI uncertainty.
+This module supports admin review of low-confidence classifications. It enables decision actions such as approve, reject, or relabel. The triage path acts as a governance safety net against AI uncertainty [6, 5].
 
 \subsection{Analytics and Public Transparency Module}
 
@@ -51,29 +51,29 @@ This module aggregates operational statistics, trend lines, and geospatial heatm
 
 \section{System Features}
 
-\begin{longtable}{p{0.12\textwidth}p{0.30\textwidth}p{0.48\textwidth}}
+\begin{longtable}{|p{0.12\textwidth}|p{0.30\textwidth}|p{0.48\textwidth}|}
 \caption{Proposed Feature Set and Operational Benefit}\\
-\toprule
-\textbf{Feature ID} & \textbf{Feature} & \textbf{Operational Benefit} \\ \midrule
-\midrule
+\hline
+\textbf{Feature ID} & \textbf{Feature} & \textbf{Operational Benefit} \\ \hline
+\hline
 \endfirsthead
-\toprule
-\textbf{Feature ID} & \textbf{Feature} & \textbf{Operational Benefit} \\ \midrule
-\midrule
+\hline
+\textbf{Feature ID} & \textbf{Feature} & \textbf{Operational Benefit} \\ \hline
+\hline
 \endhead
-PF-01 & Image-first intake & Reduces textual burden on citizen and improves evidence quality \\ \midrule
-PF-02 & Hybrid category detection & Improves classification consistency through rules plus selective reasoning \\ \midrule
-PF-03 & Draft complaint generation & Standardizes language quality and reduces submission ambiguity \\ \midrule
-PF-04 & Role-based dashboard routing & Ensures each persona sees relevant actions and data \\ \midrule
-PF-05 & Auto-assignment service & Reduces manual workload and accelerates field execution \\ \midrule
-PF-06 & Status history timeline & Improves accountability and supports audit and grievance review \\ \midrule
-PF-07 & Notification chain & Keeps citizens informed about progress without repeated manual follow-up \\ \midrule
-PF-08 & Triage queue & Prevents low-confidence AI outputs from silently propagating \\ \midrule
-PF-09 & Bulk admin actions & Improves throughput for backlog management in peak periods \\ \midrule
-PF-10 & Heatmap and analytics & Supports evidence-driven supervision and resource planning \\ \midrule
-PF-11 & Public complaint feed & Increases transparency and trust in civic workflow visibility \\ \midrule
-PF-12 & Health endpoints and timing logs & Supports operational diagnosis and production monitoring \\ \midrule
-\bottomrule
+PF-01 & Image-first intake & Reduces textual burden on citizen and improves evidence quality \\ \hline
+PF-02 & Hybrid category detection & Improves classification consistency through rules plus selective reasoning \\ \hline
+PF-03 & Draft complaint generation & Standardizes language quality and reduces submission ambiguity \\ \hline
+PF-04 & Role-based dashboard routing & Ensures each persona sees relevant actions and data \\ \hline
+PF-05 & Auto-assignment service & Reduces manual workload and accelerates field execution \\ \hline
+PF-06 & Status history timeline & Improves accountability and supports audit and grievance review \\ \hline
+PF-07 & Notification chain & Keeps citizens informed about progress without repeated manual follow-up \\ \hline
+PF-08 & Triage queue & Prevents low-confidence AI outputs from silently propagating \\ \hline
+PF-09 & Bulk admin actions & Improves throughput for backlog management in peak periods \\ \hline
+PF-10 & Heatmap and analytics & Supports evidence-driven supervision and resource planning \\ \hline
+PF-11 & Public complaint feed & Increases transparency and trust in civic workflow visibility \\ \hline
+PF-12 & Health endpoints and timing logs & Supports operational diagnosis and production monitoring \\ \hline
+\hline
 \end{longtable}
 
 \section{Advantages of Proposed System}
@@ -118,25 +118,25 @@ At the institutional level, the deployment architecture delivers compliance and 
 
 \section{Requirement Realization Matrix}
 
-\begin{longtable}{p{0.17\textwidth}p{0.23\textwidth}p{0.47\textwidth}}
+\begin{longtable}{|p{0.17\textwidth}|p{0.23\textwidth}|p{0.47\textwidth}|}
 \caption{Traceability from Requirements to Proposed Modules}\\
-\toprule
-\textbf{Requirement Group} & \textbf{Primary Module} & \textbf{Realization Mechanism} \\ \midrule
-\midrule
+\hline
+\textbf{Requirement Group} & \textbf{Primary Module} & \textbf{Realization Mechanism} \\ \hline
+\hline
 \endfirsthead
-\toprule
-\textbf{Requirement Group} & \textbf{Primary Module} & \textbf{Realization Mechanism} \\ \midrule
-\midrule
+\hline
+\textbf{Requirement Group} & \textbf{Primary Module} & \textbf{Realization Mechanism} \\ \hline
+\hline
 \endhead
-Registration and Login & Auth and User Management & Register/login routes, cookie-session issuance, JWT compatibility mode, profile update API, password reset token lifecycle \\ \midrule
-AI Classification and Drafting & Analyze Module + LLM Queue & Vision model cascade, rule engine scoring, optional reasoning, queued generation polling \\ \midrule
-Lifecycle and Tracking & Complaint Lifecycle Module & CRUD plus status, transfer, escalate, feedback, notes, comments, status history \\ \midrule
-Worker Operations & Assignment and Worker Module & Eligibility filter, geospatial check, load balancing, worker completion flow \\ \midrule
-Governance and Review & Triage and Admin Controls & Low-confidence review queue and corrective decision actions \\ \midrule
-Communication & Notifications Module & In-app notification events, unread counter, mark-read APIs, email stub integration \\ \midrule
-Reporting and Transparency & Analytics/Public Module & Overview metrics, heatmap endpoint, anonymized public complaint feed \\ \midrule
-Resilience and Security & Cross-cutting Platform Controls & Health probes, security headers, upload hardening, sanitization, rate limits, logs \\ \midrule
-\bottomrule
+Registration and Login & Auth and User Management & Register/login routes, cookie-session issuance, JWT compatibility mode, profile update API, password reset token lifecycle \\ \hline
+AI Classification and Drafting & Analyze Module + LLM Queue & Vision model cascade, rule engine scoring, optional reasoning, queued generation polling \\ \hline
+Lifecycle and Tracking & Complaint Lifecycle Module & CRUD plus status, transfer, escalate, feedback, notes, comments, status history \\ \hline
+Worker Operations & Assignment and Worker Module & Eligibility filter, geospatial check, load balancing, worker completion flow \\ \hline
+Governance and Review & Triage and Admin Controls & Low-confidence review queue and corrective decision actions \\ \hline
+Communication & Notifications Module & In-app notification events, unread counter, mark-read APIs, email stub integration \\ \hline
+Reporting and Transparency & Analytics/Public Module & Overview metrics, heatmap endpoint, anonymized public complaint feed \\ \hline
+Resilience and Security & Cross-cutting Platform Controls & Health probes, security headers, upload hardening, sanitization, rate limits, logs \\ \hline
+\hline
 \end{longtable}
 
 \section{Proposed Operational Workflow}
@@ -145,30 +145,29 @@ Resilience and Security & Cross-cutting Platform Controls & Health probes, secur
 
 \section{Expected Impact}
 
-The platform is expected to produce measurable improvements across six dimensions. Complaint quality will improve as guided image intake and AI drafting reduce inconsistent descriptions. Routing efficiency will increase as department prediction and authority mapping eliminate the first-hop re-assignment delay. Resolution governance becomes stronger through status timelines, notes, and escalation controls. Citizen trust improves through notifications and transparent progress signals. Operational analytics give administrators better planning tools through department trends and heatmap indicators. Finally, deployment readiness is lowered through a unified compose and environment strategy.
+The platform is expected to produce measurable improvements across six dimensions. Complaint quality will improve as guided image intake and AI drafting reduce inconsistent descriptions. Routing efficiency will increase as department prediction and authority mapping eliminate the first-hop re-assignment delay. Resolution governance becomes stronger through status timelines, notes, and escalation controls. Citizen trust improves through notifications and transparent progress signals. Operational analytics give administrators better planning tools through department trends and heatmap indicators. Finally, deployment readiness is lowered through a unified compose and environment strategy [1, 2, 6].
 
 \section{Module Interaction Contracts}
 
-\begin{longtable}{p{0.24\textwidth}p{0.26\textwidth}p{0.42\textwidth}}
+\begin{longtable}{|p{0.24\textwidth}|p{0.26\textwidth}|p{0.42\textwidth}|}
 \caption{Inter-Module Contract Summary}\\
-\toprule
-\textbf{Producer Module} & \textbf{Consumer Module} & \textbf{Interaction Contract} \\ \midrule
-\midrule
+\hline
+\textbf{Producer Module} & \textbf{Consumer Module} & \textbf{Interaction Contract} \\ \hline
+\hline
 \endfirsthead
-\toprule
-\textbf{Producer Module} & \textbf{Consumer Module} & \textbf{Interaction Contract} \\ \midrule
-\midrule
+\hline
+\textbf{Producer Module} & \textbf{Consumer Module} & \textbf{Interaction Contract} \\ \hline
+\hline
 \endhead
-Authentication module & All protected routers & Provides current user identity and role claims via dependency injection \\ \midrule
-Analyze module & Complaint lifecycle module & Produces classification/location/draft payload used for complaint creation \\ \midrule
-Complaint lifecycle module & Notification module & Emits status/registration/escalation events for user-facing notifications \\ \midrule
-Complaint lifecycle module & Assignment module & Triggers auto-assignment at complaint creation and slot-free reassignments \\ \midrule
-Worker module & Complaint lifecycle module & Reports completion updates that influence lifecycle and status history \\ \midrule
-Triage module & Complaint lifecycle module & Applies corrected decisions for low-confidence complaint records \\ \midrule
-Analytics module & Complaint data store & Executes aggregate queries for dashboard and heatmap responses \\ \midrule
-Public module & Complaint data store & Exposes anonymized subset for transparency without privileged fields \\ \midrule
-Health module & Database/model runtime & Publishes liveness/readiness/dependency status for operations \\ \midrule
-\bottomrule
+Authentication module & All protected routers & Provides current user identity and role claims via dependency injection \\ \hline
+Analyze module & Complaint lifecycle module & Produces classification/location/draft payload used for complaint creation \\ \hline
+Complaint lifecycle module & Notification module & Emits status/registration/escalation events for user-facing notifications \\ \hline
+Complaint lifecycle module & Assignment module & Triggers auto-assignment at complaint creation and slot-free reassignments \\ \hline
+Worker module & Complaint lifecycle module & Reports completion updates that influence lifecycle and status history \\ \hline
+Triage module & Complaint lifecycle module & Applies corrected decisions for low-confidence complaint records \\ \hline
+Analytics module & Complaint data store & Executes aggregate queries for dashboard and heatmap responses \\ \hline
+Public module & Complaint data store & Exposes anonymized subset for transparency without privileged fields \\ \hline
+Health module & Database/model runtime & Publishes liveness/readiness/dependency status for operations \\ \hline
 \end{longtable}
 
 \section{Requirement Realization Detail by Persona}
@@ -177,7 +176,7 @@ Each persona receives a targeted feature set. \textbf{Citizens} get image-based 
 
 \section{Proposed Data and Control Flow Narrative}
 
-The proposed flow intentionally separates decision support from governance authority. AI modules suggest categories and draft text, but acceptance and lifecycle transitions remain controlled through authenticated role actions. This hybrid control plane avoids over-automation risk while still reducing manual burden in high-volume intake scenarios.
+The proposed flow intentionally separates decision support from governance authority. AI modules suggest categories and draft text, but acceptance and lifecycle transitions remain controlled through authenticated role actions. This hybrid control plane avoids over-automation risk while still reducing manual burden in high-volume intake scenarios [5, 6, 11].
 
 \section{Chapter Summary}
 

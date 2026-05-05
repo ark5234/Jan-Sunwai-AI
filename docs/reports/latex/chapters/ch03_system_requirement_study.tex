@@ -1,7 +1,7 @@
 % !TeX root = ../main.tex
 \chapter{System Requirement Study}
 
-This chapter documents requirement analysis for Jan-Sunwai AI, including the baseline state of existing grievance systems, observed limitations, actor expectations, and formalized functional/non-functional requirements. The study was derived from implementation realities, municipal workflow assumptions, and validation through tests and user journeys.
+This chapter documents requirement analysis for Jan-Sunwai AI, including the baseline state of existing grievance systems, observed limitations, actor expectations, and formalized functional/non-functional requirements. The study was derived from implementation realities, municipal workflow assumptions, and validation through tests and user journeys [1, 2, 11, 12, 13].
 
 \section{Existing System Overview}
 
@@ -19,7 +19,7 @@ Key characteristics of existing systems observed in this problem context:
 
 \section{Limitations of the Existing System}
 
-Seven recurring limitations were observed in legacy civic grievance systems: manual authority selection by citizens causing frequent misrouting; inconsistent complaint descriptions that require staff to rewrite or clarify cases before action; weak integration of visual evidence leaving photographs unused during triage; limited role-specific workflows that impose the same interface burden on very different personas; minimal lifecycle traceability making accountability reviews difficult; low transparency in queue behavior eroding citizen trust; and sparse administrative analytics that force planning decisions to rely on intuition rather than data.
+Seven recurring limitations were observed in legacy civic grievance systems: manual authority selection by citizens causing frequent misrouting; inconsistent complaint descriptions that require staff to rewrite or clarify cases before action; weak integration of visual evidence leaving photographs unused during triage; limited role-specific workflows that impose the same interface burden on very different personas; minimal lifecycle traceability making accountability reviews difficult; low transparency in queue behavior eroding citizen trust; and sparse administrative analytics that force planning decisions to rely on intuition rather than data [1, 2, 6].
 
 \section{User Characteristics}
 
@@ -29,64 +29,64 @@ The system serves four distinct operational personas. \textbf{Citizens} report i
 
 \section{Functional Requirements}
 
-\begin{longtable}{p{0.12\textwidth}p{0.30\textwidth}p{0.48\textwidth}}
+\begin{longtable}{|p{0.12\textwidth}|p{0.30\textwidth}|p{0.48\textwidth}|}
 \caption{Functional Requirement Specification}\\
-\toprule
-\textbf{FR ID} & \textbf{Requirement Name} & \textbf{Requirement Description} \\ \midrule
-\midrule
+\hline
+\textbf{FR ID} & \textbf{Requirement Name} & \textbf{Requirement Description} \\ \hline
+\hline
 \endfirsthead
-\toprule
-\textbf{FR ID} & \textbf{Requirement Name} & \textbf{Requirement Description} \\ \midrule
-\midrule
+\hline
+\textbf{FR ID} & \textbf{Requirement Name} & \textbf{Requirement Description} \\ \hline
+\hline
 \endhead
-FR-01 & User Registration & System shall allow self-registration for citizen and worker roles with validation and duplicate checks. \\ \midrule
-FR-02 & User Authentication & System shall establish secure cookie-session authentication on successful login and protect authorized routes, with JWT compatibility for API clients. \\ \midrule
-FR-03 & Profile Management & Authenticated users shall update selected profile fields such as full name and phone number. \\ \midrule
-FR-04 & Password Recovery & System shall support forgot-password and reset-password flows with time-bound tokens. \\ \midrule
-FR-05 & Image Upload Validation & Analyze endpoint shall accept valid JPG/PNG/WEBP images and reject unsupported or malformed payloads. \\ \midrule
-FR-06 & AI-Assisted Analysis & System shall analyze uploaded image and return category, confidence, location metadata, and draft status. \\ \midrule
-FR-07 & Draft Generation & System shall produce a complaint draft synchronously or via queued generation, with polling support. \\ \midrule
-FR-08 & Complaint Creation & System shall create a complaint record from reviewed analysis payload and user-provided description edits. \\ \midrule
-FR-09 & Complaint Listing & System shall provide role-filtered complaint lists with pagination and optional status filters. \\ \midrule
-FR-10 & Complaint Detail View & System shall provide complete complaint detail including status history and operational metadata. \\ \midrule
-FR-11 & Status Update Workflow & Department head/admin shall update complaint status with note and trigger citizen notification. \\ \midrule
-FR-12 & Department Transfer & Department head/admin shall transfer complaint ownership across departments when misrouted. \\ \midrule
-FR-13 & Escalation & Department head/admin shall escalate complaints to parent authorities when required. \\ \midrule
-FR-14 & Worker Assignment & System shall auto-assign eligible workers and support manual override by admin. \\ \midrule
-FR-15 & Worker Operations & Worker shall manage availability and mark assigned complaints as done. \\ \midrule
-FR-16 & Notification Center & System shall provide list, unread count, single-read, and mark-all-read operations. \\ \midrule
-FR-17 & Triage Queue & Admin shall review low-confidence complaints and approve/reject/correct labels. \\ \midrule
-FR-18 & Analytics & Admin/dept-head shall access overview and geospatial heatmap summaries. \\ \midrule
-FR-19 & CSV Export & Admin shall export complaint data to CSV for external reporting. \\ \midrule
-FR-20 & Public Transparency Feed & System shall expose anonymized complaint records without authentication. \\ \midrule
-FR-21 & Health Monitoring & System shall provide live, ready, model, and GPU health endpoints. \\ \midrule
-FR-22 & API Version Alias & System shall expose major endpoints under /api/v1 for integration stability. \\ \midrule
-\bottomrule
+FR-01 & User Registration & System shall allow self-registration for citizen and worker roles with validation and duplicate checks. \\ \hline
+FR-02 & User Authentication & System shall establish secure cookie-session authentication on successful login and protect authorized routes, with JWT compatibility for API clients. \\ \hline
+FR-03 & Profile Management & Authenticated users shall update selected profile fields such as full name and phone number. \\ \hline
+FR-04 & Password Recovery & System shall support forgot-password and reset-password flows with time-bound tokens. \\ \hline
+FR-05 & Image Upload Validation & Analyze endpoint shall accept valid JPG/PNG/WEBP images and reject unsupported or malformed payloads. \\ \hline
+FR-06 & AI-Assisted Analysis & System shall analyze uploaded image and return category, confidence, location metadata, and draft status. \\ \hline
+FR-07 & Draft Generation & System shall produce a complaint draft synchronously or via queued generation, with polling support. \\ \hline
+FR-08 & Complaint Creation & System shall create a complaint record from reviewed analysis payload and user-provided description edits. \\ \hline
+FR-09 & Complaint Listing & System shall provide role-filtered complaint lists with pagination and optional status filters. \\ \hline
+FR-10 & Complaint Detail View & System shall provide complete complaint detail including status history and operational metadata. \\ \hline
+FR-11 & Status Update Workflow & Department head/admin shall update complaint status with note and trigger citizen notification. \\ \hline
+FR-12 & Department Transfer & Department head/admin shall transfer complaint ownership across departments when misrouted. \\ \hline
+FR-13 & Escalation & Department head/admin shall escalate complaints to parent authorities when required. \\ \hline
+FR-14 & Worker Assignment & System shall auto-assign eligible workers and support manual override by admin. \\ \hline
+FR-15 & Worker Operations & Worker shall manage availability and mark assigned complaints as done. \\ \hline
+FR-16 & Notification Center & System shall provide list, unread count, single-read, and mark-all-read operations. \\ \hline
+FR-17 & Triage Queue & Admin shall review low-confidence complaints and approve/reject/correct labels. \\ \hline
+FR-18 & Analytics & Admin/dept-head shall access overview and geospatial heatmap summaries. \\ \hline
+FR-19 & CSV Export & Admin shall export complaint data to CSV for external reporting. \\ \hline
+FR-20 & Public Transparency Feed & System shall expose anonymized complaint records without authentication. \\ \hline
+FR-21 & Health Monitoring & System shall provide live, ready, model, and GPU health endpoints. \\ \hline
+FR-22 & API Version Alias & System shall expose major endpoints under /api/v1 for integration stability. \\ \hline
+\hline
 \end{longtable}
 
 \section{Non-Functional Requirements}
 
-\begin{longtable}{p{0.12\textwidth}p{0.30\textwidth}p{0.48\textwidth}}
+\begin{longtable}{|p{0.12\textwidth}|p{0.30\textwidth}|p{0.48\textwidth}|}
 \caption{Non-Functional Requirement Specification}\\
-\toprule
-\textbf{NFR ID} & \textbf{Quality Attribute} & \textbf{Requirement Description} \\ \midrule
-\midrule
+\hline
+\textbf{NFR ID} & \textbf{Quality Attribute} & \textbf{Requirement Description} \\ \hline
+\hline
 \endfirsthead
-\toprule
-\textbf{NFR ID} & \textbf{Quality Attribute} & \textbf{Requirement Description} \\ \midrule
-\midrule
+\hline
+\textbf{NFR ID} & \textbf{Quality Attribute} & \textbf{Requirement Description} \\ \hline
+\hline
 \endhead
-NFR-01 & Security & Cookie-session auth (with JWT compatibility), RBAC, sanitization, secure headers, and account-safe reset flow shall be enforced. \\ \midrule
-NFR-02 & Reliability & API shall degrade gracefully under model or DB faults with explicit status semantics. \\ \midrule
-NFR-03 & Performance & Public and health endpoints shall respond consistently under mixed read-heavy load. \\ \midrule
-NFR-04 & Usability & Role-specific UI shall reduce cognitive load and support responsive layouts for desktop/mobile usage. \\ \midrule
-NFR-05 & Maintainability & Modular routers/services with documented runbooks shall support iterative enhancement. \\ \midrule
-NFR-06 & Observability & Process-time headers, rotating logs, and health routes shall support debugging and operations. \\ \midrule
-NFR-07 & Scalability Readiness & Queue-based generation and container deployment shall support controlled scaling. \\ \midrule
-NFR-08 & Portability & Project setup shall support Windows and Linux via scripts and Docker-based workflow. \\ \midrule
-NFR-09 & Compliance Readiness & Local-first inference and sanitized logs shall support stricter governance deployments. \\ \midrule
-NFR-10 & Data Integrity & Validation schemas and controlled update flows shall minimize malformed or inconsistent records. \\ \midrule
-\bottomrule
+NFR-01 & Security & Cookie-session auth (with JWT compatibility), RBAC, sanitization, secure headers, and account-safe reset flow shall be enforced. \\ \hline
+NFR-02 & Reliability & API shall degrade gracefully under model or DB faults with explicit status semantics. \\ \hline
+NFR-03 & Performance & Public and health endpoints shall respond consistently under mixed read-heavy load. \\ \hline
+NFR-04 & Usability & Role-specific UI shall reduce cognitive load and support responsive layouts for desktop/mobile usage. \\ \hline
+NFR-05 & Maintainability & Modular routers/services with documented runbooks shall support iterative enhancement. \\ \hline
+NFR-06 & Observability & Process-time headers, rotating logs, and health routes shall support debugging and operations. \\ \hline
+NFR-07 & Scalability Readiness & Queue-based generation and container deployment shall support controlled scaling. \\ \hline
+NFR-08 & Portability & Project setup shall support Windows and Linux via scripts and Docker-based workflow. \\ \hline
+NFR-09 & Compliance Readiness & Local-first inference and sanitized logs shall support stricter governance deployments. \\ \hline
+NFR-10 & Data Integrity & Validation schemas and controlled update flows shall minimize malformed or inconsistent records. \\ \hline
+\hline
 \end{longtable}
 
 \section{Hardware and Software Requirements}
@@ -98,41 +98,39 @@ The baseline parameters established below define the minimum viable constraints 
 
 \begin{table}[H]
 \centering
-\begin{tabular}{p{0.30\textwidth}p{0.28\textwidth}p{0.30\textwidth}}
-\toprule
-\textbf{Component} & \textbf{Minimum} & \textbf{Recommended} \\ \midrule
-\midrule
-CPU & 4-core modern processor & 6 to 8-core processor \\ \midrule
-System RAM & 12 GB available & 16 GB or higher \\ \midrule
-GPU VRAM & 4 GB & 6 GB or higher \\ \midrule
-Storage & 10 GB free & 20 GB free \\ \midrule
-Network & Stable LAN/internet for maps and package fetch & Managed institutional network \\ \midrule
-\bottomrule
-\end{tabular}
 \caption{Hardware Requirement Baseline}
+\begin{tabular}{|p{0.30\textwidth}|p{0.28\textwidth}|p{0.30\textwidth}|}
+\hline
+\textbf{Component} & \textbf{Minimum} & \textbf{Recommended} \\ \hline
+\hline
+CPU & 4-core modern processor & 6 to 8-core processor \\ \hline
+System RAM & 12 GB available & 16 GB or higher \\ \hline
+GPU VRAM & 4 GB & 6 GB or higher \\ \hline
+Storage & 10 GB free & 20 GB free \\ \hline
+Network & Stable LAN/internet for maps and package fetch & Managed institutional network \\ \hline
+\end{tabular}
 \end{table}
 
 \subsection{Software Requirements}
 
-The baseline parameters established below define the minimum viable constraints required to support the proposed features.
+The baseline parameters established below define the minimum viable constraints required to support the proposed features [16, 11].
 
 
 \begin{table}[H]
 \centering
-\begin{tabularx}{\textwidth}{|p{0.28\textwidth}|p{0.24\textwidth}|X|}
-\toprule
-\textbf{Software Component} & \textbf{Baseline} & \textbf{Purpose} \\ \midrule
-\midrule
-Operating System & Windows 10+/Linux & Development and deployment host \\ \midrule
-Python Runtime & Python 3.10+ & Backend and automation scripts \\ \midrule
-Node.js and npm & Current LTS range & Frontend build and tooling \\ \midrule
-MongoDB & 7.x class deployment & Document persistence \\ \midrule
-Ollama Runtime & Local model runtime & Vision/reasoning generation pipeline \\ \midrule
-Docker Engine/Compose & Docker 24+ recommended & Containerized orchestration \\ \midrule
-Browser & Chromium/Firefox class & Frontend access and UAT execution \\ \midrule
-\bottomrule
-\end{tabularx}
 \caption{Software Environment Requirements}
+\begin{tabular}{|p{0.28\textwidth}|p{0.24\textwidth}|p{0.40\textwidth}|}
+\hline
+\textbf{Software Component} & \textbf{Baseline} & \textbf{Purpose} \\ \hline
+\hline
+Operating System & Windows 10+/Linux & Development and deployment host \\ \hline
+Python Runtime & Python 3.10+ & Backend and automation scripts \\ \hline
+Node.js and npm & Current LTS range & Frontend build and tooling \\ \hline
+MongoDB & 7.x class deployment & Document persistence \\ \hline
+Ollama Runtime & Local model runtime & Vision/reasoning generation pipeline \\ \hline
+Docker Engine/Compose & Docker 24+ recommended & Containerized orchestration \\ \hline
+Browser & Chromium/Firefox class & Frontend access and UAT execution \\ \hline
+\end{tabular}
 \end{table}
 
 \section{Constraints}
@@ -163,7 +161,7 @@ The platform communicates exclusively over authenticated REST endpoints; the fol
 
 \subsection{Hardware Interface}
 
-Hardware interface constraints bound the AI runtime's operational envelope and determine how the system must gracefully degrade under resource pressure:
+Hardware interface constraints bound the AI runtime's operational envelope and determine how the system must gracefully degrade under resource pressure [17]:
 
 
 \begin{itemize}
@@ -174,11 +172,11 @@ Hardware interface constraints bound the AI runtime's operational envelope and d
 
 \subsection{Criticality of Application}
 
-The system is governance-sensitive. Incorrect status transitions, misrouted complaints, or unauthorized updates can directly impact citizen trust and administrative accountability. Hence, status history and role checks are non-negotiable controls.
+The system is governance-sensitive. Incorrect status transitions, misrouted complaints, or unauthorized updates can directly impact citizen trust and administrative accountability. Hence, status history and role checks are non-negotiable controls [6, 23, 7].
 
 \subsection{Safety and Security Considerations}
 
-Because civic complaints can contain sensitive personal information, the following security constraints are treated as non-negotiable throughout the codebase:
+Because civic complaints can contain sensitive personal information, the following security constraints are treated as non-negotiable throughout the codebase [7, 8, 9]:
 
 
 \begin{itemize}
@@ -192,46 +190,44 @@ Because civic complaints can contain sensitive personal information, the followi
 
 \begin{table}[H]
 \centering
-\begin{tabularx}{\textwidth}{|p{0.10\textwidth}|p{0.42\textwidth}|X|}
-\toprule
-\textbf{ID} & \textbf{Assumption/Dependency} & \textbf{Implication} \\ \midrule
-\midrule
-A1 & MongoDB instance is reachable and healthy & Core read/write workflows remain functional \\ \midrule
-A2 & Ollama runtime is available with configured models & Analyze and generation pathways remain active \\ \midrule
-A3 & Environment variables are configured accurately & Auth, DB, CORS, and model endpoints behave as intended \\ \midrule
-A4 & Frontend and backend URL mapping is consistent & API calls and route protection remain stable \\ \midrule
-A5 & Worker profiles include valid department and status metadata & Assignment service can select candidates correctly \\ \midrule
-A6 & Deployment host supports Docker where container mode is used & Production-style stack can be reproduced \\ \midrule
-\bottomrule
-\end{tabularx}
 \caption{Assumptions and External Dependencies}
+\begin{tabular}{|p{0.10\textwidth}|p{0.44\textwidth}|p{0.38\textwidth}|}
+\hline
+\textbf{ID} & \textbf{Assumption/Dependency} & \textbf{Implication} \\ \hline
+\hline
+A1 & MongoDB instance is reachable and healthy & Core read/write workflows remain functional \\ \hline
+A2 & Ollama runtime is available with configured models & Analyze and generation pathways remain active \\ \hline
+A3 & Environment variables are configured accurately & Auth, DB, CORS, and model endpoints behave as intended \\ \hline
+A4 & Frontend and backend URL mapping is consistent & API calls and route protection remain stable \\ \hline
+A5 & Worker profiles include valid department and status metadata & Assignment service can select candidates correctly \\ \hline
+A6 & Deployment host supports Docker where container mode is used & Production-style stack can be reproduced \\ \hline
+\end{tabular}
 \end{table}
 
 \section{Detailed Use-Case Narratives}
 
-\begin{longtable}{p{0.12\textwidth}p{0.18\textwidth}p{0.30\textwidth}p{0.30\textwidth}}
+\begin{longtable}{|p{0.12\textwidth}|p{0.18\textwidth}|p{0.30\textwidth}|p{0.30\textwidth}|}
 \caption{Narrative Use-Case Requirements}\\
-\toprule
-\textbf{UC ID} & \textbf{Actor} & \textbf{Main Flow} & \textbf{Alternate/Exception Flow} \\ \midrule
-\midrule
+\hline
+\textbf{UC ID} & \textbf{Actor} & \textbf{Main Flow} & \textbf{Alternate/Exception Flow} \\ \hline
+\hline
 \endfirsthead
-\toprule
-\textbf{UC ID} & \textbf{Actor} & \textbf{Main Flow} & \textbf{Alternate/Exception Flow} \\ \midrule
-\midrule
+\hline
+\textbf{UC ID} & \textbf{Actor} & \textbf{Main Flow} & \textbf{Alternate/Exception Flow} \\ \hline
+\hline
 \endhead
-UC-01 & Citizen & Register account, login, access dashboard & Duplicate username/email is rejected with validation message \\ \midrule
-UC-02 & Citizen & Upload image and run analyze pipeline & Unsupported/corrupt image rejected with explicit reason \\ \midrule
-UC-03 & Citizen & Edit draft and submit complaint & If analyze unavailable, user submits manual complaint text after retry guidance \\ \midrule
-UC-04 & Citizen & Track status and receive notifications & If no notifications available, panel remains stable with unread count zero \\ \midrule
-UC-05 & Citizen & Submit feedback after complaint resolution & Duplicate feedback attempt blocked with conflict response \\ \midrule
-UC-06 & Worker & View assigned complaints and update availability & Worker pending approval cannot access worker-only operations \\ \midrule
-UC-07 & Worker & Mark complaint done & If assignment mismatch occurs, operation is denied by role/ownership checks \\ \midrule
-UC-08 & Dept Head & Filter department complaints and update status & Dept-head cannot update complaints outside own department \\ \midrule
-UC-09 & Dept Head & Add notes and transfer/escalate complaint & Invalid complaint ID or missing target yields controlled validation error \\ \midrule
-UC-10 & Admin & Approve/reject worker registrations & Already-approved/rejected states handled idempotently \\ \midrule
-UC-11 & Admin & Operate triage queue and analytics & Empty triage queue still returns successful response \\ \midrule
-UC-12 & Public User & View anonymized complaint board & No authenticated personal fields are exposed in response payload \\ \midrule
-\bottomrule
+UC-01 & Citizen & Register account, login, access dashboard & Duplicate username/email is rejected with validation message \\ \hline
+UC-02 & Citizen & Upload image and run analyze pipeline & Unsupported/corrupt image rejected with explicit reason \\ \hline
+UC-03 & Citizen & Edit draft and submit complaint & If analyze unavailable, user submits manual complaint text after retry guidance \\ \hline
+UC-04 & Citizen & Track status and receive notifications & If no notifications available, panel remains stable with unread count zero \\ \hline
+UC-05 & Citizen & Submit feedback after complaint resolution & Duplicate feedback attempt blocked with conflict response \\ \hline
+UC-06 & Worker & View assigned complaints and update availability & Worker pending approval cannot access worker-only operations \\ \hline
+UC-07 & Worker & Mark complaint done & If assignment mismatch occurs, operation is denied by role/ownership checks \\ \hline
+UC-08 & Dept Head & Filter department complaints and update status & Dept-head cannot update complaints outside own department \\ \hline
+UC-09 & Dept Head & Add notes and transfer/escalate complaint & Invalid complaint ID or missing target yields controlled validation error \\ \hline
+UC-10 & Admin & Approve/reject worker registrations & Already-approved/rejected states handled idempotently \\ \hline
+UC-11 & Admin & Operate triage queue and analytics & Empty triage queue still returns successful response \\ \hline
+UC-12 & Public User & View anonymized complaint board & No authenticated personal fields are exposed in response payload \\ \hline
 \end{longtable}
 
 \section{Requirement Priority Classification}
@@ -240,17 +236,16 @@ Requirements are classified using the MoSCoW methodology [20] to ensure delivery
 
 \begin{table}[H]
 \centering
-\begin{tabularx}{\textwidth}{|p{0.14\textwidth}|p{0.18\textwidth}|X|}
-\toprule
-\textbf{Priority} & \textbf{Requirement IDs} & \textbf{Interpretation} \\ \midrule
-\midrule
-Must Have & FR-01 to FR-12, FR-14, FR-16, FR-21 & Core operational viability: authentication, complaint lifecycle, role control, assignment, notifications, and service health \\ \midrule
-Should Have & FR-13, FR-15, FR-17, FR-18, FR-22 & Strong governance and maintainability improvements that meaningfully increase institutional readiness \\ \midrule
-Could Have & FR-19, FR-20 & Non-blocking but high-value transparency and reporting improvements \\ \midrule
-Non-Functional Critical & NFR-01, NFR-02, NFR-06, NFR-10 & Security, reliability, observability, and data integrity controls required for trusted operation \\ \midrule
-\bottomrule
-\end{tabularx}
 \caption{MoSCoW-Style Requirement Priority Mapping}
+\begin{tabular}{|p{0.22\textwidth}|p{0.28\textwidth}|p{0.42\textwidth}|}
+\hline
+\textbf{Priority} & \textbf{Requirement IDs} & \textbf{Interpretation} \\ \hline
+\hline
+Must Have & FR-01 to FR-12, FR-14, FR-16, FR-21 & Core operational viability: authentication, complaint lifecycle, role control, assignment, notifications, and service health \\ \hline
+Should Have & FR-13, FR-15, FR-17, FR-18, FR-22 & Strong governance and maintainability improvements that meaningfully increase institutional readiness \\ \hline
+Could Have & FR-19, FR-20 & Non-blocking but high-value transparency and reporting improvements \\ \hline
+Non-Functional Critical & NFR-01, NFR-02, NFR-06, NFR-10 & Security, reliability, observability, and data integrity controls required for trusted operation \\ \hline
+\end{tabular}
 \end{table}
 
 \section{Chapter Summary}

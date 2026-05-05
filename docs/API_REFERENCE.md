@@ -72,17 +72,17 @@ flowchart LR
 
   subgraph Workers
     direction TB
-    W["/workers"] --> W1["GET /workers/me"]
-    W --> W2["PATCH /workers/me/status"]
-    W --> W3["PATCH /workers/me/api/v1/complaints/{complaint_id}/done"]
-    W --> W4["GET /workers"]
-    W --> W5["GET /workers/my-department"]
-    W --> W6["PATCH /workers/{worker_id}/approve"]
-    W --> W7["DELETE /workers/{worker_id}/reject"]
-    W --> W8["POST /workers/{worker_id}/assign/{complaint_id}"]
-    W --> W9["PATCH /workers/{worker_id}/area"]
-    W --> W10["GET /workers/assignment-debug"]
-    W --> W11["POST /workers/reassign-unassigned"]
+    W["/api/v1/workers"] --> W1["GET /api/v1/workers/me"]
+    W --> W2["PATCH /api/v1/workers/me/status"]
+    W --> W3["PATCH /api/v1/workers/me/complaints/{id}/done"]
+    W --> W4["GET /api/v1/workers"]
+    W --> W5["GET /api/v1/workers/my-department"]
+    W --> W6["PATCH /api/v1/workers/{worker_id}/approve"]
+    W --> W7["DELETE /api/v1/workers/{worker_id}/reject"]
+    W --> W8["POST /api/v1/workers/{worker_id}/assign/{complaint_id}"]
+    W --> W9["PATCH /api/v1/workers/{worker_id}/area"]
+    W --> W10["GET /api/v1/workers/assignment-debug"]
+    W --> W11["POST /api/v1/workers/reassign-unassigned"]
   end
 
   subgraph Notifications
@@ -95,15 +95,15 @@ flowchart LR
 
   subgraph Triage
     direction TB
-    T["/triage"] --> T1["GET /triage/review-queue"]
-    T --> T2["POST /triage/review-queue/decision"]
+    T["/api/v1/triage"] --> T1["GET /api/v1/triage/review-queue"]
+    T --> T2["POST /api/v1/triage/review-queue/decision"]
   end
 
   subgraph AnalyticsPublicHealth
     direction TB
     X["/api/v1/analytics, /api/v1/public, /api/v1/health"] --> X1["GET /api/v1/analytics/overview"]
     X --> X2["GET /api/v1/analytics/heatmap"]
-    X --> X3["GET /api/v1/public/api/v1/complaints"]
+    X --> X3["GET /api/v1/public/complaints"]
     X --> X4["GET /api/v1/health/live"]
     X --> X5["GET /api/v1/health/ready"]
     X --> X6["GET /api/v1/health/models"]
@@ -156,17 +156,17 @@ flowchart LR
 
 | Method | Endpoint | Auth | Notes |
 | --- | --- | --- | --- |
-| `GET` | `/workers/me` | Worker | Profile + active + resolved history |
-| `PATCH` | `/workers/me/status` | Worker | Only `available`/`offline` allowed manually |
-| `PATCH` | `/workers/me/api/v1/complaints/{complaint_id}/done` | Worker | Marks complaint resolved and frees slot |
-| `GET` | `/workers` | Admin | Lists workers; supports `pending_only` |
-| `GET` | `/workers/my-department` | Admin/Dept Head | Department-scoped workers |
-| `PATCH` | `/workers/{worker_id}/approve` | Admin | Approves worker account |
-| `DELETE` | `/workers/{worker_id}/reject` | Admin | Rejects pending worker registration |
-| `POST` | `/workers/{worker_id}/assign/{complaint_id}` | Admin | Manual assignment override |
-| `PATCH` | `/workers/{worker_id}/area` | Admin | Updates worker service area |
-| `GET` | `/workers/assignment-debug` | Admin | Assignment diagnostics |
-| `POST` | `/workers/reassign-unassigned` | Admin | Bulk auto-assignment retry |
+| `GET` | `/api/v1/workers/me` | Worker | Profile + active + resolved history |
+| `PATCH` | `/api/v1/workers/me/status` | Worker | Only `available`/`offline` allowed manually |
+| `PATCH` | `/api/v1/workers/me/complaints/{id}/done` | Worker | Marks complaint resolved and frees slot |
+| `GET` | `/api/v1/workers` | Admin | Lists workers; supports `pending_only` |
+| `GET` | `/api/v1/workers/my-department` | Admin/Dept Head | Department-scoped workers |
+| `PATCH` | `/api/v1/workers/{worker_id}/approve` | Admin | Approves worker account |
+| `DELETE` | `/api/v1/workers/{worker_id}/reject` | Admin | Rejects pending worker registration |
+| `POST` | `/api/v1/workers/{worker_id}/assign/{complaint_id}` | Admin | Manual assignment override |
+| `PATCH` | `/api/v1/workers/{worker_id}/area` | Admin | Updates worker service area |
+| `GET` | `/api/v1/workers/assignment-debug` | Admin | Assignment diagnostics |
+| `POST` | `/api/v1/workers/reassign-unassigned` | Admin | Bulk auto-assignment retry |
 
 ## Notifications
 
@@ -181,8 +181,8 @@ flowchart LR
 
 | Method | Endpoint | Auth | Notes |
 | --- | --- | --- | --- |
-| `GET` | `/triage/review-queue` | Admin | Live low-confidence complaints from MongoDB |
-| `POST` | `/triage/review-queue/decision` | Admin | Decision payload fields: `image`, `decision`, optional `corrected_label`, `note` |
+| `GET` | `/api/v1/triage/review-queue` | Admin | Live low-confidence complaints from MongoDB |
+| `POST` | `/api/v1/triage/review-queue/decision` | Admin | Decision payload fields: `image`, `decision`, optional `corrected_label`, `note` |
 
 ## Analytics + Public + Health
 
@@ -190,7 +190,7 @@ flowchart LR
 | --- | --- | --- | --- |
 | `GET` | `/api/v1/analytics/overview` | Admin | Status, department, trend, resolution stats |
 | `GET` | `/api/v1/analytics/heatmap` | Admin/Dept Head | Geospatial aggregate points |
-| `GET` | `/api/v1/public/api/v1/complaints` | No | Anonymized public complaint feed |
+| `GET` | `/api/v1/public/complaints` | No | Anonymized public complaint feed |
 | `GET` | `/api/v1/health/live` | No | Liveness probe |
 | `GET` | `/api/v1/health/ready` | No | DB readiness probe |
 | `GET` | `/api/v1/health/models` | No | Ollama model readiness |

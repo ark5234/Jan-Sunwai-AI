@@ -6,178 +6,178 @@
 This appendix summarizes the primary endpoint inventory implemented in the current release. All major endpoint groups are additionally exposed under the \texttt{/api/v1} alias path.
 
 \small
-\begin{longtable}{p{0.10\textwidth}p{0.38\textwidth}p{0.15\textwidth}p{0.25\textwidth}}
+\begin{longtable}{|p{0.10\textwidth}|p{0.38\textwidth}|p{0.15\textwidth}|p{0.25\textwidth}|}
 \caption{API Endpoint Snapshot}\\
-\toprule
-\textbf{Method} & \textbf{Endpoint} & \textbf{Auth} & \textbf{Purpose} \\ \midrule
-\midrule
+\hline
+\textbf{Method} & \textbf{Endpoint} & \textbf{Auth} & \textbf{Purpose} \\ \hline
+\hline
 \endfirsthead
-\toprule
-\textbf{Method} & \textbf{Endpoint} & \textbf{Auth} & \textbf{Purpose} \\ \midrule
-\midrule
+\hline
+\textbf{Method} & \textbf{Endpoint} & \textbf{Auth} & \textbf{Purpose} \\ \hline
+\hline
 \endhead
-POST & \path|/api/v1/users/register| & No & Citizen/worker self-registration \\ \midrule
-POST & \path|/api/v1/users/login| & No & Cookie-session login (JWT compatibility optional) \\ \midrule
-POST & \path|/api/v1/users/logout| & No & Clear auth cookie/session \\ \midrule
-GET & \path|/api/v1/users/me| & Yes & Current user profile \\ \midrule
-PATCH & \path|/api/v1/users/me| & Yes & Profile update \\ \midrule
-POST & \path|/api/v1/users/forgot-password| & No & Reset token issuance request \\ \midrule
-POST & \path|/api/v1/users/reset-password| & No & Password reset submission \\ \midrule
-\midrule
-POST & \path|/api/v1/analyze| & Yes & Image analysis and draft initiation \\ \midrule
-POST & \path|/api/v1/analyze/regenerate| & Yes & Regenerate complaint draft \\ \midrule
-GET & \path|/api/v1/complaints/generation/{job_id}| & Yes & Poll queued generation status \\ \midrule
-\midrule
-POST & \path|/api/v1/complaints| & Yes & Create complaint \\ \midrule
-GET & \path|/api/v1/complaints| & Yes & Role-filtered complaint list \\ \midrule
-GET & \path|/api/v1/complaints/{complaint_id}| & Yes & Complaint detail \\ \midrule
-PATCH & \path|/api/v1/complaints/{complaint_id}/status| & Admin/Dept Head & Status transition \\ \midrule
-PATCH & \path|/api/v1/complaints/{complaint_id}/transfer| & Admin/Dept Head & Department transfer \\ \midrule
-POST & \path|/api/v1/complaints/{complaint_id}/escalate| & Admin/Dept Head & Authority escalation \\ \midrule
-POST & \path|/api/v1/complaints/{complaint_id}/feedback| & Citizen owner & Resolution feedback \\ \midrule
-POST & \path|/api/v1/complaints/{complaint_id}/notes| & Admin/Dept Head & Internal department notes \\ \midrule
-GET & \path|/api/v1/complaints/{complaint_id}/notes| & Admin/Dept Head & Fetch department notes \\ \midrule
-POST & \path|/api/v1/complaints/{complaint_id}/comments| & Yes & Add collaborative comment \\ \midrule
-GET & \path|/api/v1/complaints/{complaint_id}/comments| & Yes & Read collaborative thread \\ \midrule
-POST & \path|/api/v1/complaints/bulk/status| & Admin & Bulk status updates \\ \midrule
-POST & \path|/api/v1/complaints/bulk/transfer| & Admin & Bulk transfer updates \\ \midrule
-GET & \path|/api/v1/complaints/export/csv| & Admin & CSV export \\ \midrule
-\midrule
-GET & \path|/workers/me| & Worker & Worker profile and workload \\ \midrule
-PATCH & \path|/workers/me/status| & Worker & Availability update \\ \midrule
-PATCH & \path|/workers/me/api/v1/complaints/{complaint_id}/done| & Worker & Mark assigned complaint done \\ \midrule
-GET & \path|/workers| & Admin & List workers (pending/all) \\ \midrule
-GET & \path|/workers/my-department| & Admin/Dept Head & Department worker listing \\ \midrule
-PATCH & \path|/workers/{worker_id}/approve| & Admin & Approve worker \\ \midrule
-DELETE & \path|/workers/{worker_id}/reject| & Admin & Reject pending worker \\ \midrule
-POST & \path|/workers/{worker_id}/assign/{complaint_id}| & Admin & Manual assignment \\ \midrule
-PATCH & \path|/workers/{worker_id}/area| & Admin & Update worker service area \\ \midrule
-GET & \path|/workers/assignment-debug| & Admin & Assignment diagnostics \\ \midrule
-POST & \path|/workers/reassign-unassigned| & Admin & Retry assignment for open queue \\ \midrule
-\midrule
-GET & \path|/api/v1/notifications| & Yes & Notification list \\ \midrule
-GET & \path|/api/v1/notifications/unread-count| & Yes & Unread badge count \\ \midrule
-PATCH & \path|/api/v1/notifications/{notification_id}/read| & Yes & Mark single notification read \\ \midrule
-PATCH & \path|/api/v1/notifications/read-all| & Yes & Mark all notifications read \\ \midrule
-\midrule
-GET & \path|/triage/review-queue| & Admin & Retrieve low-confidence queue \\ \midrule
-POST & \path|/triage/review-queue/decision| & Admin & Apply triage decision \\ \midrule
-\midrule
-GET & \path|/api/v1/analytics/overview| & Admin & Overview metrics \\ \midrule
-GET & \path|/api/v1/analytics/heatmap| & Admin/Dept Head & Geospatial complaint distribution \\ \midrule
-GET & \path|/api/v1/public/api/v1/complaints| & No & Public anonymized complaint feed \\ \midrule
-GET & \path|/api/v1/health/live| & No & Liveness probe \\ \midrule
-GET & \path|/api/v1/health/ready| & No & Readiness probe \\ \midrule
-GET & \path|/api/v1/health/models| & No & Model availability status \\ \midrule
-GET & \path|/api/v1/health/gpu| & No & GPU/model load status \\ \midrule
-\bottomrule
+POST & \path|/api/v1/users/register| & No & Citizen/worker self-registration \\ \hline
+POST & \path|/api/v1/users/login| & No & Cookie-session login (JWT compatibility optional) \\ \hline
+POST & \path|/api/v1/users/logout| & No & Clear auth cookie/session \\ \hline
+GET & \path|/api/v1/users/me| & Yes & Current user profile \\ \hline
+PATCH & \path|/api/v1/users/me| & Yes & Profile update \\ \hline
+POST & \path|/api/v1/users/forgot-password| & No & Reset token issuance request \\ \hline
+POST & \path|/api/v1/users/reset-password| & No & Password reset submission \\ \hline
+\hline
+POST & \path|/api/v1/analyze| & Yes & Image analysis and draft initiation \\ \hline
+POST & \path|/api/v1/analyze/regenerate| & Yes & Regenerate complaint draft \\ \hline
+GET & \path|/api/v1/complaints/generation/{job_id}| & Yes & Poll queued generation status \\ \hline
+\hline
+POST & \path|/api/v1/complaints| & Yes & Create complaint \\ \hline
+GET & \path|/api/v1/complaints| & Yes & Role-filtered complaint list \\ \hline
+GET & \path|/api/v1/complaints/{complaint_id}| & Yes & Complaint detail \\ \hline
+PATCH & \path|/api/v1/complaints/{complaint_id}/status| & Admin/Dept Head & Status transition \\ \hline
+PATCH & \path|/api/v1/complaints/{complaint_id}/transfer| & Admin/Dept Head & Department transfer \\ \hline
+POST & \path|/api/v1/complaints/{complaint_id}/escalate| & Admin/Dept Head & Authority escalation \\ \hline
+POST & \path|/api/v1/complaints/{complaint_id}/feedback| & Citizen owner & Resolution feedback \\ \hline
+POST & \path|/api/v1/complaints/{complaint_id}/notes| & Admin/Dept Head & Internal department notes \\ \hline
+GET & \path|/api/v1/complaints/{complaint_id}/notes| & Admin/Dept Head & Fetch department notes \\ \hline
+POST & \path|/api/v1/complaints/{complaint_id}/comments| & Yes & Add collaborative comment \\ \hline
+GET & \path|/api/v1/complaints/{complaint_id}/comments| & Yes & Read collaborative thread \\ \hline
+POST & \path|/api/v1/complaints/bulk/status| & Admin & Bulk status updates \\ \hline
+POST & \path|/api/v1/complaints/bulk/transfer| & Admin & Bulk transfer updates \\ \hline
+GET & \path|/api/v1/complaints/export/csv| & Admin & CSV export \\ \hline
+\hline
+GET & \path|/workers/me| & Worker & Worker profile and workload \\ \hline
+PATCH & \path|/workers/me/status| & Worker & Availability update \\ \hline
+PATCH & \path|/workers/me/api/v1/complaints/{complaint_id}/done| & Worker & Mark assigned complaint done \\ \hline
+GET & \path|/workers| & Admin & List workers (pending/all) \\ \hline
+GET & \path|/workers/my-department| & Admin/Dept Head & Department worker listing \\ \hline
+PATCH & \path|/workers/{worker_id}/approve| & Admin & Approve worker \\ \hline
+DELETE & \path|/workers/{worker_id}/reject| & Admin & Reject pending worker \\ \hline
+POST & \path|/workers/{worker_id}/assign/{complaint_id}| & Admin & Manual assignment \\ \hline
+PATCH & \path|/workers/{worker_id}/area| & Admin & Update worker service area \\ \hline
+GET & \path|/workers/assignment-debug| & Admin & Assignment diagnostics \\ \hline
+POST & \path|/workers/reassign-unassigned| & Admin & Retry assignment for open queue \\ \hline
+\hline
+GET & \path|/api/v1/notifications| & Yes & Notification list \\ \hline
+GET & \path|/api/v1/notifications/unread-count| & Yes & Unread badge count \\ \hline
+PATCH & \path|/api/v1/notifications/{notification_id}/read| & Yes & Mark single notification read \\ \hline
+PATCH & \path|/api/v1/notifications/read-all| & Yes & Mark all notifications read \\ \hline
+\hline
+GET & \path|/triage/review-queue| & Admin & Retrieve low-confidence queue \\ \hline
+POST & \path|/triage/review-queue/decision| & Admin & Apply triage decision \\ \hline
+\hline
+GET & \path|/api/v1/analytics/overview| & Admin & Overview metrics \\ \hline
+GET & \path|/api/v1/analytics/heatmap| & Admin/Dept Head & Geospatial complaint distribution \\ \hline
+GET & \path|/api/v1/public/api/v1/complaints| & No & Public anonymized complaint feed \\ \hline
+GET & \path|/api/v1/health/live| & No & Liveness probe \\ \hline
+GET & \path|/api/v1/health/ready| & No & Readiness probe \\ \hline
+GET & \path|/api/v1/health/models| & No & Model availability status \\ \hline
+GET & \path|/api/v1/health/gpu| & No & GPU/model load status \\ \hline
+\hline
 \end{longtable}
 \normalsize
 
 \section{Appendix B: Environment Variable Catalog}
 
-\begin{longtable}{p{0.32\textwidth}p{0.21\textwidth}p{0.38\textwidth}}
+\begin{longtable}{|p{0.32\textwidth}|p{0.21\textwidth}|p{0.38\textwidth}|}
 \caption{Core Backend Environment Variables}\\
-\toprule
-\textbf{Variable} & \textbf{Typical Default} & \textbf{Purpose} \\ \midrule
-\midrule
+\hline
+\textbf{Variable} & \textbf{Typical Default} & \textbf{Purpose} \\ \hline
+\hline
 \endfirsthead
-\toprule
-\textbf{Variable} & \textbf{Typical Default} & \textbf{Purpose} \\ \midrule
-\midrule
+\hline
+\textbf{Variable} & \textbf{Typical Default} & \textbf{Purpose} \\ \hline
+\hline
 \endhead
-\path|APP_ENV| & development & Runtime mode (development/production) \\ \midrule
-\path|MONGODB_URL| & \path|mongodb://localhost:27017| & Primary Mongo connection URI \\ \midrule
-\path|MONGO_URL| & \path|mongodb://localhost:27017| & Legacy fallback connection URI \\ \midrule
-\path|DB_NAME| & \path|jan_sunwai_db| & Database name \\ \midrule
-\path|JWT_SECRET_KEY| & \path|change-me-in-production| & JWT signing secret \\ \midrule
-\path|JWT_ALGORITHM| & HS256 & JWT signing algorithm \\ \midrule
-\path|ACCESS_TOKEN_EXPIRE_MINUTES| & 1440 (dev) / 480 (prod) & Token expiration minutes \\ \midrule
-\path|RATE_LIMIT_ENABLED| & false (dev) & Rate-limiting toggle \\ \midrule
-\path|ALLOWED_ORIGINS| & localhost origins list & CORS allowlist \\ \midrule
-\path|OLLAMA_BASE_URL| & \path|http://localhost:11434| & Ollama API endpoint \\ \midrule
-\path|VISION_MODEL| & \path|qwen2.5vl:3b| & Primary vision model \\ \midrule
-\path|MID_VISION_MODEL| & \path|granite3.2-vision:2b| & Mid-tier vision fallback \\ \midrule
-\path|FALLBACK_VISION_MODEL| & \path|granite3.2-vision:2b| & Final vision fallback \\ \midrule
-\path|REASONING_MODEL| & \path|llama3.2:1b| & Reasoning/drafting model \\ \midrule
-\path|VISION_TIMEOUT_SECONDS| & 240 & Vision tier timeout \\ \midrule
-\path|LLM_INLINE_TIMEOUT_SECONDS| & 15 & Inline generation wait time \\ \midrule
-\path|LLM_QUEUE_WORKERS| & 2 & Background generation workers \\ \midrule
-\path|RULE_ENGINE_ONLY| & false & Skip reasoning model when true \\ \midrule
-\path|AMBIGUITY_THRESHOLD| & 2.0 & Rule-engine ambiguity boundary \\ \midrule
-\path|UNLOAD_AFTER_REASONING| & true & Attempt model unload after use \\ \midrule
-\path|MODEL_UNLOAD_TIMEOUT_SECONDS| & 30 & Model unload timeout \\ \midrule
-\path|MODEL_UNLOAD_POLL_INTERVAL_SECONDS| & 0.1 & Poll interval for unload check \\ \midrule
-\path|KEEP_REASONING_MODEL_WARM| & false & Keep reasoning model loaded toggle \\ \midrule
-\path|COMPLAINT_OUTPUT_MODE| & email & Draft output style mode \\ \midrule
-\path|SMTP_HOST| & empty & SMTP relay host \\ \midrule
-\path|SMTP_PORT| & 587 & SMTP relay port \\ \midrule
-\path|SMTP_FROM| & \path|noreply@jan-sunwai.local| & Sender identity for email stub/relay \\ \midrule
-\path|DEFAULT_PAGE_SIZE| & 25 & Default pagination size \\ \midrule
-\path|MAX_PAGE_SIZE| & 100 & Maximum pagination limit \\ \midrule
-\bottomrule
+\path|APP_ENV| & development & Runtime mode (development/production) \\ \hline
+\path|MONGODB_URL| & \path|mongodb://localhost:27017| & Primary Mongo connection URI \\ \hline
+\path|MONGO_URL| & \path|mongodb://localhost:27017| & Legacy fallback connection URI \\ \hline
+\path|DB_NAME| & \path|jan_sunwai_db| & Database name \\ \hline
+\path|JWT_SECRET_KEY| & \path|change-me-in-production| & JWT signing secret \\ \hline
+\path|JWT_ALGORITHM| & HS256 & JWT signing algorithm \\ \hline
+\path|ACCESS_TOKEN_EXPIRE_MINUTES| & 1440 (dev) / 480 (prod) & Token expiration minutes \\ \hline
+\path|RATE_LIMIT_ENABLED| & false (dev) & Rate-limiting toggle \\ \hline
+\path|ALLOWED_ORIGINS| & localhost origins list & CORS allowlist \\ \hline
+\path|OLLAMA_BASE_URL| & \path|http://localhost:11434| & Ollama API endpoint \\ \hline
+\path|VISION_MODEL| & \path|qwen2.5vl:3b| & Primary vision model \\ \hline
+\path|MID_VISION_MODEL| & \path|granite3.2-vision:2b| & Mid-tier vision fallback \\ \hline
+\path|FALLBACK_VISION_MODEL| & \path|granite3.2-vision:2b| & Final vision fallback \\ \hline
+\path|REASONING_MODEL| & \path|llama3.2:1b| & Reasoning/drafting model \\ \hline
+\path|VISION_TIMEOUT_SECONDS| & 240 & Vision tier timeout \\ \hline
+\path|LLM_INLINE_TIMEOUT_SECONDS| & 15 & Inline generation wait time \\ \hline
+\path|LLM_QUEUE_WORKERS| & 2 & Background generation workers \\ \hline
+\path|RULE_ENGINE_ONLY| & false & Skip reasoning model when true \\ \hline
+\path|AMBIGUITY_THRESHOLD| & 2.0 & Rule-engine ambiguity boundary \\ \hline
+\path|UNLOAD_AFTER_REASONING| & true & Attempt model unload after use \\ \hline
+\path|MODEL_UNLOAD_TIMEOUT_SECONDS| & 30 & Model unload timeout \\ \hline
+\path|MODEL_UNLOAD_POLL_INTERVAL_SECONDS| & 0.1 & Poll interval for unload check \\ \hline
+\path|KEEP_REASONING_MODEL_WARM| & false & Keep reasoning model loaded toggle \\ \hline
+\path|COMPLAINT_OUTPUT_MODE| & email & Draft output style mode \\ \hline
+\path|SMTP_HOST| & empty & SMTP relay host \\ \hline
+\path|SMTP_PORT| & 587 & SMTP relay port \\ \hline
+\path|SMTP_FROM| & \path|noreply@jan-sunwai.local| & Sender identity for email stub/relay \\ \hline
+\path|DEFAULT_PAGE_SIZE| & 25 & Default pagination size \\ \hline
+\path|MAX_PAGE_SIZE| & 100 & Maximum pagination limit \\ \hline
+\hline
 \end{longtable}
 \normalsize
 
 \section{Appendix C: Department Taxonomy and Authority Routing}
 
-\begin{longtable}{p{0.32\textwidth}p{0.26\textwidth}p{0.30\textwidth}}
+\begin{longtable}{|p{0.32\textwidth}|p{0.26\textwidth}|p{0.30\textwidth}|}
 \caption{Department to Authority Mapping Snapshot}\\
-\toprule
-\textbf{Department Label} & \textbf{Authority ID} & \textbf{Escalation Parent} \\ \midrule
-\midrule
+\hline
+\textbf{Department Label} & \textbf{Authority ID} & \textbf{Escalation Parent} \\ \hline
+\hline
 \endfirsthead
-\toprule
-\textbf{Department Label} & \textbf{Authority ID} & \textbf{Escalation Parent} \\ \midrule
-\midrule
+\hline
+\textbf{Department Label} & \textbf{Authority ID} & \textbf{Escalation Parent} \\ \hline
+\hline
 \endhead
-Health Department & MUNI\_SANITATION & STATE\_CMO \\ \midrule
-Civil Department & MUNI\_PWD & STATE\_CMO \\ \midrule
-Horticulture & MUNI\_HORTICULTURE & STATE\_CMO \\ \midrule
-Electrical Department & UTIL\_DISCOM & STATE\_CMO \\ \midrule
-IT Department & STATE\_CMO & CENTRAL\_DARPG \\ \midrule
-Commercial & STATE\_CMO & CENTRAL\_DARPG \\ \midrule
-Enforcement & POLICE\_TRAFFIC & STATE\_CMO \\ \midrule
-Fire Department & POLICE\_LOCAL & STATE\_CMO \\ \midrule
-Uncategorized & Rule/keyword fallback & Nullable \\ \midrule
-\bottomrule
+Health Department & MUNI\_SANITATION & STATE\_CMO \\ \hline
+Civil Department & MUNI\_PWD & STATE\_CMO \\ \hline
+Horticulture & MUNI\_HORTICULTURE & STATE\_CMO \\ \hline
+Electrical Department & UTIL\_DISCOM & STATE\_CMO \\ \hline
+IT Department & STATE\_CMO & CENTRAL\_DARPG \\ \hline
+Commercial & STATE\_CMO & CENTRAL\_DARPG \\ \hline
+Enforcement & POLICE\_TRAFFIC & STATE\_CMO \\ \hline
+Fire Department & POLICE\_LOCAL & STATE\_CMO \\ \hline
+Uncategorized & Rule/keyword fallback & Nullable \\ \hline
+\hline
 \end{longtable}
 
 \section{Appendix D: Requirement-to-Test Traceability Matrix}
 
 \small
-\begin{longtable}{p{0.11\textwidth}p{0.20\textwidth}p{0.47\textwidth}p{0.12\textwidth}}
+\begin{longtable}{|p{0.11\textwidth}|p{0.20\textwidth}|p{0.47\textwidth}|p{0.12\textwidth}|}
 \caption{Requirement-to-Test Traceability Matrix}\\
-\toprule
-\textbf{Req ID} & \textbf{Requirement Theme} & \textbf{Validation Evidence} & \textbf{Status} \\ \midrule
-\midrule
+\hline
+\textbf{Req ID} & \textbf{Requirement Theme} & \textbf{Validation Evidence} & \textbf{Status} \\ \hline
+\hline
 \endfirsthead
-\toprule
-\textbf{Req ID} & \textbf{Requirement Theme} & \textbf{Validation Evidence} & \textbf{Status} \\ \midrule
-\midrule
+\hline
+\textbf{Req ID} & \textbf{Requirement Theme} & \textbf{Validation Evidence} & \textbf{Status} \\ \hline
+\hline
 \endhead
-FR-01 & User registration flow & Register route tests and manual registration UI checks & Verified \\ \midrule
-FR-02 & Login and cookie-session issuance & Auth permission tests and integration smoke login path & Verified \\ \midrule
-FR-03 & Profile editing & API endpoint behavior and profile page walkthrough & Verified \\ \midrule
-FR-04 & Password recovery/reset & Forgot/reset endpoint implementation and UI path checks & Verified \\ \midrule
-FR-05 & Upload validation & Resilience/security tests for header mismatch and size limits & Verified \\ \midrule
-FR-06 & AI-assisted analysis & Analyze endpoint response contract checks and manual scenario runs & Verified \\ \midrule
-FR-07 & Draft regeneration queue & Generation polling route and regeneration request flow & Verified \\ \midrule
-FR-08 & Complaint creation & End-to-end citizen flow and complaint list visibility checks & Verified \\ \midrule
-FR-09 & Role-filtered listing & Role-based list query behavior and dashboard checks & Verified \\ \midrule
-FR-10 & Complaint detail & Complaint detail retrieval and timeline rendering checks & Verified \\ \midrule
-FR-11 & Status update workflow & Notification chain tests and status history assertions & Verified \\ \midrule
-FR-12 & Department transfer & Admin/dept-head transfer operation checks & Verified \\ \midrule
-FR-13 & Escalation support & Escalation endpoint and timeline update behavior checks & Verified \\ \midrule
-FR-14 & Worker assignment & Assignment service behavior and admin assignment controls & Verified \\ \midrule
-FR-15 & Worker task completion & Worker done workflow and slot-free behavior checks & Verified \\ \midrule
-FR-16 & Notification center & Unread-count and mark-read chain tests & Verified \\ \midrule
-FR-17 & Triage queue governance & Triage review UI and decision endpoint flow checks & Verified \\ \midrule
-FR-18 & Analytics and heatmap & Admin analytics and map rendering walkthrough & Verified \\ \midrule
-FR-19 & CSV export & Export endpoint execution and output schema checks & Verified \\ \midrule
-FR-20 & Public board & Public feed route and UI accessibility checks & Verified \\ \midrule
-FR-21 & Health probes & Live, ready, model, and GPU endpoint smoke checks & Verified \\ \midrule
-FR-22 & API version alias & /api/v1 integration checks in matrix tests & Verified \\ \midrule
-\bottomrule
+FR-01 & User registration flow & Register route tests and manual registration UI checks & Verified \\ \hline
+FR-02 & Login and cookie-session issuance & Auth permission tests and integration smoke login path & Verified \\ \hline
+FR-03 & Profile editing & API endpoint behavior and profile page walkthrough & Verified \\ \hline
+FR-04 & Password recovery/reset & Forgot/reset endpoint implementation and UI path checks & Verified \\ \hline
+FR-05 & Upload validation & Resilience/security tests for header mismatch and size limits & Verified \\ \hline
+FR-06 & AI-assisted analysis & Analyze endpoint response contract checks and manual scenario runs & Verified \\ \hline
+FR-07 & Draft regeneration queue & Generation polling route and regeneration request flow & Verified \\ \hline
+FR-08 & Complaint creation & End-to-end citizen flow and complaint list visibility checks & Verified \\ \hline
+FR-09 & Role-filtered listing & Role-based list query behavior and dashboard checks & Verified \\ \hline
+FR-10 & Complaint detail & Complaint detail retrieval and timeline rendering checks & Verified \\ \hline
+FR-11 & Status update workflow & Notification chain tests and status history assertions & Verified \\ \hline
+FR-12 & Department transfer & Admin/dept-head transfer operation checks & Verified \\ \hline
+FR-13 & Escalation support & Escalation endpoint and timeline update behavior checks & Verified \\ \hline
+FR-14 & Worker assignment & Assignment service behavior and admin assignment controls & Verified \\ \hline
+FR-15 & Worker task completion & Worker done workflow and slot-free behavior checks & Verified \\ \hline
+FR-16 & Notification center & Unread-count and mark-read chain tests & Verified \\ \hline
+FR-17 & Triage queue governance & Triage review UI and decision endpoint flow checks & Verified \\ \hline
+FR-18 & Analytics and heatmap & Admin analytics and map rendering walkthrough & Verified \\ \hline
+FR-19 & CSV export & Export endpoint execution and output schema checks & Verified \\ \hline
+FR-20 & Public board & Public feed route and UI accessibility checks & Verified \\ \hline
+FR-21 & Health probes & Live, ready, model, and GPU endpoint smoke checks & Verified \\ \hline
+FR-22 & API version alias & /api/v1 integration checks in matrix tests & Verified \\ \hline
+\hline
 \end{longtable}
 \normalsize
