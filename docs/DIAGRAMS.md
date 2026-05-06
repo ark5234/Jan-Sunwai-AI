@@ -246,9 +246,14 @@ flowchart TD
 
 ### 5.2.7 Deployment Diagram
 
+The system's infrastructure scales between local development and production via Docker Compose environment configurations (`APP_ENV=production` vs `local`), utilizing distinct `.env` loading and build profiles.
+
+- **Production Environment (`Dockerfile.prod`)**: The React frontend is built statically and served via an Nginx container. The FastAPI backend runs via Uvicorn workers. MongoDB enforces strict authentication using Docker secrets.
+- **Local Environment**: The frontend relies on the Vite development server with Hot Module Replacement (HMR). The backend runs Uvicorn with `--reload` enabled.
+
 ```mermaid
 flowchart TD
-    subgraph "Docker Host (Production / Local)"
+    subgraph "Docker Host (Production / Local Environments)"
         subgraph Frontend_Container
             Nginx[Nginx HTTP Server]
             React[React/Vite Static Files]
@@ -346,3 +351,78 @@ To meet the high-performance demands of location-based sorting and massive audit
 2. **Compound Index**: `{ status: 1, created_at: -1 }` on Complaints to optimize the heavy load of dashboard rendering where Dept Heads and Workers view recent active issues.
 3. **Unique Index**: `{ email: 1 }` and `{ username: 1 }` on Users collection to enforce constraint uniqueness natively.
 4. **Text Index**: Free-text index on the `draft` and `category` fields to support Admin full-text searches.
+
+### 5.3.4 Data Dictionary
+
+#### **Users Collection (`users`)**
+| Field Name | Type | Constraints | Description |
+| :--- | :--- | :--- | :--- |
+| `_id` | ObjectId | Primary Key | Unique identifier for the user. |
+| `username` | String | Unique, Min 3, Max 50 | The user's login name. |
+| `email` | String | Unique, Valid Email | The user's contact email. |
+| `password_hash` | String | Required | Bcrypt hashed password. |
+| `full_name` | String | Max 100 | The user's full display name. |
+| `phone_number` | String | Max 20 | Contact number. |
+| `role` | Enum | citizen, dept_head, admin, worker | Defines RBAC permissions. |
+| `department` | String | Optional | The department assignment for Dept Heads and Workers. |
+| `worker_status` | Enum | available, busy, offline | Status indicating if a worker can take new assignments. |
+| `service_area` | Object | Optional | Geospatial data (`lat`, `lon`, `radius_km`) defining a worker's operational range. |
+| `is_approved` | Boolean | Default: True | False for pending worker registrations until Admin approval. |
+
+#### **Complaints Collection (`complaints`)**
+| Field Name | Type | Constraints | Description |
+| :--- | :--- | :--- | :--- |
+| `_id` | ObjectId | Primary Key | Unique identifier for the complaint. |
+| `user_id` | ObjectId | Foreign Key (users) | The citizen who filed the grievance. |
+| `assigned_to` | ObjectId | Foreign Key (users) | The worker currently assigned to the issue. |
+| `department` | String | Required | The assigned civic department (e.g., Civil, Health). |
+| `description` | String | Min 10 chars | The AI-generated or user-edited description of the issue. |
+| `user_grievance_text` | String | Max 1200 | Optional original text provided by the citizen. |
+| `image_url` | String | Required | Path/URL to the uploaded evidentiary photo. |
+| `location` | Object | Required | `GeoLocation` containing `lat`, `lon`, `address`, and `source` (exif/device/manual). |
+| `ai_metadata` | Object | Required | AI analysis results including `confidence_score` and `detected_department`. |
+| `priority` | Enum | Low, Medium, High, Critical | System-assigned urgency level. |
+| `status` | Enum | Open, In Progress, Resolved, Rejected | Current state of the grievance lifecycle. |
+| `created_at` | DateTime | Auto-generated | UTC timestamp of submission. |
+| `status_history` | Array | Embedded Docs | Audit trail of all status changes with timestamps and user IDs. |
+
+#### **Notifications Collection (`notifications`)**
+| Field Name | Type | Constraints | Description |
+| :--- | :--- | :--- | :--- |
+| `_id` | ObjectId | Primary Key | Unique notification identifier. |
+| `user_id` | ObjectId | Foreign Key (users) | Recipient of the notification. |
+| `complaint_id` | ObjectId | Foreign Key (complaints) | Associated complaint. |
+| `type` | Enum | status_change, escalation, assignment, system | Category of the alert. |
+| `title` | String | Required | Short summary. |
+| `message` | String | Required | Full notification body. |
+| `is_read` | Boolean | Default: False | Read status for the UI badge. |
+| `created_at` | DateTime | Auto-generated | UTC timestamp. |
+
+## 5.4 GUI Design
+
+The Jan-Sunwai AI user interface is a responsive Single Page Application (SPA) built with React. It is divided into distinct role-based experiences.
+
+### 5.4.1 Interface Areas and Purpose
+
+- **Citizen Portal**: Focuses on frictionless complaint filing. Includes the Image Upload wizard, AI Draft Review, and a personal Status Tracker.
+- **Worker Dashboard**: Optimized for mobile usage. Shows a map/list of assigned tasks, allows status updates, and uploading proof of resolution.
+- **Department Head View**: A queue management interface allowing re-assignment, priority adjustment, and viewing department-specific analytics.
+- **Admin Dashboard**: The overarching control center. Features a high-level analytics overview, the Triage Queue for low-confidence AI routing, and User Management.
+
+### 5.4.2 Visual References
+
+*The following are references to the actual implementation screenshots located in the `docs/images/` directory:*
+
+1. **Citizen Experience**:
+   - *Home Page / Filing*: `![Citizen Homepage](./images/citizen_homepage.png)`
+   - *Reviewing AI Analysis*: `![AI Analysis Result](./images/complaint_review_with_geo_tag.png)`
+   - *Tracking Dashboard*: `![Tracking Dashboard](./images/grievance_status_tracker.png)`
+
+2. **Admin & Department Management**:
+   - *Admin Dashboard Overview*: `![Admin Dashboard](./images/admin_dashboard.png)`
+   - *Triage Queue (Low Confidence)*: `![Admin Triage Queue](./images/admin_human_complaint_review_pannel.png)`
+   - *Analytics & Heatmap*: `![Grievance Heatmap](./images/grievance_heatmap.png)`
+
+3. **System Wide**:
+   - *Login & Registration*: `![Login Page](./images/login_page.png)`
+   - *Map Visualization*: `![Complaints Map](./images/complaints_map.png)`
