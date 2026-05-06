@@ -4,7 +4,7 @@
 
 ### Register and Login
 
-![Login Page](./images/login%20page.png)
+![Login Page](./images/login_page.png)
 
 1. Open the home page.
 2. Select **Register** and create an account (username, email, password).
@@ -26,13 +26,13 @@
      - Clicking **Pin on Map** to drop a pin on the interactive map.
    - Review and edit the AI-generated complaint draft. Click **Regenerate** to create a new draft, or choose a different language from the dropdown.
 
-![Analyze Result](./images/complaint%20review%20with%20geo-tag.png)
+![Analyze Result](./images/complaint_review_with_geo_tag.png)
 
 7. Click **Submit Grievance**.
 
 ### Track Complaint
 
-![Citizen Dashboard](./images/Grievance%20Status%20Tracker.png)
+![Citizen Dashboard](./images/grievance_status_tracker.png)
 
 1. Open **Dashboard**.
 2. View status badges: Open · In Progress · Resolved · Rejected.
@@ -60,7 +60,7 @@
 
 ### Admin Operations
 
-![Admin Dashboard](./images/admin%20dashboard.png)
+![Admin Dashboard](./images/admin_dashboard.png)
 
 1. Login as admin.
 2. Approve/reject worker registrations from Admin Dashboard.
@@ -69,7 +69,7 @@
 5. Export complaint records to CSV.
 6. Review the complaints heatmap (geographic distribution) and analytics overview.
 
-![Grievance Heatmap](./images/Grievance%20Heatmap.png)
+![Grievance Heatmap](./images/grievance_heatmap.png)
 
 7. Use the Triage Review queue for low-confidence AI classifications.
 

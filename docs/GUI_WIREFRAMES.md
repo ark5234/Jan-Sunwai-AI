@@ -2,7 +2,7 @@
 
 This document is the canonical wireframe source for the current UI. 
 
-![Canonical GUI Wireframe](./images/GUI_Wireframe.png)
+![Canonical GUI Wireframe](./images/gui_wireframe.png)
 
 Mermaid diagrams below provide the functional logic and flow for the wireframes.
 

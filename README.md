@@ -18,21 +18,21 @@ Jan-Sunwai AI is a full-stack platform where a citizen uploads an issue photo, t
 - **Persistent Data:** Native connections with MongoDB instances along with an NDMC Database instance for triaged data/logs tracking. 
 
 **Frontend (React, Vite):**
-- **Current Stack:** React 18, React Router v7, styling exclusively with modern Tailwind CSS v4, bundled aggressively through Vite.
+- **Current Stack:** React 18, React Router v7, styling exclusively with modern Tailwind CSS v4, optimized and bundled through Vite.
 - **Geospatial Implementation:** Deep mapping and visual heatmaps utilizing `react-leaflet`, `leaflet.heat`, and `maplibre-gl` for precision analytics layout.
 - **Optimization:** Utilizes local optimizations like `browser-image-compression` to resize visual uploads directly in the client side to preserve bandwidth.
 
 **DevOps & Scripts:**
-Docker containers combined with excessive pipeline scripts spanning load testing (Locust), security auditing, resilience checking, automated Lighthouse scores capturing, and triage setups.
+Docker containers integrated with comprehensive pipeline scripts spanning load testing (Locust), security auditing, resilience checking, automated Lighthouse scores capturing, and triage setups.
 
 ## High-Level Architecture
 
-![High-Level Architecture](./docs/images/System%20context%20diagram.png)
+![High-Level Architecture](./docs/images/system_context_diagram.png)
 
 ## Screenshots
 
 - Capture checklist: docs/reports/SCREENSHOT_CHECKLIST.md
-- Wireframe reference: docs/images/GUI_Wireframe.png
+- Wireframe reference: docs/images/gui_wireframe.png
 
 ## AI Pipeline
 
@@ -40,7 +40,7 @@ Docker containers combined with excessive pipeline scripts spanning load testing
 
 ## Complaint Lifecycle
 
-![Complaint Lifecycle](./docs/images/sequence%20diagram.png)
+![Complaint Lifecycle](./docs/images/sequence_diagram.png)
 
 ## Repository Layout
 

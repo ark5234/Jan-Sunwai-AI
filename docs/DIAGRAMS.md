@@ -38,7 +38,7 @@ flowchart TD
     M --> N[Citizen Review + Submit]
     N --> O[Complaint Saved + Auto-Routed]
 ```
-![AI Classification Pipeline](./images/System context diagram.png)
+![AI Classification Pipeline](./images/system_context_diagram.png)
 
 ## 5.2 UML Diagrams
 
@@ -73,7 +73,7 @@ erDiagram
         datetime created_at
     }
 ```
-![E-R Diagram](./images/new er.png)
+![E-R Diagram](./images/new_er.png)
 
 ### 5.2.2 Use Case Diagram
 
@@ -140,7 +140,7 @@ classDiagram
     ComplaintRouter --> AssignmentService : triggers
     WorkerRouter --> AssignmentService : uses
 ```
-![Class Diagram](./images/class diagram.png)
+![Class Diagram](./images/class_diagram.png)
 
 ### 5.2.4 Sequence Diagram
 (Complaint Lifecycle Sequence)
@@ -167,7 +167,7 @@ sequenceDiagram
     ASSIGN->>DB: Update complaint to (Assigned/In Progress)
     API-->>FE: Success, Complaint ID
 ```
-![Sequence Diagram](./images/sequence diagram.png)
+![Sequence Diagram](./images/sequence_diagram.png)
 
 ### 5.2.5 Activity Diagram
 (Image Analysis & Triage Activity)
@@ -193,7 +193,7 @@ stateDiagram-v2
     GenerateDraft --> CitizenReview
     CitizenReview --> [*]
 ```
-![Activity Diagram](./images/avtivity diagram.png)
+![Activity Diagram](./images/activity_diagram.png)
 
 ### 5.2.6 DFD Diagram (Data Flow Diagram - Context & Level 1)
 
@@ -282,7 +282,7 @@ flowchart TD
     Backend_Container -->|HTTP/REST| AI_Container
     Backend_Container -->|HTTP/REST| NDMC_API
 ```
-![Deployment Diagram](./images/deployment diagram.png)
+![Deployment Diagram](./images/deployment_diagram.png)
 
 ## 5.3 Database Design
 
