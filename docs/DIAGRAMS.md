@@ -46,14 +46,17 @@ flowchart TD
 
 ```mermaid
 erDiagram
-    USER ||--o{ COMPLAINT : "creates / handles (if worker)"
+    USER ||--o{ COMPLAINT : "creates / handles"
     COMPLAINT ||--o{ NOTIFICATION : triggers
+    USER ||--o{ NOTIFICATION : receives
     
     USER {
         ObjectId _id PK
         string username
         string email
         string password_hash
+        string full_name
+        string phone_number
         string role
         string department
         string worker_status
@@ -65,11 +68,30 @@ erDiagram
         ObjectId _id PK
         ObjectId user_id FK
         ObjectId assigned_to FK
+        string authority_id
         string department
-        float confidence
         string description
-        string status
+        string user_grievance_text
+        string image_url
         object location
+        object ai_metadata
+        float routing_confidence
+        string priority
+        string status
+        boolean escalated
+        datetime created_at
+        list status_history
+        list dept_notes
+    }
+    
+    NOTIFICATION {
+        ObjectId _id PK
+        ObjectId user_id FK
+        ObjectId complaint_id FK
+        string type
+        string title
+        string message
+        boolean is_read
         datetime created_at
     }
 ```
@@ -87,20 +109,24 @@ flowchart LR
     Citizen --> UC1([Upload Issue Photo])
     Citizen --> UC2([Review Generated Draft])
     Citizen --> UC3([Track Complaint Status])
+    Citizen --> UC14([Provide Feedback])
     
     Worker --> UC4([View Assigned Tasks])
-    Worker --> UC5([Resolve Complaints])
-    Worker --> UC6([Update Status])
+    Worker --> UC5([Add Dept Notes & Update Status])
+    Worker --> UC6([Mark Complaint Resolved])
     
     DeptHead --> UC7([Monitor Department Queue])
     DeptHead --> UC8([Handle Escalations])
-    DeptHead --> UC9([View Analytics])
+    DeptHead --> UC9([View Analytics & Heatmap])
+    DeptHead --> UC15([Reassign Workers])
     
-    Admin --> UC10([Manage Users & Roles])
+    Admin --> UC10([Manage & Approve Workers])
     Admin --> UC11([Triage Low-Confidence Issues])
-    Admin --> UC12([System Configurations])
+    Admin --> UC12([System & AI Configurations])
+    Admin --> UC16([View Global Analytics])
     
-    UC1 -.->|includes| UC13([AI Classification])
+    UC1 -.->|includes| UC13([AI Classification & Generation])
+    UC11 -.->|updates| UC8
 ```
 ![Use Case Diagram](./images/flowchart.png)
 *(Note: Mermaid flowchart can also depict use case functionality if actual Use Case UML is not fully supported in your renderer, standard UML boundaries apply)*
@@ -109,36 +135,58 @@ flowchart LR
 
 ```mermaid
 classDiagram
-    class UserRouter {
+    class UsersRouter {
         +register()
         +login()
         +updateProfile()
+        +getMe()
     }
-    class ComplaintRouter {
+    class ComplaintsRouter {
         +analyze()
         +create()
+        +getList()
         +updateStatus()
         +escalate()
+        +addDeptNote()
+        +transferDepartment()
     }
-    class WorkerRouter {
-        +updateStatus()
-        +markDone()
-        +assignTask()
+    class WorkersRouter {
+        +getQueue()
+        +approveWorker()
+        +updateWorkerStatus()
+        +assignTaskManual()
     }
-    class AIPipelineService {
+    class AnalyticsRouter {
+        +getOverview()
+        +getHeatmap()
+    }
+    class TriageRouter {
+        +getReviewQueue()
+        +resolveTriage()
+    }
+    class NotificationsRouter {
+        +getMyNotifications()
+        +markAsRead()
+    }
+    class ClassifierEngine {
         +runVisionCascade()
         +runRuleEngine()
-        +runReasoning()
+    }
+    class GeneratorEngine {
         +generateDraft()
     }
+    class NDMCApiClient {
+        +logAudit()
+    }
     class AssignmentService {
-        +autoAssign()
-        +freeSlot()
+        +autoAssignGeo()
     }
     
-    ComplaintRouter --> AIPipelineService : uses
-    ComplaintRouter --> AssignmentService : triggers
-    WorkerRouter --> AssignmentService : uses
+    ComplaintsRouter --> ClassifierEngine : uses
+    ComplaintsRouter --> GeneratorEngine : uses
+    ComplaintsRouter --> AssignmentService : triggers
+    ComplaintsRouter --> NotificationsRouter : emits
+    ComplaintsRouter --> NDMCApiClient : triggers_audit
 ```
 ![Class Diagram](./images/class_diagram.png)
 
@@ -150,21 +198,31 @@ sequenceDiagram
     actor Citizen
     participant FE as Frontend (React)
     participant API as FastAPI Backend
-    participant AI as AI Engine (Ollama)
+    participant CLSF as Classifier/Generator Engine
     participant DB as MongoDB
+    participant NDMC as NDMC Audit DB
     participant ASSIGN as Assignment Service
+    participant NOTIFY as Notification System
 
-    Citizen->>FE: Upload image + Details
+    Citizen->>FE: Upload Image & Grievance Text
     FE->>API: POST /api/v1/analyze
-    API->>AI: classify + draft
-    AI-->>API: category + confidence + draft text
-    API-->>FE: Return analysis payload
+    API->>CLSF: Run Vision Model & Rule Engine
+    CLSF-->>API: Category & Confidence
+    API->>CLSF: Generate Draft (Reasoning Model)
+    CLSF-->>API: Drafted Text
+    API-->>FE: Return Analysis Payload (Category, Draft)
 
-    Citizen->>FE: Review & confirm submission
+    Citizen->>FE: Review, Edit & Submit
     FE->>API: POST /api/v1/complaints
-    API->>DB: Store complaint (status=Open)
-    API->>ASSIGN: Trigger auto_assign()
-    ASSIGN->>DB: Update complaint to (Assigned/In Progress)
+    API->>DB: Store Complaint (status=Open)
+    par Audit Logging
+        API->>NDMC: Log Classification Audit
+    and Auto-Assignment
+        API->>ASSIGN: Attempt autoAssignGeo()
+        ASSIGN->>DB: Update Complaint (Assigned/In Progress)
+    and Notifications
+        API->>NOTIFY: Emit Assignment Notification to Worker
+    end
     API-->>FE: Success, Complaint ID
 ```
 ![Sequence Diagram](./images/sequence_diagram.png)
@@ -176,22 +234,24 @@ sequenceDiagram
 stateDiagram-v2
     [*] --> UploadImage
     UploadImage --> ValidateFormat
-    ValidateFormat --> RunVisionModel
-    RunVisionModel --> ExtractFeatures
-    ExtractFeatures --> RuleScoring
+    ValidateFormat --> RunVisionCascade
+    RunVisionCascade --> RuleEngineScoring
     
-    state RuleScoring {
+    state RuleEngineScoring {
         [*] --> ConfidenceCheck
-        ConfidenceCheck --> HighConfidence: > 0.8
-        ConfidenceCheck --> LowConfidence: <= 0.8
+        ConfidenceCheck --> HighConfidence: Confidence > AMBIGUITY_THRESHOLD
+        ConfidenceCheck --> LowConfidence: Confidence <= AMBIGUITY_THRESHOLD
     }
     
-    HighConfidence --> GenerateDraft
+    HighConfidence --> FinalizeCategory
     LowConfidence --> RunReasoningModel
-    RunReasoningModel --> GenerateDraft
+    RunReasoningModel --> FinalizeCategory
     
-    GenerateDraft --> CitizenReview
-    CitizenReview --> [*]
+    FinalizeCategory --> GenerateDraft
+    GenerateDraft --> NDMC_Comparison_Audit
+    NDMC_Comparison_Audit --> CitizenReview
+    CitizenReview --> SubmitComplaint
+    SubmitComplaint --> [*]
 ```
 ![Activity Diagram](./images/activity_diagram.png)
 
@@ -226,21 +286,25 @@ flowchart TD
 ```mermaid
 flowchart TD
     Citizen((Citizen)) -->|Image + metadata| P1[Process 1: Issue Analysis]
-    P1 -->|Image Hash + Text| Ollama((Ollama Models))
-    Ollama -->|Category + Confidence| P1
+    P1 -->|Image Hash + Text| Ollama((Ollama AI Models))
+    Ollama -->|Category, Confidence, Draft| P1
     
-    P1 -->|Draft + Category| Citizen
-    Citizen -->|Confirmed Details| P2[Process 2: Complaint Submission]
+    P1 -->|Review Payload| Citizen
+    Citizen -->|Confirmed & Edited Details| P2[Process 2: Complaint Submission]
     
-    P2 -->|Save Complaint| DB[(MongoDB: Complaints)]
-    P2 -->|User ID| DB2[(MongoDB: Users)]
+    P2 -->|Save Complaint| DB[(Primary MongoDB: Complaints/Users)]
+    P2 -->|Log Audit Data| NDMC[(NDMC Audit MongoDB)]
     
-    DB -->|Fetch Open Issues| P3[Process 3: Worker Auto-Assignment]
-    P3 -->|Update Worker ID| DB
+    DB -->|Fetch Open Issues & Geo| P3[Process 3: Worker Auto-Assignment]
+    P3 -->|Update Assigned Worker ID| DB
+    P3 -->|Emit Notification| Notifications[(Notifications Collection)]
     
     Worker((Worker)) -->|Fetch Tasks| P4[Process 4: Task Resolution]
     DB -->|Task List| P4
-    P4 -->|Status Updates| DB
+    P4 -->|Add Dept Notes / Status Updates| DB
+    
+    DeptHead((Dept Head)) -->|Approve Escalations / Reassign| P5[Process 5: Queue Management]
+    P5 -->|Update Status/Worker| DB
 ```
 ![DFD Level 1](./images/architecture.png)
 
