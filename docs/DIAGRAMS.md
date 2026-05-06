@@ -284,27 +284,31 @@ flowchart TD
 #### Level 1 DFD
 
 ```mermaid
-flowchart TD
-    Citizen((Citizen)) -->|Image + metadata| P1[Process 1: Issue Analysis]
-    P1 -->|Image Hash + Text| Ollama((Ollama AI Models))
-    Ollama -->|Category, Confidence, Draft| P1
+---
+config:
+  layout: elk
+---
+flowchart TB
+    Citizen(("Citizen")) -->|1. Image + metadata| P1["Process 1: Issue Analysis"]
+    P1 -->|2. Image Hash + Text| Ollama(("Ollama AI Models"))
+    Ollama -->|3. Category, Confidence, Draft| P1
     
-    P1 -->|Review Payload| Citizen
-    Citizen -->|Confirmed & Edited Details| P2[Process 2: Complaint Submission]
+    P1 -->|4. Review Payload| Citizen
+    Citizen -->|5. Confirmed & Edited Details| P2["Process 2: Complaint Submission"]
     
-    P2 -->|Save Complaint| DB[(Primary MongoDB: Complaints/Users)]
-    P2 -->|Log Audit Data| NDMC[(NDMC Audit MongoDB)]
+    P2 -->|6. Save Complaint| DB[("Primary MongoDB: Complaints/Users")]
+    P2 -->|7. Log Audit Data| NDMC[("NDMC Audit MongoDB")]
     
-    DB -->|Fetch Open Issues & Geo| P3[Process 3: Worker Auto-Assignment]
-    P3 -->|Update Assigned Worker ID| DB
-    P3 -->|Emit Notification| Notifications[(Notifications Collection)]
+    DB -->|8. Fetch Open Issues & Geo| P3["Process 3: Worker Auto-Assignment"]
+    P3 -->|9. Update Assigned Worker ID| DB
+    P3 -->|10. Emit Notification| Notifications[("Notifications Collection")]
     
-    Worker((Worker)) -->|Fetch Tasks| P4[Process 4: Task Resolution]
-    DB -->|Task List| P4
-    P4 -->|Add Dept Notes / Status Updates| DB
+    Worker(("Worker")) -->|11. Fetch Tasks| P4["Process 4: Task Resolution"]
+    DB -->|12. Task List| P4
+    P4 -->|13. Add Dept Notes / Status Updates| DB
     
-    DeptHead((Dept Head)) -->|Approve Escalations / Reassign| P5[Process 5: Queue Management]
-    P5 -->|Update Status/Worker| DB
+    DeptHead(("Dept Head")) -->|14. Approve Escalations / Reassign| P5["Process 5: Queue Management"]
+    P5 -->|15. Update Status/Worker| DB
 ```
 ![DFD Level 1](./images/architecture.png)
 
