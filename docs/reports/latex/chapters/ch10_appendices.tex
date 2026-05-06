@@ -40,51 +40,43 @@ This appendix summarizes the primary endpoint inventory implemented in the curre
 
 \section{Appendix C: Department Taxonomy and Authority Routing}
 
-\begin{xltabular}{\textwidth}{|>{\RaggedRight\arraybackslash}p{0.32\textwidth}|>{\RaggedRight\arraybackslash}p{0.26\textwidth}|>{\RaggedRight\arraybackslash}X|}
-\caption{Department to Authority Mapping Snapshot}\\
-\hline
-\textbf{Department Label} & \textbf{Authority ID} & \textbf{Escalation Parent} \\ \hline
-\endhead
-Health Department & MUNI\_SANITATION & STATE\_CMO \\ \hline
-Civil Department & MUNI\_PWD & STATE\_CMO \\ \hline
-Horticulture & MUNI\_HORTICULTURE & STATE\_CMO \\ \hline
-Electrical Department & UTIL\_DISCOM & STATE\_CMO \\ \hline
-IT Department & STATE\_CMO & CENTRAL\_DARPG \\ \hline
-Commercial & STATE\_CMO & CENTRAL\_DARPG \\ \hline
-Enforcement & POLICE\_TRAFFIC & STATE\_CMO \\ \hline
-Fire Department & POLICE\_LOCAL & STATE\_CMO \\ \hline
-Uncategorized & Rule/keyword fallback & Nullable \\ \hline
-\end{xltabular}
+\begin{description}
+\item[Health Department:] MUNI\_SANITATION $\rightarrow$ Escalates to STATE\_CMO
+\item[Civil Department:] MUNI\_PWD $\rightarrow$ Escalates to STATE\_CMO
+\item[Horticulture:] MUNI\_HORTICULTURE $\rightarrow$ Escalates to STATE\_CMO
+\item[Electrical Department:] UTIL\_DISCOM $\rightarrow$ Escalates to STATE\_CMO
+\item[IT Department:] STATE\_CMO $\rightarrow$ Escalates to CENTRAL\_DARPG
+\item[Commercial:] STATE\_CMO $\rightarrow$ Escalates to CENTRAL\_DARPG
+\item[Enforcement:] POLICE\_TRAFFIC $\rightarrow$ Escalates to STATE\_CMO
+\item[Fire Department:] POLICE\_LOCAL $\rightarrow$ Escalates to STATE\_CMO
+\item[Uncategorized:] Rule/keyword fallback $\rightarrow$ Escalates to Nullable
+\end{description}
 
 \section{Appendix D: Requirement-to-Test Traceability Matrix}
 
 \small
-\begin{xltabular}{\textwidth}{|>{\RaggedRight\arraybackslash}p{0.11\textwidth}|>{\RaggedRight\arraybackslash}p{0.20\textwidth}|>{\RaggedRight\arraybackslash}X|>{\RaggedRight\arraybackslash}p{0.12\textwidth}|}
-\caption{Requirement-to-Test Traceability Matrix}\\
-\hline
-\textbf{Req ID} & \textbf{Requirement Theme} & \textbf{Validation Evidence} & \textbf{Status} \\ \hline
-\endhead
-FR-01 & User registration flow & Register route tests and manual registration UI checks & Verified \\ \hline
-FR-02 & Login and cookie-session issuance & Auth permission tests and integration smoke login path & Verified \\ \hline
-FR-03 & Profile editing & API endpoint behavior and profile page walkthrough & Verified \\ \hline
-FR-04 & Password recovery/reset & Forgot/reset endpoint implementation and UI path checks & Verified \\ \hline
-FR-05 & Upload validation & Resilience/security tests for header mismatch and size limits & Verified \\ \hline
-FR-06 & AI-assisted analysis & Analyze endpoint response contract checks and manual scenario runs & Verified \\ \hline
-FR-07 & Draft regeneration queue & Generation polling route and regeneration request flow & Verified \\ \hline
-FR-08 & Complaint creation & End-to-end citizen flow and complaint list visibility checks & Verified \\ \hline
-FR-09 & Role-filtered listing & Role-based list query behavior and dashboard checks & Verified \\ \hline
-FR-10 & Complaint detail & Complaint detail retrieval and timeline rendering checks & Verified \\ \hline
-FR-11 & Status update workflow & Notification chain tests and status history assertions & Verified \\ \hline
-FR-12 & Department transfer & Admin/dept-head transfer operation checks & Verified \\ \hline
-FR-13 & Escalation support & Escalation endpoint and timeline update behavior checks & Verified \\ \hline
-FR-14 & Worker assignment & Assignment service behavior and admin assignment controls & Verified \\ \hline
-FR-15 & Worker task completion & Worker done workflow and slot-free behavior checks & Verified \\ \hline
-FR-16 & Notification center & Unread-count and mark-read chain tests & Verified \\ \hline
-FR-17 & Triage queue governance & Triage review UI and decision endpoint flow checks & Verified \\ \hline
-FR-18 & Analytics and heatmap & Admin analytics and map rendering walkthrough & Verified \\ \hline
-FR-19 & CSV export & Export endpoint execution and output schema checks & Verified \\ \hline
-FR-20 & Public board & Public feed route and UI accessibility checks & Verified \\ \hline
-FR-21 & Health probes & Live, ready, model, and GPU endpoint smoke checks & Verified \\ \hline
-FR-22 & API version alias & /api/v1 integration checks in matrix tests & Verified \\ \hline
-\end{xltabular}
+\begin{description}
+\item[FR-01 (User registration flow):] Register route tests and manual registration UI checks (Verified).
+\item[FR-02 (Login and cookie-session issuance):] Auth permission tests and integration smoke login path (Verified).
+\item[FR-03 (Profile editing):] API endpoint behavior and profile page walkthrough (Verified).
+\item[FR-04 (Password recovery/reset):] Forgot/reset endpoint implementation and UI path checks (Verified).
+\item[FR-05 (Upload validation):] Resilience/security tests for header mismatch and size limits (Verified).
+\item[FR-06 (AI-assisted analysis):] Analyze endpoint response contract checks and manual scenario runs (Verified).
+\item[FR-07 (Draft regeneration queue):] Generation polling route and regeneration request flow (Verified).
+\item[FR-08 (Complaint creation):] End-to-end citizen flow and complaint list visibility checks (Verified).
+\item[FR-09 (Role-filtered listing):] Role-based list query behavior and dashboard checks (Verified).
+\item[FR-10 (Complaint detail):] Complaint detail retrieval and timeline rendering checks (Verified).
+\item[FR-11 (Status update workflow):] Notification chain tests and status history assertions (Verified).
+\item[FR-12 (Department transfer):] Admin/dept-head transfer operation checks (Verified).
+\item[FR-13 (Escalation support):] Escalation endpoint and timeline update behavior checks (Verified).
+\item[FR-14 (Worker assignment):] Assignment service behavior and admin assignment controls (Verified).
+\item[FR-15 (Worker task completion):] Worker done workflow and slot-free behavior checks (Verified).
+\item[FR-16 (Notification center):] Unread-count and mark-read chain tests (Verified).
+\item[FR-17 (Triage queue governance):] Triage review UI and decision endpoint flow checks (Verified).
+\item[FR-18 (Analytics and heatmap):] Admin analytics and map rendering walkthrough (Verified).
+\item[FR-19 (CSV export):] Export endpoint execution and output schema checks (Verified).
+\item[FR-20 (Public board):] Public feed route and UI accessibility checks (Verified).
+\item[FR-21 (Health probes):] Live, ready, model, and GPU endpoint smoke checks (Verified).
+\item[FR-22 (API version alias):] /api/v1 integration checks in matrix tests (Verified).
+\end{description}
 \normalsize

@@ -35,29 +35,22 @@ This ensures that local verification and deployment handover use the same operat
 
 \section{Tools \& Technologies Used}
 
-\begin{table}[H]
-\centering
-\small
-\caption{Implementation Toolchain and Use Cases}
-\begin{tabularx}{\textwidth}{|>{\RaggedRight\arraybackslash}p{0.18\textwidth}|>{\RaggedRight\arraybackslash}p{0.24\textwidth}|>{\RaggedRight\arraybackslash}X|}
-\hline
-\textbf{Category} & \textbf{Tool/Library} & \textbf{Implementation Use} \\ \hline
-Backend Framework & FastAPI & Route definitions, dependency injection, validation, and middleware pipeline. \\ \hline
-Data Validation & Pydantic [15] & Request and response schema validation with structured models. \\ \hline
-Auth and Security & python-jose, passlib[bcrypt] & Cookie-session auth, JWT compatibility support, and password hashing. \\ \hline
-HTTP Testing & httpx & Async API smoke tests and integration checks. \\ \hline
-Database Driver & Motor/PyMongo stack & MongoDB async operations and collection access. \\ \hline
-AI Runtime & Ollama & Local vision and reasoning model invocation. \\ \hline
-Image Handling & Pillow & Upload payload validation and EXIF processing. \\ \hline
-Frontend Framework & React & Role-aware SPA component and page architecture. \\ \hline
-Build Tool & Vite & Fast frontend development and optimized production build. \\ \hline
-Client HTTP & Axios & Frontend API communication layer. \\ \hline
-Frontend Routing & react-router-dom & Protected routes and role-based navigation. \\ \hline
-Containerization & Docker + Compose & Reproducible orchestration of backend, frontend, and database services. \\ \hline
-QA Automation & pytest, locust & Unit, integration, security, resilience, and load-test execution. \\ \hline
-Documentation & Markdown + LaTeX & Runbooks, architecture docs, and the final academic report. \\ \hline
-\end{tabularx}
-\end{table}
+\begin{description}
+\item[Backend Framework (FastAPI):] Route definitions, dependency injection, validation, and middleware pipeline.
+\item[Data Validation (Pydantic {[}15{]}):] Request and response schema validation with structured models.
+\item[Auth and Security (python-jose, passlib{[}bcrypt{]}):] Cookie-session auth, JWT compatibility support, and password hashing.
+\item[HTTP Testing (httpx):] Async API smoke tests and integration checks.
+\item[Database Driver (Motor/PyMongo stack):] MongoDB async operations and collection access.
+\item[AI Runtime (Ollama):] Local vision and reasoning model invocation.
+\item[Image Handling (Pillow):] Upload payload validation and EXIF processing.
+\item[Frontend Framework (React):] Role-aware SPA component and page architecture.
+\item[Build Tool (Vite):] Fast frontend development and optimized production build.
+\item[Client HTTP (Axios):] Frontend API communication layer.
+\item[Frontend Routing (react-router-dom):] Protected routes and role-based navigation.
+\item[Containerization (Docker + Compose):] Reproducible orchestration of backend, frontend, and database services.
+\item[QA Automation (pytest, locust):] Unit, integration, security, resilience, and load-test execution.
+\item[Documentation (Markdown + LaTeX):] Runbooks, architecture docs, and the final academic report.
+\end{description}
 
 \section{Key Implementation Patterns}
 
@@ -145,23 +138,17 @@ Deliverables included the production compose profile, deployment guides, and API
 
 \section{Implementation Sequence and Dependencies}
 
-\begin{table}[H]
-\centering
-\caption{Implementation Sequence with Dependency Notes}
-\begin{tabularx}{\textwidth}{|>{\RaggedRight\arraybackslash}X|>{\RaggedRight\arraybackslash}X|>{\RaggedRight\arraybackslash}X|}
-\hline
-\textbf{Step} & \textbf{Implementation Activity} & \textbf{Dependency Consideration} \\ \hline
-1 & Establish backend skeleton and DB connectivity & Required before auth and complaint persistence \\ \hline
-2 & Build auth/session primitives & Required before protected API and role-specific frontend routes \\ \hline
-3 & Implement analyze pipeline and storage handling & Required before citizen intake flow can be tested end-to-end \\ \hline
-4 & Build frontend analyze/result workflow & Depends on stable analyze payload and auth behavior \\ \hline
-5 & Add assignment and lifecycle controls & Depends on complaint schema maturity and worker metadata \\ \hline
-6 & Add triage/api/v1/analytics and governance endpoints & Depends on reliable complaint state and metadata richness \\ \hline
-7 & Add security and reliability hardening & Should follow core flow stability to avoid hidden regressions \\ \hline
-8 & Run tests and UAT cycles & Depends on complete feature slices and stable environments \\ \hline
-9 & Prepare production profile and handover docs & Depends on validated security/performance baseline \\ \hline
-\end{tabularx}
-\end{table}
+\begin{enumerate}
+\item \textbf{Establish backend skeleton and DB connectivity}: Required before auth and complaint persistence.
+\item \textbf{Build auth/session primitives}: Required before protected API and role-specific frontend routes.
+\item \textbf{Implement analyze pipeline and storage handling}: Required before citizen intake flow can be tested end-to-end.
+\item \textbf{Build frontend analyze/result workflow}: Depends on stable analyze payload and auth behavior.
+\item \textbf{Add assignment and lifecycle controls}: Depends on complaint schema maturity and worker metadata.
+\item \textbf{Add triage/api/v1/analytics and governance endpoints}: Depends on reliable complaint state and metadata richness.
+\item \textbf{Add security and reliability hardening}: Should follow core flow stability to avoid hidden regressions.
+\item \textbf{Run tests and UAT cycles}: Depends on complete feature slices and stable environments.
+\item \textbf{Prepare production profile and handover docs}: Depends on validated security/performance baseline.
+\end{enumerate}
 
 \section{Configuration and Secret Planning}
 
@@ -201,19 +188,15 @@ This section captures implementation-level observations that are useful for main
 Each router group below shows how its implementation responsibilities were planned and what specific engineering decisions arose during delivery:
 
 
-\begin{xltabular}{\textwidth}{|>{\RaggedRight\arraybackslash}p{0.22\textwidth}|>{\RaggedRight\arraybackslash}p{0.30\textwidth}|>{\RaggedRight\arraybackslash}X|}
-\caption{Router-Level Implementation Planning Notes}\\
-\hline
-\textbf{Router Group} & \textbf{Core Responsibilities} & \textbf{Planning/Implementation Considerations} \\ \hline
-\endhead
-users & registration, login, profile update, password reset & Required generic forgot-password response to prevent account enumeration; reset tokens persisted as hashes with expiry lifecycle \\ \hline
-complaints & analyze, create, list, detail, update, transfer, escalate & Needed consistent status-history append behavior and role-aware update guards; analyze route required graceful 503 degrade path \\ \hline
-workers & assignment views, approval/rejection, service-area updates & Needed separation between worker self-actions and admin governance actions; assignment diagnostics endpoint added for ops clarity \\ \hline
-notifications & list, unread count, mark single/all read & Badge consistency required deterministic unread counter behavior and ownership checks \\ \hline
-triage & review queue and decision endpoint & Admin-only corrective path for low-confidence AI cases; decision audit notes required \\ \hline
-analytics/api/v1/public & dashboards, heatmap, anonymized public listing & Query aggregation planning required pagination defaults and safe exposure model for public feed \\ \hline
-health & live/ready/models/gpu probes & Needed operationally meaningful readiness semantics and low-overhead liveness behavior \\ \hline
-\end{xltabular}
+\begin{description}
+\item[users (registration, login, profile update, password reset):] Required generic forgot-password response to prevent account enumeration; reset tokens persisted as hashes with expiry lifecycle.
+\item[complaints (analyze, create, list, detail, update, transfer, escalate):] Needed consistent status-history append behavior and role-aware update guards; analyze route required graceful 503 degrade path.
+\item[workers (assignment views, approval/rejection, service-area updates):] Needed separation between worker self-actions and admin governance actions; assignment diagnostics endpoint added for ops clarity.
+\item[notifications (list, unread count, mark single/all read):] Badge consistency required deterministic unread counter behavior and ownership checks.
+\item[triage (review queue and decision endpoint):] Admin-only corrective path for low-confidence AI cases; decision audit notes required.
+\item[analytics/public (dashboards, heatmap, anonymized public listing):] Query aggregation planning required pagination defaults and safe exposure model for public feed.
+\item[health (live/ready/models/gpu probes):] Needed operationally meaningful readiness semantics and low-overhead liveness behavior.
+\end{description}
 
 \subsection{Service-Layer Planning Notes}
 
@@ -235,21 +218,15 @@ The deployment runbook formalizes a stepwise rollout process so that releases re
 The matrix below details the specific planning components necessary to operationalize this segment of the architecture.
 
 
-\begin{table}[H]
-\centering
-\caption{Deployment Rollout Stages}
-\begin{tabularx}{\textwidth}{|>{\RaggedRight\arraybackslash}X|>{\RaggedRight\arraybackslash}X|>{\RaggedRight\arraybackslash}X|}
-\hline
-\textbf{Stage} & \textbf{Objective} & \textbf{Execution Checklist} \\ \hline
-R1 & Environment readiness & Verify host runtime versions, model availability, and environment variables \\ \hline
-R2 & Service bootstrap & Start MongoDB and backend; validate health/live and health/ready probes \\ \hline
-R3 & Frontend linkage & Start frontend/proxy path and verify API base routing behavior \\ \hline
-R4 & Functional smoke & Execute login, analyze, complaint creation, and notification badge checks \\ \hline
-R5 & Governance smoke & Validate admin triage, worker assignment controls, and export flow \\ \hline
-R6 & Hardening validation & Execute security/resilience test scripts and capture baseline metrics \\ \hline
-R7 & Handover sign-off & Archive logs, backups, and runbook evidence for deployment package \\ \hline
-\end{tabularx}
-\end{table}
+\begin{description}
+\item[R1: Environment readiness:] Verify host runtime versions, model availability, and environment variables.
+\item[R2: Service bootstrap:] Start MongoDB and backend; validate health/live and health/ready probes.
+\item[R3: Frontend linkage:] Start frontend/proxy path and verify API base routing behavior.
+\item[R4: Functional smoke:] Execute login, analyze, complaint creation, and notification badge checks.
+\item[R5: Governance smoke:] Validate admin triage, worker assignment controls, and export flow.
+\item[R6: Hardening validation:] Execute security/resilience test scripts and capture baseline metrics.
+\item[R7: Handover sign-off:] Archive logs, backups, and runbook evidence for deployment package.
+\end{description}
 
 \subsection{Rollback Planning}
 
@@ -264,20 +241,16 @@ Rollback planning was included to avoid high-impact downtime during deployment c
 
 \section{Operational Monitoring Plan}
 
-\begin{xltabular}{\textwidth}{|>{\RaggedRight\arraybackslash}p{0.22\textwidth}|>{\RaggedRight\arraybackslash}p{0.25\textwidth}|>{\RaggedRight\arraybackslash}X|}
-\caption{Operational Monitoring Matrix}\\
-\hline
-\textbf{Signal} & \textbf{Collection Source} & \textbf{Operational Interpretation} \\ \hline
-\endhead
-API process time & Response header \texttt{X-Process-Time} & Detect slow endpoints and regressions after deployments \\ \hline
-Readiness status & /api/v1/health/ready endpoint & Indicates dependency-level degradation, mainly database health \\ \hline
-Model availability & /api/v1/health/models endpoint & Confirms runtime model inventory and inference readiness \\ \hline
-GPU/model state & /api/v1/health/gpu endpoint & Indicates active model and VRAM-related load behavior \\ \hline
-Notification backlog & unread-count behavior and list volume & Detects delayed event propagation or read-state anomalies \\ \hline
-Assignment queue growth & open/unassigned complaints and worker status & Helps identify staffing bottlenecks and area mismatch \\ \hline
-Triage queue size & low-confidence complaint count & Indicates classifier uncertainty trend and review load \\ \hline
-Error logs & rotating backend logs & Captures fault signatures for rapid remediation \\ \hline
-\end{xltabular}
+\begin{description}
+\item[API process time (Header \texttt{X-Process-Time}):] Detect slow endpoints and regressions after deployments.
+\item[Readiness status (\texttt{/api/v1/health/ready}):] Indicates dependency-level degradation, mainly database health.
+\item[Model availability (\texttt{/api/v1/health/models}):] Confirms runtime model inventory and inference readiness.
+\item[GPU/model state (\texttt{/api/v1/health/gpu}):] Indicates active model and VRAM-related load behavior.
+\item[Notification backlog (Unread-count behavior):] Detects delayed event propagation or read-state anomalies.
+\item[Assignment queue growth (Open complaints vs worker status):] Helps identify staffing bottlenecks and area mismatch.
+\item[Triage queue size (Low-confidence count):] Indicates classifier uncertainty trend and review load.
+\item[Error logs (Rotating backend logs):] Captures fault signatures for rapid remediation.
+\end{description}
 
 \section{Change Management and Release Strategy}
 
