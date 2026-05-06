@@ -133,18 +133,25 @@ This approach preserves operational read performance while retaining clear owner
 Key indexing strategies are summarized below:
 
 
-\begin{description}
-\item[users (unique(username), unique(email)):] Fast auth lookups and uniqueness enforcement.
-\item[complaints (user\_id, created\_at):] Efficient citizen dashboard history retrieval.
-\item[complaints (status, created\_at):] Queue and status-oriented admin filtering.
-\item[complaints (department, created\_at):] Department-level operational listing.
-\item[complaints (authority\_id):] Escalation and authority review queries.
-\item[notifications (user\_id, created\_at):] Ordered notification feed retrieval.
-\item[notifications (user\_id, is\_read):] Unread badge counter queries.
-\item[password\_resets (unique(token\_hash)):] Token lookup and collision prevention.
-\item[password\_resets (user\_id, used):] Active token invalidation management.
-\item[password\_resets (TTL(expires\_at)):] Automatic expired-token cleanup.
-\end{description}
+\begin{table}[H]
+\centering
+\caption{Indexing Strategy by Collection}
+\label{tab:indexing-strategy}
+\begin{tabularx}{\textwidth}{|>{\RaggedRight\arraybackslash}X|>{\RaggedRight\arraybackslash}X|>{\RaggedRight\arraybackslash}X|}
+\hline
+\textbf{Collection} & \textbf{Index} & \textbf{Purpose} \\ \hline
+users & unique(username), unique(email) & Fast auth lookups and uniqueness enforcement \\ \hline
+complaints & (user\_id, created\_at) & Efficient citizen dashboard history retrieval \\ \hline
+complaints & (status, created\_at) & Queue and status-oriented admin filtering \\ \hline
+complaints & (department, created\_at) & Department-level operational listing \\ \hline
+complaints & authority\_id & Escalation and authority review queries \\ \hline
+notifications & (user\_id, created\_at) & Ordered notification feed retrieval \\ \hline
+notifications & (user\_id, is\_read) & Unread badge counter queries \\ \hline
+password\_resets & unique(token\_hash) & Token lookup and collision prevention \\ \hline
+password\_resets & (user\_id, used) & Active token invalidation management \\ \hline
+password\_resets & TTL(expires\_at) & Automatic expired-token cleanup \\ \hline
+\end{tabularx}
+\end{table}
 
 \section{GUI Design}
 
@@ -166,17 +173,24 @@ The UI follows practical governance portal principles:
 Key interface areas are summarized below:
 
 
-\begin{description}
-\item[Public Home:] Awareness, role entry points, and transparency access.
-\item[Authentication Screens:] Login, registration, forgot password, reset password.
-\item[Analyze and Result Views:] Upload, AI analysis display, map interaction, draft review.
-\item[Citizen Dashboard:] Complaint list, timeline, feedback, and progress visibility.
-\item[Worker Dashboard:] Assigned queue and completion updates.
-\item[Department Head Dashboard:] Department-level filtering, status updates, and notes.
-\item[Admin Dashboard:] Global queue, approvals, triage, bulk actions, analytics, exports.
-\item[Notification Panel:] Event feed and read-state management.
-\item[Profile Screen:] Personal information update controls.
-\end{description}
+\begin{table}[H]
+\centering
+\caption{GUI Areas and Purpose}
+\label{tab:gui-areas-purpose}
+\begin{tabularx}{\textwidth}{|>{\RaggedRight\arraybackslash}X|>{\RaggedRight\arraybackslash}X|}
+\hline
+\textbf{Interface Area} & \textbf{Purpose} \\ \hline
+Public Home & Awareness, role entry points, and transparency access \\ \hline
+Authentication Screens & Login, registration, forgot password, reset password \\ \hline
+Analyze and Result Views & Upload, AI analysis display, map interaction, draft review \\ \hline
+Citizen Dashboard & Complaint list, timeline, feedback, and progress visibility \\ \hline
+Worker Dashboard & Assigned queue and completion updates \\ \hline
+Department Head Dashboard & Department-level filtering, status updates, and notes \\ \hline
+Admin Dashboard & Global queue, approvals, triage, bulk actions, analytics, exports \\ \hline
+Notification Panel & Event feed and read-state management \\ \hline
+Profile Screen & Personal information update controls \\ \hline
+\end{tabularx}
+\end{table}
 
 \subsection{Wireframe Reference}
 
