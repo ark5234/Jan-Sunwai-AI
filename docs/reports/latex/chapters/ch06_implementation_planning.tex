@@ -35,22 +35,7 @@ This ensures that local verification and deployment handover use the same operat
 
 \section{Tools \& Technologies Used}
 
-\begin{description}
-\item[Backend Framework (FastAPI):] Route definitions, dependency injection, validation, and middleware pipeline.
-\item[Data Validation (Pydantic {[}15{]}):] Request and response schema validation with structured models.
-\item[Auth and Security (python-jose, passlib{[}bcrypt{]}):] Cookie-session auth, JWT compatibility support, and password hashing.
-\item[HTTP Testing (httpx):] Async API smoke tests and integration checks.
-\item[Database Driver (Motor/PyMongo stack):] MongoDB async operations and collection access.
-\item[AI Runtime (Ollama):] Local vision and reasoning model invocation.
-\item[Image Handling (Pillow):] Upload payload validation and EXIF processing.
-\item[Frontend Framework (React):] Role-aware SPA component and page architecture.
-\item[Build Tool (Vite):] Fast frontend development and optimized production build.
-\item[Client HTTP (Axios):] Frontend API communication layer.
-\item[Frontend Routing (react-router-dom):] Protected routes and role-based navigation.
-\item[Containerization (Docker + Compose):] Reproducible orchestration of backend, frontend, and database services.
-\item[QA Automation (pytest, locust):] Unit, integration, security, resilience, and load-test execution.
-\item[Documentation (Markdown + LaTeX):] Runbooks, architecture docs, and the final academic report.
-\end{description}
+The platform relies on a modern, decoupled stack. The backend leverages \textbf{FastAPI} and \textbf{Pydantic} for asynchronous routing and validation, supported by \textbf{Motor/PyMongo} for database operations, \textbf{Pillow} for image validation, and \textbf{passlib/python-jose} for security. The frontend is a \textbf{React} SPA built with \textbf{Vite}, utilizing \textbf{Axios} and \textbf{react-router-dom}. \textbf{Ollama} provides local AI runtime capabilities, while \textbf{Docker Compose} manages container orchestration. Testing is handled via \textbf{pytest} and \textbf{locust}.
 
 \section{Key Implementation Patterns}
 
@@ -70,71 +55,19 @@ Role-based page access is enforced client-side through a \texttt{ProtectedRoute}
 
 \section{Coding Standards Followed}
 
-\subsection{Backend Standards}
-
-The backend was implemented with the following structural conventions so that every route, schema, and service remained independently testable:
-
-
-\begin{itemize}
-\item Router-based modularization for domain isolation.
-\item Strict schema validation through typed request models.
-\item Clear HTTP semantics for validation, auth, and lifecycle errors.
-\item Service extraction for cross-cutting concerns (assignment, sanitization, storage, email).
-\item Structured logging and failure-safe response behavior.
-\end{itemize}
-
-\subsection{Frontend Standards}
-
-Frontend code separated concerns so that role-aware pages, shared components, and API communication remained independently updatable:
-
-
-\begin{itemize}
-\item Role-aware route guards and dashboard redirection.
-\item Separation of pages, reusable components, layouts, and context providers.
-\item Consistent API base usage through environment variables.
-\item Explicit loading/error states for user-facing long-running operations.
-\item Responsive design checks for desktop and mobile interaction baselines.
-\end{itemize}
-
-\subsection{Configuration Standards}
-
-Environment and configuration consistency was treated as a first-class engineering concern, governed by these conventions:
-
-
-\begin{itemize}
-\item Single canonical backend environment file for consistency.
-\item Explicit production defaults and overrides for sensitive settings.
-\item Avoidance of duplicate compose and env artifacts to reduce drift.
-\item Documented scripts for startup, tests, deployment simulation, and verification.
-\end{itemize}
+Strict coding standards were enforced across the stack to ensure independent testability and maintainability. The \textbf{Backend} relies on router-based domain isolation, strictly typed Pydantic request models, decoupled service extraction for cross-cutting concerns (e.g., storage, email), and failure-safe structured logging. The \textbf{Frontend} emphasizes strict separation between role-aware route guards, reusable components, and context providers while enforcing explicit loading/error states for all asynchronous operations. Across the entire system, \textbf{Configuration} is centralized through a single canonical environment template to prevent deployment drift.
 
 \section{Implementation Work Packages}
 
-Implementation work was divided into clearly scoped packages so that each delivery stream could be validated independently and then integrated with controlled dependency checks. This packaging approach improved scheduling clarity, reduced merge risk, and made milestone tracking more objective for both technical and management review.
-
-\subsection{Work Package 1: Core Backend and Data Layer}
-
-Deliverables included app bootstrap, database connection lifecycle, auth primitives, user and complaint schemas, and initial complaint CRUD operations. This package established foundational APIs and validation behavior.
-
-\subsection{Work Package 2: AI Pipeline Integration}
-
-Deliverables included classifier orchestration, model fallback strategy, rule-engine scoring, queue-based generation path, and timing metadata in analysis responses. This package transformed basic upload capability into intelligent intake flow.
-
-\subsection{Work Package 3: Frontend Role Flows}
-
-Deliverables included authentication screens, analyze/result pathway, role dashboards, notifications UI, and profile controls. Route guards and dashboard routing ensured role-appropriate user journeys.
-
-\subsection{Work Package 4: Operational Features}
-
-Deliverables included worker assignment logic, timeline/audit features, comments/notes, escalation, triage, analytics, and CSV exports. This package completed department-level and governance-level operational requirements.
-
-\subsection{Work Package 5: Security and Reliability Hardening}
-
-Deliverables included upload integrity checks, sanitization, security headers, CORS tightening, rate-limiting toggles, readiness/liveness checks, graceful AI degradation, and resilience-focused tests.
-
-\subsection{Work Package 6: Deployment and Handover Readiness}
-
-Deliverables included the production compose profile, deployment guides, and API references. The package also included backup scripts and verification procedures. This package enabled transition from a development artifact to a deployable product.
+Implementation was divided into six sequential delivery streams to isolate testing and mitigate integration risk:
+\begin{enumerate}
+    \item \textbf{Core Backend \& Data:} Bootstrapping database connections, auth primitives, and foundational CRUD operations.
+    \item \textbf{AI Pipeline:} Integrating model orchestration, rule-engine scoring, and the asynchronous inference queue.
+    \item \textbf{Frontend Flows:} Building authentication screens, role-based dashboards, and route guards.
+    \item \textbf{Operational Features:} Delivering assignment logic, triage queues, escalation rules, and analytics.
+    \item \textbf{Security Hardening:} Implementing input sanitization, upload integrity checks, rate-limiting, and resilience fallbacks.
+    \item \textbf{Deployment:} Finalizing Docker compose profiles, runbooks, and handover documentation.
+\end{enumerate}
 
 \section{Implementation Sequence and Dependencies}
 

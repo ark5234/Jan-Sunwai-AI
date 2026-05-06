@@ -61,8 +61,8 @@
 \renewcommand{\arraystretch}{1.3}
 \renewcommand{\tabularxcolumn}[1]{>{\RaggedRight\arraybackslash}p{#1}}
 
-\setlist[itemize,1]{label=\textbullet,leftmargin=2.0em,labelsep=0.6em,itemsep=0.5em,topsep=0.5em,parsep=0pt,partopsep=0pt}
-\setlist[enumerate,1]{label=\arabic*.,leftmargin=2.2em,labelsep=0.6em,itemsep=0.5em,topsep=0.5em,parsep=0pt,partopsep=0pt}
+\setlist[itemize,1]{label=\textbullet,leftmargin=2.0em,labelsep=0.6em,itemsep=0.2em,topsep=0.2em,parsep=0pt,partopsep=0pt}
+\setlist[enumerate,1]{label=\arabic*.,leftmargin=2.2em,labelsep=0.6em,itemsep=0.2em,topsep=0.2em,parsep=0pt,partopsep=0pt}
 
 % Caption Setup
 \captionsetup{font=small,labelfont=bf,labelsep=colon}
@@ -80,25 +80,25 @@
 \titleformat{\chapter}[block]
   {\bfseries\fontsize{16}{19.2}\selectfont\filcenter}
   {\chaptername\ \thechapter:\ }{0pt}{}
-\titlespacing*{\chapter}{0pt}{-20pt}{30pt}
+\titlespacing*{\chapter}{0pt}{-20pt}{15pt}
 
 % Heading Size: 14 Bold (Left-aligned)
 \titleformat{\section}
 {\bfseries\fontsize{14}{16.8}\selectfont\raggedright}
 {\thesection}{0.5em}{}
-\titlespacing*{\section}{0pt}{18pt}{10pt}
+\titlespacing*{\section}{0pt}{10pt}{5pt}
 
 % Sub-heading size: 12 Bold (Left aligned)
 \titleformat{\subsection}
 {\bfseries\fontsize{12}{14.4}\selectfont\raggedright}
 {\thesubsection}{0.5em}{}
-\titlespacing*{\subsection}{0pt}{14pt}{8pt}
+\titlespacing*{\subsection}{0pt}{8pt}{4pt}
 
 % Sub-sub heading size: 12 Bold (Left aligned)
 \titleformat{\subsubsection}
 {\bfseries\fontsize{12}{14.4}\selectfont\raggedright}
 {\thesubsubsection}{0.5em}{}
-\titlespacing*{\subsubsection}{0pt}{12pt}{6pt}
+\titlespacing*{\subsubsection}{0pt}{6pt}{3pt}
 
 % ===== PAGE NUMBER =====
 \pagestyle{fancy}

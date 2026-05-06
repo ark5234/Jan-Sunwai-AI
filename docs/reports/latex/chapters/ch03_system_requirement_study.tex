@@ -29,53 +29,45 @@ The system serves four distinct operational personas. \textbf{Citizens} report i
 
 \section{Functional Requirements}
 
-\begin{xltabular}{\textwidth}{|>{\RaggedRight\arraybackslash}p{0.12\textwidth}|>{\RaggedRight\arraybackslash}p{0.30\textwidth}|>{\RaggedRight\arraybackslash}X|}
-\caption{Functional Requirement Specification}\\
-\hline
-\textbf{FR ID} & \textbf{Requirement Name} & \textbf{Requirement Description} \\ \hline
-\endhead
-FR-01 & User Registration & System shall allow self-registration for citizen and worker roles with validation and duplicate checks. \\ \hline
-FR-02 & User Authentication & System shall establish secure cookie-session authentication on successful login and protect authorized routes, with JWT compatibility for API clients. \\ \hline
-FR-03 & Profile Management & Authenticated users shall update selected profile fields such as full name and phone number. \\ \hline
-FR-04 & Password Recovery & System shall support forgot-password and reset-password flows with time-bound tokens. \\ \hline
-FR-05 & Image Upload Validation & Analyze endpoint shall accept valid JPG/PNG/WEBP images and reject unsupported or malformed payloads. \\ \hline
-FR-06 & AI-Assisted Analysis & System shall analyze uploaded image and return category, confidence, location metadata, and draft status. \\ \hline
-FR-07 & Draft Generation & System shall produce a complaint draft synchronously or via queued generation, with polling support. \\ \hline
-FR-08 & Complaint Creation & System shall create a complaint record from reviewed analysis payload and user-provided description edits. \\ \hline
-FR-09 & Complaint Listing & System shall provide role-filtered complaint lists with pagination and optional status filters. \\ \hline
-FR-10 & Complaint Detail View & System shall provide complete complaint detail including status history and operational metadata. \\ \hline
-FR-11 & Status Update Workflow & Department head/admin shall update complaint status with note and trigger citizen notification. \\ \hline
-FR-12 & Department Transfer & Department head/admin shall transfer complaint ownership across departments when misrouted. \\ \hline
-FR-13 & Escalation & Department head/admin shall escalate complaints to parent authorities when required. \\ \hline
-FR-14 & Worker Assignment & System shall auto-assign eligible workers and support manual override by admin. \\ \hline
-FR-15 & Worker Operations & Worker shall manage availability and mark assigned complaints as done. \\ \hline
-FR-16 & Notification Center & System shall provide list, unread count, single-read, and mark-all-read operations. \\ \hline
-FR-17 & Triage Queue & Admin shall review low-confidence complaints and approve/reject/correct labels. \\ \hline
-FR-18 & Analytics & Admin/dept-head shall access overview and geospatial heatmap summaries. \\ \hline
-FR-19 & CSV Export & Admin shall export complaint data to CSV for external reporting. \\ \hline
-FR-20 & Public Transparency Feed & System shall expose anonymized complaint records without authentication. \\ \hline
-FR-21 & Health Monitoring & System shall provide live, ready, model, and GPU health endpoints. \\ \hline
-FR-22 & API Version Alias & System shall expose major endpoints under /api/v1 for integration stability. \\ \hline
-\end{xltabular}
+\begin{description}
+\item[FR-01 (User Registration):] System shall allow self-registration for citizen and worker roles with validation and duplicate checks.
+\item[FR-02 (User Authentication):] System shall establish secure cookie-session authentication on successful login and protect authorized routes, with JWT compatibility for API clients.
+\item[FR-03 (Profile Management):] Authenticated users shall update selected profile fields such as full name and phone number.
+\item[FR-04 (Password Recovery):] System shall support forgot-password and reset-password flows with time-bound tokens.
+\item[FR-05 (Image Upload Validation):] Analyze endpoint shall accept valid JPG/PNG/WEBP images and reject unsupported or malformed payloads.
+\item[FR-06 (AI-Assisted Analysis):] System shall analyze uploaded image and return category, confidence, location metadata, and draft status.
+\item[FR-07 (Draft Generation):] System shall produce a complaint draft synchronously or via queued generation, with polling support.
+\item[FR-08 (Complaint Creation):] System shall create a complaint record from reviewed analysis payload and user-provided description edits.
+\item[FR-09 (Complaint Listing):] System shall provide role-filtered complaint lists with pagination and optional status filters.
+\item[FR-10 (Complaint Detail View):] System shall provide complete complaint detail including status history and operational metadata.
+\item[FR-11 (Status Update Workflow):] Department head/admin shall update complaint status with note and trigger citizen notification.
+\item[FR-12 (Department Transfer):] Department head/admin shall transfer complaint ownership across departments when misrouted.
+\item[FR-13 (Escalation):] Department head/admin shall escalate complaints to parent authorities when required.
+\item[FR-14 (Worker Assignment):] System shall auto-assign eligible workers and support manual override by admin.
+\item[FR-15 (Worker Operations):] Worker shall manage availability and mark assigned complaints as done.
+\item[FR-16 (Notification Center):] System shall provide list, unread count, single-read, and mark-all-read operations.
+\item[FR-17 (Triage Queue):] Admin shall review low-confidence complaints and approve/reject/correct labels.
+\item[FR-18 (Analytics):] Admin/dept-head shall access overview and geospatial heatmap summaries.
+\item[FR-19 (CSV Export):] Admin shall export complaint data to CSV for external reporting.
+\item[FR-20 (Public Transparency Feed):] System shall expose anonymized complaint records without authentication.
+\item[FR-21 (Health Monitoring):] System shall provide live, ready, model, and GPU health endpoints.
+\item[FR-22 (API Version Alias):] System shall expose major endpoints under /api/v1 for integration stability.
+\end{description}
 
 \section{Non-Functional Requirements}
 
-\begin{xltabular}{\textwidth}{|>{\RaggedRight\arraybackslash}p{0.12\textwidth}|>{\RaggedRight\arraybackslash}p{0.30\textwidth}|>{\RaggedRight\arraybackslash}X|}
-\caption{Non-Functional Requirement Specification}\\
-\hline
-\textbf{NFR ID} & \textbf{Quality Attribute} & \textbf{Requirement Description} \\ \hline
-\endhead
-NFR-01 & Security & Cookie-session auth (with JWT compatibility), RBAC, sanitization, secure headers, and account-safe reset flow shall be enforced. \\ \hline
-NFR-02 & Reliability & API shall degrade gracefully under model or DB faults with explicit status semantics. \\ \hline
-NFR-03 & Performance & Public and health endpoints shall respond consistently under mixed read-heavy load. \\ \hline
-NFR-04 & Usability & Role-specific UI shall reduce cognitive load and support responsive layouts for desktop/mobile usage. \\ \hline
-NFR-05 & Maintainability & Modular routers/services with documented runbooks shall support iterative enhancement. \\ \hline
-NFR-06 & Observability & Process-time headers, rotating logs, and health routes shall support debugging and operations. \\ \hline
-NFR-07 & Scalability Readiness & Queue-based generation and container deployment shall support controlled scaling. \\ \hline
-NFR-08 & Portability & Project setup shall support Windows and Linux via scripts and Docker-based workflow. \\ \hline
-NFR-09 & Compliance Readiness & Local-first inference and sanitized logs shall support stricter governance deployments. \\ \hline
-NFR-10 & Data Integrity & Validation schemas and controlled update flows shall minimize malformed or inconsistent records. \\ \hline
-\end{xltabular}
+\begin{description}
+\item[NFR-01 (Security):] Cookie-session auth (with JWT compatibility), RBAC, sanitization, secure headers, and account-safe reset flow shall be enforced.
+\item[NFR-02 (Reliability):] API shall degrade gracefully under model or DB faults with explicit status semantics.
+\item[NFR-03 (Performance):] Public and health endpoints shall respond consistently under mixed read-heavy load.
+\item[NFR-04 (Usability):] Role-specific UI shall reduce cognitive load and support responsive layouts for desktop/mobile usage.
+\item[NFR-05 (Maintainability):] Modular routers/services with documented runbooks shall support iterative enhancement.
+\item[NFR-06 (Observability):] Process-time headers, rotating logs, and health routes shall support debugging and operations.
+\item[NFR-07 (Scalability Readiness):] Queue-based generation and container deployment shall support controlled scaling.
+\item[NFR-08 (Portability):] Project setup shall support Windows and Linux via scripts and Docker-based workflow.
+\item[NFR-09 (Compliance Readiness):] Local-first inference and sanitized logs shall support stricter governance deployments.
+\item[NFR-10 (Data Integrity):] Validation schemas and controlled update flows shall minimize malformed or inconsistent records.
+\end{description}
 
 \section{Hardware and Software Requirements}
 
@@ -109,77 +101,31 @@ The baseline parameters established below define the minimum viable constraints 
 
 Constraints in this project are not only technical limits but also governance and usability boundaries that directly influence system behavior. The platform must operate under security, role-separation, and infrastructure limitations common in civic environments, while still maintaining user clarity for citizens and workflow efficiency for officials. The following constraint groups define these implementation boundaries and informed several architecture and UI decisions.
 
-\subsection{UI Constraints}
+\subsection{System Constraints and Security}
 
-UI constraints define the rendering, state-management, and responsiveness requirements that guard against poor citizen experience in adverse conditions:
-
-
-\begin{itemize}
-\item Role-specific pages must enforce access boundaries and clear redirection behavior.
-\item Analyze/result screens must preserve draft continuity during refresh and error conditions.
-\item Dashboard cards and maps must remain usable at mobile widths (e.g., 375 px baseline tests).
-\end{itemize}
-
-\subsection{Communication Interface}
-
-The platform communicates exclusively over authenticated REST endpoints; the following interface rules govern how clients and services exchange data:
-
-
-\begin{itemize}
-\item REST over HTTP(S) is the canonical communication model.
-\item Protected routes require authenticated cookie session or compatibility bearer token.
-\item Production frontend proxy must route API traffic to backend service with /api/v1 compatibility.
-\end{itemize}
-
-\subsection{Hardware Interface}
-
-Hardware interface constraints bound the AI runtime's operational envelope and determine how the system must gracefully degrade under resource pressure [17]:
-
-
-\begin{itemize}
-\item AI response times depend on model runtime health and available VRAM.
-\item GPU contention and model load/unload latency can affect throughput.
-\item Large image uploads require strict file-size and decode constraints to avoid resource exhaustion.
-\end{itemize}
-
-\subsection{Criticality of Application}
-
-The system is governance-sensitive. Incorrect status transitions, misrouted complaints, or unauthorized updates can directly impact citizen trust and administrative accountability. Hence, status history and role checks are non-negotiable controls [6, 23, 7].
-
-\subsection{Safety and Security Considerations}
-
-Because civic complaints can contain sensitive personal information, the following security constraints are treated as non-negotiable throughout the codebase [7, 8, 9]:
-
-
-\begin{itemize}
-\item Input sanitization is required for free-text fields.
-\item File intake must detect extension-header mismatches and corrupted payloads.
-\item Token reset flow must avoid account enumeration and raw token persistence.
-\item Security headers and CORS policies must remain active on both normal and error responses.
-\end{itemize}
+System constraints govern UI responsiveness, security boundaries, and operational limits to ensure robust public access. 
+\textbf{UI and Interface:} Role-specific pages strictly enforce access boundaries. Interfaces must support mobile widths (375px baseline) and preserve data state during refresh cycles. Communication happens exclusively over authenticated REST endpoints via cookie sessions or JWT tokens, with strict \texttt{/api/v1} proxy routing.
+\textbf{Hardware Limits:} Because local inference is VRAM-bound, AI response times fluctuate under load. Large file uploads are strictly limited by size and decode verifications to prevent resource exhaustion.
+\textbf{Security and Governance:} To maintain citizen trust, status history and role checks are immutable [6, 23, 7]. The platform mandates strict input sanitization, MIME-type validations, robust token lifecycles (preventing account enumeration), and active CORS/security headers across all responses [7, 8, 9].
 
 The system operates under several core assumptions and external dependencies. First, it assumes a reachable and healthy \textbf{MongoDB instance} for all read/write persistence. Second, the \textbf{Ollama runtime} must be correctly configured with the required vision and reasoning models to support analysis and draft generation. Third, accurate \textbf{environment variable configuration} is essential for stable authentication, CORS, and database mapping. Fourth, the system relies on \textbf{worker profile completeness} (department and service-area metadata) for the auto-assignment engine to function correctly. Finally, for production-style deployments, the host must support \textbf{Docker and Compose} to ensure environment reproducibility.
 
 \section{Detailed Use-Case Narratives}
 
-\begin{xltabular}{\textwidth}{|>{\RaggedRight\arraybackslash}p{0.12\textwidth}|>{\RaggedRight\arraybackslash}p{0.18\textwidth}|>{\RaggedRight\arraybackslash}X|>{\RaggedRight\arraybackslash}X|}
-\caption{Narrative Use-Case Requirements}\\
-\hline
-\textbf{UC ID} & \textbf{Actor} & \textbf{Main Flow} & \textbf{Alternate/Exception Flow} \\ \hline
-\endhead
-UC-01 & Citizen & Register account, login, access dashboard & Duplicate username/email is rejected with validation message \\ \hline
-UC-02 & Citizen & Upload image and run analyze pipeline & Unsupported/corrupt image rejected with explicit reason \\ \hline
-UC-03 & Citizen & Edit draft and submit complaint & If analyze unavailable, user submits manual complaint text after retry guidance \\ \hline
-UC-04 & Citizen & Track status and receive notifications & If no notifications available, panel remains stable with unread count zero \\ \hline
-UC-05 & Citizen & Submit feedback after complaint resolution & Duplicate feedback attempt blocked with conflict response \\ \hline
-UC-06 & Worker & View assigned complaints and update availability & Worker pending approval cannot access worker-only operations \\ \hline
-UC-07 & Worker & Mark complaint done & If assignment mismatch occurs, operation is denied by role/ownership checks \\ \hline
-UC-08 & Dept Head & Filter department complaints and update status & Dept-head cannot update complaints outside own department \\ \hline
-UC-09 & Dept Head & Add notes and transfer/escalate complaint & Invalid complaint ID or missing target yields controlled validation error \\ \hline
-UC-10 & Admin & Approve/reject worker registrations & Already-approved/rejected states handled idempotently \\ \hline
-UC-11 & Admin & Operate triage queue and analytics & Empty triage queue still returns successful response \\ \hline
-UC-12 & Public User & View anonymized complaint board & No authenticated personal fields are exposed in response payload \\ \hline
-\end{xltabular}
+\begin{description}
+\item[UC-01 (Citizen):] Register account, login, access dashboard $\rightarrow$ Duplicate username/email is rejected with validation message.
+\item[UC-02 (Citizen):] Upload image and run analyze pipeline $\rightarrow$ Unsupported/corrupt image rejected with explicit reason.
+\item[UC-03 (Citizen):] Edit draft and submit complaint $\rightarrow$ If analyze unavailable, user submits manual complaint text after retry guidance.
+\item[UC-04 (Citizen):] Track status and receive notifications $\rightarrow$ If no notifications available, panel remains stable with unread count zero.
+\item[UC-05 (Citizen):] Submit feedback after complaint resolution $\rightarrow$ Duplicate feedback attempt blocked with conflict response.
+\item[UC-06 (Worker):] View assigned complaints and update availability $\rightarrow$ Worker pending approval cannot access worker-only operations.
+\item[UC-07 (Worker):] Mark complaint done $\rightarrow$ If assignment mismatch occurs, operation is denied by role/ownership checks.
+\item[UC-08 (Dept Head):] Filter department complaints and update status $\rightarrow$ Dept-head cannot update complaints outside own department.
+\item[UC-09 (Dept Head):] Add notes and transfer/escalate complaint $\rightarrow$ Invalid complaint ID or missing target yields controlled validation error.
+\item[UC-10 (Admin):] Approve/reject worker registrations $\rightarrow$ Already-approved/rejected states handled idempotently.
+\item[UC-11 (Admin):] Operate triage queue and analytics $\rightarrow$ Empty triage queue still returns successful response.
+\item[UC-12 (Public User):] View anonymized complaint board $\rightarrow$ No authenticated personal fields are exposed in response payload.
+\end{description}
 
 Requirements are classified using the MoSCoW methodology [20]. \textbf{Must-Have} features include user registration, authentication, complaint intake, status updates, auto-assignment, and health monitoring: these are essential for operational viability. \textbf{Should-Have} features cover authority escalation, worker status controls, the administrative triage queue, and analytics: these provide institutional-grade governance. \textbf{Could-Have} features such as CSV exports and the public transparency feed provide high-value reporting without blocking the core workflow. Finally, \textbf{Non-Functional criticals} including session security, sanitization, and observability are treated as mandatory baseline controls.
 
