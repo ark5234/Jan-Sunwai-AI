@@ -24,39 +24,29 @@ Testing objectives were scoped to cover the distinct failure modes that a produc
 The testing environment baseline outlined below ensures consistency across all validation phases.
 
 
-\begin{table}[H]
-\centering
-\caption{Testing Environment Baseline}
-\begin{tabularx}{\textwidth}{|>{\RaggedRight\arraybackslash}X|>{\RaggedRight\arraybackslash}X|}
-\hline
-\textbf{Environment Aspect} & \textbf{Configuration} \\ \hline
-Backend runtime & FastAPI application with test clients and dependency overrides \\ \hline
-Database mode & MongoDB-backed flows with selective mock/fake collection tests \\ \hline
-Frontend mode & Vite build/lint validation and persona-driven manual walkthroughs \\ \hline
-Model runtime mode & Ollama available for normal flows; manually disabled for resilience checks \\ \hline
-Automation tools & pytest, httpx, locust, script wrappers for platform-specific execution \\ \hline
-\end{tabularx}
-\end{table}
+\begin{description}
+\item[Backend runtime:] FastAPI application with test clients and dependency overrides.
+\item[Database mode:] MongoDB-backed flows with selective mock/fake collection tests.
+\item[Frontend mode:] Vite build/lint validation and persona-driven manual walkthroughs.
+\item[Model runtime mode:] Ollama available for normal flows; manually disabled for resilience checks.
+\item[Automation tools:] \texttt{pytest}, \texttt{httpx}, \texttt{locust}, and script wrappers for platform-specific execution.
+\end{description}
 
 \subsection{Coverage Matrix}
 
 The coverage matrix below maps each test suite to its type and the specific system behaviours it validates:
 
 
-\begin{xltabular}{\textwidth}{|>{\RaggedRight\arraybackslash}p{0.30\textwidth}|>{\RaggedRight\arraybackslash}p{0.24\textwidth}|>{\RaggedRight\arraybackslash}X|}
-\caption{Testing Coverage Matrix by Suite}\\
-\hline
-\textbf{Test Artifact} & \textbf{Type} & \textbf{Coverage Highlights} \\ \hline
-\endhead
-\path{test_schemas.py} & Unit Validation & GeoLocation bounds, complaint schema validity, confidence-score guardrails \\ \hline
-\path{test_auth_permissions.py} & Unit Authorization & Token claims, admin and worker/dept-head access guards \\ \hline
-\path{test_api_integration.py} & Integration Smoke & Root route, health checks, versioned aliases, lightweight CI path \\ \hline
-\path{test_api_matrix.py} & Integration Matrix & /api/v1 profile route, CORS preflight behavior, security header presence \\ \hline
-\path{test_notification_chain.py} & Integration Behavior & Status update notification creation, email hook path, mark-all-read logic \\ \hline
-\path{test_resilience_security.py} & Resilience + Security & Upload hardening, analyze degrade 503, readiness degradation, sanitization \\ \hline
-Manual UAT scripts & User Acceptance & Citizen and admin journeys, friction logging, UX verification \\ \hline
-Load scripts (locust) & Performance & Endpoint mix throughput and graceful degradation behavior \\ \hline
-\end{xltabular}
+\begin{description}
+\item[\path{test_schemas.py}:] Unit Validation covering GeoLocation bounds, complaint schema validity, and confidence-score guardrails.
+\item[\path{test_auth_permissions.py}:] Unit Authorization testing token claims, and admin/worker/dept-head access guards.
+\item[\path{test_api_integration.py}:] Integration Smoke testing the root route, health checks, versioned aliases, and lightweight CI paths.
+\item[\path{test_api_matrix.py}:] Integration Matrix covering the \texttt{/api/v1} profile route, CORS preflight behavior, and security headers.
+\item[\path{test_notification_chain.py}:] Integration Behavior for status update notifications, email hook paths, and mark-all-read logic.
+\item[\path{test_resilience_security.py}:] Resilience \& Security for upload hardening, analyze degrade 503, readiness degradation, and sanitization.
+\item[Manual UAT scripts:] User Acceptance testing for citizen and admin journeys, friction logging, and UX verification.
+\item[Load scripts (locust):] Performance testing for endpoint mix throughput and graceful degradation behavior.
+\end{description}
 
 \section{Types of Testing}
 
@@ -66,19 +56,13 @@ Multiple testing types were applied because the platform combines API logic, rol
 
 Unit tests focused on isolated validation and control logic.
 
-\begin{table}[H]
-\centering
-\caption{Representative Unit Test Cases}
-\begin{tabularx}{\textwidth}{|>{\RaggedRight\arraybackslash}X|>{\RaggedRight\arraybackslash}X|>{\RaggedRight\arraybackslash}X|}
-\hline
-\textbf{Case ID} & \textbf{Area} & \textbf{Expected Behavior} \\ \hline
-UT-01 & GeoLocation bounds & Reject latitude outside $[-90, 90]$ and longitude outside $[-180, 180]$ \\ \hline
-UT-02 & AI confidence schema & Reject confidence values outside $[0, 1]$ \\ \hline
-UT-03 & Admin role check & Non-admin caller receives HTTP 403 on admin-only dependency \\ \hline
-UT-04 & Worker approval gate & Unapproved worker cannot pass worker-only dependency path \\ \hline
-UT-05 & Sanitization function & Script payload transformed to escaped safe representation \\ \hline
-\end{tabularx}
-\end{table}
+\begin{description}
+\item[UT-01 (GeoLocation bounds):] Rejects latitude outside $[-90, 90]$ and longitude outside $[-180, 180]$.
+\item[UT-02 (AI confidence schema):] Rejects confidence values outside $[0, 1]$.
+\item[UT-03 (Admin role check):] Ensures non-admin callers receive HTTP 403 on admin-only dependencies.
+\item[UT-04 (Worker approval gate):] Blocks unapproved workers from passing worker-only dependency paths.
+\item[UT-05 (Sanitization function):] Confirms script payloads are transformed into escaped, safe representations.
+\end{description}
 
 \subsection{Integration Testing}
 
@@ -95,19 +79,13 @@ Integration tests verified route composition, middleware behavior, and cross-rou
 
 System testing executed end-to-end flows across authentication, analyze, complaint lifecycle, assignment, and notification propagation. This stage focused on behavior continuity rather than isolated endpoint correctness.
 
-\begin{table}[H]
-\centering
-\caption{System Test Scenarios}
-\begin{tabularx}{\textwidth}{|>{\RaggedRight\arraybackslash}X|>{\RaggedRight\arraybackslash}X|>{\RaggedRight\arraybackslash}X|}
-\hline
-\textbf{Scenario} & \textbf{Workflow} & \textbf{Pass Condition} \\ \hline
-ST-01 & Citizen upload -> analyze -> submit & Complaint record created with status history initialized \\ \hline
-ST-02 & Dept-head status update & Citizen receives notification and timeline reflects transition \\ \hline
-ST-03 & Worker marks complaint done & Complaint transitions and worker slot logic updates as expected \\ \hline
-ST-04 & Admin triage decision & Ambiguous complaint receives governed label decision path \\ \hline
-ST-05 & CSV export & Export file generated with expected schema columns \\ \hline
-\end{tabularx}
-\end{table}
+\begin{description}
+\item[ST-01 (Citizen flow):] Upload $\rightarrow$ analyze $\rightarrow$ submit. Ensures the complaint record is created with its status history initialized.
+\item[ST-02 (Dept-head update):] Dept-head updates status. Ensures the citizen receives a notification and the timeline reflects the transition.
+\item[ST-03 (Worker completion):] Worker marks a complaint as done. Ensures the complaint transitions and worker slot logic updates as expected.
+\item[ST-04 (Admin triage):] Admin triage decision. Ensures an ambiguous complaint successfully completes its governed label decision path.
+\item[ST-05 (Data export):] CSV export generation. Ensures the export file is generated with expected schema columns.
+\end{description}
 
 \subsection{User Acceptance Testing (UAT)}
 
@@ -142,36 +120,7 @@ These metrics indicate that while the AI engine is the primary bottleneck, isola
 
 \section{Testing Techniques}
 
-Testing techniques were selected to cover expected behavior, failure behavior, and recovery behavior. This combination helped validate not only whether the system works in normal conditions, but also whether it remains safe and predictable under invalid input or dependency degradation.
-
-\subsection{Black-Box Behavioral Testing}
-
-Primary API workflows were tested against expected request/response contracts without depending on internal implementation details. This improved confidence in external behavior from a consumer perspective.
-
-\subsection{Negative Testing}
-
-Negative paths were intentionally exercised:
-
-\begin{itemize}
-\item Invalid tokens and unauthorized role access.
-\item Corrupted/mismatched file uploads.
-\item Expired/invalid reset token paths.
-\item Model/runtime failure leading to controlled error responses.
-\end{itemize}
-
-\subsection{Resilience and Fault Injection}
-
-Resilience tests simulated:
-
-\begin{itemize}
-\item Ollama unavailability during analyze requests.
-\item Database ping failures for readiness route validation.
-\item Corrupted payload uploads to confirm robust rejection semantics.
-\end{itemize}
-
-\subsection{Performance and Load Testing}
-
-Load-testing scripts executed mixed endpoint traffic where read-heavy routes and notification checks dominate, with controlled analyze pressure to assess graceful degradation behavior [18].
+Testing combined behavioral, negative, resilience, and load techniques to ensure stability. \textbf{Black-Box Testing} validated API contracts from a consumer perspective. \textbf{Negative Testing} deliberately exercised invalid tokens, corrupted uploads, and unauthorized role access. \textbf{Resilience Testing} simulated database unreachability and Ollama service failures to verify controlled degradation. Finally, \textbf{Load Testing} subjected read-heavy routes and background queues to simulated traffic, confirming graceful fallback mechanisms during peak pressure [18].
 
 \subsection{System Evaluation Metrics}
 

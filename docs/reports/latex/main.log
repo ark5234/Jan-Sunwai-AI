@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.141592653-2.6-0.999997 (MiKTeX 25.12) (preloaded format=xelatex 2026.5.5)  6 MAY 2026 15:25
+This is XeTeX, Version 3.141592653-2.6-0.999997 (MiKTeX 25.12) (preloaded format=xelatex 2026.5.5)  6 MAY 2026 22:01
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -732,10 +732,9 @@ Package newfloat Info: `float' package detected.
 
  [7
 
-] (frontmatter/abbreviations.tex
-ignored error: Infinite glue shrinkage found in box being split [8
+] (frontmatter/abbreviations.tex) [8
 
-]) [9]
+]
 (chapters/ch01_introduction.tex
 Chapter 1.
 [1
@@ -762,90 +761,98 @@ ignored error: Infinite glue shrinkage found in box being split [8] [9]
 File: ../../images/gantt chart.png Graphic file (type bmp)
 <../../images/gantt chart.png>
 
-[10]
-ignored error: Infinite glue shrinkage found in box being split [11] [12])
-(chapters/ch03_system_requirement_study.tex [13]
+[10] [11]) (chapters/ch03_system_requirement_study.tex [12]
 Chapter 3.
 
 Underfull \hbox (badness 1418) in paragraph at lines 59--59
 []|\TU/TimesNewRoman(0)/m/n/10.95 Analyze endpoint shall accept valid 
  []
 
-[14
+[13
 
 ]
-ignored error: Infinite glue shrinkage found in box being split [15]
-ignored error: Infinite glue shrinkage found in box being split [16] [17]
-Overfull \hbox (3.03998pt too wide) in paragraph at lines 114--115
-\TU/TimesNewRoman(0)/m/n/10.95 UI constraints define the rendering, state-manag
-ement, and responsiveness requirements that guard against
- []
-
-[18]
-ignored error: Infinite glue shrinkage found in box being split [19])
-(chapters/ch04_proposed_system_requirements.tex [20]
+ignored error: Infinite glue shrinkage found in box being split [14]
+ignored error: Infinite glue shrinkage found in box being split [15] [16]
+ignored error: Infinite glue shrinkage found in box being split [17])
+(chapters/ch04_proposed_system_requirements.tex [18]
 Chapter 4.
-[21
+[19
 
 ]
-ignored error: Infinite glue shrinkage found in box being split [22] [23]
-ignored error: Infinite glue shrinkage found in box being split [24]
+ignored error: Infinite glue shrinkage found in box being split [20] [21]
 File: ../../images/sequence_diagram.png Graphic file (type bmp)
 <../../images/sequence_diagram.png>
 
+[22]
 Overfull \hbox (1.6814pt too wide) in paragraph at lines 149--150
 []\TU/TimesNewRoman(0)/b/n/10.95 Complaint Lifecycle Module: \TU/TimesNewRoman(
 0)/m/n/10.95 Emits events to the Notification module and triggers auto-assignme
 nt
  []
 
-[25]
+
 Overfull \hbox (9.56061pt too wide) in paragraph at lines 152--153
 []\TU/TimesNewRoman(0)/b/n/10.95 Analytics & Public Modules: \TU/TimesNewRoman(
 0)/m/n/10.95 Execute aggregate queries on the complaint store to expose anonymi
 zed
  []
 
-) (chapters/ch05_system_design.tex [26]
+[23]) (chapters/ch05_system_design.tex [24]
 Chapter 5.
 File: ../../images/system_context_diagram.png Graphic file (type bmp)
 <../../images/system_context_diagram.png>
 File: ../../images/architecture.png Graphic file (type bmp)
 <../../images/architecture.png>
-[27
+[25
 
 ]
 File: ../../images/new_er.png Graphic file (type bmp)
 <../../images/new_er.png>
- [28]
+ [26]
 File: ../../images/flowchart.png Graphic file (type bmp)
 <../../images/flowchart.png>
- [29] [30]
+ [27] [28]
 File: ../../images/class_diagram.png Graphic file (type bmp)
 <../../images/class_diagram.png>
 File: ../../images/sequence_diagram.png Graphic file (type bmp)
 <../../images/sequence_diagram.png>
- [31]
+ [29]
 File: ../../images/activity_diagram.png Graphic file (type bmp)
 <../../images/activity_diagram.png>
- [32]
+ [30]
 Overfull \vbox (789.61739pt too high) has occurred while \output is active []
 
 
-[33]
+[31]
 File: ../../images/deployment_diagram.png Graphic file (type bmp)
 <../../images/deployment_diagram.png>
- [34] [35]
+ [32]
+LaTeX Font Info:    Font shape `TU/lmtt/bx/n' in size <10.95> not available
+(Font)              Font shape `TU/lmtt/b/n' tried instead on input line 137.
+
+Overfull \hbox (2.29156pt too wide) in paragraph at lines 138--139
+[]\TU/TimesNewRoman(0)/m/n/10.95 Uses compound indices like \TU/lmtt/m/n/10.95 
+(user_id, created_at) \TU/TimesNewRoman(0)/m/n/10.95 for citizen dashboards, \T
+U/lmtt/m/n/10.95 (status,
+ []
+
+
+Overfull \hbox (42.49937pt too wide) in paragraph at lines 138--139
+\TU/lmtt/m/n/10.95 created_at) \TU/TimesNewRoman(0)/m/n/10.95 for admin queues,
+ and \TU/lmtt/m/n/10.95 (department, created_at) \TU/TimesNewRoman(0)/m/n/10.95
+ for department views. \TU/lmtt/m/n/10.95 authority_id
+ []
+
+[33]
 File: ../../images/GUI_Wireframe.png Graphic file (type bmp)
 <../../images/GUI_Wireframe.png>
- [36]
 File: ../../images/citizen_homepage.png Graphic file (type bmp)
 <../../images/citizen_homepage.png>
 Package hyperref Info: bookmark level for unknown screenshot defaults to 0 on i
-nput line 217.
+nput line 196.
 File: ../../images/complaint_review_with_geo_tag.png Graphic file (type bmp)
 <../../images/complaint_review_with_geo_tag.png>
- [37]
+ [34]
 File: ../../images/grievance_status_tracker.png Graphic file (type bmp)
 <../../images/grievance_status_tracker.png>
 File: ../../images/admin_worker_task_assignment_pannel.png Graphic file (type b
@@ -856,52 +863,64 @@ File: ../../images/admin_dashboard.png Graphic file (type bmp)
 File: ../../images/admin_human_complaint_review_pannel.png Graphic file (type b
 mp)
 <../../images/admin_human_complaint_review_pannel.png>
- [38]
+ [35]
 File: ../../images/grievance_heatmap.png Graphic file (type bmp)
 <../../images/grievance_heatmap.png>
 File: ../../images/satellite_complaint_image.png Graphic file (type bmp)
 <../../images/satellite_complaint_image.png>
- [39]
+ [36]
 File: ../../images/admin_english_complaint_view.png Graphic file (type bmp)
 <../../images/admin_english_complaint_view.png>
 File: ../../images/login_page.png Graphic file (type bmp)
 <../../images/login_page.png>
 File: ../../images/notification_pannel.png Graphic file (type bmp)
 <../../images/notification_pannel.png>
- [40])
-(chapters/ch06_implementation_planning.tex [41]
+ [37]) (chapters/ch06_implementation_planning.tex [38]
 Chapter 6.
 
-Underfull \hbox (badness 1189) in paragraph at lines 59--59
-[]|\TU/TimesNewRoman(0)/m/n/10.95 python-jose, 
+Overfull \hbox (9.19699pt too wide) in paragraph at lines 39--40
+[]\TU/TimesNewRoman(0)/m/n/10.95 FastAPI provides the core API router and depen
+dency injection framework, backed
  []
 
-[42
+[39
 
-] [43] [44]
-Overfull \hbox (6.1505pt too wide) in paragraph at lines 136--137
-\TU/TimesNewRoman(0)/m/n/10.95 Deliverables included worker assignment logic, t
-imeline/audit features, comments/notes, escalation, triage,
+] [40] [41]
+Overfull \hbox (7.0767pt too wide) in paragraph at lines 134--135
+[]\TU/TimesNewRoman(0)/m/n/10.95 Controls lists and read states. Badge consiste
+ncy required deterministic unread counter
  []
 
-[45] [46] [47] [48] [49] [50]) (chapters/ch07_testing.tex [51]
+[42] [43] [44]) (chapters/ch07_testing.tex [45]
 Chapter 7.
-[52
 
-] [53] [54] [55] [56] [57] [58]
-ignored error: Infinite glue shrinkage found in box being split [59] [60]
-Underfull \hbox (badness 1735) in paragraph at lines 286--286
+Overfull \hbox (1.1007pt too wide) in paragraph at lines 43--44
+[]\TU/TimesNewRoman(0)/m/n/10.95 Integration Smoke testing the root route, heal
+th checks, versioned aliases,
+ []
+
+[46
+
+]
+Overfull \hbox (3.27748pt too wide) in paragraph at lines 45--46
+[]\TU/TimesNewRoman(0)/m/n/10.95 Integration Behavior for status update notific
+ations, email hook paths,
+ []
+
+[47] [48] [49] [50]
+ignored error: Infinite glue shrinkage found in box being split [51] [52]
+Underfull \hbox (badness 1735) in paragraph at lines 235--235
 []|\TU/TimesNewRoman(0)/m/n/10.95 XSS payload in 
  []
 
-ignored error: Infinite glue shrinkage found in box being split [61])
-(chapters/ch08_limitations_future_scope.tex [62]
+ignored error: Infinite glue shrinkage found in box being split [53])
+(chapters/ch08_limitations_future_scope.tex [54]
 Chapter 8.
-[63
+[55
 
-] [64] [65]
-ignored error: Infinite glue shrinkage found in box being split [66] [67])
-(chapters/ch09_conclusion_references.tex [68]
+] [56] [57]
+ignored error: Infinite glue shrinkage found in box being split [58] [59])
+(chapters/ch09_conclusion_references.tex [60]
 Chapter 9.
 
 Underfull \hbox (badness 10000) in paragraph at lines 52--54
@@ -921,7 +940,7 @@ Underfull \hbox (badness 4403) in paragraph at lines 61--63
 onso-RÃos, F. Bobes-BascarÃ¡n, and A.
  []
 
-[69
+[61
 
 ]
 Underfull \hbox (badness 2922) in paragraph at lines 70--72
@@ -949,17 +968,17 @@ able: [][]$[][][][][] [] [] [] [][][] [] [][][][][][][] [] [][][] [] [][][][] [
 ]
  []
 
-[70]) (chapters/ch10_appendices.tex [71]
+[62]) (chapters/ch10_appendices.tex [63]
 Chapter 10.
 
 Overfull \hbox (9.807pt too wide) in paragraph at lines 57--57
 []|\TU/TimesNewRoman(0)/m/n/12 MUNI_HORTICULTURE|  
  []
 
-ignored error: Infinite glue shrinkage found in box being split [72
+ignored error: Infinite glue shrinkage found in box being split [64
 
 ]
-ignored error: Infinite glue shrinkage found in box being split [73]) [74]
+ignored error: Infinite glue shrinkage found in box being split [65]) [66]
 (main.aux)
  ***********
 LaTeX2e <2025-11-01>
@@ -970,15 +989,15 @@ L3 programming layer <2025-12-24>
 LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
 
 Package rerunfilecheck Info: File `main.out' has not changed.
-(rerunfilecheck)             Checksum: 27D064E6C7D554331A297C09AC0F8B56;39307.
+(rerunfilecheck)             Checksum: 5D209654FE00DB41FAE7D97426FF5A18;35045.
  ) 
 Here is how much of TeX's memory you used:
- 15563 strings out of 402987
- 301323 string characters out of 5448525
- 845178 words of memory out of 5000000
- 44035 multiletter control sequences out of 15000+600000
- 632815 words of font info for 80 fonts, out of 8000000 for 9000
+ 15564 strings out of 402987
+ 301404 string characters out of 5448525
+ 836552 words of memory out of 5000000
+ 44034 multiletter control sequences out of 15000+600000
+ 632823 words of font info for 81 fonts, out of 8000000 for 9000
  1348 hyphenation exceptions out of 8191
- 73i,12n,93p,1470b,617s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 73i,12n,93p,1470b,605s stack positions out of 10000i,1000n,20000p,200000b,200000s
 
-Output written on main.pdf (83 pages).
+Output written on main.pdf (74 pages).

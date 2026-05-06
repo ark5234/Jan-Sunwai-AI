@@ -109,54 +109,12 @@ The baseline parameters established below define the minimum viable constraints 
 
 Constraints in this project are not only technical limits but also governance and usability boundaries that directly influence system behavior. The platform must operate under security, role-separation, and infrastructure limitations common in civic environments, while still maintaining user clarity for citizens and workflow efficiency for officials. The following constraint groups define these implementation boundaries and informed several architecture and UI decisions.
 
-\subsection{UI Constraints}
+\subsection{System Constraints and Security}
 
-UI constraints define the rendering, state-management, and responsiveness requirements that guard against poor citizen experience in adverse conditions:
-
-
-\begin{itemize}
-\item Role-specific pages must enforce access boundaries and clear redirection behavior.
-\item Analyze/result screens must preserve draft continuity during refresh and error conditions.
-\item Dashboard cards and maps must remain usable at mobile widths (e.g., 375 px baseline tests).
-\end{itemize}
-
-\subsection{Communication Interface}
-
-The platform communicates exclusively over authenticated REST endpoints; the following interface rules govern how clients and services exchange data:
-
-
-\begin{itemize}
-\item REST over HTTP(S) is the canonical communication model.
-\item Protected routes require authenticated cookie session or compatibility bearer token.
-\item Production frontend proxy must route API traffic to backend service with /api/v1 compatibility.
-\end{itemize}
-
-\subsection{Hardware Interface}
-
-Hardware interface constraints bound the AI runtime's operational envelope and determine how the system must gracefully degrade under resource pressure [17]:
-
-
-\begin{itemize}
-\item AI response times depend on model runtime health and available VRAM.
-\item GPU contention and model load/unload latency can affect throughput.
-\item Large image uploads require strict file-size and decode constraints to avoid resource exhaustion.
-\end{itemize}
-
-\subsection{Criticality of Application}
-
-The system is governance-sensitive. Incorrect status transitions, misrouted complaints, or unauthorized updates can directly impact citizen trust and administrative accountability. Hence, status history and role checks are non-negotiable controls [6, 23, 7].
-
-\subsection{Safety and Security Considerations}
-
-Because civic complaints can contain sensitive personal information, the following security constraints are treated as non-negotiable throughout the codebase [7, 8, 9]:
-
-
-\begin{itemize}
-\item Input sanitization is required for free-text fields.
-\item File intake must detect extension-header mismatches and corrupted payloads.
-\item Token reset flow must avoid account enumeration and raw token persistence.
-\item Security headers and CORS policies must remain active on both normal and error responses.
-\end{itemize}
+System constraints govern UI responsiveness, security boundaries, and operational limits to ensure robust public access. 
+\textbf{UI and Interface:} Role-specific pages strictly enforce access boundaries. Interfaces must support mobile widths (375px baseline) and preserve data state during refresh cycles. Communication happens exclusively over authenticated REST endpoints via cookie sessions or JWT tokens, with strict \texttt{/api/v1} proxy routing.
+\textbf{Hardware Limits:} Because local inference is VRAM-bound, AI response times fluctuate under load. Large file uploads are strictly limited by size and decode verifications to prevent resource exhaustion.
+\textbf{Security and Governance:} To maintain citizen trust, status history and role checks are immutable [6, 23, 7]. The platform mandates strict input sanitization, MIME-type validations, robust token lifecycles (preventing account enumeration), and active CORS/security headers across all responses [7, 8, 9].
 
 The system operates under several core assumptions and external dependencies. First, it assumes a reachable and healthy \textbf{MongoDB instance} for all read/write persistence. Second, the \textbf{Ollama runtime} must be correctly configured with the required vision and reasoning models to support analysis and draft generation. Third, accurate \textbf{environment variable configuration} is essential for stable authentication, CORS, and database mapping. Fourth, the system relies on \textbf{worker profile completeness} (department and service-area metadata) for the auto-assignment engine to function correctly. Finally, for production-style deployments, the host must support \textbf{Docker and Compose} to ensure environment reproducibility.
 

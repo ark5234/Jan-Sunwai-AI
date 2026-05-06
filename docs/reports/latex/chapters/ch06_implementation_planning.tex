@@ -35,29 +35,13 @@ This ensures that local verification and deployment handover use the same operat
 
 \section{Tools \& Technologies Used}
 
-\begin{table}[H]
-\centering
-\small
-\caption{Implementation Toolchain and Use Cases}
-\begin{tabularx}{\textwidth}{|>{\RaggedRight\arraybackslash}p{0.18\textwidth}|>{\RaggedRight\arraybackslash}p{0.24\textwidth}|>{\RaggedRight\arraybackslash}X|}
-\hline
-\textbf{Category} & \textbf{Tool/Library} & \textbf{Implementation Use} \\ \hline
-Backend Framework & FastAPI & Route definitions, dependency injection, validation, and middleware pipeline. \\ \hline
-Data Validation & Pydantic [15] & Request and response schema validation with structured models. \\ \hline
-Auth and Security & python-jose, passlib[bcrypt] & Cookie-session auth, JWT compatibility support, and password hashing. \\ \hline
-HTTP Testing & httpx & Async API smoke tests and integration checks. \\ \hline
-Database Driver & Motor/PyMongo stack & MongoDB async operations and collection access. \\ \hline
-AI Runtime & Ollama & Local vision and reasoning model invocation. \\ \hline
-Image Handling & Pillow & Upload payload validation and EXIF processing. \\ \hline
-Frontend Framework & React & Role-aware SPA component and page architecture. \\ \hline
-Build Tool & Vite & Fast frontend development and optimized production build. \\ \hline
-Client HTTP & Axios & Frontend API communication layer. \\ \hline
-Frontend Routing & react-router-dom & Protected routes and role-based navigation. \\ \hline
-Containerization & Docker + Compose & Reproducible orchestration of backend, frontend, and database services. \\ \hline
-QA Automation & pytest, locust & Unit, integration, security, resilience, and load-test execution. \\ \hline
-Documentation & Markdown + LaTeX & Runbooks, architecture docs, and the final academic report. \\ \hline
-\end{tabularx}
-\end{table}
+\begin{description}
+\item[Backend \& Database:] FastAPI provides the core API router and dependency injection framework, backed by Motor/PyMongo for asynchronous MongoDB access. Pydantic [15] is used for strict schema validation.
+\item[Auth \& Security:] python-jose and passlib[bcrypt] handle cookie-session/JWT auth compatibility and password hashing.
+\item[AI \& Image Pipeline:] Ollama manages local vision and reasoning model execution, while Pillow handles upload payload validation and EXIF processing.
+\item[Frontend Stack:] React acts as the role-aware SPA foundation, built and optimized by Vite. Client communication uses Axios, and react-router-dom enforces protected role-based navigation.
+\item[DevOps \& QA:] Docker and Docker Compose orchestrate reproducible environments. Testing is handled by pytest and locust (load testing), while httpx runs async API smoke tests.
+\end{description}
 
 \section{Key Implementation Patterns}
 
@@ -77,91 +61,33 @@ Role-based page access is enforced client-side through a \texttt{ProtectedRoute}
 
 \section{Coding Standards Followed}
 
-\subsection{Backend Standards}
-
-The backend was implemented with the following structural conventions so that every route, schema, and service remained independently testable:
-
-
-\begin{itemize}
-\item Router-based modularization for domain isolation.
-\item Strict schema validation through typed request models.
-\item Clear HTTP semantics for validation, auth, and lifecycle errors.
-\item Service extraction for cross-cutting concerns (assignment, sanitization, storage, email).
-\item Structured logging and failure-safe response behavior.
-\end{itemize}
-
-\subsection{Frontend Standards}
-
-Frontend code separated concerns so that role-aware pages, shared components, and API communication remained independently updatable:
-
-
-\begin{itemize}
-\item Role-aware route guards and dashboard redirection.
-\item Separation of pages, reusable components, layouts, and context providers.
-\item Consistent API base usage through environment variables.
-\item Explicit loading/error states for user-facing long-running operations.
-\item Responsive design checks for desktop and mobile interaction baselines.
-\end{itemize}
-
-\subsection{Configuration Standards}
-
-Environment and configuration consistency was treated as a first-class engineering concern, governed by these conventions:
-
-
-\begin{itemize}
-\item Single canonical backend environment file for consistency.
-\item Explicit production defaults and overrides for sensitive settings.
-\item Avoidance of duplicate compose and env artifacts to reduce drift.
-\item Documented scripts for startup, tests, deployment simulation, and verification.
-\end{itemize}
+Strict coding standards were enforced across the stack to ensure independent testability and maintainability. The \textbf{Backend} relies on router-based domain isolation, strictly typed Pydantic request models, decoupled service extraction for cross-cutting concerns (e.g., storage, email), and failure-safe structured logging. The \textbf{Frontend} emphasizes strict separation between role-aware route guards, reusable components, and context providers while enforcing explicit loading/error states for all asynchronous operations. Across the entire system, \textbf{Configuration} is centralized through a single canonical environment template to prevent deployment drift.
 
 \section{Implementation Work Packages}
 
-Implementation work was divided into clearly scoped packages so that each delivery stream could be validated independently and then integrated with controlled dependency checks. This packaging approach improved scheduling clarity, reduced merge risk, and made milestone tracking more objective for both technical and management review.
-
-\subsection{Work Package 1: Core Backend and Data Layer}
-
-Deliverables included app bootstrap, database connection lifecycle, auth primitives, user and complaint schemas, and initial complaint CRUD operations. This package established foundational APIs and validation behavior.
-
-\subsection{Work Package 2: AI Pipeline Integration}
-
-Deliverables included classifier orchestration, model fallback strategy, rule-engine scoring, queue-based generation path, and timing metadata in analysis responses. This package transformed basic upload capability into intelligent intake flow.
-
-\subsection{Work Package 3: Frontend Role Flows}
-
-Deliverables included authentication screens, analyze/result pathway, role dashboards, notifications UI, and profile controls. Route guards and dashboard routing ensured role-appropriate user journeys.
-
-\subsection{Work Package 4: Operational Features}
-
-Deliverables included worker assignment logic, timeline/audit features, comments/notes, escalation, triage, analytics, and CSV exports. This package completed department-level and governance-level operational requirements.
-
-\subsection{Work Package 5: Security and Reliability Hardening}
-
-Deliverables included upload integrity checks, sanitization, security headers, CORS tightening, rate-limiting toggles, readiness/liveness checks, graceful AI degradation, and resilience-focused tests.
-
-\subsection{Work Package 6: Deployment and Handover Readiness}
-
-Deliverables included the production compose profile, deployment guides, and API references. The package also included backup scripts and verification procedures. This package enabled transition from a development artifact to a deployable product.
+Implementation was divided into six sequential delivery streams to isolate testing and mitigate integration risk:
+\begin{enumerate}
+    \item \textbf{Core Backend \& Data:} Bootstrapping database connections, auth primitives, and foundational CRUD operations.
+    \item \textbf{AI Pipeline:} Integrating model orchestration, rule-engine scoring, and the asynchronous inference queue.
+    \item \textbf{Frontend Flows:} Building authentication screens, role-based dashboards, and route guards.
+    \item \textbf{Operational Features:} Delivering assignment logic, triage queues, escalation rules, and analytics.
+    \item \textbf{Security Hardening:} Implementing input sanitization, upload integrity checks, rate-limiting, and resilience fallbacks.
+    \item \textbf{Deployment:} Finalizing Docker compose profiles, runbooks, and handover documentation.
+\end{enumerate}
 
 \section{Implementation Sequence and Dependencies}
 
-\begin{table}[H]
-\centering
-\caption{Implementation Sequence with Dependency Notes}
-\begin{tabularx}{\textwidth}{|>{\RaggedRight\arraybackslash}X|>{\RaggedRight\arraybackslash}X|>{\RaggedRight\arraybackslash}X|}
-\hline
-\textbf{Step} & \textbf{Implementation Activity} & \textbf{Dependency Consideration} \\ \hline
-1 & Establish backend skeleton and DB connectivity & Required before auth and complaint persistence \\ \hline
-2 & Build auth/session primitives & Required before protected API and role-specific frontend routes \\ \hline
-3 & Implement analyze pipeline and storage handling & Required before citizen intake flow can be tested end-to-end \\ \hline
-4 & Build frontend analyze/result workflow & Depends on stable analyze payload and auth behavior \\ \hline
-5 & Add assignment and lifecycle controls & Depends on complaint schema maturity and worker metadata \\ \hline
-6 & Add triage/api/v1/analytics and governance endpoints & Depends on reliable complaint state and metadata richness \\ \hline
-7 & Add security and reliability hardening & Should follow core flow stability to avoid hidden regressions \\ \hline
-8 & Run tests and UAT cycles & Depends on complete feature slices and stable environments \\ \hline
-9 & Prepare production profile and handover docs & Depends on validated security/performance baseline \\ \hline
-\end{tabularx}
-\end{table}
+\begin{enumerate}
+    \item \textbf{Backend skeleton and DB connectivity:} Required before auth and complaint persistence.
+    \item \textbf{Auth/session primitives:} Required before protected API and role-specific frontend routes.
+    \item \textbf{Analyze pipeline and storage handling:} Required before citizen intake flow can be tested end-to-end.
+    \item \textbf{Frontend analyze/result workflow:} Depends on stable analyze payload and auth behavior.
+    \item \textbf{Assignment and lifecycle controls:} Depends on complaint schema maturity and worker metadata.
+    \item \textbf{Triage, analytics, and governance endpoints:} Depends on reliable complaint state and metadata richness.
+    \item \textbf{Security and reliability hardening:} Should follow core flow stability to avoid hidden regressions.
+    \item \textbf{Tests and UAT cycles:} Depends on complete feature slices and stable environments.
+    \item \textbf{Production profile and handover docs:} Depends on validated security/performance baseline.
+\end{enumerate}
 
 \section{Configuration and Secret Planning}
 
@@ -201,19 +127,15 @@ This section captures implementation-level observations that are useful for main
 Each router group below shows how its implementation responsibilities were planned and what specific engineering decisions arose during delivery:
 
 
-\begin{xltabular}{\textwidth}{|>{\RaggedRight\arraybackslash}p{0.22\textwidth}|>{\RaggedRight\arraybackslash}p{0.30\textwidth}|>{\RaggedRight\arraybackslash}X|}
-\caption{Router-Level Implementation Planning Notes}\\
-\hline
-\textbf{Router Group} & \textbf{Core Responsibilities} & \textbf{Planning/Implementation Considerations} \\ \hline
-\endhead
-users & registration, login, profile update, password reset & Required generic forgot-password response to prevent account enumeration; reset tokens persisted as hashes with expiry lifecycle \\ \hline
-complaints & analyze, create, list, detail, update, transfer, escalate & Needed consistent status-history append behavior and role-aware update guards; analyze route required graceful 503 degrade path \\ \hline
-workers & assignment views, approval/rejection, service-area updates & Needed separation between worker self-actions and admin governance actions; assignment diagnostics endpoint added for ops clarity \\ \hline
-notifications & list, unread count, mark single/all read & Badge consistency required deterministic unread counter behavior and ownership checks \\ \hline
-triage & review queue and decision endpoint & Admin-only corrective path for low-confidence AI cases; decision audit notes required \\ \hline
-analytics/api/v1/public & dashboards, heatmap, anonymized public listing & Query aggregation planning required pagination defaults and safe exposure model for public feed \\ \hline
-health & live/ready/models/gpu probes & Needed operationally meaningful readiness semantics and low-overhead liveness behavior \\ \hline
-\end{xltabular}
+\begin{description}
+\item[\texttt{/users}:] Handles registration, login, and password resets. Required generic forgot-password responses to prevent account enumeration, persisting reset tokens as hashes with expiry.
+\item[\texttt{/complaints}:] Manages the analyze, create, and update flows. Required consistent status-history append behavior, strict role-aware update guards, and a graceful 503 degrade path for the AI analyze route.
+\item[\texttt{/workers}:] Manages assignments and approvals. Separates worker self-actions from admin governance actions, and includes diagnostic assignment endpoints for operational clarity.
+\item[\texttt{/notifications}:] Controls lists and read states. Badge consistency required deterministic unread counter behavior and strict ownership checks.
+\item[\texttt{/triage}:] Admin-only corrective path for low-confidence AI cases, requiring detailed decision audit notes.
+\item[\texttt{/analytics}:] Dashboards and public feeds. Query aggregation required explicit pagination and safe data-exposure models for the public view.
+\item[\texttt{/health}:] Provides liveness, readiness, model, and GPU probes with operationally meaningful semantics.
+\end{description}
 
 \subsection{Service-Layer Planning Notes}
 
@@ -235,21 +157,15 @@ The deployment runbook formalizes a stepwise rollout process so that releases re
 The matrix below details the specific planning components necessary to operationalize this segment of the architecture.
 
 
-\begin{table}[H]
-\centering
-\caption{Deployment Rollout Stages}
-\begin{tabularx}{\textwidth}{|>{\RaggedRight\arraybackslash}X|>{\RaggedRight\arraybackslash}X|>{\RaggedRight\arraybackslash}X|}
-\hline
-\textbf{Stage} & \textbf{Objective} & \textbf{Execution Checklist} \\ \hline
-R1 & Environment readiness & Verify host runtime versions, model availability, and environment variables \\ \hline
-R2 & Service bootstrap & Start MongoDB and backend; validate health/live and health/ready probes \\ \hline
-R3 & Frontend linkage & Start frontend/proxy path and verify API base routing behavior \\ \hline
-R4 & Functional smoke & Execute login, analyze, complaint creation, and notification badge checks \\ \hline
-R5 & Governance smoke & Validate admin triage, worker assignment controls, and export flow \\ \hline
-R6 & Hardening validation & Execute security/resilience test scripts and capture baseline metrics \\ \hline
-R7 & Handover sign-off & Archive logs, backups, and runbook evidence for deployment package \\ \hline
-\end{tabularx}
-\end{table}
+\begin{enumerate}
+    \item \textbf{[R1] Environment readiness:} Verify host runtime versions, model availability, and environment variables.
+    \item \textbf{[R2] Service bootstrap:} Start MongoDB and backend; validate health/live and health/ready probes.
+    \item \textbf{[R3] Frontend linkage:} Start frontend/proxy path and verify API base routing behavior.
+    \item \textbf{[R4] Functional smoke:} Execute login, analyze, complaint creation, and notification badge checks.
+    \item \textbf{[R5] Governance smoke:} Validate admin triage, worker assignment controls, and export flow.
+    \item \textbf{[R6] Hardening validation:} Execute security/resilience test scripts and capture baseline metrics.
+    \item \textbf{[R7] Handover sign-off:} Archive logs, backups, and runbook evidence for the deployment package.
+\end{enumerate}
 
 \subsection{Rollback Planning}
 
