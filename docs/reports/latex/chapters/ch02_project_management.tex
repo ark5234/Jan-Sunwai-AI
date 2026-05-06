@@ -1,4 +1,4 @@
-﻿% !TeX root = ../main.tex
+% !TeX root = ../main.tex
 \chapter{Project Management}
 
 Project management for Jan-Sunwai AI followed an iterative delivery approach with explicit weekly milestones, acceptance checkpoints, and operational hardening gates. The planning strategy balanced feature development with risk reduction, especially in AI reliability, security posture, and deployment reproducibility.
@@ -67,12 +67,8 @@ This approach was chosen over a strict waterfall model because AI behavior and U
 The milestone table below maps each delivery phase to its planned completion gate and primary acceptance criterion.
 
 
-\begin{longtable}{|p{0.12\textwidth}|p{0.24\textwidth}|p{0.43\textwidth}|p{0.13\textwidth}|}
+\begin{xltabular}{\textwidth}{|>{\RaggedRight\arraybackslash}p{0.15\textwidth}|>{\RaggedRight\arraybackslash}X|>{\RaggedRight\arraybackslash}X|>{\RaggedRight\arraybackslash}p{0.13\textwidth}|}
 \caption{Milestone Summary and Deliverables}\\
-\hline
-\textbf{Window} & \textbf{Theme} & \textbf{Key Deliverables} & \textbf{Status} \\
-\hline
-\endfirsthead
 \hline
 \textbf{Window} & \textbf{Theme} & \textbf{Key Deliverables} & \textbf{Status} \\
 \hline
@@ -89,39 +85,8 @@ Week 12 & Production Hardening & Docker production files, compose profile, env p
 Weeks 13--14 & Testing and Pre-Handover & Unit/integration/security/load tests, mobile fixes, handover guide, API reference, repository cleanup, CI workflows & Completed \\ \hline
 Weeks 15--16 & UAT and Staging Validation & Clean deploy simulation, production verification, UAT persona runs, feedback loop and polish pass & Completed \\ \hline
 Weeks 17--18 & Reporting and Submission & Technical report artifacts, screenshots, presentation, final submission hygiene and release tagging & Completed \\ \hline
-\end{longtable}
+\end{xltabular}
 
-\subsection{Project Timeline (Gantt Chart)}
-
-The week-by-week delivery calendar below maps each sprint to its date window, primary execution focus, and key management outcome [11, 12, 13, 16, 17].
-
-
-\begin{longtable}{|p{0.06\textwidth}|p{0.18\textwidth}|p{0.42\textwidth}|p{0.24\textwidth}|}
-\caption{Week-by-Week Project Execution Calendar}\\
-\hline
-\textbf{Week} & \textbf{Date Range} & \textbf{Primary Execution Focus} & \textbf{Management Outcome} \\ \hline
-\hline
-\endfirsthead
-\hline
-\textbf{Week} & \textbf{Date Range} & \textbf{Primary Execution Focus} & \textbf{Management Outcome} \\ \hline
-\hline
-\endhead
-W1 & Jan 28--Jan 31 & Repository initialization, environment setup, architecture notes, backend bootstrap & Foundation controls established \\ \hline
-W2 & Feb 02--Feb 07 & Mongo connectivity, schema definitions, early CRUD and upload service & Core API base-line available \\ \hline
-W3 & Feb 09--Feb 14 & Authentication hardening and classifier exploration & Security and AI direction validated \\ \hline
-W4 & Feb 16--Feb 21 & EXIF location extraction and reverse-geocoding integration & Analyze pipeline readiness achieved \\ \hline
-W5 & Feb 23--Feb 28 & Local model runtime setup and draft generation service & AI drafting integrated \\ \hline
-W6 & Mar 02--Mar 07 & Frontend routing, upload/result flow, end-to-end integration & Citizen flow stabilized \\ \hline
-W7 & Mar 09--Mar 14 & Map refinement, draft persistence, error boundaries, full walkthroughs & Baseline UX hardening complete \\ \hline
-W8 & Mar 16--Mar 21 & Security layer (headers, sanitizer, upload validation, limits, indexes) & Production-risk exposure reduced \\ \hline
-W9 & Mar 23--Mar 28 & Worker panel, assignment engine, audit trail, analytics and heatmap & NDMC governance features delivered \\ \hline
-W10 & Mar 30--Apr 04 & Notification chain, email stub, password reset, profile editing & Communication layer complete \\ \hline
-W11 & Apr 06--Apr 11 & Image compression, lazy loading, graceful 503, resilience testing & Platform reliability validated \\ \hline
-W12 & Apr 13--Apr 18 & Docker production profile, compose consolidation, API versioning & Production-ready stack confirmed \\ \hline
-W13--14 & Apr 20--May 02 & Full test suite, mobile fixes, handover guide, repository cleanup & QA sign-off achieved \\ \hline
-W15--16 & May 04--May 16 & UAT persona runs, staging deploy, production verification & Delivery confidence established \\ \hline
-W17--18 & May 18--May 27 & Technical report, screenshots, presentation, submission hygiene & Final handover complete \\ \hline
-\end{longtable}
 
 \subsection{Group Roles and Responsibilities}
 
@@ -131,10 +96,9 @@ The responsibility matrix below defines the cross-functional ownership areas cov
 \centering
 \small
 \caption{Role Responsibility Matrix (Project Execution)}
-\begin{tabularx}{\textwidth}{|p{0.28\textwidth}|X|}
+\begin{tabularx}{\textwidth}{|>{\RaggedRight\arraybackslash}p{0.30\textwidth}|>{\RaggedRight\arraybackslash}X|}
 \hline
 \textbf{Role Area} & \textbf{Responsibilities} \\ \hline
-\hline
 Backend Engineering & API design, schema validation, business logic, role authorization, lifecycle transitions, notification hooks \\ \hline
 Frontend Engineering & Route architecture, role dashboards, analyze/result flow, user session handling, responsive behavior \\ \hline
 AI and Classification & Vision model integration, rule engine tuning, reasoning fallback, draft generation quality checks \\ \hline
@@ -160,17 +124,29 @@ The project includes cross-cutting dependencies that were managed explicitly:
 
 Dependency risks were controlled through health endpoints, fallback behaviors, and scripted verification routines.
 
+\section{Project Scheduling (Gantt Chart)}
+
+The Gantt chart below provides a visual representation of the project timeline, showing the distribution of foundation, core development, security hardening, and delivery activities across the 18-week execution window.
+
+\begin{figure}[H]
+\centering
+\IfFileExists{../../images/gantt chart.png}{%
+\includegraphics[width=0.95\textwidth]{../../images/gantt chart.png}%
+}{%
+\fbox{\begin{minipage}[c][0.30\textheight][c]{0.85\textwidth}
+\centering Missing Gantt Chart Image
+\end{minipage}}%
+}
+\caption{Jan-Sunwai AI Project Execution Gantt Chart}
+\label{fig:gantt-chart}
+\end{figure}
+
 \section{Risk Management}
 
-\begin{longtable}{|p{0.24\textwidth}|p{0.15\textwidth}|p{0.15\textwidth}|p{0.38\textwidth}|}
+\begin{xltabular}{\textwidth}{|>{\RaggedRight\arraybackslash}X|>{\RaggedRight\arraybackslash}p{0.15\textwidth}|>{\RaggedRight\arraybackslash}p{0.15\textwidth}|>{\RaggedRight\arraybackslash}X|}
 \caption{Risk Register and Mitigation Plan}\\
 \hline
 \textbf{Risk} & \textbf{Likelihood} & \textbf{Impact} & \textbf{Mitigation} \\ \hline
-\hline
-\endfirsthead
-\hline
-\textbf{Risk} & \textbf{Likelihood} & \textbf{Impact} & \textbf{Mitigation} \\ \hline
-\hline
 \endhead
 Model unavailability or timeout & Medium & High & Multi-tier vision fallback, queue-based generation, retryable 503 responses \\ \hline
 Wrong department classification & Medium & High & Deterministic rule engine, triage queue, admin correction workflow \\ \hline
@@ -180,8 +156,7 @@ Configuration drift across environments & Medium & Medium & Unified backend envi
 Notification inconsistency & Low & Medium & Automated notification-chain tests and mark-all-read verification \\ \hline
 Performance degradation under load & Medium & Medium & Profiling, timing logs, load-testing matrix, controlled fallback behavior \\ \hline
 Documentation mismatch at handover & Medium & Medium & NDMC deployment guide, API reference sync, verification procedure chapter \\ \hline
-\hline
-\end{longtable}
+\end{xltabular}
 
 \section{Management Outcomes}
 

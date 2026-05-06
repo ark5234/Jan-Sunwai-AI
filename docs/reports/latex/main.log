@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.141592653-2.6-0.999997 (MiKTeX 25.12) (preloaded format=xelatex 2026.5.5)  6 MAY 2026 14:04
+This is XeTeX, Version 3.141592653-2.6-0.999997 (MiKTeX 25.12) (preloaded format=xelatex 2026.5.5)  6 MAY 2026 15:14
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -275,16 +275,25 @@ Package: array 2025/09/25 v2.6n Tabular extension package (FMi)
 \TX@cols=\count318
 \TX@ftn=\toks26
 )
+(C:\Users\Vikra\AppData\Local\Programs\MiKTeX\tex/latex/xltabular\xltabular.sty
+Package: xltabular 2025/02/28 v0.2i `xltabular' package (hv,RN)
+(C:\Users\Vikra\AppData\Local\Programs\MiKTeX\tex/latex/etoolbox\etoolbox.sty
+Package: etoolbox 2025/10/02 v2.5m e-TeX tools for LaTeX (JAW)
+\etb@tempcnta=\count319
+)
+(C:\Users\Vikra\AppData\Local\Programs\MiKTeX\tex/latex/ltablex\ltablex.sty
+Package: ltablex 2014/08/13 v1.1 Modified tabularx
+))
 (C:\Users\Vikra\AppData\Local\Programs\MiKTeX\tex/latex/multirow\multirow.sty
 Package: multirow 2024/11/12 v2.9 Span multiple rows of a table
 \multirow@colwidth=\skip60
-\multirow@cntb=\count319
+\multirow@cntb=\count320
 \multirow@dima=\skip61
 \bigstrutjot=\dimen192
 )
 (C:\Users\Vikra\AppData\Local\Programs\MiKTeX\tex/latex/float\float.sty
 Package: float 2001/11/08 v1.3d Float enhancements (AL)
-\c@float@type=\count320
+\c@float@type=\count321
 \float@exts=\toks27
 \float@box=\box62
 \@float@everytoks=\toks28
@@ -336,11 +345,7 @@ Package: gettitlestring 2019/12/15 v1.6 Cleanup title references (HO)
 (C:\Users\Vikra\AppData\Local\Programs\MiKTeX\tex/latex/kvoptions\kvoptions.sty
 Package: kvoptions 2022-06-15 v3.15 Key value format for package options (HO)
 ))
-\c@section@level=\count321
-)
-(C:\Users\Vikra\AppData\Local\Programs\MiKTeX\tex/latex/etoolbox\etoolbox.sty
-Package: etoolbox 2025/10/02 v2.5m e-TeX tools for LaTeX (JAW)
-\etb@tempcnta=\count322
+\c@section@level=\count322
 )
 (C:\Users\Vikra\AppData\Local\Programs\MiKTeX\tex/generic/stringenc\stringenc.s
 ty
@@ -552,783 +557,276 @@ Package: ragged2e 2023/06/22 v3.6 ragged2e Package
 \RaggedRightParindent=\skip126
 \JustifyingParindent=\skip127
 )
-Package hyperref Info: Option `colorlinks' set `true' on input line 47.
-Package hyperref Info: Option `bookmarksnumbered' set `true' on input line 47.
-Package hyperref Info: Option `breaklinks' set `true' on input line 47.
+Package hyperref Info: Option `colorlinks' set `true' on input line 48.
+Package hyperref Info: Option `bookmarksnumbered' set `true' on input line 48.
+Package hyperref Info: Option `breaklinks' set `true' on input line 48.
 Package newfloat Info: New float `screenshot' with options ` fileext=los, listn
-ame={List of Screenshots}, name=Screenshot ' on input line 158.
+ame={List of Screenshots}, name=Screenshot ' on input line 162.
 \c@screenshot=\count341
-Package newfloat Info: float type `screenshot'=4 on input line 158.
+Package newfloat Info: float type `screenshot'=4 on input line 162.
 \c@losdepth=\count342
 
-(main.aux)
-\openout1 = `main.aux'.
+(main.aux
+main.aux:42: Text line contains an invalid character.
+l.42     {1}{147.28818p^^@
+                          ^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^...
+A funny symbol that I can't read has just been input.
+Continue, and I'll forget that it ever happened.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 195.
-LaTeX Font Info:    ... okay on input line 195.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 195.
-LaTeX Font Info:    ... okay on input line 195.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 195.
-LaTeX Font Info:    ... okay on input line 195.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 195.
-LaTeX Font Info:    ... okay on input line 195.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 195.
-LaTeX Font Info:    ... okay on input line 195.
-LaTeX Font Info:    Checking defaults for TU/lmr/m/n on input line 195.
-LaTeX Font Info:    ... okay on input line 195.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 195.
-LaTeX Font Info:    ... okay on input line 195.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 195.
-LaTeX Font Info:    ... okay on input line 195.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 195.
-LaTeX Font Info:    ... okay on input line 195.
-LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 195.
-LaTeX Font Info:    ... okay on input line 195.
+main.aux:42: Text line contains an invalid character.
+l.42     {1}{147.28818p^^@^^@
+                             ^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^...
+A funny symbol that I can't read has just been input.
+Continue, and I'll forget that it ever happened.
 
-Package fontspec Info: 
-(fontspec)             Adjusting the maths setup (use [no-math] to avoid
-(fontspec)             this).
+main.aux:42: Text line contains an invalid character.
+l.42     {1}{147.28818p^^@^^@^^@
+                                ^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^...
+A funny symbol that I can't read has just been input.
+Continue, and I'll forget that it ever happened.
 
-\symlegacymaths=\mathgroup4
-LaTeX Font Info:    Overwriting symbol font `legacymaths' in version `bold'
-(Font)                  OT1/cmr/m/n --> OT1/cmr/bx/n on input line 195.
-LaTeX Font Info:    Redeclaring math accent \acute on input line 195.
-LaTeX Font Info:    Redeclaring math accent \grave on input line 195.
-LaTeX Font Info:    Redeclaring math accent \ddot on input line 195.
-LaTeX Font Info:    Redeclaring math accent \tilde on input line 195.
-LaTeX Font Info:    Redeclaring math accent \bar on input line 195.
-LaTeX Font Info:    Redeclaring math accent \breve on input line 195.
-LaTeX Font Info:    Redeclaring math accent \check on input line 195.
-LaTeX Font Info:    Redeclaring math accent \hat on input line 195.
-LaTeX Font Info:    Redeclaring math accent \dot on input line 195.
-LaTeX Font Info:    Redeclaring math accent \mathring on input line 195.
-LaTeX Font Info:    Redeclaring math symbol \Gamma on input line 195.
-LaTeX Font Info:    Redeclaring math symbol \Delta on input line 195.
-LaTeX Font Info:    Redeclaring math symbol \Theta on input line 195.
-LaTeX Font Info:    Redeclaring math symbol \Lambda on input line 195.
-LaTeX Font Info:    Redeclaring math symbol \Xi on input line 195.
-LaTeX Font Info:    Redeclaring math symbol \Pi on input line 195.
-LaTeX Font Info:    Redeclaring math symbol \Sigma on input line 195.
-LaTeX Font Info:    Redeclaring math symbol \Upsilon on input line 195.
-LaTeX Font Info:    Redeclaring math symbol \Phi on input line 195.
-LaTeX Font Info:    Redeclaring math symbol \Psi on input line 195.
-LaTeX Font Info:    Redeclaring math symbol \Omega on input line 195.
-LaTeX Font Info:    Redeclaring math symbol \mathdollar on input line 195.
-LaTeX Font Info:    Redeclaring symbol font `operators' on input line 195.
-LaTeX Font Info:    Encoding `OT1' has changed to `TU' for symbol font
-(Font)              `operators' in the math version `normal' on input line 195.
+main.aux:42: Text line contains an invalid character.
+l.42     {1}{147.28818p^^@^^@^^@^^@
+                                   ^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^...
+A funny symbol that I can't read has just been input.
+Continue, and I'll forget that it ever happened.
 
-LaTeX Font Info:    Overwriting symbol font `operators' in version `normal'
-(Font)                  OT1/cmr/m/n --> TU/TimesNewRoman(0)/m/n on input line 1
-95.
-LaTeX Font Info:    Encoding `OT1' has changed to `TU' for symbol font
-(Font)              `operators' in the math version `bold' on input line 195.
-LaTeX Font Info:    Overwriting symbol font `operators' in version `bold'
-(Font)                  OT1/cmr/bx/n --> TU/TimesNewRoman(0)/m/n on input line 
-195.
-LaTeX Font Info:    Overwriting symbol font `operators' in version `normal'
-(Font)                  TU/TimesNewRoman(0)/m/n --> TU/TimesNewRoman(0)/m/n on 
-input line 195.
-LaTeX Font Info:    Overwriting math alphabet `\mathit' in version `normal'
-(Font)                  OT1/cmr/m/it --> TU/TimesNewRoman(0)/m/it on input line
- 195.
-LaTeX Font Info:    Overwriting math alphabet `\mathbf' in version `normal'
-(Font)                  OT1/cmr/bx/n --> TU/TimesNewRoman(0)/b/n on input line 
-195.
-LaTeX Font Info:    Overwriting math alphabet `\mathsf' in version `normal'
-(Font)                  OT1/cmss/m/n --> TU/lmss/m/n on input line 195.
-LaTeX Font Info:    Overwriting math alphabet `\mathtt' in version `normal'
-(Font)                  OT1/cmtt/m/n --> TU/lmtt/m/n on input line 195.
-LaTeX Font Info:    Overwriting symbol font `operators' in version `bold'
-(Font)                  TU/TimesNewRoman(0)/m/n --> TU/TimesNewRoman(0)/b/n on 
-input line 195.
-LaTeX Font Info:    Overwriting math alphabet `\mathit' in version `bold'
-(Font)                  OT1/cmr/bx/it --> TU/TimesNewRoman(0)/b/it on input lin
-e 195.
-LaTeX Font Info:    Overwriting math alphabet `\mathsf' in version `bold'
-(Font)                  OT1/cmss/bx/n --> TU/lmss/b/n on input line 195.
-LaTeX Font Info:    Overwriting math alphabet `\mathtt' in version `bold'
-(Font)                  OT1/cmtt/m/n --> TU/lmtt/b/n on input line 195.
+main.aux:42: Text line contains an invalid character.
+l.42     {1}{147.28818p^^@^^@^^@^^@^^@
+                                      ^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^...
+A funny symbol that I can't read has just been input.
+Continue, and I'll forget that it ever happened.
 
-*geometry* driver: auto-detecting
-*geometry* detected driver: xetex
-*geometry* verbose mode - [ preamble ] result:
-* driver: xetex
-* paper: a4paper
-* layout: <same size as paper>
-* layoutoffset:(h,v)=(0.0pt,0.0pt)
-* modes: 
-* h-part:(L,W,R)=(85.35826pt, 455.24411pt, 56.9055pt)
-* v-part:(T,H,B)=(56.9055pt, 731.23584pt, 56.9055pt)
-* \paperwidth=597.50787pt
-* \paperheight=845.04684pt
-* \textwidth=455.24411pt
-* \textheight=731.23584pt
-* \oddsidemargin=13.08827pt
-* \evensidemargin=13.08827pt
-* \topmargin=-52.36449pt
-* \headheight=14.5pt
-* \headsep=25.0pt
-* \topskip=12.0pt
-* \footskip=30.0pt
-* \marginparwidth=35.0pt
-* \marginparsep=10.0pt
-* \columnsep=10.0pt
-* \skip\footins=10.8pt plus 4.0pt minus 2.0pt
-* \hoffset=0.0pt
-* \voffset=0.0pt
-* \mag=1000
-* \@twocolumnfalse
-* \@twosidefalse
-* \@mparswitchfalse
-* \@reversemarginfalse
-* (1in=72.27pt=25.4mm, 1cm=28.453pt)
+main.aux:42: Text line contains an invalid character.
+l.42     {1}{147.28818p^^@^^@^^@^^@^^@^^@
+                                         ^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^...
+A funny symbol that I can't read has just been input.
+Continue, and I'll forget that it ever happened.
 
-(C:\Users\Vikra\AppData\Local\Programs\MiKTeX\tex/latex/graphics\color.sty
-Package: color 2025/01/14 v1.3e Standard LaTeX Color (DPC)
+main.aux:42: Text line contains an invalid character.
+l.42     {1}{147.28818p^^@^^@^^@^^@^^@^^@^^@
+                                            ^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^...
+A funny symbol that I can't read has just been input.
+Continue, and I'll forget that it ever happened.
 
-(C:\Users\Vikra\AppData\Local\Programs\MiKTeX\tex/latex/graphics-cfg\color.cfg
-File: color.cfg 2016/01/02 v1.6 sample color configuration
-)
-Package color Info: Driver file: xetex.def on input line 149.
-(C:\Users\Vikra\AppData\Local\Programs\MiKTeX\tex/latex/graphics\mathcolor.ltx)
-)
-Package hyperref Info: Link coloring ON on input line 195.
- (main.out) (main.out)
-\@outlinefile=\write3
-\openout3 = `main.out'.
+main.aux:42: Text line contains an invalid character.
+l.42     {1}{147.28818p^^@^^@^^@^^@^^@^^@^^@^^@
+                                               ^^@^^@^^@^^@^^@^^@^^@^^@^^@^^...
+A funny symbol that I can't read has just been input.
+Continue, and I'll forget that it ever happened.
 
-Package caption Info: Begin \AtBeginDocument code.
-Package caption Info: End \AtBeginDocument code.
-Package newfloat Info: Trying Plan B...
-Package newfloat Info: `float' package detected.
- (main.toc [1
+main.aux:42: Text line contains an invalid character.
+l.42     {1}{147.28818p^^@^^@^^@^^@^^@^^@^^@^^@^^@
+                                                  ^^@^^@^^@^^@^^@^^@^^@^^@^^...
+A funny symbol that I can't read has just been input.
+Continue, and I'll forget that it ever happened.
 
+main.aux:42: Text line contains an invalid character.
+l.42 ...}{147.28818p^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@
+                                                  ^^@^^@^^@^^@^^@^^@^^@^^@^^...
+A funny symbol that I can't read has just been input.
+Continue, and I'll forget that it ever happened.
 
-] [2] [3] [4])
-\tf@toc=\write4
-\openout4 = `main.toc'.
+main.aux:42: Text line contains an invalid character.
+l.42 ...47.28818p^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@
+                                                  ^^@^^@^^@^^@^^@^^@^^@^^@^^...
+A funny symbol that I can't read has just been input.
+Continue, and I'll forget that it ever happened.
 
- [5] (main.lot [6
+main.aux:42: Text line contains an invalid character.
+l.42 ...28818p^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@
+                                                  ^^@^^@^^@^^@^^@^^@^^@^^@^^...
+A funny symbol that I can't read has just been input.
+Continue, and I'll forget that it ever happened.
 
-])
-\tf@lot=\write5
-\openout5 = `main.lot'.
+main.aux:42: Text line contains an invalid character.
+l.42 ...18p^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@
+                                                  ^^@^^@^^@^^@^^@^^@^^@^^@^^...
+A funny symbol that I can't read has just been input.
+Continue, and I'll forget that it ever happened.
 
- [7]
-(main.lof)
-\tf@lof=\write6
-\openout6 = `main.lof'.
+main.aux:42: Text line contains an invalid character.
+l.42 ...^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@
+                                                  ^^@^^@^^@^^@^^@^^@^^@^^@^^...
+A funny symbol that I can't read has just been input.
+Continue, and I'll forget that it ever happened.
 
- [8
+main.aux:42: Text line contains an invalid character.
+l.42 ...^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@
+                                                  ^^@^^@^^@^^@^^@^^@^^@^^@^^...
+A funny symbol that I can't read has just been input.
+Continue, and I'll forget that it ever happened.
 
-] (main.los)
-\tf@los=\write7
-\openout7 = `main.los'.
+main.aux:42: Text line contains an invalid character.
+l.42 ...^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@
+                                                  ^^@^^@^^@^^@^^@^^@^^@^^@^^...
+A funny symbol that I can't read has just been input.
+Continue, and I'll forget that it ever happened.
 
- [9
+main.aux:42: Text line contains an invalid character.
+l.42 ...^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@
+                                                  ^^@^^@^^@^^@^^@^^@^^@^^@^^...
+A funny symbol that I can't read has just been input.
+Continue, and I'll forget that it ever happened.
 
-] (frontmatter/abbreviations.tex
-Overfull \hbox (14.99326pt too wide) in alignment at lines 6--9
- [] [] 
- []
+main.aux:42: Text line contains an invalid character.
+l.42 ...^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@
+                                                  ^^@^^@^^@^^@^^@^^@^^@^^@^^...
+A funny symbol that I can't read has just been input.
+Continue, and I'll forget that it ever happened.
 
+main.aux:42: Text line contains an invalid character.
+l.42 ...^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@
+                                                  ^^@^^@^^@^^@^^@^^@^^@^^@^^...
+A funny symbol that I can't read has just been input.
+Continue, and I'll forget that it ever happened.
 
-Overfull \hbox (14.99326pt too wide) in alignment at lines 9--12
- [] [] 
- []
+main.aux:42: Text line contains an invalid character.
+l.42 ...^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@
+                                                  ^^@^^@^^@^^@^^@^^@^^@^^@^^...
+A funny symbol that I can't read has just been input.
+Continue, and I'll forget that it ever happened.
 
+main.aux:42: Text line contains an invalid character.
+l.42 ...^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@
+                                                  ^^@^^@^^@^^@^^@^^@^^@^^@^^...
+A funny symbol that I can't read has just been input.
+Continue, and I'll forget that it ever happened.
 
-Overfull \hbox (14.99326pt too wide) in alignment at lines 12--44
- [] [] 
- []
+main.aux:42: Text line contains an invalid character.
+l.42 ...^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@
+                                                  ^^@^^@^^@^^@^^@^^@^^@^^@^^...
+A funny symbol that I can't read has just been input.
+Continue, and I'll forget that it ever happened.
 
-frontmatter/abbreviations.tex:44: ignored error: Infinite glue shrinkage found 
-in box being split [10
+main.aux:42: Text line contains an invalid character.
+l.42 ...^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@
+                                                  ^^@^^@^^@^^@^^@^^@^^@^^@^^...
+A funny symbol that I can't read has just been input.
+Continue, and I'll forget that it ever happened.
 
-]) [11] (chapters/ch01_introduction.tex
-Chapter 1.
-[1
+main.aux:42: Text line contains an invalid character.
+l.42 ...^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@
+                                                  ^^@^^@^^@^^@^^@^^@^^@^^@^^...
+A funny symbol that I can't read has just been input.
+Continue, and I'll forget that it ever happened.
 
-]
-Overfull \hbox (38.42197pt too wide) in paragraph at lines 51--52
-[]\TU/TimesNewRoman(0)/b/n/10.95 Strengthen security posture\TU/TimesNewRoman(0
-)/m/n/10.95 : Cookie-session auth, input sanitization, upload validation, and C
-ORS/security
- []
+main.aux:42: Text line contains an invalid character.
+l.42 ...^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@
+                                                  ^^@^^@^^@^^@^^@^^@^^@^^@^^...
+A funny symbol that I can't read has just been input.
+Continue, and I'll forget that it ever happened.
 
-[2] [3] [4]) (chapters/ch02_project_management.tex [5]
-Chapter 2.
+main.aux:42: Text line contains an invalid character.
+l.42 ...^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@
+                                                  ^^@^^@^^@^^@^^@^^@^^@^^@^^...
+A funny symbol that I can't read has just been input.
+Continue, and I'll forget that it ever happened.
 
-Overfull \hbox (9.37701pt too wide) in paragraph at lines 21--22
+main.aux:42: Text line contains an invalid character.
+l.42 ...^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@
+                                                  ^^@^^@^^@^^@^^@^^@^^lines 21--22
 []\TU/TimesNewRoman(0)/m/n/10.95 Docker Compose enabled reproducible environmen
 t orchestration across development and production-
  []
 
 [6
 
-]
-Overfull \hbox (29.57957pt too wide) in alignment at lines 70--75
- [] [] [] [] 
- []
-
-
-Overfull \hbox (29.57957pt too wide) in alignment at lines 75--79
- [] [] [] [] 
- []
-
-
-Underfull \hbox (badness 1472) in paragraph at lines 84--84
-\TU/TimesNewRoman(0)/m/n/10.95 CORS lockdown, security headers, index
- []
-
-
-Underfull \hbox (badness 1867) in paragraph at lines 85--85
-\TU/TimesNewRoman(0)/m/n/10.95 analytics/heatmap, SLA badges, bulk ac-
- []
-
-
-Underfull \hbox (badness 5050) in paragraph at lines 86--86
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Notification and Com-
- []
-
-
-Underfull \hbox (badness 1721) in paragraph at lines 86--86
-\TU/TimesNewRoman(0)/m/n/10.95 email stub, forgot/reset password, profile
- []
-
-
-Underfull \hbox (badness 1038) in paragraph at lines 88--88
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Docker production files, compose profile,
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 89--89
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Weeks
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 89--89
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Testing and Pre-
- []
-
-
-Underfull \hbox (badness 1824) in paragraph at lines 89--89
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Unit/integration/security/load tests, mobile
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 90--90
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Weeks
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 91--91
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Weeks
- []
-
-
-Underfull \hbox (badness 2197) in paragraph at lines 91--91
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Reporting and Submis-
- []
-
-
-Overfull \hbox (29.57957pt too wide) in alignment at lines 79--92
- [] [] [] [] 
- []
-
-[7]
-Overfull \hbox (20.47275pt too wide) in alignment at lines 99--104
- [] [] [] [] 
- []
-
-
-Overfull \hbox (20.47275pt too wide) in alignment at lines 104--108
- [] [] [] [] 
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 109--109
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Repository initialization, environment
- []
-
-
-Underfull \hbox (badness 2376) in paragraph at lines 110--110
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Mongo connectivity, schema definitions,
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 112--112
-[]|\TU/TimesNewRoman(0)/m/n/10.95 EXIF location extraction and reverse-
- []
-
-
-Underfull \hbox (badness 1337) in paragraph at lines 112--112
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Analyze pipeline readi-
- []
-
-
-Underfull \hbox (badness 1983) in paragraph at lines 115--115
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Map refinement, draft persistence, error
- []
-
-
-Underfull \hbox (badness 1325) in paragraph at lines 115--115
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Baseline UX hardening
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 116--116
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Production-risk expo-
- []
-
-
-Underfull \hbox (badness 2556) in paragraph at lines 117--117
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Worker panel, assignment engine, audit
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 118--118
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Communication layer
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 120--120
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Production-ready stack
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 121--121
-[]|\TU/TimesNewRoman(0)/m/n/10.95 W13–
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 122--122
-[]|\TU/TimesNewRoman(0)/m/n/10.95 W15–
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 123--123
-[]|\TU/TimesNewRoman(0)/m/n/10.95 W17–
- []
-
-
-Overfull \hbox (20.47275pt too wide) in alignment at lines 108--124
- [] [] [] [] 
- []
-
-[8]
-Underfull \hbox (badness 10000) in paragraph at lines 146--146
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Documentation and Han-
- []
-
-[9]
-Overfull \hbox (29.57957pt too wide) in alignment at lines 165--170
- [] [] [] [] 
- []
-
-
-Overfull \hbox (29.57957pt too wide) in alignment at lines 170--174
- [] [] [] [] 
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 177--177
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Invalid/malicious up-
- []
-
-
-Underfull \hbox (badness 2809) in paragraph at lines 178--178
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Unauthorized route ac-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 179--179
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Configuration drift
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 180--180
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Notification inconsis-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 181--181
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Performance degrada-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 182--182
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Documentation mis-
- []
-
-
-Overfull \hbox (29.57957pt too wide) in alignment at lines 174--184
- [] [] [] [] 
- []
-
-[10] [11]) (chapters/ch03_system_requirement_study.tex [12]
+] [7]
+chapters/ch02_project_management.tex:88: ignored error: Infinite glue shrinkage
+ found in box being split [8] [9]
+File: ../../images/gantt chart.png Graphic file (type bmp)
+<../../images/gantt chart.png>
+ [10]
+chapters/ch02_project_management.tex:159: ignored error: Infinite glue shrinkag
+e found in box being split [11] [12])
+(chapters/ch03_system_requirement_study.tex [13]
 Chapter 3.
 
-Overfull \hbox (4.07275pt too wide) in alignment at lines 32--37
- [] [] [] 
+Underfull \hbox (badness 1418) in paragraph at lines 59--59
+[]|\TU/TimesNewRoman(0)/m/n/10.95 Analyze endpoint shall accept valid 
  []
 
-
-Overfull \hbox (4.07275pt too wide) in alignment at lines 37--41
- [] [] [] 
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 46--46
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Analyze endpoint shall accept valid
- []
-
-
-Underfull \hbox (badness 3068) in paragraph at lines 48--48
-[]|\TU/TimesNewRoman(0)/m/n/10.95 System shall produce a complaint draft syn-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 59--59
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Admin/dept-head shall access overview and
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 61--61
-[]|\TU/TimesNewRoman(0)/m/n/10.95 System shall expose anonymized complaint
- []
-
-
-Overfull \hbox (4.07275pt too wide) in alignment at lines 41--65
- [] [] [] 
- []
-
-[13
+[14
 
 ]
-chapters/ch03_system_requirement_study.tex:65: ignored error: Infinite glue shr
-inkage found in box being split [14]
-Overfull \hbox (4.07275pt too wide) in alignment at lines 69--74
- [] [] [] 
- []
-
-
-Overfull \hbox (4.07275pt too wide) in alignment at lines 74--78
- [] [] [] 
- []
-
-
-Underfull \hbox (badness 1226) in paragraph at lines 79--79
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Cookie-session auth (with JWT compatibility),
-
- []
-
-
-Underfull \hbox (badness 1742) in paragraph at lines 85--85
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Queue-based generation and container deploy-
- []
-
-
-Overfull \hbox (4.07275pt too wide) in alignment at lines 78--90
- [] [] [] 
- []
-
-chapters/ch03_system_requirement_study.tex:90: ignored error: Infinite glue shr
-inkage found in box being split [15] [16]
-Overfull \hbox (3.03998pt too wide) in paragraph at lines 142--143
+chapters/ch03_system_requirement_study.tex:59: ignored error: Infinite glue shr
+inkage found in box being split [15]
+chapters/ch03_system_requirement_study.tex:78: ignored error: Infinite glue shr
+inkage found in box being split [16] [17]
+Overfull \hbox (3.03998pt too wide) in paragraph at lines 114--115
 \TU/TimesNewRoman(0)/m/n/10.95 UI constraints define the rendering, state-manag
 ement, and responsiveness requirements that guard against
  []
 
-[17] [18]
-Overfull \hbox (20.47275pt too wide) in alignment at lines 209--214
- [] [] [] [] 
- []
-
-
-Overfull \hbox (20.47275pt too wide) in alignment at lines 214--218
- [] [] [] [] 
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 219--219
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Duplicate username/email
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 219--219
-\TU/TimesNewRoman(0)/m/n/10.95 is rejected with validation
- []
-
-
-Underfull \hbox (badness 4805) in paragraph at lines 221--221
-[]|\TU/TimesNewRoman(0)/m/n/10.95 If analyze unavailable, user
- []
-
-
-Underfull \hbox (badness 3260) in paragraph at lines 222--222
-[]|\TU/TimesNewRoman(0)/m/n/10.95 If no notifications available,
- []
-
-
-Underfull \hbox (badness 4531) in paragraph at lines 223--223
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Submit feedback after com-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 223--223
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Duplicate feedback attempt
- []
-
-
-Underfull \hbox (badness 5105) in paragraph at lines 225--225
-[]|\TU/TimesNewRoman(0)/m/n/10.95 If assignment mismatch oc-
- []
-
-
-Underfull \hbox (badness 2020) in paragraph at lines 225--225
-\TU/TimesNewRoman(0)/m/n/10.95 curs, operation is denied by
- []
-
-
-Underfull \hbox (badness 4967) in paragraph at lines 226--226
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Filter department complaints
- []
-
-
-Underfull \hbox (badness 4156) in paragraph at lines 228--228
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Approve/reject worker regis-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 228--228
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Already-approved/rejected
- []
-
-
-Underfull \hbox (badness 6016) in paragraph at lines 230--230
-[]|\TU/TimesNewRoman(0)/m/n/10.95 View anonymized complaint
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 230--230
-[]|\TU/TimesNewRoman(0)/m/n/10.95 No authenticated personal
- []
-
-
-Overfull \hbox (20.47275pt too wide) in alignment at lines 218--231
- [] [] [] [] 
- []
-
-chapters/ch03_system_requirement_study.tex:231: ignored error: Infinite glue sh
-rinkage found in box being split [19] [20])
-(chapters/ch04_proposed_system_requirements.tex [21]
+[18]
+chapters/ch03_system_requirement_study.tex:182: ignored error: Infinite glue sh
+rinkage found in box being split [19])
+(chapters/ch04_proposed_system_requirements.tex [20]
 Chapter 4.
-[22
+[21
 
 ]
-Overfull \hbox (4.07275pt too wide) in alignment at lines 54--59
- [] [] [] 
- []
-
-
-Overfull \hbox (4.07275pt too wide) in alignment at lines 59--63
- [] [] [] 
- []
-
-
-Underfull \hbox (badness 4608) in paragraph at lines 73--73
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Supports evidence-driven supervision and re-
- []
-
-
-Underfull \hbox (badness 2608) in paragraph at lines 75--75
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Health endpoints and timing
- []
-
-
-Underfull \hbox (badness 1953) in paragraph at lines 75--75
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Supports operational diagnosis and production
-
- []
-
-
-Overfull \hbox (4.07275pt too wide) in alignment at lines 63--77
- [] [] [] 
- []
-
-chapters/ch04_proposed_system_requirements.tex:77: ignored error: Infinite glue
- shrinkage found in box being split [23] [24]
-Underfull \hbox (badness 10000) in paragraph at lines 124--124
-[]|\TU/TimesNewRoman(0)/b/n/10.95 Requirement
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 128--128
-[]|\TU/TimesNewRoman(0)/b/n/10.95 Requirement
- []
-
-
-Underfull \hbox (badness 5847) in paragraph at lines 131--131
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Registration and
- []
-
-
-Underfull \hbox (badness 1102) in paragraph at lines 131--131
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Register/login routes, cookie-session issuanc
-e,
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 132--132
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Analyze Module +
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 133--133
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Lifecycle and
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 133--133
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Complaint Lifecycle
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 134--134
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Worker Opera-
- []
-
-
-Underfull \hbox (badness 8189) in paragraph at lines 135--135
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Governance and
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 137--137
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Reporting and
- []
-
-
-Underfull \hbox (badness 3895) in paragraph at lines 137--137
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Analytics/Public Mod-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 137--137
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Overview metrics, heatmap endpoint,
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 138--138
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Resilience and
- []
-
-
-Underfull \hbox (badness 3895) in paragraph at lines 138--138
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Cross-cutting Platform
- []
-
+chapters/ch04_proposed_system_requirements.tex:71: ignored error: Infinite glue
+ shrinkage found in box being split [22] [23]
+chapters/ch04_proposed_system_requirements.tex:128: ignored error: Infinite glu
+e shrinkage found in box being split [24]
 File: ../../images/sequence_diagram.png Graphic file (type bmp)
 <../../images/sequence_diagram.png>
+
+Overfull \hbox (1.6814pt too wide) in paragraph at lines 149--150
+[]\TU/TimesNewRoman(0)/b/n/10.95 Complaint Lifecycle Module: \TU/TimesNewRoman(
+0)/m/n/10.95 Emits events to the Notification module and triggers auto-assignme
+nt
+ []
+
 [25]
-Overfull \hbox (13.1796pt too wide) in alignment at lines 157--162
- [] [] [] 
+Overfull \hbox (9.56061pt too wide) in paragraph at lines 152--153
+[]\TU/TimesNewRoman(0)/b/n/10.95 Analytics & Public Modules: \TU/TimesNewRoman(
+0)/m/n/10.95 Execute aggregate queries on the complaint store to expose anonymi
+zed
  []
 
-
-Overfull \hbox (13.1796pt too wide) in alignment at lines 162--166
- [] [] [] 
- []
-
-
-Underfull \hbox (badness 4120) in paragraph at lines 167--167
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Provides current user identity and role
- []
-
-
-Underfull \hbox (badness 1231) in paragraph at lines 168--168
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Produces classification/location/draft pay-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 169--169
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Complaint lifecycle
- []
-
-
-Underfull \hbox (badness 2073) in paragraph at lines 169--169
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Emits status/registration/escalation events
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 170--170
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Complaint lifecycle
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 172--172
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Applies corrected decisions for low-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 174--174
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Exposes anonymized subset for trans-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 175--175
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Publishes liveness/readiness/dependency
- []
-
-
-Overfull \hbox (13.1796pt too wide) in alignment at lines 166--176
- [] [] [] 
- []
-
-chapters/ch04_proposed_system_requirements.tex:176: ignored error: Infinite glu
-e shrinkage found in box being split [26]) (chapters/ch05_system_design.tex
-[27]
+) (chapters/ch05_system_design.tex [26]
 Chapter 5.
 File: ../../images/system_context_diagram.png Graphic file (type bmp)
 <../../images/system_context_diagram.png>
 File: ../../images/architecture.png Graphic file (type bmp)
 <../../images/architecture.png>
-[28
+[27
 
 ]
 File: ../../images/new_er.png Graphic file (type bmp)
 <../../images/new_er.png>
- [29]
+ [28]
 File: ../../images/flowchart.png Graphic file (type bmp)
 <../../images/flowchart.png>
- [30] [31]
+ [29] [30]
 File: ../../images/class_diagram.png Graphic file (type bmp)
 <../../images/class_diagram.png>
 File: ../../images/sequence_diagram.png Graphic file (type bmp)
 <../../images/sequence_diagram.png>
- [32]
+ [31]
 File: ../../images/activity_diagram.png Graphic file (type bmp)
 <../../images/activity_diagram.png>
- [33]
+ [32]
 Overfull \vbox (789.61739pt too high) has occurred while \output is active []
 
 
-[34]
+[33]
 File: ../../images/deployment_diagram.png Graphic file (type bmp)
 <../../images/deployment_diagram.png>
- [35] [36]
-File: ../../images/gui_wireframe.png Graphic file (type bmp)
-<../../images/gui_wireframe.png>
- [37]
+ [34] [35]
+File: ../../images/GUI_Wireframe.png Graphic file (type bmp)
+<../../images/GUI_Wireframe.png>
+ [36]
 File: ../../images/citizen_homepage.png Graphic file (type bmp)
 <../../images/citizen_homepage.png>
 Package hyperref Info: bookmark level for unknown screenshot defaults to 0 on i
-nput line 219.
+nput line 217.
 File: ../../images/complaint_review_with_geo_tag.png Graphic file (type bmp)
 <../../images/complaint_review_with_geo_tag.png>
- [38]
+ [37]
 File: ../../images/grievance_status_tracker.png Graphic file (type bmp)
 <../../images/grievance_status_tracker.png>
 File: ../../images/admin_worker_task_assignment_pannel.png Graphic file (type b
@@ -1339,482 +837,54 @@ File: ../../images/admin_dashboard.png Graphic file (type bmp)
 File: ../../images/admin_human_complaint_review_pannel.png Graphic file (type b
 mp)
 <../../images/admin_human_complaint_review_pannel.png>
- [39]
+ [38]
 File: ../../images/grievance_heatmap.png Graphic file (type bmp)
 <../../images/grievance_heatmap.png>
 File: ../../images/satellite_complaint_image.png Graphic file (type bmp)
 <../../images/satellite_complaint_image.png>
- [40]
+ [39]
 File: ../../images/admin_english_complaint_view.png Graphic file (type bmp)
 <../../images/admin_english_complaint_view.png>
 File: ../../images/login_page.png Graphic file (type bmp)
 <../../images/login_page.png>
 File: ../../images/notification_pannel.png Graphic file (type bmp)
 <../../images/notification_pannel.png>
- [41])
-(chapters/ch06_implementation_planning.tex [42]
+ [40])
+(chapters/ch06_implementation_planning.tex [41]
 Chapter 6.
 
-Underfull \hbox (badness 10000) in paragraph at lines 59--59
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Backend Frame-
+Underfull \hbox (badness 1189) in paragraph at lines 59--59
+[]|\TU/TimesNewRoman(0)/m/n/10.95 python-jose, 
  []
 
+[42
 
-Underfull \hbox (badness 10000) in paragraph at lines 59--59
-[]|\TU/TimesNewRoman(0)/m/n/10.95 python-jose,
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 59--59
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Frontend Frame-
- []
-
-[43
-
-] [44] [45]
+] [43] [44]
 Overfull \hbox (6.1505pt too wide) in paragraph at lines 136--137
 \TU/TimesNewRoman(0)/m/n/10.95 Deliverables included worker assignment logic, t
 imeline/audit features, comments/notes, escalation, triage,
  []
 
-[46] [47]
-Underfull \hbox (badness 10000) in paragraph at lines 198--198
-[]|\TU/TimesNewRoman(0)/m/n/12 Complaint cre- 
- []
-
-
-Underfull \hbox (badness 1019) in paragraph at lines 198--198
-[]|\TU/TimesNewRoman(0)/m/n/12 Graceful fallback behavior under 
- []
-
-[48]
-Underfull \hbox (badness 10000) in paragraph at lines 217--217
-[]|\TU/TimesNewRoman(0)/b/n/10.95 Planning/Implementation Considera-
- []
-
-
-Overfull \hbox (13.1796pt too wide) in alignment at lines 214--219
- [] [] [] 
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 221--221
-[]|\TU/TimesNewRoman(0)/b/n/10.95 Planning/Implementation Considera-
- []
-
-
-Overfull \hbox (13.1796pt too wide) in alignment at lines 219--223
- [] [] [] 
- []
-
-
-Underfull \hbox (badness 8132) in paragraph at lines 224--224
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Required generic forgot-password re-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 226--226
-[]|\TU/TimesNewRoman(0)/m/n/10.95 assignment views, ap-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 226--226
-\TU/TimesNewRoman(0)/m/n/10.95 proval/rejection, service-area
- []
-
-
-Underfull \hbox (badness 1102) in paragraph at lines 227--227
-[]|\TU/TimesNewRoman(0)/m/n/10.95 list, unread count, mark sin-
- []
-
-
-Underfull \hbox (badness 6608) in paragraph at lines 228--228
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Admin-only corrective path for low-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 229--229
-[]|\TU/TimesNewRoman(0)/m/n/10.95 dashboards, heatmap,
- []
-
-
-Overfull \hbox (13.1796pt too wide) in alignment at lines 223--231
- [] [] [] 
- []
-
-[49] [50]
-Underfull \hbox (badness 10000) in paragraph at lines 303--303
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Response header
- []
-
-
-Underfull \hbox (badness 2582) in paragraph at lines 304--304
-[]|\TU/TimesNewRoman(0)/m/n/10.95 /api/v1/health/ready end-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 304--304
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Indicates dependency-level degrada-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 305--305
-[]|\TU/TimesNewRoman(0)/m/n/10.95 /api/v1/health/models
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 306--306
-[]|\TU/TimesNewRoman(0)/m/n/10.95 /api/v1/health/gpu end-
- []
-
-
-Underfull \hbox (badness 2828) in paragraph at lines 306--306
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Indicates active model and VRAM-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 307--307
-[]|\TU/TimesNewRoman(0)/m/n/10.95 unread-count behavior
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 308--308
-[]|\TU/TimesNewRoman(0)/m/n/10.95 open/unassigned com-
- []
-
-
-Underfull \hbox (badness 3942) in paragraph at lines 309--309
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Indicates classifier uncertainty trend
- []
-
-[51] [52]) (chapters/ch07_testing.tex [53]
+[45] [46] [47] [48] [49] [50]) (chapters/ch07_testing.tex [51]
 Chapter 7.
+[52
 
-Overfull \hbox (13.18654pt too wide) in alignment at lines 47--52
- [] [] [] 
+] [53] [54] [55] [56] [57] [58]
+chapters/ch07_testing.tex:253: ignored error: Infinite glue shrinkage found in 
+box being split [59] [60]
+Underfull \hbox (badness 1735) in paragraph at lines 286--286
+[]|\TU/TimesNewRoman(0)/m/n/10.95 XSS payload in 
  []
 
-
-Overfull \hbox (13.18654pt too wide) in alignment at lines 52--56
- [] [] [] 
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 57--57
-[]|\TU/TimesNewRoman(0)/m/n/10.95 GeoLocation bounds, complaint
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 57--57
-\TU/TimesNewRoman(0)/m/n/10.95 schema validity, confidence-score
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 58--58
-[]|$[][][][] [] [][][][] [] [][][][][][][][][][][] []
- []
-
-
-Underfull \hbox (badness 1087) in paragraph at lines 59--59
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Root route, health checks, versioned
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 61--61
-[]|$[][][][] [] [][][][][][][][][][][][] []
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 61--61
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Status update notification creation,
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 62--62
-[]|$[][][][] [] [][][][][][][][][][] []
- []
-
-
-Underfull \hbox (badness 6542) in paragraph at lines 62--62
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Upload hardening, analyze degrade
- []
-
-
-Underfull \hbox (badness 1565) in paragraph at lines 63--63
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Citizen and admin journeys, friction
- []
-
-
-Overfull \hbox (13.18654pt too wide) in alignment at lines 56--66
- [] [] [] 
- []
-
-[54
-
-] [55] [56] [57] [58] [59] [60]
-Overfull \hbox (36.87273pt too wide) in alignment at lines 240--245
- [] [] [] [] [] 
- []
-
-
-Overfull \hbox (36.87273pt too wide) in alignment at lines 245--249
- [] [] [] [] [] 
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 251--251
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Classification and
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 251--251
-\TU/TimesNewRoman(0)/m/n/10.95 draft payload are
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 252--252
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Complaint record
- []
-
-
-Underfull \hbox (badness 1755) in paragraph at lines 252--252
-\TU/TimesNewRoman(0)/m/n/10.95 appears with initial
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 253--253
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Status history in-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 253--253
-\TU/TimesNewRoman(0)/m/n/10.95 cludes creation
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 254--254
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Unread count and
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 255--255
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Forgot-password and reset-
- []
-
-
-Underfull \hbox (badness 2253) in paragraph at lines 256--256
-\TU/TimesNewRoman(0)/m/n/10.95 and worker actions
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 257--257
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Complaint transi-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 258--258
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Department-scoped
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 259--259
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Status history and
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 259--259
-\TU/TimesNewRoman(0)/m/n/10.95 citizen notification
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 261--261
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Worker status
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 262--262
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Assignment re-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 262--262
-\TU/TimesNewRoman(0)/m/n/10.95 and worker work-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 263--263
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Open triage queue and ap-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 263--263
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Decision persisted
- []
-
-
-Underfull \hbox (badness 5119) in paragraph at lines 263--263
-\TU/TimesNewRoman(0)/m/n/10.95 and queue updates
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 264--264
-[]|\TU/TimesNewRoman(0)/m/n/10.95 All selected com-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 264--264
-\TU/TimesNewRoman(0)/m/n/10.95 plaints updated
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 265--265
-\TU/TimesNewRoman(0)/m/n/10.95 expected column
- []
-
-
-Underfull \hbox (badness 2245) in paragraph at lines 266--266
-\TU/TimesNewRoman(0)/m/n/10.95 points render with-
- []
-
-
-Underfull \hbox (badness 1360) in paragraph at lines 267--267
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Access public board without au-
- []
-
-
-Underfull \hbox (badness 3240) in paragraph at lines 267--267
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Anonymized listing
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 268--268
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Request rejected
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 269--269
-[]|\TU/TimesNewRoman(0)/m/n/10.95 User-friendly
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 269--269
-\TU/TimesNewRoman(0)/m/n/10.95 retryable 503 re-
- []
-
-
-Overfull \hbox (36.87273pt too wide) in alignment at lines 249--271
- [] [] [] [] [] 
- []
-
-chapters/ch07_testing.tex:271: ignored error: Infinite glue shrinkage found in 
-box being split [61] [62]
-Overfull \hbox (20.47275pt too wide) in alignment at lines 290--295
- [] [] [] [] 
- []
-
-
-Overfull \hbox (20.47275pt too wide) in alignment at lines 295--299
- [] [] [] [] 
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 304--304
-[]|\TU/TimesNewRoman(0)/m/n/10.95 200 with es-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 304--304
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Sanitization removes exe-
- []
-
-
-Underfull \hbox (badness 1783) in paragraph at lines 306--306
-[]|\TU/TimesNewRoman(0)/m/n/10.95 200 with head-
- []
-
-
-Underfull \hbox (badness 1286) in paragraph at lines 307--307
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Allow-origin policy consis-
- []
-
-
-Underfull \hbox (badness 1117) in paragraph at lines 308--308
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Reset workflow rejects un-
- []
-
-
-Overfull \hbox (20.47275pt too wide) in alignment at lines 299--310
- [] [] [] [] 
- []
-
-chapters/ch07_testing.tex:310: ignored error: Infinite glue shrinkage found in 
-box being split [63]) (chapters/ch08_limitations_future_scope.tex [64]
+chapters/ch07_testing.tex:286: ignored error: Infinite glue shrinkage found in 
+box being split [61]) (chapters/ch08_limitations_future_scope.tex [62]
 Chapter 8.
-[65
+[63
 
-] [66] [67]
-Overfull \hbox (36.88661pt too wide) in alignment at lines 135--140
- [] [] [] [] [] 
- []
-
-
-Overfull \hbox (36.88661pt too wide) in alignment at lines 140--144
- [] [] [] [] [] 
- []
-
-
-Underfull \hbox (badness 1609) in paragraph at lines 145--145
-[]|\TU/TimesNewRoman(0)/m/n/10.95 SMTP relay production inte-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 146--146
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Centralized secrets manage-
- []
-
-
-Underfull \hbox (badness 2253) in paragraph at lines 147--147
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Distributed queue broker for
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 151--151
-[]|\TU/TimesNewRoman(0)/m/n/10.95 SLA rules engine with
- []
-
-
-Underfull \hbox (badness 2368) in paragraph at lines 157--157
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Multi-tenant authority hierar-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 158--158
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Formal accessibility confor-
- []
-
-
-Underfull \hbox (badness 2189) in paragraph at lines 159--159
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Integrated vulnerability scan-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 161--161
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Offline-first synchronization
- []
-
-
-Underfull \hbox (badness 1152) in paragraph at lines 163--163
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Auto-generated administrative
- []
-
-
-Overfull \hbox (36.88661pt too wide) in alignment at lines 144--166
- [] [] [] [] [] 
- []
-
-chapters/ch08_limitations_future_scope.tex:166: ignored error: Infinite glue sh
-rinkage found in box being split [68] [69])
-(chapters/ch09_conclusion_references.tex [70]
+] [64] [65]
+chapters/ch08_limitations_future_scope.tex:159: ignored error: Infinite glue sh
+rinkage found in box being split [66] [67])
+(chapters/ch09_conclusion_references.tex [68]
 Chapter 9.
 
 Underfull \hbox (badness 10000) in paragraph at lines 52--54
@@ -1828,15 +898,15 @@ Underfull \hbox (badness 10000) in paragraph at lines 52--54
 le: [][]$[][][][][] [] [] [] [][] [] [][][][] [] [][][] [] [][][][] []
  []
 
-[71
 
-]
 Underfull \hbox (badness 4403) in paragraph at lines 61--63
 []\TU/TimesNewRoman(0)/m/n/10.95 E. Mosqueira-Rey, E. HernÃ¡ndez-Pereira, D. Al
 onso-RÃos, F. Bobes-BascarÃ¡n, and A.
  []
 
+[69
 
+]
 Underfull \hbox (badness 2922) in paragraph at lines 70--72
 []\TU/TimesNewRoman(0)/m/n/10.95 OWASP Foundation,  “File upload security cheat
  sheet,” [Online]. Available: [][]$[][][][][] [] [] []
@@ -1862,369 +932,314 @@ able: [][]$[][][][][] [] [] [] [][][] [] [][][][][][][] [] [][][] [] [][][][] [
 ]
  []
 
-[72]) (chapters/ch10_appendices.tex [73]
+[70]) (chapters/ch10_appendices.tex [71]
 Chapter 10.
 
-Overfull \hbox (11.37286pt too wide) in alignment at lines 9--14
- [] [] [] [] 
+Overfull \hbox (9.807pt too wide) in paragraph at lines 57--57
+[]|\TU/TimesNewRoman(0)/m/n/12 MUNI_HORTICULTURE|  
  []
 
-
-Overfull \hbox (11.37286pt too wide) in alignment at lines 14--18
- [] [] [] [] 
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 19--19
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Citizen/worker self-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 20--20
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Cookie-session login
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 20--20
-\TU/TimesNewRoman(0)/m/n/10.95 (JWT compatibility
- []
-
-
-Underfull \hbox (badness 6493) in paragraph at lines 25--25
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Password reset submis-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 28--28
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Regenerate complaint
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 29--29
-[]|$[][][][] [] [][] [] [][][][][][][][][][] [] [][][][][][][][][][] []
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 29--29
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Poll queued generation
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 32--32
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Role-filtered complaint
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 33--33
-[]|$[][][][] [] [][] [] [][][][][][][][][][] [] [][][][][][][][][][] []
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 34--34
-[]|$[][][][] [] [][] [] [][][][][][][][][][] [] [][][][][][][][][][] []
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 34--34
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Admin/Dept
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 35--35
-[]|$[][][][] [] [][] [] [][][][][][][][][][] [] [][][][][][][][][][] []
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 35--35
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Admin/Dept
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 36--36
-[]|$[][][][] [] [][] [] [][][][][][][][][][] [] [][][][][][][][][][] []
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 36--36
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Admin/Dept
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 37--37
-[]|$[][][][] [] [][] [] [][][][][][][][][][] [] [][][][][][][][][][] []
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 38--38
-[]|$[][][][] [] [][] [] [][][][][][][][][][] [] [][][][][][][][][][] []
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 38--38
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Admin/Dept
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 39--39
-[]|$[][][][] [] [][] [] [][][][][][][][][][] [] [][][][][][][][][][] []
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 39--39
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Admin/Dept
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 40--40
-[]|$[][][][] [] [][] [] [][][][][][][][][][] [] [][][][][][][][][][] []
- []
-
-
-Underfull \hbox (badness 4608) in paragraph at lines 40--40
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Add collaborative com-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 41--41
-[]|$[][][][] [] [][] [] [][][][][][][][][][] [] [][][][][][][][][][] []
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 43--43
-[]|$[][][][] [] [][] [] [][][][][][][][][][] [] [][][][] []
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 48--48
-[]|$[][][][][][][][] [] [][] [] [][][] [] [][] [] [][][][][][][][][][] []
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 50--50
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Admin/Dept
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 53--53
-[]|$[][][][][][][][] [] [][][][][][][] [] [][][] [] [][][][][][] []
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 54--54
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Update worker service
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 59--59
-[]|$[][][][] [] [][] [] [][][][][][][][][][][][][] []
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 60--60
-[]|$[][][][] [] [][] [] [][][][][][][][][][][][][] []
- []
-
-
-Underfull \hbox (badness 2478) in paragraph at lines 60--60
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Mark single notification
- []
-
-
-Underfull \hbox (badness 7925) in paragraph at lines 63--63
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Retrieve low-confidence
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 67--67
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Admin/Dept
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 68--68
-[]|$[][][][] [] [][] [] [][][][][][] [] [][][] [] [][] []
- []
-
-
-Overfull \hbox (11.37286pt too wide) in alignment at lines 18--74
- [] [] [] [] 
- []
-
-chapters/ch10_appendices.tex:74: ignored error: Infinite glue shrinkage found i
-n box being split [74
+chapters/ch10_appendices.tex:57: ignored error: Infinite glue shrinkage found i
+n box being split [72
 
 ]
-chapters/ch10_appendices.tex:74: ignored error: Infinite glue shrinkage found i
-n box being split [75]
-Overfull \hbox (8.6366pt too wide) in alignment at lines 79--84
- [] [] [] 
- []
-
-
-Overfull \hbox (8.6366pt too wide) in alignment at lines 84--88
- [] [] [] 
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 89--89
-[]|\TU/TimesNewRoman(0)/m/n/12 Runtime mode (develop-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 90--90
-[]|$[][][][][][][] [] [] []
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 91--91
-[]|$[][][][][][][] [] [] []
- []
-
-
-Overfull \hbox (48.03552pt too wide) in paragraph at lines 93--93
-[]|$[][][][][][][][][][][][][][][][][][][][][][][][][][]$| 
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 95--95
-[]|$[][][][][][] [] [][][][][] [] [][][][][][] []
- []
-
-
-Underfull \hbox (badness 4441) in paragraph at lines 95--95
-[]|\TU/TimesNewRoman(0)/m/n/12 1440 (dev) / 480
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 98--98
-[]|$[][][][] [] [] []
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 100--100
-[]|$[][][][][][][][] []
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 101--101
-[]|$[][][][][][][][] []
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 104--104
-[]|$[][][] [] [][][][][][] [] [][][][][][][] []
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 109--109
-[]|$[][][][][] [] [][][][][][] [] [][][][][][][] []
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 110--110
-[]|$[][][][][] [] [][][][][][] [] [][][][] []
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 111--111
-[]|$[][][][] [] [][][][][][][][][] [] [][][][][] []
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 115--115
-[]|$[][][][][][][] []
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 115--115
-[][][][][][][][][][][] []
- []
-
-
-Overfull \hbox (8.6366pt too wide) in alignment at lines 88--119
- [] [] [] 
- []
-
-chapters/ch10_appendices.tex:119: ignored error: Infinite glue shrinkage found 
-in box being split [76]
-chapters/ch10_appendices.tex:119: ignored error: Infinite glue shrinkage found 
-in box being split [77]
-Overfull \hbox (9.807pt too wide) in paragraph at lines 136--136
-[]|\TU/TimesNewRoman(0)/m/n/12 MUNI_HORTICULTURE| 
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 152--152
-[]|\TU/TimesNewRoman(0)/b/n/10.95 Requirement
- []
-
-
-Overfull \hbox (20.47275pt too wide) in alignment at lines 149--154
- [] [] [] [] 
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 156--156
-[]|\TU/TimesNewRoman(0)/b/n/10.95 Requirement
- []
-
-
-Overfull \hbox (20.47275pt too wide) in alignment at lines 154--158
- [] [] [] [] 
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 159--159
-[]|\TU/TimesNewRoman(0)/m/n/10.95 User registration
- []
-
-
-Underfull \hbox (badness 6078) in paragraph at lines 160--160
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Login and cookie-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 162--162
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Password recov-
- []
-
-
-Underfull \hbox (badness 2435) in paragraph at lines 162--162
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Forgot/reset endpoint implementation and UI
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 165--165
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Draft regeneration
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 176--176
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Analytics and
- []
-
-
-Overfull \hbox (20.47275pt too wide) in alignment at lines 158--182
- [] [] [] [] 
- []
-
-[78]
-chapters/ch10_appendices.tex:182: ignored error: Infinite glue shrinkage found 
-in box being split [79]) [80] (main.aux)
+chapters/ch10_appendices.tex:89: ignored error: Infinite glue shrinkage found i
+n box being split [73]) [74] (main.aux)
  ***********
 LaTeX2e <2025-11-01>
 L3 programming layer <2025-12-24>
  ***********
+
+
+LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
+
 Package rerunfilecheck Info: File `main.out' has not changed.
-(rerunfilecheck)             Checksum: BD511FFE75C7B80CA7EE61FDD1E72185;39811.
+(rerunfilecheck)             Checksum: 27D064E6C7D554331A297C09AC0F8B56;39307.
  ) 
 Here is how much of TeX's memory you used:
- 15490 strings out of 402987
- 299969 string characters out of 5448525
- 872865 words of memory out of 5000000
- 43967 multiletter control sequences out of 15000+600000
+ 15565 strings out of 402987
+ 301711 string characters out of 5448525
+ 845177 words of memory out of 5000000
+ 44035 multiletter control sequences out of 15000+600000
  632815 words of font info for 80 fonts, out of 8000000 for 9000
  1348 hyphenation exceptions out of 8191
- 73i,12n,93p,1042b,535s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 73i,11n,93p,1535b,617s stack positions out of 10000i,1000n,20000p,200000b,200000s
 
 Output written on c:/Users\Vikra\OneDrive\Desktop\Jan-Sunwai AI\docs\reports\la
-tex\main.pdf (91 pages).
+tex\main.pdf (80 pages).
+
+A funny symbol that I can't read has just been input.
+Continue, and I'll forget that it ever happened.
+
+main.aux:42: Text line contains an invalid character.
+l.42 ...^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@
+                                                  ^^@^^@^^@^^@^^@^^@^^@^^@^^...
+A funny symbol that I can't read has just been input.
+Continue, and I'll forget that it ever happened.
+
+main.aux:42: Text line contains an invalid character.
+l.42 ...^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@
+                                                  ^^@^^@^^@^^@^^@^^@^^@^^@^^...
+A funny symbol that I can't read has just been input.
+Continue, and I'll forget that it ever happened.
+
+main.aux:42: Text line contains an invalid character.
+l.42 ...^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@
+                                                  ^^@^^@^^@^^@^^@^^@^^@^^@^^...
+A funny symbol that I can't read has just been input.
+Continue, and I'll forget that it ever happened.
+
+main.aux:42: Text line contains an invalid character.
+l.42 ...^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@
+                                                  ^^@^^@^^@^^@^^@^^@^^@^^@^^...
+A funny symbol that I can't read has just been input.
+Continue, and I'll forget that it ever happened.
+
+main.aux:42: Text line contains an invalid character.
+l.42 ...^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@
+                                                  ^^@^^@^^@^^@^^@^^@^^@^^@^^...
+A funny symbol that I can't read has just been input.
+Continue, and I'll forget that it ever happened.
+
+main.aux:42: Text line contains an invalid character.
+l.42 ...^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@
+                                                  ^^@^^@^^@^^@^^@^^@^^@^^@^^...
+A funny symbol that I can't read has just been input.
+Continue, and I'll forget that it ever happened.
+
+main.aux:42: Text line contains an invalid character.
+l.42 ...^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@
+                                                  ^^@^^@^^@^^@^^@^^@^^@^^@^^...
+A funny symbol that I can't read has just been input.
+Continue, and I'll forget that it ever happened.
+
+main.aux:42: Text line contains an invalid character.
+l.42 ...^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@
+                                                  ^^@^^@^^@^^@^^@^^@^^@^^@^^...
+A funny symbol that I can't read has just been input.
+Continue, and I'll forget that it ever happened.
+
+main.aux:42: Text line contains an invalid character.
+l.42 ...^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@
+                                                  ^^@^^@^^@^^@^^@^^@^^@^^@^^...
+A funny symbol that I can't read has just been input.
+Continue, and I'll forget that it ever happened.
+
+main.aux:42: Text line contains an invalid character.
+l.42 ...^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@
+                                                  ^^@^^@^^@^^@^^@^^@^^@^^@^^...
+A funny symbol that I can't read has just been input.
+Continue, and I'll forget that it ever happened.
+
+main.aux:42: Text line contains an invalid character.
+l.42 ...^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@
+                                                  ^^@^^@^^@^^@^^@^^@^^@^^@^^...
+A funny symbol that I can't read has just been input.
+Continue, and I'll forget that it ever happened.
+
+main.aux:42: Text line contains an invalid character.
+l.42 ...^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@
+                                                  ^^@^^@^^@^^@^^@^^@^^@^^@^^...
+A funny symbol that I can't read has just been input.
+Continue, and I'll forget that it ever happened.
+
+main.aux:42: Text line contains an invalid character.
+l.42 ...^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@
+                                                  ^^@^^@^^@^^@^^@^^@^^@^^@^^...
+A funny symbol that I can't read has just been input.
+Continue, and I'll forget that it ever happened.
+
+main.aux:42: Text line contains an invalid character.
+l.42 ...^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@
+                                                  ^^@^^@^^@^^@^^@^^@^^@^^@^^...
+A funny symbol that I can't read has just been input.
+Continue, and I'll forget that it ever happened.
+
+main.aux:42: Text line contains an invalid character.
+l.42 ...^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@
+                                                  ^^@^^@^^@^^@^^@^^@^^@^^@^^...
+A funny symbol that I can't read has just been input.
+Continue, and I'll forget that it ever happened.
+
+main.aux:42: Text line contains an invalid character.
+l.42 ...^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@
+                                                  ^^@^^@^^@^^@^^@^^@^^@^^@^^...
+A funny symbol that I can't read has just been input.
+Continue, and I'll forget that it ever happened.
+
+main.aux:42: Text line contains an invalid character.
+l.42 ...^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@
+                                                  ^^@^^@^^@^^@^^@^^@^^@^^@^^...
+A funny symbol that I can't read has just been input.
+Continue, and I'll forget that it ever happened.
+
+main.aux:42: Text line contains an invalid character.
+l.42 ...^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@
+                                                  ^^@^^@^^@^^@^^@^^@^^@^^@^^...
+A funny symbol that I can't read has just been input.
+Continue, and I'll forget that it ever happened.
+
+main.aux:42: Text line contains an invalid character.
+l.42 ...^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@
+                                                  ^^@^^@^^@^^@^^@^^@^^@^^@^^...
+A funny symbol that I can't read has just been input.
+Continue, and I'll forget that it ever happened.
+
+main.aux:42: Text line contains an invalid character.
+l.42 ...^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@
+                                                  ^^@^^@^^@^^@^^@^^@^^@^^@^^...
+A funny symbol that I can't read has just been input.
+Continue, and I'll forget that it ever happened.
+
+main.aux:42: Text line contains an invalid character.
+l.42 ...^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@
+                                                  ^^@^^@^^@^^@^^@^^@^^@^^@^^...
+A funny symbol that I can't read has just been input.
+Continue, and I'll forget that it ever happened.
+
+main.aux:42: Text line contains an invalid character.
+l.42 ...^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@
+                                                  ^^@^^@^^@^^@^^@^^@^^@^^@^^...
+A funny symbol that I can't read has just been input.
+Continue, and I'll forget that it ever happened.
+
+main.aux:42: Text line contains an invalid character.
+l.42 ...^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@
+                                                  ^^@^^@^^@^^@^^@^^@^^@^^@^^...
+A funny symbol that I can't read has just been input.
+Continue, and I'll forget that it ever happened.
+
+main.aux:42: Text line contains an invalid character.
+l.42 ...^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@
+                                                  ^^@^^@^^@^^@^^@^^@^^@^^@^^...
+A funny symbol that I can't read has just been input.
+Continue, and I'll forget that it ever happened.
+
+main.aux:42: Text line contains an invalid character.
+l.42 ...^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@
+                                                  ^^@^^@^^@^^@^^@^^@^^@^^@^^...
+A funny symbol that I can't read has just been input.
+Continue, and I'll forget that it ever happened.
+
+main.aux:42: Text line contains an invalid character.
+l.42 ...^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@
+                                                  ^^@^^@^^@^^@^^@^^@^^@^^@^^...
+A funny symbol that I can't read has just been input.
+Continue, and I'll forget that it ever happened.
+
+main.aux:42: Text line contains an invalid character.
+l.42 ...^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@
+                                                  ^^@^^@^^@^^@^^@^^@^^@^^@^^...
+A funny symbol that I can't read has just been input.
+Continue, and I'll forget that it ever happened.
+
+main.aux:42: Text line contains an invalid character.
+l.42 ...^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@
+                                                  ^^@^^@^^@^^@^^@^^@^^@^^@^^...
+A funny symbol that I can't read has just been input.
+Continue, and I'll forget that it ever happened.
+
+main.aux:42: Text line contains an invalid character.
+l.42 ...^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@
+                                                  ^^@^^@^^@^^@^^@^^@^^@^^@^^...
+A funny symbol that I can't read has just been input.
+Continue, and I'll forget that it ever happened.
+
+main.aux:42: Text line contains an invalid character.
+l.42 ...^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@
+                                                  ^^@^^@^^@^^@^^@^^@^^@^^@^^...
+A funny symbol that I can't read has just been input.
+Continue, and I'll forget that it ever happened.
+
+main.aux:42: Text line contains an invalid character.
+l.42 ...^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@
+                                                  ^^@^^@^^@^^@^^@^^@^^@^^@^^...
+A funny symbol that I can't read has just been input.
+Continue, and I'll forget that it ever happened.
+
+main.aux:42: Text line contains an invalid character.
+l.42 ...^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@
+                                                  ^^@^^@^^@^^@^^@^^@^^@^^@^^...
+A funny symbol that I can't read has just been input.
+Continue, and I'll forget that it ever happened.
+
+main.aux:42: Text line contains an invalid character.
+l.42 ...^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@
+                                                  ^^@^^@^^@^^@^^@^^@^^@^^@^^...
+A funny symbol that I can't read has just been input.
+Continue, and I'll forget that it ever happened.
+
+main.aux:42: Text line contains an invalid character.
+l.42 ...^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@
+                                                  ^^@^^@^^@^^@^^@^^@^^@^^@^^...
+A funny symbol that I can't read has just been input.
+Continue, and I'll forget that it ever happened.
+
+main.aux:42: Text line contains an invalid character.
+l.42 ...^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@
+                                                  ^^@^^@^^@^^@^^@^^@^^@^^@^^...
+A funny symbol that I can't read has just been input.
+Continue, and I'll forget that it ever happened.
+
+main.aux:42: Text line contains an invalid character.
+l.42 ...^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@
+                                                  ^^@^^@^^@^^@^^@^^@^^@^^@^^...
+A funny symbol that I can't read has just been input.
+Continue, and I'll forget that it ever happened.
+
+main.aux:42: Text line contains an invalid character.
+l.42 ...^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@
+                                                  ^^@^^@^^@^^@^^@^^@^^@^^@^^...
+A funny symbol that I can't read has just been input.
+Continue, and I'll forget that it ever happened.
+
+main.aux:42: Text line contains an invalid character.
+l.42 ...^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@
+                                                  ^^@^^@^^@^^@^^@^^@^^@^^@^^...
+A funny symbol that I can't read has just been input.
+Continue, and I'll forget that it ever happened.
+
+main.aux:42: Text line contains an invalid character.
+l.42 ...^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@
+                                                  ^^@^^@^^@^^@^^@^^@^^@^^@^^...
+A funny symbol that I can't read has just been input.
+Continue, and I'll forget that it ever happened.
+
+main.aux:42: Text line contains an invalid character.
+l.42 ...^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@
+                                                  ^^@^^@^^@^^@^^@^^@^^@^^@^^...
+A funny symbol that I can't read has just been input.
+Continue, and I'll forget that it ever happened.
+
+main.aux:42: Text line contains an invalid character.
+l.42 ...^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@
+                                                  ^^@^^@^^@^^@^^@^^@^^@^^@^^...
+A funny symbol that I can't read has just been input.
+Continue, and I'll forget that it ever happened.
+
+main.aux:42: Text line contains an invalid character.
+l.42 ...^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@
+                                                  ^^@^^@^^@^^@^^@^^@^^@^^@^^...
+A funny symbol that I can't read has just been input.
+Continue, and I'll forget that it ever happened.
+
+main.aux:42: Text line contains an invalid character.
+l.42 ...^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@
+                                                  ^^@^^@^^@^^@^^@^^@^^@^^@^^...
+A funny symbol that I can't read has just been input.
+Continue, and I'll forget that it ever happened.
+
+main.aux:42: Text line contains an invalid character.
+l.42 ...^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@^^@
+                                                  ^^@^^@^^@^^@^^@^^@^^@^^@^^...
+(That makes 100 errors; please try again.) 
+Here is how much of TeX's memory you used:
+ 14897 strings out of 402987
+ 283900 string characters out of 5448525
+ 745215 words of memory out of 5000000
+ 43475 multiletter control sequences out of 15000+600000
+ 628185 words of font info for 54 fonts, out of 8000000 for 9000
+ 1348 hyphenation exceptions out of 8191
+ 73i,0n,93p,16538b,271s stack positions out of 10000i,1000n,20000p,200000b,200000s
+
+No pages of output.

@@ -8,34 +8,34 @@ The report uses a 15-shot primary gallery and 5 supplementary slots. The table b
 \setlength{\LTpre}{0pt}
 \setlength{\LTpost}{0pt}
 \newcommand{\screenshottablerow}[4]{\hyperref[#1]{#2} & \hyperref[#1]{#3} & \path{#4} \\ \hline}
-\begin{longtable}{|p{0.10\textwidth}|p{0.44\textwidth}|p{0.38\textwidth}|}
+\begin{xltabular}{\textwidth}{|>{\RaggedRight\arraybackslash}p{0.10\textwidth}|>{\RaggedRight\arraybackslash}X|>{\RaggedRight\arraybackslash}p{0.38\textwidth}|}
 \hline
 \textbf{ID} & \textbf{Description} & \textbf{Expected File Name} \\ \hline
 \endfirsthead
 \hline
 \textbf{ID} & \textbf{Description} & \textbf{Expected File Name} \\ \hline
 \endhead
-\screenshottablerow{fig:s01}{S01}{Home page hero and call-to-action}{S01_home_desktop.png}
-\screenshottablerow{fig:s02}{S02}{Login page}{S02_login_desktop.png}
-\screenshottablerow{fig:s03}{S03}{Register page}{S03_register_desktop.png}
-\screenshottablerow{fig:s04}{S04}{Reset password page}{S04_reset_password_desktop.png}
-\screenshottablerow{fig:s05}{S05}{Admin dashboard overview}{S05_admin_dashboard_desktop.png}
-\screenshottablerow{fig:s06}{S06}{Triage human review table}{S06_triage_review_desktop.png}
-\screenshottablerow{fig:s07}{S07}{Worker assignment panel}{S07_worker_assignment_panel_desktop.png}
-\screenshottablerow{fig:s08}{S08}{Analytics dashboard}{S08_analytics_dashboard_desktop.png}
-\screenshottablerow{fig:s09}{S09}{Complaints map overview (satellite)}{S09_map_overview_satellite_desktop.png}
-\screenshottablerow{fig:s10}{S10}{Map popup detail view}{S10_map_popup_detail_desktop.png}
-\screenshottablerow{fig:s11}{S11}{Public transparency board}{S11_public_board_desktop.png}
-\screenshottablerow{fig:s12}{S12}{Grievance heatmap page}{S12_heatmap_desktop.png}
-\screenshottablerow{fig:s13}{S13}{Profile page (admin)}{S13_profile_admin_desktop.png}
-\screenshottablerow{fig:s14}{S14}{Citizen dashboard (complaint list/timeline)}{S14_citizen_dashboard_desktop.png}
-\screenshottablerow{fig:s15}{S15}{Notifications dropdown panel}{S15_notifications_panel_desktop.png}
-\screenshottablerow{fig:sx1}{SX1}{Supplementary: file complaint upload page}{SX1_file_complaint_upload_desktop.png}
-\screenshottablerow{fig:sx2}{SX2}{Supplementary: multilingual timeline snapshot}{SX2_citizen_timeline_multilingual_desktop.png}
-\screenshottablerow{fig:sx3}{SX3}{Supplementary: resolved complaint with feedback}{SX3_resolved_feedback_snapshot_desktop.png}
-\screenshottablerow{fig:sx4}{SX4}{Supplementary: result page location and AI analysis panel}{SX4_result_location_analysis_desktop.png}
-\screenshottablerow{fig:sx5}{SX5}{Supplementary: result page grievance description editor}{SX5_result_grievance_description_desktop.png}
-\end{longtable}
+\screenshottablerow{fig:s01}{S01}{Home page hero and call-to-action}{citizen_homepage.png}
+\screenshottablerow{fig:s02}{S02}{Login page}{login_page.png}
+\screenshottablerow{fig:s03}{S03}{Register page}{registration_page.png}
+\screenshottablerow{fig:s04}{S04}{Worker register page}{employee_registration_page.png}
+\screenshottablerow{fig:s05}{S05}{Admin dashboard overview}{admin_dashboard.png}
+\screenshottablerow{fig:s06}{S06}{Triage human review table}{admin_human_complaint_review_pannel.png}
+\screenshottablerow{fig:s07}{S07}{Worker assignment panel}{admin_worker_task_assignment_pannel.png}
+\screenshottablerow{fig:s08}{S08}{Analytics dashboard}{admin_analytics_page.png}
+\screenshottablerow{fig:s09}{S09}{Complaints map overview}{complaints_map.png}
+\screenshottablerow{fig:s10}{S10}{Satellite analysis view}{satellite_complaint_image.png}
+\screenshottablerow{fig:s11}{S11}{Resolved complaint view}{fully_completed_complaint.png}
+\screenshottablerow{fig:s12}{S12}{Grievance heatmap page}{grievance_heatmap.png}
+\screenshottablerow{fig:s13}{S13}{Detailed English complaint}{admin_english_complaint_view.png}
+\screenshottablerow{fig:s14}{S14}{Citizen dashboard (status tracker)}{grievance_status_tracker.png}
+\screenshottablerow{fig:s15}{S15}{Notifications dropdown panel}{notification_pannel.png}
+\screenshottablerow{fig:sx1}{SX1}{Supplementary: file complaint upload page}{complaint_file_page.png}
+\screenshottablerow{fig:sx2}{SX2}{Supplementary: complaint review with geo tag}{complaint_review_with_geo_tag.png}
+\screenshottablerow{fig:sx3}{SX3}{Supplementary: Hindi complaint draft}{hindi_complaint.png}
+\screenshottablerow{fig:sx4}{SX4}{Supplementary: English complaint draft}{english_complaint.png}
+\screenshottablerow{fig:sx5}{SX5}{Supplementary: Complaint review without geo tag}{complaint_review_without_geo_tag.png}
+\end{xltabular}
 \normalsize
 
 Expected screenshot directory: \path{docs/images/screenshots/}

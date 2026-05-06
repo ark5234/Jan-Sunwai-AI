@@ -1,4 +1,4 @@
-﻿% !TeX root = ../main.tex
+% !TeX root = ../main.tex
 \chapter{Implementation Planning}
 
 Implementation planning for Jan-Sunwai AI focused on three parallel goals: reproducibility, maintainable module growth, and deployment readiness. The implementation strategy treated backend, frontend, AI runtime, and operational scripts as coordinated components rather than isolated code tracks. At this stage, the project is in production-handover readiness rather than prototype mode.
@@ -39,7 +39,7 @@ This ensures that local verification and deployment handover use the same operat
 \centering
 \small
 \caption{Implementation Toolchain and Use Cases}
-\begin{tabularx}{\textwidth}{|p{0.18\textwidth}|p{0.24\textwidth}|X|}
+\begin{tabularx}{\textwidth}{|>{\RaggedRight\arraybackslash}p{0.18\textwidth}|>{\RaggedRight\arraybackslash}p{0.24\textwidth}|>{\RaggedRight\arraybackslash}X|}
 \hline
 \textbf{Category} & \textbf{Tool/Library} & \textbf{Implementation Use} \\ \hline
 Backend Framework & FastAPI & Route definitions, dependency injection, validation, and middleware pipeline. \\ \hline
@@ -52,7 +52,7 @@ Image Handling & Pillow & Upload payload validation and EXIF processing. \\ \hli
 Frontend Framework & React & Role-aware SPA component and page architecture. \\ \hline
 Build Tool & Vite & Fast frontend development and optimized production build. \\ \hline
 Client HTTP & Axios & Frontend API communication layer. \\ \hline
-Routing & react-router-dom & Protected routes and role-based navigation. \\ \hline
+Frontend Routing & react-router-dom & Protected routes and role-based navigation. \\ \hline
 Containerization & Docker + Compose & Reproducible orchestration of backend, frontend, and database services. \\ \hline
 QA Automation & pytest, locust & Unit, integration, security, resilience, and load-test execution. \\ \hline
 Documentation & Markdown + LaTeX & Runbooks, architecture docs, and the final academic report. \\ \hline
@@ -151,7 +151,6 @@ Deliverables included the production compose profile, deployment guides, and API
 \begin{tabularx}{\textwidth}{|>{\RaggedRight\arraybackslash}X|>{\RaggedRight\arraybackslash}X|>{\RaggedRight\arraybackslash}X|}
 \hline
 \textbf{Step} & \textbf{Implementation Activity} & \textbf{Dependency Consideration} \\ \hline
-\hline
 1 & Establish backend skeleton and DB connectivity & Required before auth and complaint persistence \\ \hline
 2 & Build auth/session primitives & Required before protected API and role-specific frontend routes \\ \hline
 3 & Implement analyze pipeline and storage handling & Required before citizen intake flow can be tested end-to-end \\ \hline
@@ -180,23 +179,14 @@ A notable planning correction during implementation was moving to one canonical 
 
 \section{Quality Gates in Implementation Plan}
 
-\begin{table}[H]
-\centering
-\caption{Implementation Quality Gates}
-\begin{tabularx}{\textwidth}{|>{\RaggedRight\arraybackslash}X|>{\RaggedRight\arraybackslash}X|}
-\hline
-\textbf{Gate} & \textbf{Acceptance Criterion} \\ \hline
-\hline
-Functional API baseline & Health endpoints and core auth routes return expected responses \\ \hline
-Analyze pipeline gate & Valid image upload produces structured classification and draft status output \\ \hline
-Lifecycle gate & Complaint create/update/assignment/notification chain works end-to-end \\ \hline
-Security gate & Upload hardening, sanitization, role checks, and headers validated in tests \\ \hline
-Reliability gate & Graceful fallback behavior under model/DB faults verified \\ \hline
-Deployment gate & Compose stack health checks pass and service topology is reproducible \\ \hline
-UAT gate & Citizen and admin scripts complete without blocking defects \\ \hline
-Documentation gate & Deployment, API, user manual, and report artifacts synchronized \\ \hline
-\end{tabularx}
-\end{table}
+The implementation was validated against specific quality gates to ensure each major component met institutional standards before integration:
+\begin{itemize}
+    \item \textbf{Functional API baseline:} Health endpoints and core auth routes return expected JSON responses and success codes.
+    \item \textbf{Analyze pipeline gate:} Valid image upload produces structured classification, location metadata, and draft status output.
+    \item \textbf{Lifecycle gate:} Full complaint create/update/assignment/notification chain works end-to-end without manual intervention.
+    \item \textbf{Security/Hardening gate:} Upload limits, input sanitization, and security headers are verified on all major endpoints.
+    \item \textbf{Resilience gate:} System demonstrates controlled 503/429 behavior when local models are unavailable or under peak load.
+\end{itemize}
 
 \section{Resource and Effort Planning}
 
@@ -211,15 +201,10 @@ This section captures implementation-level observations that are useful for main
 Each router group below shows how its implementation responsibilities were planned and what specific engineering decisions arose during delivery:
 
 
-\begin{longtable}{|p{0.22\textwidth}|p{0.30\textwidth}|p{0.40\textwidth}|}
+\begin{xltabular}{\textwidth}{|>{\RaggedRight\arraybackslash}p{0.22\textwidth}|>{\RaggedRight\arraybackslash}p{0.30\textwidth}|>{\RaggedRight\arraybackslash}X|}
 \caption{Router-Level Implementation Planning Notes}\\
 \hline
 \textbf{Router Group} & \textbf{Core Responsibilities} & \textbf{Planning/Implementation Considerations} \\ \hline
-\hline
-\endfirsthead
-\hline
-\textbf{Router Group} & \textbf{Core Responsibilities} & \textbf{Planning/Implementation Considerations} \\ \hline
-\hline
 \endhead
 users & registration, login, profile update, password reset & Required generic forgot-password response to prevent account enumeration; reset tokens persisted as hashes with expiry lifecycle \\ \hline
 complaints & analyze, create, list, detail, update, transfer, escalate & Needed consistent status-history append behavior and role-aware update guards; analyze route required graceful 503 degrade path \\ \hline
@@ -228,28 +213,18 @@ notifications & list, unread count, mark single/all read & Badge consistency req
 triage & review queue and decision endpoint & Admin-only corrective path for low-confidence AI cases; decision audit notes required \\ \hline
 analytics/api/v1/public & dashboards, heatmap, anonymized public listing & Query aggregation planning required pagination defaults and safe exposure model for public feed \\ \hline
 health & live/ready/models/gpu probes & Needed operationally meaningful readiness semantics and low-overhead liveness behavior \\ \hline
-\end{longtable}
+\end{xltabular}
 
 \subsection{Service-Layer Planning Notes}
 
-The matrix below details the specific planning components necessary to operationalize this segment of the architecture.
-
-
-\begin{table}[H]
-\centering
-\caption{Service-Level Implementation Planning}
-\begin{tabularx}{\textwidth}{|>{\RaggedRight\arraybackslash}X|>{\RaggedRight\arraybackslash}X|}
-\hline
-\textbf{Service} & \textbf{Planning Note} \\ \hline
-\hline
-Assignment service & Location-aware proximity filtering with fallback behavior when location metadata is missing \\ \hline
-Storage service & Validation pipeline designed as extension + content-type + magic-number + payload decode sequence \\ \hline
-Sanitization service & Planned as reusable utility to keep payload cleaning centralized and testable \\ \hline
-LLM queue service & Introduced to absorb long-running draft generation and preserve responsive user experience \\ \hline
-Escalation loop & Planned as background process with authority parent mapping and timeline updates \\ \hline
-Email service & Implemented as environment-driven stub/relay abstraction for gradual production integration \\ \hline
-\end{tabularx}
-\end{table}
+The implementation of core services followed specific planning notes to ensure modularity and scalability:
+\begin{itemize}
+    \item \textbf{Assignment service:} Designed with location-aware proximity filtering and fallback behavior for missing metadata.
+    \item \textbf{Storage service:} Includes a validation pipeline covering extension, content-type, magic-number, and payload decode checks.
+    \item \textbf{Sanitization service:} Implemented as a reusable utility to keep payload cleaning centralized and testable.
+    \item \textbf{Triage service:} Manages the lifecycle of low-confidence records and persists correction decisions in the audit trail.
+    \item \textbf{Health service:} Consolidates multi-dependency status probes into unified liveness and readiness responses.
+\end{itemize}
 
 \section{Deployment Runbook and Rollout Plan}
 
@@ -266,7 +241,6 @@ The matrix below details the specific planning components necessary to operation
 \begin{tabularx}{\textwidth}{|>{\RaggedRight\arraybackslash}X|>{\RaggedRight\arraybackslash}X|>{\RaggedRight\arraybackslash}X|}
 \hline
 \textbf{Stage} & \textbf{Objective} & \textbf{Execution Checklist} \\ \hline
-\hline
 R1 & Environment readiness & Verify host runtime versions, model availability, and environment variables \\ \hline
 R2 & Service bootstrap & Start MongoDB and backend; validate health/live and health/ready probes \\ \hline
 R3 & Frontend linkage & Start frontend/proxy path and verify API base routing behavior \\ \hline
@@ -290,15 +264,10 @@ Rollback planning was included to avoid high-impact downtime during deployment c
 
 \section{Operational Monitoring Plan}
 
-\begin{longtable}{|p{0.25\textwidth}|p{0.25\textwidth}|p{0.38\textwidth}|}
+\begin{xltabular}{\textwidth}{|>{\RaggedRight\arraybackslash}p{0.22\textwidth}|>{\RaggedRight\arraybackslash}p{0.25\textwidth}|>{\RaggedRight\arraybackslash}X|}
 \caption{Operational Monitoring Matrix}\\
 \hline
 \textbf{Signal} & \textbf{Collection Source} & \textbf{Operational Interpretation} \\ \hline
-\hline
-\endfirsthead
-\hline
-\textbf{Signal} & \textbf{Collection Source} & \textbf{Operational Interpretation} \\ \hline
-\hline
 \endhead
 API process time & Response header \texttt{X-Process-Time} & Detect slow endpoints and regressions after deployments \\ \hline
 Readiness status & /api/v1/health/ready endpoint & Indicates dependency-level degradation, mainly database health \\ \hline
@@ -308,7 +277,7 @@ Notification backlog & unread-count behavior and list volume & Detects delayed e
 Assignment queue growth & open/unassigned complaints and worker status & Helps identify staffing bottlenecks and area mismatch \\ \hline
 Triage queue size & low-confidence complaint count & Indicates classifier uncertainty trend and review load \\ \hline
 Error logs & rotating backend logs & Captures fault signatures for rapid remediation \\ \hline
-\end{longtable}
+\end{xltabular}
 
 \section{Change Management and Release Strategy}
 

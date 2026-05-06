@@ -1,4 +1,4 @@
-﻿% !TeX root = ../main.tex
+% !TeX root = ../main.tex
 \chapter{System Requirement Study}
 
 This chapter documents requirement analysis for Jan-Sunwai AI, including the baseline state of existing grievance systems, observed limitations, actor expectations, and formalized functional/non-functional requirements. The study was derived from implementation realities, municipal workflow assumptions, and validation through tests and user journeys [1, 2, 11, 12, 13].
@@ -29,15 +29,10 @@ The system serves four distinct operational personas. \textbf{Citizens} report i
 
 \section{Functional Requirements}
 
-\begin{longtable}{|p{0.12\textwidth}|p{0.30\textwidth}|p{0.48\textwidth}|}
+\begin{xltabular}{\textwidth}{|>{\RaggedRight\arraybackslash}p{0.12\textwidth}|>{\RaggedRight\arraybackslash}p{0.30\textwidth}|>{\RaggedRight\arraybackslash}X|}
 \caption{Functional Requirement Specification}\\
 \hline
 \textbf{FR ID} & \textbf{Requirement Name} & \textbf{Requirement Description} \\ \hline
-\hline
-\endfirsthead
-\hline
-\textbf{FR ID} & \textbf{Requirement Name} & \textbf{Requirement Description} \\ \hline
-\hline
 \endhead
 FR-01 & User Registration & System shall allow self-registration for citizen and worker roles with validation and duplicate checks. \\ \hline
 FR-02 & User Authentication & System shall establish secure cookie-session authentication on successful login and protect authorized routes, with JWT compatibility for API clients. \\ \hline
@@ -61,20 +56,14 @@ FR-19 & CSV Export & Admin shall export complaint data to CSV for external repor
 FR-20 & Public Transparency Feed & System shall expose anonymized complaint records without authentication. \\ \hline
 FR-21 & Health Monitoring & System shall provide live, ready, model, and GPU health endpoints. \\ \hline
 FR-22 & API Version Alias & System shall expose major endpoints under /api/v1 for integration stability. \\ \hline
-\hline
-\end{longtable}
+\end{xltabular}
 
 \section{Non-Functional Requirements}
 
-\begin{longtable}{|p{0.12\textwidth}|p{0.30\textwidth}|p{0.48\textwidth}|}
+\begin{xltabular}{\textwidth}{|>{\RaggedRight\arraybackslash}p{0.12\textwidth}|>{\RaggedRight\arraybackslash}p{0.30\textwidth}|>{\RaggedRight\arraybackslash}X|}
 \caption{Non-Functional Requirement Specification}\\
 \hline
 \textbf{NFR ID} & \textbf{Quality Attribute} & \textbf{Requirement Description} \\ \hline
-\hline
-\endfirsthead
-\hline
-\textbf{NFR ID} & \textbf{Quality Attribute} & \textbf{Requirement Description} \\ \hline
-\hline
 \endhead
 NFR-01 & Security & Cookie-session auth (with JWT compatibility), RBAC, sanitization, secure headers, and account-safe reset flow shall be enforced. \\ \hline
 NFR-02 & Reliability & API shall degrade gracefully under model or DB faults with explicit status semantics. \\ \hline
@@ -86,8 +75,7 @@ NFR-07 & Scalability Readiness & Queue-based generation and container deployment
 NFR-08 & Portability & Project setup shall support Windows and Linux via scripts and Docker-based workflow. \\ \hline
 NFR-09 & Compliance Readiness & Local-first inference and sanitized logs shall support stricter governance deployments. \\ \hline
 NFR-10 & Data Integrity & Validation schemas and controlled update flows shall minimize malformed or inconsistent records. \\ \hline
-\hline
-\end{longtable}
+\end{xltabular}
 
 \section{Hardware and Software Requirements}
 
@@ -95,43 +83,27 @@ NFR-10 & Data Integrity & Validation schemas and controlled update flows shall m
 
 The baseline parameters established below define the minimum viable constraints required to support the proposed features.
 
-
-\begin{table}[H]
-\centering
-\caption{Hardware Requirement Baseline}
-\begin{tabularx}{\textwidth}{|>{\RaggedRight\arraybackslash}X|>{\RaggedRight\arraybackslash}X|>{\RaggedRight\arraybackslash}X|}
-\hline
-\textbf{Component} & \textbf{Minimum} & \textbf{Recommended} \\ \hline
-\hline
-CPU & 4-core modern processor & 6 to 8-core processor \\ \hline
-System RAM & 12 GB available & 16 GB or higher \\ \hline
-GPU VRAM & 4 GB & 6 GB or higher \\ \hline
-Storage & 10 GB free & 20 GB free \\ \hline
-Network & Stable LAN/internet for maps and package fetch & Managed institutional network \\ \hline
-\end{tabularx}
-\end{table}
+\begin{itemize}
+    \item \textbf{CPU:} Minimum 4-core modern processor; Recommended 6 to 8-core.
+    \item \textbf{System RAM:} 12 GB minimum; 16 GB or higher recommended.
+    \item \textbf{GPU VRAM:} 4 GB baseline (e.g., RTX 3050); 6 GB or higher recommended for faster inference.
+    \item \textbf{Storage:} 10 GB free for models and environment; 20 GB for long-term audit logs and uploads.
+    \item \textbf{Network:} Stable LAN/Internet for map tiling and package management.
+\end{itemize}
 
 \subsection{Software Requirements}
 
 The baseline parameters established below define the minimum viable constraints required to support the proposed features [16, 11].
 
-
-\begin{table}[H]
-\centering
-\caption{Software Environment Requirements}
-\begin{tabularx}{\textwidth}{|>{\RaggedRight\arraybackslash}X|>{\RaggedRight\arraybackslash}X|>{\RaggedRight\arraybackslash}X|}
-\hline
-\textbf{Software Component} & \textbf{Baseline} & \textbf{Purpose} \\ \hline
-\hline
-Operating System & Windows 10+/Linux & Development and deployment host \\ \hline
-Python Runtime & Python 3.10+ & Backend and automation scripts \\ \hline
-Node.js and npm & Current LTS range & Frontend build and tooling \\ \hline
-MongoDB & 7.x class deployment & Document persistence \\ \hline
-Ollama Runtime & Local model runtime & Vision/reasoning generation pipeline \\ \hline
-Docker Engine/Compose & Docker 24+ recommended & Containerized orchestration \\ \hline
-Browser & Chromium/Firefox class & Frontend access and UAT execution \\ \hline
-\end{tabularx}
-\end{table}
+\begin{itemize}
+    \item \textbf{Operating System:} Windows 10+ or modern Linux (Ubuntu 22.04+ recommended).
+    \item \textbf{Python Runtime:} Version 3.10 or higher for backend logic and automation.
+    \item \textbf{Node.js \& npm:} Current LTS range (v20+) for frontend build and utility tooling.
+    \item \textbf{MongoDB:} Version 7.x class for document-oriented state persistence.
+    \item \textbf{Ollama Runtime:} Local execution engine for vision and reasoning pipelines.
+    \item \textbf{Docker Engine/Compose:} Version 24+ for containerized environment orchestration.
+    \item \textbf{Web Browser:} Modern Chromium or Firefox class for role-specific dashboard access.
+\end{itemize}
 
 \section{Constraints}
 
@@ -186,35 +158,14 @@ Because civic complaints can contain sensitive personal information, the followi
 \item Security headers and CORS policies must remain active on both normal and error responses.
 \end{itemize}
 
-\section{Assumptions and Dependencies}
-
-\begin{table}[H]
-\centering
-\caption{Assumptions and External Dependencies}
-\begin{tabularx}{\textwidth}{|>{\RaggedRight\arraybackslash}X|>{\RaggedRight\arraybackslash}X|>{\RaggedRight\arraybackslash}X|}
-\hline
-\textbf{ID} & \textbf{Assumption/Dependency} & \textbf{Implication} \\ \hline
-\hline
-A1 & MongoDB instance is reachable and healthy & Core read/write workflows remain functional \\ \hline
-A2 & Ollama runtime is available with configured models & Analyze and generation pathways remain active \\ \hline
-A3 & Environment variables are configured accurately & Auth, DB, CORS, and model endpoints behave as intended \\ \hline
-A4 & Frontend and backend URL mapping is consistent & API calls and route protection remain stable \\ \hline
-A5 & Worker profiles include valid department and status metadata & Assignment service can select candidates correctly \\ \hline
-A6 & Deployment host supports Docker where container mode is used & Production-style stack can be reproduced \\ \hline
-\end{tabularx}
-\end{table}
+The system operates under several core assumptions and external dependencies. First, it assumes a reachable and healthy \textbf{MongoDB instance} for all read/write persistence. Second, the \textbf{Ollama runtime} must be correctly configured with the required vision and reasoning models to support analysis and draft generation. Third, accurate \textbf{environment variable configuration} is essential for stable authentication, CORS, and database mapping. Fourth, the system relies on \textbf{worker profile completeness} (department and service-area metadata) for the auto-assignment engine to function correctly. Finally, for production-style deployments, the host must support \textbf{Docker and Compose} to ensure environment reproducibility.
 
 \section{Detailed Use-Case Narratives}
 
-\begin{longtable}{|p{0.12\textwidth}|p{0.18\textwidth}|p{0.30\textwidth}|p{0.30\textwidth}|}
+\begin{xltabular}{\textwidth}{|>{\RaggedRight\arraybackslash}p{0.12\textwidth}|>{\RaggedRight\arraybackslash}p{0.18\textwidth}|>{\RaggedRight\arraybackslash}X|>{\RaggedRight\arraybackslash}X|}
 \caption{Narrative Use-Case Requirements}\\
 \hline
 \textbf{UC ID} & \textbf{Actor} & \textbf{Main Flow} & \textbf{Alternate/Exception Flow} \\ \hline
-\hline
-\endfirsthead
-\hline
-\textbf{UC ID} & \textbf{Actor} & \textbf{Main Flow} & \textbf{Alternate/Exception Flow} \\ \hline
-\hline
 \endhead
 UC-01 & Citizen & Register account, login, access dashboard & Duplicate username/email is rejected with validation message \\ \hline
 UC-02 & Citizen & Upload image and run analyze pipeline & Unsupported/corrupt image rejected with explicit reason \\ \hline
@@ -228,25 +179,9 @@ UC-09 & Dept Head & Add notes and transfer/escalate complaint & Invalid complain
 UC-10 & Admin & Approve/reject worker registrations & Already-approved/rejected states handled idempotently \\ \hline
 UC-11 & Admin & Operate triage queue and analytics & Empty triage queue still returns successful response \\ \hline
 UC-12 & Public User & View anonymized complaint board & No authenticated personal fields are exposed in response payload \\ \hline
-\end{longtable}
+\end{xltabular}
 
-\section{Requirement Priority Classification}
-
-Requirements are classified using the MoSCoW methodology [20] to ensure delivery focus.
-
-\begin{table}[H]
-\centering
-\caption{MoSCoW-Style Requirement Priority Mapping}
-\begin{tabularx}{\textwidth}{|>{\RaggedRight\arraybackslash}X|>{\RaggedRight\arraybackslash}X|>{\RaggedRight\arraybackslash}X|}
-\hline
-\textbf{Priority} & \textbf{Requirement IDs} & \textbf{Interpretation} \\ \hline
-\hline
-Must Have & FR-01 to FR-12, FR-14, FR-16, FR-21 & Core operational viability: authentication, complaint lifecycle, role control, assignment, notifications, and service health \\ \hline
-Should Have & FR-13, FR-15, FR-17, FR-18, FR-22 & Strong governance and maintainability improvements that meaningfully increase institutional readiness \\ \hline
-Could Have & FR-19, FR-20 & Non-blocking but high-value transparency and reporting improvements \\ \hline
-Non-Functional Critical & NFR-01, NFR-02, NFR-06, NFR-10 & Security, reliability, observability, and data integrity controls required for trusted operation \\ \hline
-\end{tabularx}
-\end{table}
+Requirements are classified using the MoSCoW methodology [20]. \textbf{Must-Have} features include user registration, authentication, complaint intake, status updates, auto-assignment, and health monitoring: these are essential for operational viability. \textbf{Should-Have} features cover authority escalation, worker status controls, the administrative triage queue, and analytics: these provide institutional-grade governance. \textbf{Could-Have} features such as CSV exports and the public transparency feed provide high-value reporting without blocking the core workflow. Finally, \textbf{Non-Functional criticals} including session security, sanitization, and observability are treated as mandatory baseline controls.
 
 \section{Chapter Summary}
 

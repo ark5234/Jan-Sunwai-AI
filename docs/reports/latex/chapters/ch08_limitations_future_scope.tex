@@ -1,4 +1,4 @@
-﻿% !TeX root = ../main.tex
+% !TeX root = ../main.tex
 \chapter{Limitations and Future Scope}
 
 No production-oriented civic platform is complete without explicit recognition of current boundaries. Jan-Sunwai AI delivers a strong operational baseline, but several limitations remain due to time, infrastructure, and deployment-context constraints [16, 7, 17].
@@ -119,10 +119,9 @@ Security and compliance maturity goals represent the delta between the current a
 \begin{table}[H]
 \centering
 \caption{Indicative Post-Submission Roadmap}
-\begin{tabularx}{\textwidth}{|>{\RaggedRight\arraybackslash}X|>{\RaggedRight\arraybackslash}X|>{\RaggedRight\arraybackslash}X|}
+\begin{tabularx}{\textwidth}{|>{\RaggedRight\arraybackslash}p{0.20\textwidth}|>{\RaggedRight\arraybackslash}p{0.25\textwidth}|>{\RaggedRight\arraybackslash}X|}
 \hline
 \textbf{Horizon} & \textbf{Priority Area} & \textbf{Expected Deliverables} \\ \hline
-\hline
 0--3 months & Stabilization and hardening & SMTP integration, expanded tests, deployment checklist closure \\ \hline
 3--6 months & AI and workflow maturity & Better triage intelligence, SLA policy engine, richer analytics \\ \hline
 6--12 months & Scale and institutionalization & Distributed queueing, observability stack, multi-zone deployment model \\ \hline
@@ -132,15 +131,10 @@ Security and compliance maturity goals represent the delta between the current a
 
 \section{Risk-Prioritized Improvement Backlog}
 
-\begin{longtable}{|p{0.10\textwidth}|p{0.30\textwidth}|p{0.13\textwidth}|p{0.13\textwidth}|p{0.24\textwidth}|}
+\begin{xltabular}{\textwidth}{|>{\RaggedRight\arraybackslash}p{0.08\textwidth}|>{\RaggedRight\arraybackslash}X|>{\RaggedRight\arraybackslash}p{0.12\textwidth}|>{\RaggedRight\arraybackslash}p{0.12\textwidth}|>{\RaggedRight\arraybackslash}p{0.20\textwidth}|}
 \caption{Future Backlog Prioritization Matrix}\\
 \hline
 \textbf{ID} & \textbf{Improvement Item} & \textbf{Impact} & \textbf{Effort} & \textbf{Suggested Horizon} \\ \hline
-\hline
-\endfirsthead
-\hline
-\textbf{ID} & \textbf{Improvement Item} & \textbf{Impact} & \textbf{Effort} & \textbf{Suggested Horizon} \\ \hline
-\hline
 \endhead
 FB-01 & SMTP relay production integration with delivery audit logs & High & Medium & 0--3 months \\ \hline
 FB-02 & Centralized secrets management and rotation policy & High & Medium & 0--6 months \\ \hline
@@ -162,8 +156,7 @@ FB-17 & Offline-first synchronization for field staff app mode & Medium & High &
 FB-18 & Complaint closure quality scoring and follow-up loop & Medium & Medium & 3--9 months \\ \hline
 FB-19 & Auto-generated administrative weekly digest reports & Low & Low & 0--3 months \\ \hline
 FB-20 & Predictive hotspot forecasting for civic incidents & Medium & High & 12+ months \\ \hline
-\hline
-\end{longtable}
+\end{xltabular}
 
 \section{Adoption Considerations for Municipal Deployment}
 

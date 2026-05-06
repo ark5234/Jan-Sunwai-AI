@@ -20,6 +20,7 @@
 \usepackage{booktabs}
 \usepackage{longtable}
 \usepackage{tabularx}
+\usepackage{xltabular}
 \usepackage{array}
 \usepackage{multirow}
 \usepackage{float}
@@ -79,7 +80,7 @@
 \titleformat{\chapter}[block]
   {\bfseries\fontsize{16}{19.2}\selectfont\filcenter}
   {\chaptername\ \thechapter:\ }{0pt}{}
-\titlespacing*{\chapter}{0pt}{0pt}{30pt}
+\titlespacing*{\chapter}{0pt}{-20pt}{30pt}
 
 % Heading Size: 14 Bold (Left-aligned)
 \titleformat{\section}
@@ -114,7 +115,10 @@
 % ===== TOC AND LIST STYLES =====
 \renewcommand{\cftchappresnum}{Chapter\ }
 \renewcommand{\cftchapaftersnum}{:\ }
-\setlength{\cftchapnumwidth}{8.5em}
+\setlength{\cftchapnumwidth}{5.5em}
+\setlength{\cftbeforechapskip}{0pt}
+\setlength{\cftbeforesecskip}{0pt}
+\setlength{\cftbeforesubsecskip}{0pt}
 \setlength{\cftchapindent}{0em}
 \setlength{\cftsecindent}{2em}
 \setlength{\cftsubsecindent}{4em}
@@ -124,12 +128,12 @@
 \renewcommand{\cftchappagefont}{\bfseries}
 
 % ===== TOC / LOT / LOF TITLE FONTS (tocloft) =====
-\renewcommand{\cfttoctitlefont}{\centering\bfseries\fontsize{16}{19.2}\selectfont}
-\renewcommand{\cftaftertoctitle}{\hfill\par\vspace{4pt}}
-\renewcommand{\cftlottitlefont}{\centering\bfseries\fontsize{16}{19.2}\selectfont}
-\renewcommand{\cftafterlottitle}{\hfill\par\vspace{4pt}}
-\renewcommand{\cftloftitlefont}{\centering\bfseries\fontsize{16}{19.2}\selectfont}
-\renewcommand{\cftafterloftitle}{\hfill\par\vspace{4pt}}
+\renewcommand{\cfttoctitlefont}{\hfill\bfseries\fontsize{16}{19.2}\selectfont}
+\renewcommand{\cftaftertoctitle}{\hfill\null\par\vspace{-10pt}}
+\renewcommand{\cftlottitlefont}{\hfill\bfseries\fontsize{16}{19.2}\selectfont}
+\renewcommand{\cftafterlottitle}{\hfill\null\par\vspace{-10pt}}
+\renewcommand{\cftloftitlefont}{\hfill\bfseries\fontsize{16}{19.2}\selectfont}
+\renewcommand{\cftafterloftitle}{\hfill\null\par\vspace{-10pt}}
 
 \makeatletter
 % Hard override of the chapter command to remove ALL automatic list spacing
@@ -199,32 +203,44 @@
 
 % ===== TABLE OF CONTENTS =====
 \clearpage
-\phantomsection%
+\phantomsection
 \renewcommand{\contentsname}{Table of Contents}
+\begingroup
+\setstretch{0.9}
 \tableofcontents%
+\endgroup
 \newpage
 
 % ===== LIST OF TABLES =====
 \clearpage
-\phantomsection%
+\phantomsection
 \addcontentsline{toc}{chapter}{List of Tables}%
 \renewcommand{\listtablename}{List of Tables}
+\begingroup
+\setstretch{0.9}
 \listoftables%
+\endgroup
 \newpage
 
 % ===== LIST OF FIGURES =====
 \clearpage
-\phantomsection%
+\phantomsection
 \addcontentsline{toc}{chapter}{List of Figures}%
 \renewcommand{\listfigurename}{List of Figures}
+\begingroup
+\setstretch{0.9}
 \listoffigures%
+\endgroup
 \newpage
 
 % ===== LIST OF SCREENSHOTS =====
 \clearpage
 \phantomsection%
 \addcontentsline{toc}{chapter}{List of Screenshots}%
+\begingroup
+\setstretch{1.0}
 \listofscreenshots%
+\endgroup
 \newpage
 
 \input{frontmatter/abbreviations}

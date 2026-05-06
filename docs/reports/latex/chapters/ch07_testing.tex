@@ -1,4 +1,4 @@
-﻿% !TeX root = ../main.tex
+% !TeX root = ../main.tex
 \chapter{Testing}
 
 Testing for Jan-Sunwai AI was designed as a layered strategy combining automated checks, manual UAT scripts, resilience drills, and security/load validation. Because the platform supports governance-sensitive workflows, testing emphasized not only feature correctness but also operational integrity under degraded conditions [18, 7, 8].
@@ -30,7 +30,6 @@ The testing environment baseline outlined below ensures consistency across all v
 \begin{tabularx}{\textwidth}{|>{\RaggedRight\arraybackslash}X|>{\RaggedRight\arraybackslash}X|}
 \hline
 \textbf{Environment Aspect} & \textbf{Configuration} \\ \hline
-\hline
 Backend runtime & FastAPI application with test clients and dependency overrides \\ \hline
 Database mode & MongoDB-backed flows with selective mock/fake collection tests \\ \hline
 Frontend mode & Vite build/lint validation and persona-driven manual walkthroughs \\ \hline
@@ -44,15 +43,10 @@ Automation tools & pytest, httpx, locust, script wrappers for platform-specific 
 The coverage matrix below maps each test suite to its type and the specific system behaviours it validates:
 
 
-\begin{longtable}{|p{0.30\textwidth}|p{0.24\textwidth}|p{0.38\textwidth}|}
+\begin{xltabular}{\textwidth}{|>{\RaggedRight\arraybackslash}p{0.30\textwidth}|>{\RaggedRight\arraybackslash}p{0.24\textwidth}|>{\RaggedRight\arraybackslash}X|}
 \caption{Testing Coverage Matrix by Suite}\\
 \hline
 \textbf{Test Artifact} & \textbf{Type} & \textbf{Coverage Highlights} \\ \hline
-\hline
-\endfirsthead
-\hline
-\textbf{Test Artifact} & \textbf{Type} & \textbf{Coverage Highlights} \\ \hline
-\hline
 \endhead
 \path{test_schemas.py} & Unit Validation & GeoLocation bounds, complaint schema validity, confidence-score guardrails \\ \hline
 \path{test_auth_permissions.py} & Unit Authorization & Token claims, admin and worker/dept-head access guards \\ \hline
@@ -62,8 +56,7 @@ The coverage matrix below maps each test suite to its type and the specific syst
 \path{test_resilience_security.py} & Resilience + Security & Upload hardening, analyze degrade 503, readiness degradation, sanitization \\ \hline
 Manual UAT scripts & User Acceptance & Citizen and admin journeys, friction logging, UX verification \\ \hline
 Load scripts (locust) & Performance & Endpoint mix throughput and graceful degradation behavior \\ \hline
-\hline
-\end{longtable}
+\end{xltabular}
 
 \section{Types of Testing}
 
@@ -79,7 +72,6 @@ Unit tests focused on isolated validation and control logic.
 \begin{tabularx}{\textwidth}{|>{\RaggedRight\arraybackslash}X|>{\RaggedRight\arraybackslash}X|>{\RaggedRight\arraybackslash}X|}
 \hline
 \textbf{Case ID} & \textbf{Area} & \textbf{Expected Behavior} \\ \hline
-\hline
 UT-01 & GeoLocation bounds & Reject latitude outside $[-90, 90]$ and longitude outside $[-180, 180]$ \\ \hline
 UT-02 & AI confidence schema & Reject confidence values outside $[0, 1]$ \\ \hline
 UT-03 & Admin role check & Non-admin caller receives HTTP 403 on admin-only dependency \\ \hline
@@ -109,7 +101,6 @@ System testing executed end-to-end flows across authentication, analyze, complai
 \begin{tabularx}{\textwidth}{|>{\RaggedRight\arraybackslash}X|>{\RaggedRight\arraybackslash}X|>{\RaggedRight\arraybackslash}X|}
 \hline
 \textbf{Scenario} & \textbf{Workflow} & \textbf{Pass Condition} \\ \hline
-\hline
 ST-01 & Citizen upload -> analyze -> submit & Complaint record created with status history initialized \\ \hline
 ST-02 & Dept-head status update & Citizen receives notification and timeline reflects transition \\ \hline
 ST-03 & Worker marks complaint done & Complaint transitions and worker slot logic updates as expected \\ \hline
@@ -140,7 +131,6 @@ To validate the non-functional requirements under realistic municipal constraint
 \begin{tabularx}{\textwidth}{|>{\RaggedRight\arraybackslash}X|>{\RaggedRight\arraybackslash}X|}
 \hline
 \textbf{Metric} & \textbf{Recorded Baseline} \\ \hline
-\hline
 Average API Response Time & 320ms \\ \hline
 AI Classification Confidence & 0.78 (Mean score across varied inputs) \\ \hline
 Manual Triage Fallback Rate & 4.2\% of total submissions \\ \hline
@@ -193,7 +183,6 @@ To validate the practical utility of the platform, several key performance indic
 \begin{tabularx}{\textwidth}{|>{\RaggedRight\arraybackslash}X|>{\RaggedRight\arraybackslash}X|}
 \hline
 \textbf{Metric} & \textbf{Observed Value} \\ \hline
-\hline
 Avg API Response Time (Standard Endpoints) & 320 ms \\ \hline
 Draft Generation Time (Vision Model) & 2.4 sec \\ \hline
 Classification Confidence Avg & 0.78 \\ \hline
@@ -214,7 +203,6 @@ System Throughput (Peak) & 18 requests/sec \\ \hline
 \begin{tabularx}{\textwidth}{|>{\RaggedRight\arraybackslash}X|>{\RaggedRight\arraybackslash}X|>{\RaggedRight\arraybackslash}X|}
 \hline
 \textbf{Validation Area} & \textbf{Outcome} & \textbf{Notes} \\ \hline
-\hline
 Backend automated suite & Pass & Core suite executed successfully with latest observed run showing full pass status \\ \hline
 Security checks & Pass & Upload hardening, sanitization, and authorization boundaries validated \\ \hline
 Resilience checks & Pass & Controlled degraded responses confirmed for model/DB disruption paths \\ \hline
@@ -237,15 +225,10 @@ Although major paths were validated, future strengthening can include:
 
 \section{Detailed UAT Case Matrix}
 
-\begin{longtable}{|p{0.10\textwidth}|p{0.14\textwidth}|p{0.34\textwidth}|p{0.12\textwidth}|p{0.20\textwidth}|}
+\begin{xltabular}{\textwidth}{|>{\RaggedRight\arraybackslash}p{0.10\textwidth}|>{\RaggedRight\arraybackslash}p{0.14\textwidth}|>{\RaggedRight\arraybackslash}X|>{\RaggedRight\arraybackslash}p{0.12\textwidth}|>{\RaggedRight\arraybackslash}X|}
 \caption{Persona-Driven UAT Matrix}\\
 \hline
 \textbf{Case ID} & \textbf{Persona} & \textbf{Scenario} & \textbf{Priority} & \textbf{Expected Result} \\ \hline
-\hline
-\endfirsthead
-\hline
-\textbf{Case ID} & \textbf{Persona} & \textbf{Scenario} & \textbf{Priority} & \textbf{Expected Result} \\ \hline
-\hline
 \endhead
 UAT-01 & Citizen & Register new citizen account and complete first login & High & Account created and cookie-session starts successfully \\ \hline
 UAT-02 & Citizen & Submit valid image through analyze flow & High & Classification and draft payload are returned \\ \hline
@@ -267,8 +250,7 @@ UAT-17 & Admin & View analytics and heatmap screens & Medium & Aggregates and ma
 UAT-18 & Public user & Access public board without authentication & Medium & Anonymized listing visible without sensitive fields \\ \hline
 UAT-19 & Citizen & Submit malformed image payload & High & Request rejected with safe validation message \\ \hline
 UAT-20 & Citizen & Trigger analyze while model unavailable & High & User-friendly retryable 503 response path \\ \hline
-\hline
-\end{longtable}
+\end{xltabular}
 
 \section{Load Benchmark Profiles and Acceptance Rubric}
 
@@ -278,7 +260,6 @@ UAT-20 & Citizen & Trigger analyze while model unavailable & High & User-friendl
 \begin{tabularx}{\textwidth}{|>{\RaggedRight\arraybackslash}X|>{\RaggedRight\arraybackslash}X|>{\RaggedRight\arraybackslash}X|>{\RaggedRight\arraybackslash}X|>{\RaggedRight\arraybackslash}X|}
 \hline
 \textbf{Profile} & \textbf{Users} & \textbf{Spawn Rate} & \textbf{Duration} & \textbf{Acceptance Guidance} \\ \hline
-\hline
 Smoke & 20 & 5/s & 5 min & No critical endpoint failure; stable liveness and predictable response envelopes \\ \hline
 Baseline & 70 & 10/s & 15 min & Controlled latency growth; no persistent failure mode in public and health endpoints \\ \hline
 Peak & 120 & 20/s & 20 min & Graceful degradation accepted for analyze path (429/503) while core status pages remain functional \\ \hline
@@ -287,15 +268,10 @@ Peak & 120 & 20/s & 20 min & Graceful degradation accepted for analyze path (429
 
 \section{Security Regression Matrix}
 
-\begin{longtable}{|p{0.12\textwidth}|p{0.34\textwidth}|p{0.16\textwidth}|p{0.28\textwidth}|}
+\begin{xltabular}{\textwidth}{|>{\RaggedRight\arraybackslash}p{0.12\textwidth}|>{\RaggedRight\arraybackslash}X|>{\RaggedRight\arraybackslash}p{0.16\textwidth}|>{\RaggedRight\arraybackslash}X|}
 \caption{Security Regression Verification Matrix}\\
 \hline
 \textbf{Sec ID} & \textbf{Control Under Test} & \textbf{Expected Code} & \textbf{Validation Criterion} \\ \hline
-\hline
-\endfirsthead
-\hline
-\textbf{Sec ID} & \textbf{Control Under Test} & \textbf{Expected Code} & \textbf{Validation Criterion} \\ \hline
-\hline
 \endhead
 SEC-01 & Invalid auth credential on protected complaint route (cookie or bearer) & 401 & Unauthorized access blocked \\ \hline
 SEC-02 & Non-admin call on admin endpoint & 403 & Role boundary enforced \\ \hline
@@ -307,7 +283,7 @@ SEC-07 & Missing security headers check & 200 with headers present & nosniff, fr
 SEC-08 & CORS preflight from allowed origin & 200/204 & Allow-origin policy consistent with configuration \\ \hline
 SEC-09 & Invalid/expired reset token usage & 400 & Reset workflow rejects unsafe token state \\ \hline
 SEC-10 & Analyze under runtime failure & 503 & Controlled degrade message returned without server crash \\ \hline
-\end{longtable}
+\end{xltabular}
 
 \section{Chapter Summary}
 

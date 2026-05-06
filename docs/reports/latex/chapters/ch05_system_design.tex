@@ -140,7 +140,6 @@ Key indexing strategies are summarized below:
 \begin{tabularx}{\textwidth}{|>{\RaggedRight\arraybackslash}X|>{\RaggedRight\arraybackslash}X|>{\RaggedRight\arraybackslash}X|}
 \hline
 \textbf{Collection} & \textbf{Index} & \textbf{Purpose} \\ \hline
-\hline
 users & unique(username), unique(email) & Fast auth lookups and uniqueness enforcement \\ \hline
 complaints & (user\_id, created\_at) & Efficient citizen dashboard history retrieval \\ \hline
 complaints & (status, created\_at) & Queue and status-oriented admin filtering \\ \hline
@@ -181,7 +180,6 @@ Key interface areas are summarized below:
 \begin{tabularx}{\textwidth}{|>{\RaggedRight\arraybackslash}X|>{\RaggedRight\arraybackslash}X|}
 \hline
 \textbf{Interface Area} & \textbf{Purpose} \\ \hline
-\hline
 Public Home & Awareness, role entry points, and transparency access \\ \hline
 Authentication Screens & Login, registration, forgot password, reset password \\ \hline
 Analyze and Result Views & Upload, AI analysis display, map interaction, draft review \\ \hline
@@ -201,8 +199,8 @@ The following figure provides a visual reference that complements the explanator
 
 \begin{figure}[H]
 \centering
-\IfFileExists{../../images/gui_wireframe.png}{%
-\includegraphics[width=0.85\textwidth]{../../images/gui_wireframe.png}%
+\IfFileExists{../../images/GUI_Wireframe.png}{%
+\includegraphics[width=0.85\textwidth]{../../images/GUI_Wireframe.png}%
 }{%
 \fbox{\begin{minipage}[c][0.30\textheight][c]{0.85\textwidth}
 \centering Missing wireframe image

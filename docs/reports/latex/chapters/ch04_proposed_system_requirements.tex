@@ -1,4 +1,4 @@
-﻿% !TeX root = ../main.tex
+% !TeX root = ../main.tex
 \chapter{Proposed System Requirements}
 
 This chapter describes the proposed Jan-Sunwai AI solution architecture from a requirement realization perspective. While Chapter 3 documented what is required, this chapter explains how the proposed system addresses those requirements through modular capabilities and integrated workflows built on the React, FastAPI, MongoDB, and Ollama stack [12, 11, 13, 17].
@@ -51,15 +51,10 @@ This module aggregates operational statistics, trend lines, and geospatial heatm
 
 \section{System Features}
 
-\begin{longtable}{|p{0.12\textwidth}|p{0.30\textwidth}|p{0.48\textwidth}|}
+\begin{xltabular}{\textwidth}{|>{\RaggedRight\arraybackslash}p{0.12\textwidth}|>{\RaggedRight\arraybackslash}p{0.30\textwidth}|>{\RaggedRight\arraybackslash}X|}
 \caption{Proposed Feature Set and Operational Benefit}\\
 \hline
 \textbf{Feature ID} & \textbf{Feature} & \textbf{Operational Benefit} \\ \hline
-\hline
-\endfirsthead
-\hline
-\textbf{Feature ID} & \textbf{Feature} & \textbf{Operational Benefit} \\ \hline
-\hline
 \endhead
 PF-01 & Image-first intake & Reduces textual burden on citizen and improves evidence quality \\ \hline
 PF-02 & Hybrid category detection & Improves classification consistency through rules plus selective reasoning \\ \hline
@@ -73,8 +68,7 @@ PF-09 & Bulk admin actions & Improves throughput for backlog management in peak 
 PF-10 & Heatmap and analytics & Supports evidence-driven supervision and resource planning \\ \hline
 PF-11 & Public complaint feed & Increases transparency and trust in civic workflow visibility \\ \hline
 PF-12 & Health endpoints and timing logs & Supports operational diagnosis and production monitoring \\ \hline
-\hline
-\end{longtable}
+\end{xltabular}
 
 \section{Advantages of Proposed System}
 
@@ -118,15 +112,10 @@ At the institutional level, the deployment architecture delivers compliance and 
 
 \section{Requirement Realization Matrix}
 
-\begin{longtable}{|p{0.17\textwidth}|p{0.23\textwidth}|p{0.47\textwidth}|}
+\begin{xltabular}{\textwidth}{|>{\RaggedRight\arraybackslash}p{0.17\textwidth}|>{\RaggedRight\arraybackslash}p{0.23\textwidth}|>{\RaggedRight\arraybackslash}X|}
 \caption{Traceability from Requirements to Proposed Modules}\\
 \hline
 \textbf{Requirement Group} & \textbf{Primary Module} & \textbf{Realization Mechanism} \\ \hline
-\hline
-\endfirsthead
-\hline
-\textbf{Requirement Group} & \textbf{Primary Module} & \textbf{Realization Mechanism} \\ \hline
-\hline
 \endhead
 Registration and Login & Auth and User Management & Register/login routes, cookie-session issuance, JWT compatibility mode, profile update API, password reset token lifecycle \\ \hline
 AI Classification and Drafting & Analyze Module + LLM Queue & Vision model cascade, rule engine scoring, optional reasoning, queued generation polling \\ \hline
@@ -136,8 +125,7 @@ Governance and Review & Triage and Admin Controls & Low-confidence review queue 
 Communication & Notifications Module & In-app notification events, unread counter, mark-read APIs, email stub integration \\ \hline
 Reporting and Transparency & Analytics/Public Module & Overview metrics, heatmap endpoint, anonymized public complaint feed \\ \hline
 Resilience and Security & Cross-cutting Platform Controls & Health probes, security headers, upload hardening, sanitization, rate limits, logs \\ \hline
-\hline
-\end{longtable}
+\end{xltabular}
 
 \section{Proposed Operational Workflow}
 
@@ -154,26 +142,16 @@ The platform is expected to produce measurable improvements across six dimension
 
 \section{Module Interaction Contracts}
 
-\begin{longtable}{|p{0.24\textwidth}|p{0.26\textwidth}|p{0.42\textwidth}|}
-\caption{Inter-Module Contract Summary}\\
-\hline
-\textbf{Producer Module} & \textbf{Consumer Module} & \textbf{Interaction Contract} \\ \hline
-\hline
-\endfirsthead
-\hline
-\textbf{Producer Module} & \textbf{Consumer Module} & \textbf{Interaction Contract} \\ \hline
-\hline
-\endhead
-Authentication module & All protected routers & Provides current user identity and role claims via dependency injection \\ \hline
-Analyze module & Complaint lifecycle module & Produces classification/location/draft payload used for complaint creation \\ \hline
-Complaint lifecycle module & Notification module & Emits status/registration/escalation events for user-facing notifications \\ \hline
-Complaint lifecycle module & Assignment module & Triggers auto-assignment at complaint creation and slot-free reassignments \\ \hline
-Worker module & Complaint lifecycle module & Reports completion updates that influence lifecycle and status history \\ \hline
-Triage module & Complaint lifecycle module & Applies corrected decisions for low-confidence complaint records \\ \hline
-Analytics module & Complaint data store & Executes aggregate queries for dashboard and heatmap responses \\ \hline
-Public module & Complaint data store & Exposes anonymized subset for transparency without privileged fields \\ \hline
-Health module & Database/model runtime & Publishes liveness/readiness/dependency status for operations \\ \hline
-\end{longtable}
+The system modules interact through explicit contracts to ensure role-based isolation and functional consistency:
+\begin{itemize}
+    \item \textbf{Authentication Module:} Provides current user identity and role claims to all protected routers via dependency injection.
+    \item \textbf{Analyze Module:} Produces classification, location, and draft payloads used by the Lifecycle module for complaint creation.
+    \item \textbf{Complaint Lifecycle Module:} Emits events to the Notification module and triggers auto-assignment at creation or during reassignments.
+    \item \textbf{Worker Module:} Reports completion updates that influence the status history and lifecycle state.
+    \item \textbf{Triage Module:} Applies corrected decisions for low-confidence records, updating the primary complaint data store.
+    \item \textbf{Analytics \& Public Modules:} Execute aggregate queries on the complaint store to expose anonymized trends and heatmaps.
+    \item \textbf{Health Module:} Publishes liveness and readiness status by probing the database and local model runtime.
+\end{itemize}
 
 \section{Requirement Realization Detail by Persona}
 

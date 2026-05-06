@@ -1,4 +1,4 @@
-﻿% !TeX root = ../main.tex
+% !TeX root = ../main.tex
 \chapter{Appendices}
 
 \section{Appendix A: API Endpoint Snapshot}
@@ -6,130 +6,44 @@
 This appendix summarizes the primary endpoint inventory implemented in the current release. All major endpoint groups are additionally exposed under the \texttt{/api/v1} alias path.
 
 \small
-\begin{longtable}{|p{0.10\textwidth}|p{0.38\textwidth}|p{0.15\textwidth}|p{0.25\textwidth}|}
-\caption{API Endpoint Snapshot}\\
-\hline
-\textbf{Method} & \textbf{Endpoint} & \textbf{Auth} & \textbf{Purpose} \\ \hline
-\hline
-\endfirsthead
-\hline
-\textbf{Method} & \textbf{Endpoint} & \textbf{Auth} & \textbf{Purpose} \\ \hline
-\hline
-\endhead
-POST & \path|/api/v1/users/register| & No & Citizen/worker self-registration \\ \hline
-POST & \path|/api/v1/users/login| & No & Cookie-session login (JWT compatibility optional) \\ \hline
-POST & \path|/api/v1/users/logout| & No & Clear auth cookie/session \\ \hline
-GET & \path|/api/v1/users/me| & Yes & Current user profile \\ \hline
-PATCH & \path|/api/v1/users/me| & Yes & Profile update \\ \hline
-POST & \path|/api/v1/users/forgot-password| & No & Reset token issuance request \\ \hline
-POST & \path|/api/v1/users/reset-password| & No & Password reset submission \\ \hline
-\hline
-POST & \path|/api/v1/analyze| & Yes & Image analysis and draft initiation \\ \hline
-POST & \path|/api/v1/analyze/regenerate| & Yes & Regenerate complaint draft \\ \hline
-GET & \path|/api/v1/complaints/generation/{job_id}| & Yes & Poll queued generation status \\ \hline
-\hline
-POST & \path|/api/v1/complaints| & Yes & Create complaint \\ \hline
-GET & \path|/api/v1/complaints| & Yes & Role-filtered complaint list \\ \hline
-GET & \path|/api/v1/complaints/{complaint_id}| & Yes & Complaint detail \\ \hline
-PATCH & \path|/api/v1/complaints/{complaint_id}/status| & Admin/Dept Head & Status transition \\ \hline
-PATCH & \path|/api/v1/complaints/{complaint_id}/transfer| & Admin/Dept Head & Department transfer \\ \hline
-POST & \path|/api/v1/complaints/{complaint_id}/escalate| & Admin/Dept Head & Authority escalation \\ \hline
-POST & \path|/api/v1/complaints/{complaint_id}/feedback| & Citizen owner & Resolution feedback \\ \hline
-POST & \path|/api/v1/complaints/{complaint_id}/notes| & Admin/Dept Head & Internal department notes \\ \hline
-GET & \path|/api/v1/complaints/{complaint_id}/notes| & Admin/Dept Head & Fetch department notes \\ \hline
-POST & \path|/api/v1/complaints/{complaint_id}/comments| & Yes & Add collaborative comment \\ \hline
-GET & \path|/api/v1/complaints/{complaint_id}/comments| & Yes & Read collaborative thread \\ \hline
-POST & \path|/api/v1/complaints/bulk/status| & Admin & Bulk status updates \\ \hline
-POST & \path|/api/v1/complaints/bulk/transfer| & Admin & Bulk transfer updates \\ \hline
-GET & \path|/api/v1/complaints/export/csv| & Admin & CSV export \\ \hline
-\hline
-GET & \path|/workers/me| & Worker & Worker profile and workload \\ \hline
-PATCH & \path|/workers/me/status| & Worker & Availability update \\ \hline
-PATCH & \path|/workers/me/api/v1/complaints/{complaint_id}/done| & Worker & Mark assigned complaint done \\ \hline
-GET & \path|/workers| & Admin & List workers (pending/all) \\ \hline
-GET & \path|/workers/my-department| & Admin/Dept Head & Department worker listing \\ \hline
-PATCH & \path|/workers/{worker_id}/approve| & Admin & Approve worker \\ \hline
-DELETE & \path|/workers/{worker_id}/reject| & Admin & Reject pending worker \\ \hline
-POST & \path|/workers/{worker_id}/assign/{complaint_id}| & Admin & Manual assignment \\ \hline
-PATCH & \path|/workers/{worker_id}/area| & Admin & Update worker service area \\ \hline
-GET & \path|/workers/assignment-debug| & Admin & Assignment diagnostics \\ \hline
-POST & \path|/workers/reassign-unassigned| & Admin & Retry assignment for open queue \\ \hline
-\hline
-GET & \path|/api/v1/notifications| & Yes & Notification list \\ \hline
-GET & \path|/api/v1/notifications/unread-count| & Yes & Unread badge count \\ \hline
-PATCH & \path|/api/v1/notifications/{notification_id}/read| & Yes & Mark single notification read \\ \hline
-PATCH & \path|/api/v1/notifications/read-all| & Yes & Mark all notifications read \\ \hline
-\hline
-GET & \path|/triage/review-queue| & Admin & Retrieve low-confidence queue \\ \hline
-POST & \path|/triage/review-queue/decision| & Admin & Apply triage decision \\ \hline
-\hline
-GET & \path|/api/v1/analytics/overview| & Admin & Overview metrics \\ \hline
-GET & \path|/api/v1/analytics/heatmap| & Admin/Dept Head & Geospatial complaint distribution \\ \hline
-GET & \path|/api/v1/public/api/v1/complaints| & No & Public anonymized complaint feed \\ \hline
-GET & \path|/api/v1/health/live| & No & Liveness probe \\ \hline
-GET & \path|/api/v1/health/ready| & No & Readiness probe \\ \hline
-GET & \path|/api/v1/health/models| & No & Model availability status \\ \hline
-GET & \path|/api/v1/health/gpu| & No & GPU/model load status \\ \hline
-\hline
-\end{longtable}
+\begin{itemize}[leftmargin=1.5em, noitemsep]
+    \item \textbf{POST} \path{/api/v1/users/register}: Citizen/worker self-registration
+    \item \textbf{POST} \path{/api/v1/users/login}: Cookie-session login
+    \item \textbf{GET} \path{/api/v1/users/me}: Current user profile
+    \item \textbf{POST} \path{/api/v1/analyze}: Image analysis and draft initiation
+    \item \textbf{POST} \path{/api/v1/complaints}: Create complaint
+    \item \textbf{GET} \path{/api/v1/complaints}: Role-filtered complaint list
+    \item \textbf{PATCH} \path{/api/v1/complaints/{id}/status}: Status transition (Admin/Dept Head)
+    \item \textbf{PATCH} \path{/api/v1/complaints/{id}/transfer}: Department transfer
+    \item \textbf{PATCH} \path{/workers/me/status}: Availability update (Worker)
+    \item \textbf{PATCH} \path{/workers/{id}/approve}: Approve worker (Admin)
+    \item \textbf{GET} \path{/api/v1/notifications}: User notification list
+    \item \textbf{GET} \path{/triage/review-queue}: Low-confidence triage list (Admin)
+    \item \textbf{GET} \path{/api/v1/analytics/overview}: High-level operational metrics
+    \item \textbf{GET} \path{/api/v1/health/live|ready}: Service health probes
+\end{itemize}
 \normalsize
 
 \section{Appendix B: Environment Variable Catalog}
 
-\begin{longtable}{|p{0.32\textwidth}|p{0.21\textwidth}|p{0.38\textwidth}|}
-\caption{Core Backend Environment Variables}\\
-\hline
-\textbf{Variable} & \textbf{Typical Default} & \textbf{Purpose} \\ \hline
-\hline
-\endfirsthead
-\hline
-\textbf{Variable} & \textbf{Typical Default} & \textbf{Purpose} \\ \hline
-\hline
-\endhead
-\path|APP_ENV| & development & Runtime mode (development/production) \\ \hline
-\path|MONGODB_URL| & \path|mongodb://localhost:27017| & Primary Mongo connection URI \\ \hline
-\path|MONGO_URL| & \path|mongodb://localhost:27017| & Legacy fallback connection URI \\ \hline
-\path|DB_NAME| & \path|jan_sunwai_db| & Database name \\ \hline
-\path|JWT_SECRET_KEY| & \path|change-me-in-production| & JWT signing secret \\ \hline
-\path|JWT_ALGORITHM| & HS256 & JWT signing algorithm \\ \hline
-\path|ACCESS_TOKEN_EXPIRE_MINUTES| & 1440 (dev) / 480 (prod) & Token expiration minutes \\ \hline
-\path|RATE_LIMIT_ENABLED| & false (dev) & Rate-limiting toggle \\ \hline
-\path|ALLOWED_ORIGINS| & localhost origins list & CORS allowlist \\ \hline
-\path|OLLAMA_BASE_URL| & \path|http://localhost:11434| & Ollama API endpoint \\ \hline
-\path|VISION_MODEL| & \path|qwen2.5vl:3b| & Primary vision model \\ \hline
-\path|MID_VISION_MODEL| & \path|granite3.2-vision:2b| & Mid-tier vision fallback \\ \hline
-\path|FALLBACK_VISION_MODEL| & \path|granite3.2-vision:2b| & Final vision fallback \\ \hline
-\path|REASONING_MODEL| & \path|llama3.2:1b| & Reasoning/drafting model \\ \hline
-\path|VISION_TIMEOUT_SECONDS| & 240 & Vision tier timeout \\ \hline
-\path|LLM_INLINE_TIMEOUT_SECONDS| & 15 & Inline generation wait time \\ \hline
-\path|LLM_QUEUE_WORKERS| & 2 & Background generation workers \\ \hline
-\path|RULE_ENGINE_ONLY| & false & Skip reasoning model when true \\ \hline
-\path|AMBIGUITY_THRESHOLD| & 2.0 & Rule-engine ambiguity boundary \\ \hline
-\path|UNLOAD_AFTER_REASONING| & true & Attempt model unload after use \\ \hline
-\path|MODEL_UNLOAD_TIMEOUT_SECONDS| & 30 & Model unload timeout \\ \hline
-\path|MODEL_UNLOAD_POLL_INTERVAL_SECONDS| & 0.1 & Poll interval for unload check \\ \hline
-\path|KEEP_REASONING_MODEL_WARM| & false & Keep reasoning model loaded toggle \\ \hline
-\path|COMPLAINT_OUTPUT_MODE| & email & Draft output style mode \\ \hline
-\path|SMTP_HOST| & empty & SMTP relay host \\ \hline
-\path|SMTP_PORT| & 587 & SMTP relay port \\ \hline
-\path|SMTP_FROM| & \path|noreply@jan-sunwai.local| & Sender identity for email stub/relay \\ \hline
-\path|DEFAULT_PAGE_SIZE| & 25 & Default pagination size \\ \hline
-\path|MAX_PAGE_SIZE| & 100 & Maximum pagination limit \\ \hline
-\hline
-\end{longtable}
+\begin{itemize}[leftmargin=1.5em, noitemsep]
+    \item \path{MONGODB_URL}: Primary Mongo connection URI.
+    \item \path{DB_NAME}: Target database name (e.g., \path{jan_sunwai_db}).
+    \item \path{JWT_SECRET_KEY}: Key used for session token signing.
+    \item \path{OLLAMA_BASE_URL}: Endpoint for the local model runtime.
+    \item \path{VISION_MODEL}: Primary model for image extraction (e.g., \path{qwen2.5vl}).
+    \item \path{REASONING_MODEL}: Model used for drafting (e.g., \path{llama3.2}).
+    \item \path{AMBIGUITY_THRESHOLD}: Logic boundary for triage routing.
+    \item \path{ALLOWED_ORIGINS}: CORS policy for frontend dashboard access.
+\end{itemize}
 \normalsize
 
 \section{Appendix C: Department Taxonomy and Authority Routing}
 
-\begin{longtable}{|p{0.32\textwidth}|p{0.26\textwidth}|p{0.30\textwidth}|}
+\begin{xltabular}{\textwidth}{|>{\RaggedRight\arraybackslash}p{0.32\textwidth}|>{\RaggedRight\arraybackslash}p{0.26\textwidth}|>{\RaggedRight\arraybackslash}X|}
 \caption{Department to Authority Mapping Snapshot}\\
 \hline
 \textbf{Department Label} & \textbf{Authority ID} & \textbf{Escalation Parent} \\ \hline
-\hline
-\endfirsthead
-\hline
-\textbf{Department Label} & \textbf{Authority ID} & \textbf{Escalation Parent} \\ \hline
-\hline
 \endhead
 Health Department & MUNI\_SANITATION & STATE\_CMO \\ \hline
 Civil Department & MUNI\_PWD & STATE\_CMO \\ \hline
@@ -140,21 +54,15 @@ Commercial & STATE\_CMO & CENTRAL\_DARPG \\ \hline
 Enforcement & POLICE\_TRAFFIC & STATE\_CMO \\ \hline
 Fire Department & POLICE\_LOCAL & STATE\_CMO \\ \hline
 Uncategorized & Rule/keyword fallback & Nullable \\ \hline
-\hline
-\end{longtable}
+\end{xltabular}
 
 \section{Appendix D: Requirement-to-Test Traceability Matrix}
 
 \small
-\begin{longtable}{|p{0.11\textwidth}|p{0.20\textwidth}|p{0.47\textwidth}|p{0.12\textwidth}|}
+\begin{xltabular}{\textwidth}{|>{\RaggedRight\arraybackslash}p{0.11\textwidth}|>{\RaggedRight\arraybackslash}p{0.20\textwidth}|>{\RaggedRight\arraybackslash}X|>{\RaggedRight\arraybackslash}p{0.12\textwidth}|}
 \caption{Requirement-to-Test Traceability Matrix}\\
 \hline
 \textbf{Req ID} & \textbf{Requirement Theme} & \textbf{Validation Evidence} & \textbf{Status} \\ \hline
-\hline
-\endfirsthead
-\hline
-\textbf{Req ID} & \textbf{Requirement Theme} & \textbf{Validation Evidence} & \textbf{Status} \\ \hline
-\hline
 \endhead
 FR-01 & User registration flow & Register route tests and manual registration UI checks & Verified \\ \hline
 FR-02 & Login and cookie-session issuance & Auth permission tests and integration smoke login path & Verified \\ \hline
@@ -178,6 +86,5 @@ FR-19 & CSV export & Export endpoint execution and output schema checks & Verifi
 FR-20 & Public board & Public feed route and UI accessibility checks & Verified \\ \hline
 FR-21 & Health probes & Live, ready, model, and GPU endpoint smoke checks & Verified \\ \hline
 FR-22 & API version alias & /api/v1 integration checks in matrix tests & Verified \\ \hline
-\hline
-\end{longtable}
+\end{xltabular}
 \normalsize
