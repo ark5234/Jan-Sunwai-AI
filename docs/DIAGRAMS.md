@@ -255,7 +255,29 @@ stateDiagram-v2
 ```
 ![Activity Diagram](./images/activity_diagram.png)
 
-### 5.2.6 DFD Diagram (Data Flow Diagram - Context & Level 1)
+### 5.2.6 State Machine Diagram (Complaint Lifecycle)
+
+```mermaid
+stateDiagram-v2
+    [*] --> Open : Complaint Submitted
+    
+    Open --> In_Progress : Auto or Manual Assignment
+    In_Progress --> In_Progress : Worker Reassignment
+    
+    In_Progress --> Resolved : Worker Provides Proof & Resolves
+    In_Progress --> Rejected : Worker Flags as Invalid/Spam
+    
+    Resolved --> [*]
+    Rejected --> [*]
+    
+    note right of In_Progress
+        *Can be flagged as "Escalated"
+        by the system or Citizen if 
+        SLA breached.
+    end note
+```
+
+### 5.2.7 DFD Diagram (Data Flow Diagram - Context & Level 1)
 
 #### Level 0 DFD (Context Diagram)
 
@@ -312,7 +334,7 @@ flowchart TB
 ```
 ![DFD Level 1](./images/architecture.png)
 
-### 5.2.7 Deployment Diagram
+### 5.2.8 Deployment Diagram
 
 The system's infrastructure scales between local development and production via Docker Compose environment configurations (`APP_ENV=production` vs `local`), utilizing distinct `.env` loading and build profiles.
 
