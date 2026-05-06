@@ -2,7 +2,7 @@
 
 % ===== FONT =====
 \usepackage{iftex}
-\ifPDFTeX
+\ifPDFTeX%
 \PackageError{Report}{Compile with XeLaTeX}{Use xelatex}
 \fi
 \usepackage{fontspec}
@@ -15,7 +15,7 @@
 
 % ===== PACKAGES =====
 \usepackage{graphicx}
-\graphicspath{{../../images/}}
+% \graphicspath{{../../images/}}
 \usepackage{amsmath}
 \usepackage{booktabs}
 \usepackage{longtable}
@@ -124,12 +124,31 @@
 \renewcommand{\cftchappagefont}{\bfseries}
 
 % ===== TOC / LOT / LOF TITLE FONTS (tocloft) =====
-\renewcommand{\cfttoctitlefont}{\hfill\bfseries\fontsize{16}{19.2}\selectfont}
+\renewcommand{\cfttoctitlefont}{\centering\bfseries\fontsize{16}{19.2}\selectfont}
 \renewcommand{\cftaftertoctitle}{\hfill\par\vspace{4pt}}
-\renewcommand{\cftlottitlefont}{\hfill\bfseries\fontsize{16}{19.2}\selectfont}
+\renewcommand{\cftlottitlefont}{\centering\bfseries\fontsize{16}{19.2}\selectfont}
 \renewcommand{\cftafterlottitle}{\hfill\par\vspace{4pt}}
-\renewcommand{\cftloftitlefont}{\hfill\bfseries\fontsize{16}{19.2}\selectfont}
+\renewcommand{\cftloftitlefont}{\centering\bfseries\fontsize{16}{19.2}\selectfont}
 \renewcommand{\cftafterloftitle}{\hfill\par\vspace{4pt}}
+
+\makeatletter
+% Hard override of the chapter command to remove ALL automatic list spacing
+\def\@chapter[#1]#2{\ifnum \c@secnumdepth >\m@ne
+                       \refstepcounter{chapter}%
+                       \typeout{\@chapapp\space\thechapter.}%
+                       \addcontentsline{toc}{chapter}%
+                                 {\protect\numberline{\thechapter}#1}%
+                  \else
+                    \addcontentsline{toc}{chapter}{#1}%
+                  \fi
+                  \chaptermark{#1}%
+                  \if@twocolumn
+                    \@topnewpage[\@makechapterhead{#2}]%
+                  \else
+                    \@makechapterhead{#2}%
+                    \@afterheading
+                  \fi}
+\makeatother
 
 % ===== SCREENSHOTS FLOAT =====
 \DeclareFloatingEnvironment[
@@ -138,16 +157,6 @@
     name=Screenshot
 ]{screenshot}
 \renewcommand{\thescreenshot}{\thechapter.\arabic{screenshot}}
-
-% List of Screenshots command (centered heading, added to TOC automatically)
-\newcommand{\listofscreenshots}{%
-  \clearpage
-  \phantomsection
-  \addcontentsline{toc}{chapter}{List of Screenshots}%
-  {\centering\bfseries\fontsize{16}{19.2}\selectfont List of Screenshots\par}%
-  \vspace{18pt}%
-  \@starttoc{los}%
-}
 
 % ===== CUSTOM COMMANDS =====
 \newcommand{\placeholderfigure}[2]{
@@ -175,11 +184,10 @@
   \end{minipage}}%
 }
 \ifstrempty{#1}{%
-  \caption{#5}%
+  \caption{#5}\label{#3}%
 }{%
-  \caption[#1]{#5}%
+  \caption[#1]{#5}\label{#3}%
 }
-\label{#3}
 \end{screenshot}
 }
 
@@ -189,47 +197,34 @@
 \pagenumbering{roman}
 \pagestyle{plain}
 
-% ===== FRONT MATTER =====
-\input{frontmatter/inner_title_page}
-\newpage
-
-\input{frontmatter/student_declaration}
-\newpage
-
-\input{frontmatter/supervisor_certificate}
-\newpage
-
-\input{frontmatter/acknowledgement}
-\newpage
-
-\input{frontmatter/abstract}
-\newpage
-
 % ===== TABLE OF CONTENTS =====
 \clearpage
-\phantomsection
+\phantomsection%
 \renewcommand{\contentsname}{Table of Contents}
-\tableofcontents
+\tableofcontents%
 \newpage
 
 % ===== LIST OF TABLES =====
 \clearpage
-\phantomsection
-\addcontentsline{toc}{chapter}{List of Tables}
+\phantomsection%
+\addcontentsline{toc}{chapter}{List of Tables}%
 \renewcommand{\listtablename}{List of Tables}
-\listoftables
+\listoftables%
 \newpage
 
 % ===== LIST OF FIGURES =====
 \clearpage
-\phantomsection
-\addcontentsline{toc}{chapter}{List of Figures}
+\phantomsection%
+\addcontentsline{toc}{chapter}{List of Figures}%
 \renewcommand{\listfigurename}{List of Figures}
-\listoffigures
+\listoffigures%
 \newpage
 
 % ===== LIST OF SCREENSHOTS =====
-\listofscreenshots
+\clearpage
+\phantomsection%
+\addcontentsline{toc}{chapter}{List of Screenshots}%
+\listofscreenshots%
 \newpage
 
 \input{frontmatter/abbreviations}

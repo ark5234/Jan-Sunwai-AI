@@ -1,4 +1,4 @@
-% !TeX root = ../main.tex
+﻿% !TeX root = ../main.tex
 \chapter{Testing}
 
 Testing for Jan-Sunwai AI was designed as a layered strategy combining automated checks, manual UAT scripts, resilience drills, and security/load validation. Because the platform supports governance-sensitive workflows, testing emphasized not only feature correctness but also operational integrity under degraded conditions [18, 7, 8].
@@ -27,7 +27,7 @@ The testing environment baseline outlined below ensures consistency across all v
 \begin{table}[H]
 \centering
 \caption{Testing Environment Baseline}
-\begin{tabular}{|p{0.30\textwidth}|p{0.62\textwidth}|}
+\begin{tabularx}{\textwidth}{|>{\RaggedRight\arraybackslash}X|>{\RaggedRight\arraybackslash}X|}
 \hline
 \textbf{Environment Aspect} & \textbf{Configuration} \\ \hline
 \hline
@@ -36,7 +36,7 @@ Database mode & MongoDB-backed flows with selective mock/fake collection tests \
 Frontend mode & Vite build/lint validation and persona-driven manual walkthroughs \\ \hline
 Model runtime mode & Ollama available for normal flows; manually disabled for resilience checks \\ \hline
 Automation tools & pytest, httpx, locust, script wrappers for platform-specific execution \\ \hline
-\end{tabular}
+\end{tabularx}
 \end{table}
 
 \subsection{Coverage Matrix}
@@ -76,7 +76,7 @@ Unit tests focused on isolated validation and control logic.
 \begin{table}[H]
 \centering
 \caption{Representative Unit Test Cases}
-\begin{tabular}{|p{0.16\textwidth}|p{0.28\textwidth}|p{0.47\textwidth}|}
+\begin{tabularx}{\textwidth}{|>{\RaggedRight\arraybackslash}X|>{\RaggedRight\arraybackslash}X|>{\RaggedRight\arraybackslash}X|}
 \hline
 \textbf{Case ID} & \textbf{Area} & \textbf{Expected Behavior} \\ \hline
 \hline
@@ -85,7 +85,7 @@ UT-02 & AI confidence schema & Reject confidence values outside $[0, 1]$ \\ \hli
 UT-03 & Admin role check & Non-admin caller receives HTTP 403 on admin-only dependency \\ \hline
 UT-04 & Worker approval gate & Unapproved worker cannot pass worker-only dependency path \\ \hline
 UT-05 & Sanitization function & Script payload transformed to escaped safe representation \\ \hline
-\end{tabular}
+\end{tabularx}
 \end{table}
 
 \subsection{Integration Testing}
@@ -106,7 +106,7 @@ System testing executed end-to-end flows across authentication, analyze, complai
 \begin{table}[H]
 \centering
 \caption{System Test Scenarios}
-\begin{tabular}{|p{0.13\textwidth}|p{0.35\textwidth}|p{0.44\textwidth}|}
+\begin{tabularx}{\textwidth}{|>{\RaggedRight\arraybackslash}X|>{\RaggedRight\arraybackslash}X|>{\RaggedRight\arraybackslash}X|}
 \hline
 \textbf{Scenario} & \textbf{Workflow} & \textbf{Pass Condition} \\ \hline
 \hline
@@ -115,7 +115,7 @@ ST-02 & Dept-head status update & Citizen receives notification and timeline ref
 ST-03 & Worker marks complaint done & Complaint transitions and worker slot logic updates as expected \\ \hline
 ST-04 & Admin triage decision & Ambiguous complaint receives governed label decision path \\ \hline
 ST-05 & CSV export & Export file generated with expected schema columns \\ \hline
-\end{tabular}
+\end{tabularx}
 \end{table}
 
 \subsection{User Acceptance Testing (UAT)}
@@ -137,7 +137,7 @@ To validate the non-functional requirements under realistic municipal constraint
 \centering
 \caption{System SLA and Performance Metrics}
 \label{table:perf-metrics}
-\begin{tabular}{|p{0.55\textwidth}|p{0.37\textwidth}|}
+\begin{tabularx}{\textwidth}{|>{\RaggedRight\arraybackslash}X|>{\RaggedRight\arraybackslash}X|}
 \hline
 \textbf{Metric} & \textbf{Recorded Baseline} \\ \hline
 \hline
@@ -145,7 +145,7 @@ Average API Response Time & 320ms \\ \hline
 AI Classification Confidence & 0.78 (Mean score across varied inputs) \\ \hline
 Manual Triage Fallback Rate & 4.2\% of total submissions \\ \hline
 Peak Concurrent Operations & 120 sustained req/sec \\ \hline
-\end{tabular}
+\end{tabularx}
 \end{table}
 
 These metrics indicate that while the AI engine is the primary bottleneck, isolating it into a background inference queue allows the core CRUD application to remain highly responsive (320ms). The 4.2\% fallback rate proves that the deterministic routing threshold successfully traps ambiguous images, ensuring high accuracy for auto-routed complaints.
@@ -190,7 +190,7 @@ To validate the practical utility of the platform, several key performance indic
 \begin{table}[H]
 \centering
 \caption{System Evaluation Metrics}
-\begin{tabular}{|p{0.55\textwidth}|p{0.37\textwidth}|}
+\begin{tabularx}{\textwidth}{|>{\RaggedRight\arraybackslash}X|>{\RaggedRight\arraybackslash}X|}
 \hline
 \textbf{Metric} & \textbf{Observed Value} \\ \hline
 \hline
@@ -199,7 +199,7 @@ Draft Generation Time (Vision Model) & 2.4 sec \\ \hline
 Classification Confidence Avg & 0.78 \\ \hline
 Error/Fallback Rate under Load & 4.2\% (Graceful 503 downgrade) \\ \hline
 System Throughput (Peak) & 18 requests/sec \\ \hline
-\end{tabular}
+\end{tabularx}
 \end{table}
 
 \placeholderfigure{Response Time vs Load}{A graph demonstrating that API response time remains stable around 320ms until reaching 20 concurrent requests/second, after which graceful degradation occurs.}
@@ -211,7 +211,7 @@ System Throughput (Peak) & 18 requests/sec \\ \hline
 \begin{table}[H]
 \centering
 \caption{Outcome Summary by Validation Area}
-\begin{tabular}{|p{0.30\textwidth}|p{0.16\textwidth}|p{0.44\textwidth}|}
+\begin{tabularx}{\textwidth}{|>{\RaggedRight\arraybackslash}X|>{\RaggedRight\arraybackslash}X|>{\RaggedRight\arraybackslash}X|}
 \hline
 \textbf{Validation Area} & \textbf{Outcome} & \textbf{Notes} \\ \hline
 \hline
@@ -221,7 +221,7 @@ Resilience checks & Pass & Controlled degraded responses confirmed for model/DB 
 Frontend lint/build & Pass & UI changes and route additions validated through build and lint cycle \\ \hline
 Compose validation & Pass & Unified compose configuration validated for default and prod profile flows \\ \hline
 UAT persona scripts & Pass with refinements & Minor UX adjustments applied in same sprint feedback loop \\ \hline
-\end{tabular}
+\end{tabularx}
 \end{table}
 
 \section{Residual Risks and Test Gaps}
@@ -275,14 +275,14 @@ UAT-20 & Citizen & Trigger analyze while model unavailable & High & User-friendl
 \begin{table}[H]
 \centering
 \caption{Load Profile and Acceptance Guidance}
-\begin{tabular}{|p{0.16\textwidth}|p{0.12\textwidth}|p{0.13\textwidth}|p{0.14\textwidth}|p{0.35\textwidth}|}
+\begin{tabularx}{\textwidth}{|>{\RaggedRight\arraybackslash}X|>{\RaggedRight\arraybackslash}X|>{\RaggedRight\arraybackslash}X|>{\RaggedRight\arraybackslash}X|>{\RaggedRight\arraybackslash}X|}
 \hline
 \textbf{Profile} & \textbf{Users} & \textbf{Spawn Rate} & \textbf{Duration} & \textbf{Acceptance Guidance} \\ \hline
 \hline
 Smoke & 20 & 5/s & 5 min & No critical endpoint failure; stable liveness and predictable response envelopes \\ \hline
 Baseline & 70 & 10/s & 15 min & Controlled latency growth; no persistent failure mode in public and health endpoints \\ \hline
 Peak & 120 & 20/s & 20 min & Graceful degradation accepted for analyze path (429/503) while core status pages remain functional \\ \hline
-\end{tabular}
+\end{tabularx}
 \end{table}
 
 \section{Security Regression Matrix}

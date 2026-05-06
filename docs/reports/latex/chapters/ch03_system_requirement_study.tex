@@ -1,4 +1,4 @@
-% !TeX root = ../main.tex
+﻿% !TeX root = ../main.tex
 \chapter{System Requirement Study}
 
 This chapter documents requirement analysis for Jan-Sunwai AI, including the baseline state of existing grievance systems, observed limitations, actor expectations, and formalized functional/non-functional requirements. The study was derived from implementation realities, municipal workflow assumptions, and validation through tests and user journeys [1, 2, 11, 12, 13].
@@ -25,7 +25,7 @@ Seven recurring limitations were observed in legacy civic grievance systems: man
 
 The system is designed for four operational personas with distinct interaction patterns and authorization boundaries.
 
-The system serves four distinct operational personas. \textbf{Citizens} report issues and track outcomes --- they upload images, review the AI-generated draft, submit their complaint, and monitor notifications and status updates. \textbf{Workers} resolve assigned field tasks by viewing their queue, managing availability, and marking completions with resolution notes. \textbf{Department Heads} manage departmental flow by filtering the department queue, updating complaint status, adding notes, and transferring or escalating cases when required. \textbf{Administrators} exercise end-to-end governance: approving workers, triaging ambiguous AI classifications, performing bulk operations, exporting reports, and monitoring analytics.
+The system serves four distinct operational personas. \textbf{Citizens} report issues and track outcomes: they upload images, review the AI-generated draft, submit their complaint, and monitor notifications and status updates. \textbf{Workers} resolve assigned field tasks by viewing their queue, managing availability, and marking completions with resolution notes. \textbf{Department Heads} manage departmental flow by filtering the department queue, updating complaint status, adding notes, and transferring or escalating cases when required. \textbf{Administrators} exercise end-to-end governance: approving workers, triaging ambiguous AI classifications, performing bulk operations, exporting reports, and monitoring analytics.
 
 \section{Functional Requirements}
 
@@ -99,7 +99,7 @@ The baseline parameters established below define the minimum viable constraints 
 \begin{table}[H]
 \centering
 \caption{Hardware Requirement Baseline}
-\begin{tabular}{|p{0.30\textwidth}|p{0.28\textwidth}|p{0.30\textwidth}|}
+\begin{tabularx}{\textwidth}{|>{\RaggedRight\arraybackslash}X|>{\RaggedRight\arraybackslash}X|>{\RaggedRight\arraybackslash}X|}
 \hline
 \textbf{Component} & \textbf{Minimum} & \textbf{Recommended} \\ \hline
 \hline
@@ -108,7 +108,7 @@ System RAM & 12 GB available & 16 GB or higher \\ \hline
 GPU VRAM & 4 GB & 6 GB or higher \\ \hline
 Storage & 10 GB free & 20 GB free \\ \hline
 Network & Stable LAN/internet for maps and package fetch & Managed institutional network \\ \hline
-\end{tabular}
+\end{tabularx}
 \end{table}
 
 \subsection{Software Requirements}
@@ -119,7 +119,7 @@ The baseline parameters established below define the minimum viable constraints 
 \begin{table}[H]
 \centering
 \caption{Software Environment Requirements}
-\begin{tabular}{|p{0.28\textwidth}|p{0.24\textwidth}|p{0.40\textwidth}|}
+\begin{tabularx}{\textwidth}{|>{\RaggedRight\arraybackslash}X|>{\RaggedRight\arraybackslash}X|>{\RaggedRight\arraybackslash}X|}
 \hline
 \textbf{Software Component} & \textbf{Baseline} & \textbf{Purpose} \\ \hline
 \hline
@@ -130,7 +130,7 @@ MongoDB & 7.x class deployment & Document persistence \\ \hline
 Ollama Runtime & Local model runtime & Vision/reasoning generation pipeline \\ \hline
 Docker Engine/Compose & Docker 24+ recommended & Containerized orchestration \\ \hline
 Browser & Chromium/Firefox class & Frontend access and UAT execution \\ \hline
-\end{tabular}
+\end{tabularx}
 \end{table}
 
 \section{Constraints}
@@ -191,7 +191,7 @@ Because civic complaints can contain sensitive personal information, the followi
 \begin{table}[H]
 \centering
 \caption{Assumptions and External Dependencies}
-\begin{tabular}{|p{0.10\textwidth}|p{0.44\textwidth}|p{0.38\textwidth}|}
+\begin{tabularx}{\textwidth}{|>{\RaggedRight\arraybackslash}X|>{\RaggedRight\arraybackslash}X|>{\RaggedRight\arraybackslash}X|}
 \hline
 \textbf{ID} & \textbf{Assumption/Dependency} & \textbf{Implication} \\ \hline
 \hline
@@ -201,7 +201,7 @@ A3 & Environment variables are configured accurately & Auth, DB, CORS, and model
 A4 & Frontend and backend URL mapping is consistent & API calls and route protection remain stable \\ \hline
 A5 & Worker profiles include valid department and status metadata & Assignment service can select candidates correctly \\ \hline
 A6 & Deployment host supports Docker where container mode is used & Production-style stack can be reproduced \\ \hline
-\end{tabular}
+\end{tabularx}
 \end{table}
 
 \section{Detailed Use-Case Narratives}
@@ -237,7 +237,7 @@ Requirements are classified using the MoSCoW methodology [20] to ensure delivery
 \begin{table}[H]
 \centering
 \caption{MoSCoW-Style Requirement Priority Mapping}
-\begin{tabular}{|p{0.22\textwidth}|p{0.28\textwidth}|p{0.42\textwidth}|}
+\begin{tabularx}{\textwidth}{|>{\RaggedRight\arraybackslash}X|>{\RaggedRight\arraybackslash}X|>{\RaggedRight\arraybackslash}X|}
 \hline
 \textbf{Priority} & \textbf{Requirement IDs} & \textbf{Interpretation} \\ \hline
 \hline
@@ -245,7 +245,7 @@ Must Have & FR-01 to FR-12, FR-14, FR-16, FR-21 & Core operational viability: au
 Should Have & FR-13, FR-15, FR-17, FR-18, FR-22 & Strong governance and maintainability improvements that meaningfully increase institutional readiness \\ \hline
 Could Have & FR-19, FR-20 & Non-blocking but high-value transparency and reporting improvements \\ \hline
 Non-Functional Critical & NFR-01, NFR-02, NFR-06, NFR-10 & Security, reliability, observability, and data integrity controls required for trusted operation \\ \hline
-\end{tabular}
+\end{tabularx}
 \end{table}
 
 \section{Chapter Summary}

@@ -1,7 +1,7 @@
-% !TeX root = ../main.tex
+﻿% !TeX root = ../main.tex
 \chapter{Implementation Planning}
 
-Implementation planning for Jan-Sunwai AI focused on three parallel goals: reproducibility, maintainable module growth, and deployment readiness. The implementation strategy treated backend, frontend, AI runtime, and operational scripts as coordinated components rather than isolated code tracks.
+Implementation planning for Jan-Sunwai AI focused on three parallel goals: reproducibility, maintainable module growth, and deployment readiness. The implementation strategy treated backend, frontend, AI runtime, and operational scripts as coordinated components rather than isolated code tracks. At this stage, the project is in production-handover readiness rather than prototype mode.
 
 \section{Implementation Environment}
 
@@ -35,32 +35,29 @@ This ensures that local verification and deployment handover use the same operat
 
 \section{Tools \& Technologies Used}
 
-\begin{longtable}{|p{0.20\textwidth}|p{0.23\textwidth}|p{0.49\textwidth}|}
-\caption{Implementation Toolchain and Use Cases}\\
+\begin{table}[H]
+\centering
+\small
+\caption{Implementation Toolchain and Use Cases}
+\begin{tabularx}{\textwidth}{|p{0.18\textwidth}|p{0.24\textwidth}|X|}
 \hline
 \textbf{Category} & \textbf{Tool/Library} & \textbf{Implementation Use} \\ \hline
-\hline
-\endfirsthead
-\hline
-\textbf{Category} & \textbf{Tool/Library} & \textbf{Implementation Use} \\ \hline
-\hline
-\endhead
-Backend Framework & FastAPI & Route definitions, dependency injection, validation, middleware pipeline \\ \hline
-Data Validation & Pydantic [15] & Request/response schema validation and structured models \\ \hline
-Auth and Security & python-jose, passlib[bcrypt] & Cookie-session auth, JWT compatibility support, and password hashing \\ \hline
-HTTP Testing & httpx & Async API smoke and integration checks \\ \hline
-Database Driver & Motor/PyMongo stack & MongoDB async operations and collection access \\ \hline
-AI Runtime & Ollama & Local vision and reasoning model invocation \\ \hline
-Image Handling & Pillow & Upload payload validation and EXIF processing \\ \hline
-Frontend Framework & React & Role-aware SPA component and page architecture \\ \hline
-Build Tool & Vite & Fast frontend development and optimized production build \\ \hline
-Client HTTP & Axios & Frontend API communication layer \\ \hline
-Routing & react-router-dom & Protected routes and role-based navigation \\ \hline
-Containerization & Docker + Compose & Reproducible orchestration of backend/frontend/database services \\ \hline
-QA Automation & pytest, locust & Unit/integration/security/resilience/load test execution \\ \hline
-Documentation & Markdown + LaTeX & Runbooks, architecture docs, and final academic report \\ \hline
-\hline
-\end{longtable}
+Backend Framework & FastAPI & Route definitions, dependency injection, validation, and middleware pipeline. \\ \hline
+Data Validation & Pydantic [15] & Request and response schema validation with structured models. \\ \hline
+Auth and Security & python-jose, passlib[bcrypt] & Cookie-session auth, JWT compatibility support, and password hashing. \\ \hline
+HTTP Testing & httpx & Async API smoke tests and integration checks. \\ \hline
+Database Driver & Motor/PyMongo stack & MongoDB async operations and collection access. \\ \hline
+AI Runtime & Ollama & Local vision and reasoning model invocation. \\ \hline
+Image Handling & Pillow & Upload payload validation and EXIF processing. \\ \hline
+Frontend Framework & React & Role-aware SPA component and page architecture. \\ \hline
+Build Tool & Vite & Fast frontend development and optimized production build. \\ \hline
+Client HTTP & Axios & Frontend API communication layer. \\ \hline
+Routing & react-router-dom & Protected routes and role-based navigation. \\ \hline
+Containerization & Docker + Compose & Reproducible orchestration of backend, frontend, and database services. \\ \hline
+QA Automation & pytest, locust & Unit, integration, security, resilience, and load-test execution. \\ \hline
+Documentation & Markdown + LaTeX & Runbooks, architecture docs, and the final academic report. \\ \hline
+\end{tabularx}
+\end{table}
 
 \section{Key Implementation Patterns}
 
@@ -68,61 +65,15 @@ Three representative code patterns are presented here to demonstrate that the to
 
 \subsection{Upload Validation Chain}
 
-Every image submitted by a citizen passes through a layered validation chain before it is persisted or forwarded to the AI runtime. The following pattern, implemented in \texttt{services/storage.py}, checks file extension against the actual binary signature to prevent MIME-type spoofing attacks:
-
-\begin{verbatim}
-ALLOWED_SIGNATURES = {
-    b"\xff\xd8\xff": "jpg",
-    b"\x89PNG\r\n": "png",
-    b"GIF8": "gif",
-    b"RIFF": "webp",
-}
-
-def validate_image(file_bytes: bytes, filename: str) -> str:
-    header = file_bytes[:6]
-    for sig, ext in ALLOWED_SIGNATURES.items():
-        if header.startswith(sig):
-            return ext
-    raise HTTPException(status_code=400,
-        detail="File content does not match declared type")
-\end{verbatim}
+Every image submitted by a citizen passes through a layered validation chain before it is persisted or forwarded to the AI runtime. The storage service checks the filename extension, verifies the binary signature, and rejects mismatches to prevent MIME-type spoofing attacks.
 
 \subsection{Classifier Confidence Thresholding}
 
-The hybrid classification pipeline routes the complaint automatically only when model confidence exceeds a configurable threshold. Below it, the complaint is sent to the administrative triage queue. This logic resides in \texttt{services/classifier.py}:
-
-\begin{verbatim}
-CONFIDENCE_THRESHOLD = 0.70
-
-def route_or_triage(result: ClassifierResult) -> TriageDecision:
-    if result.confidence >= CONFIDENCE_THRESHOLD:
-        return TriageDecision(
-            department=result.department,
-            auto_routed=True,
-            requires_review=False
-        )
-    return TriageDecision(
-        department=None,
-        auto_routed=False,
-        requires_review=True,
-        low_confidence_score=result.confidence
-    )
-\end{verbatim}
+The hybrid classification pipeline routes the complaint automatically only when model confidence exceeds a configurable threshold. Below that threshold, the complaint is sent to the administrative triage queue with the confidence score preserved for review and audit.
 
 \subsection{Frontend Route Guard}
 
-Role-based page access is enforced client-side through a \texttt{ProtectedRoute} wrapper component. This ensures that navigating directly to an admin URL while authenticated as a citizen triggers an immediate redirect rather than a permission error:
-
-\begin{verbatim}
-const ProtectedRoute = ({ allowedRoles, children }) => {
-  const { user, isLoading } = useAuth();
-  if (isLoading) return <LoadingSpinner />;
-  if (!user) return <Navigate to="/login" replace />;
-  if (!allowedRoles.includes(user.role))
-    return <Navigate to="/dashboard" replace />;
-  return children;
-};
-\end{verbatim}
+Role-based page access is enforced client-side through a \texttt{ProtectedRoute} wrapper component. If the user is still loading, the interface shows a spinner; if no session exists, the app redirects to login; and if the user lacks the required role, the app redirects to the dashboard instead of exposing the protected route.
 
 \section{Coding Standards Followed}
 
@@ -197,7 +148,7 @@ Deliverables included the production compose profile, deployment guides, and API
 \begin{table}[H]
 \centering
 \caption{Implementation Sequence with Dependency Notes}
-\begin{tabular}{|p{0.10\textwidth}|p{0.33\textwidth}|p{0.49\textwidth}|}
+\begin{tabularx}{\textwidth}{|>{\RaggedRight\arraybackslash}X|>{\RaggedRight\arraybackslash}X|>{\RaggedRight\arraybackslash}X|}
 \hline
 \textbf{Step} & \textbf{Implementation Activity} & \textbf{Dependency Consideration} \\ \hline
 \hline
@@ -210,7 +161,7 @@ Deliverables included the production compose profile, deployment guides, and API
 7 & Add security and reliability hardening & Should follow core flow stability to avoid hidden regressions \\ \hline
 8 & Run tests and UAT cycles & Depends on complete feature slices and stable environments \\ \hline
 9 & Prepare production profile and handover docs & Depends on validated security/performance baseline \\ \hline
-\end{tabular}
+\end{tabularx}
 \end{table}
 
 \section{Configuration and Secret Planning}
@@ -232,7 +183,7 @@ A notable planning correction during implementation was moving to one canonical 
 \begin{table}[H]
 \centering
 \caption{Implementation Quality Gates}
-\begin{tabular}{|p{0.30\textwidth}|p{0.62\textwidth}|}
+\begin{tabularx}{\textwidth}{|>{\RaggedRight\arraybackslash}X|>{\RaggedRight\arraybackslash}X|}
 \hline
 \textbf{Gate} & \textbf{Acceptance Criterion} \\ \hline
 \hline
@@ -244,7 +195,7 @@ Reliability gate & Graceful fallback behavior under model/DB faults verified \\ 
 Deployment gate & Compose stack health checks pass and service topology is reproducible \\ \hline
 UAT gate & Citizen and admin scripts complete without blocking defects \\ \hline
 Documentation gate & Deployment, API, user manual, and report artifacts synchronized \\ \hline
-\end{tabular}
+\end{tabularx}
 \end{table}
 
 \section{Resource and Effort Planning}
@@ -287,7 +238,7 @@ The matrix below details the specific planning components necessary to operation
 \begin{table}[H]
 \centering
 \caption{Service-Level Implementation Planning}
-\begin{tabular}{|p{0.26\textwidth}|p{0.66\textwidth}|}
+\begin{tabularx}{\textwidth}{|>{\RaggedRight\arraybackslash}X|>{\RaggedRight\arraybackslash}X|}
 \hline
 \textbf{Service} & \textbf{Planning Note} \\ \hline
 \hline
@@ -297,7 +248,7 @@ Sanitization service & Planned as reusable utility to keep payload cleaning cent
 LLM queue service & Introduced to absorb long-running draft generation and preserve responsive user experience \\ \hline
 Escalation loop & Planned as background process with authority parent mapping and timeline updates \\ \hline
 Email service & Implemented as environment-driven stub/relay abstraction for gradual production integration \\ \hline
-\end{tabular}
+\end{tabularx}
 \end{table}
 
 \section{Deployment Runbook and Rollout Plan}
@@ -312,7 +263,7 @@ The matrix below details the specific planning components necessary to operation
 \begin{table}[H]
 \centering
 \caption{Deployment Rollout Stages}
-\begin{tabular}{|p{0.12\textwidth}|p{0.24\textwidth}|p{0.56\textwidth}|}
+\begin{tabularx}{\textwidth}{|>{\RaggedRight\arraybackslash}X|>{\RaggedRight\arraybackslash}X|>{\RaggedRight\arraybackslash}X|}
 \hline
 \textbf{Stage} & \textbf{Objective} & \textbf{Execution Checklist} \\ \hline
 \hline
@@ -323,7 +274,7 @@ R4 & Functional smoke & Execute login, analyze, complaint creation, and notifica
 R5 & Governance smoke & Validate admin triage, worker assignment controls, and export flow \\ \hline
 R6 & Hardening validation & Execute security/resilience test scripts and capture baseline metrics \\ \hline
 R7 & Handover sign-off & Archive logs, backups, and runbook evidence for deployment package \\ \hline
-\end{tabular}
+\end{tabularx}
 \end{table}
 
 \subsection{Rollback Planning}

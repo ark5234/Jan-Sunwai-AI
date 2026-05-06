@@ -1,81 +1,35 @@
 % !TeX root = ../main.tex
-\chapter{System Design}
+\chapter{System Architecture and Design}
 
-System design in Jan-Sunwai AI focuses on reliable complaint orchestration in a governance-sensitive environment. The design balances modular API responsibilities, AI integration boundaries, role-specific UI behavior, and document-oriented persistence strategies.
+This chapter details the structural design choices, module interactions, and data modeling strategies that enable Jan-Sunwai AI to operate as a secure, local-first civic grievance platform. The architecture is designed for modularity, ensuring that AI-assisted components remain isolated from deterministic governance workflows.
 
-\section{System Architecture Design}
+\section{System Architecture}
 
-System architecture design was developed to ensure clear separation of concerns while preserving end-to-end traceability across complaint intake, processing, and governance review. The design prioritizes predictable integration boundaries among frontend, backend, data, and AI runtime layers so that failures can be isolated and recovered without cascading disruption. This architecture also supports future scaling through modular service evolution [11, 12, 13, 17, 16].
+The platform follows a multi-tier Client-Server architecture, optimized for local execution with containerized boundaries.
 
-\subsection{Architectural Style}
+\subsection{Overall System Context}
 
-The platform follows a rigorous \textbf{Client-Server architecture} with a layered service approach:
-
-\begin{itemize}
-\item \textbf{Presentation Layer}: React SPA (using React Router v7 and Vite) with role-aware route protection and Tailwind v4 styling.
-\item \textbf{API Layer}: FastAPI routers strictly enforced under the \texttt{/api/v1} namespace grouped by domain concern (Complaints, Users, Health, Triage, Analytics, Workers).
-\item \textbf{Service Layer}: In-memory async AI Queues, Automated Worker Assignment, sanitization grids, robust Rate Limiting (\texttt{slowapi}), and background escalation loops (\texttt{escalation\_loop()}).
-\item \textbf{Data Layer}: Primary MongoDB collections (with \texttt{2dsphere} indexes) alongside a dedicated NDMC Audit Database.
-\item \textbf{AI Runtime Layer}: Ollama-hosted local models utilizing a multi-tier vision cascade (Qwen2.5-VL, IBM Granite-3.2, Moondream2) with deterministic rule-engine scoring and an NDMC AI API comparison layer.
-\end{itemize}
+The system connects four primary personas (Citizen, Worker, Dept Head, Admin) to a centralized governance core. The context diagram below illustrates the high-level data exchange between these actors and the platform services.
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.85\textwidth]{system_context_diagram.png}
+\includegraphics[width=0.85\textwidth]{../../images/system_context_diagram.png}
 \caption{Overall System Context Diagram}
 \label{fig:system-context}
 \end{figure}
 
-\begin{figure}[H]
-\centering
-\includegraphics[width=0.85\textwidth]{architecture.png}
-\caption{Component Architecture Diagram}
-\label{fig:component-architecture}
-\end{figure}
-
-\subsection{Key Architectural Decisions}
-
-Key design decisions are summarized below:
-
-
-\begin{table}[H]
-\centering
-\caption{Major Design Decisions and Rationale}
-\label{tab:design-decisions}
-\begin{tabular}{|p{0.33\textwidth}|p{0.59\textwidth}|}
-\hline
-\textbf{Decision} & \textbf{Rationale} \\ \hline
-\hline
-Hybrid AI pipeline (vision + rules + optional reasoning) & Reduces hallucination risk, lowers VRAM pressure, and improves deterministic routing for common civic scenes \\ \hline
-Document model in MongoDB & Supports rich complaint lifecycle payloads and embedded audit metadata without heavy relational join overhead \\ \hline
-Role-specific route gates & Enforces operational boundaries between citizen, worker, department head, and admin personas \\ \hline
-Queue-based draft generation fallback & Prevents long-running model calls from blocking frontend experience \\ \hline
-Security middleware and sanitization by default & Reduces exploit surface for API consumers and file uploads \\ \hline
-Versioned API alias (/api/v1) & Improves long-term integration stability for external municipal consumers \\ \hline
-\end{tabular}
-\end{table}
-
 \subsection{AI Classification Pipeline}
 
-To ensure reliable routing, the AI component employs a \textbf{Vision Cascade} combined with deterministic rule-based scoring. When an image is uploaded, it is processed through a sequence of models:
-\begin{enumerate}
-    \item \textbf{Primary Vision Model (Qwen2.5-VL)}: Extracts detailed visual attributes.
-    \item \textbf{Non-Civic Guard}: Immediately flags irrelevant uploads (selfies, food, etc.).
-    \item \textbf{Rule Engine Scoring}: Applies weighted keyword matching to the vision output (e.g., "pothole" + "road" $\to$ Civil).
-    \item \textbf{Cascade Fallback}: If the primary model is ambiguous or times out, the system retries with IBM Granite-3.2 or Moondream2.
-    \item \textbf{NDMC AI Comparison}: Final local predictions are cross-referenced with the external NDMC AI API to ensure alignment with municipal standards.
-\end{enumerate}
+The AI pipeline uses a hybrid vision-cascade and rule-engine scoring model to ensure high-confidence routing while providing a human-in-the-loop triage path for ambiguous cases.
 
-The system implements \textbf{Contextual Priority Rules} to resolve common biases:
-\begin{itemize}
-    \item \textbf{Source-over-Symptom}: Prioritizes Civil (e.g., pipe leak) over VBD (e.g., stagnant water) when infrastructure failure is detected.
-    \item \textbf{Infrastructure-over-Landscape}: Prioritizes Civil (e.g., sand/construction) over Horticulture (e.g., leaves) on roadsides.
-    \item \textbf{Activity-over-Infrastructure}: Prioritizes Enforcement (e.g., hawkers) over minor pavement issues.
-\end{itemize}
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.85\textwidth]{../../images/architecture.png}
+\caption{AI Pipeline and Classification Flow}
+\label{fig:ai-pipeline}
+\end{figure}
 
-The final confidence score determines if the complaint is auto-routed (threshold $\ge 0.70$) or sent to the Administrative Triage Queue.
-
-\section{UML Diagrams}
+\section{UML Design}
 
 The following diagrams are aligned with the implemented module boundaries, routing flow, and lifecycle stages documented in the project report and API references.
 
@@ -83,7 +37,7 @@ The following diagrams are aligned with the implemented module boundaries, routi
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.85\textwidth]{new_er.png}
+\includegraphics[width=0.85\textwidth]{../../images/new_er.png}
 \caption{E-R Diagram}
 \label{fig:er-diagram}
 \end{figure}
@@ -94,7 +48,7 @@ The following diagrams are aligned with the implemented module boundaries, routi
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.85\textwidth]{flowchart.png}
+\includegraphics[width=0.85\textwidth]{../../images/flowchart.png}
 \caption{Use Case Diagram (System Flow)}
 \label{fig:use-case}
 \end{figure}
@@ -105,7 +59,7 @@ The following diagrams are aligned with the implemented module boundaries, routi
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.85\textwidth]{class_diagram.png}
+\includegraphics[width=0.85\textwidth]{../../images/class_diagram.png}
 \caption{Class Diagram}
 \label{fig:class-diagram}
 \end{figure}
@@ -116,35 +70,29 @@ The following diagrams are aligned with the implemented module boundaries, routi
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.85\textwidth]{sequence_diagram.png}
+\includegraphics[width=0.85\textwidth]{../../images/sequence_diagram.png}
 \caption{Sequence Diagram}
 \label{fig:sequence-diagram}
 \end{figure}
 
-\textbf{Flow \& Bottlenecks:} This sequence outlines the chronological journey of a grievance. It highlights the AI inference step as the primary synchronous bottleneck. To prevent browser timeouts, the system restricts the analysis time window and degrades gracefully to a manual form if inference times out.
+\textbf{Interaction Logic:} The sequence diagram traces a complaint from initial image upload through AI analysis, citizen confirmation, and worker assignment. It highlights the asynchronous nature of the AI generation queue, which prevents LLM inference latency from blocking the main user experience.
 
 \subsection{Activity Diagram}
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.85\textwidth]{activity_diagram.png}
+\includegraphics[width=0.85\textwidth]{../../images/activity_diagram.png}
 \caption{Activity Diagram}
 \label{fig:activity-diagram}
 \end{figure}
 
-\textbf{State Machine Constraints:} This diagram tracks the rigid state transitions a complaint undergoes (e.g., from `Pending` to `In Progress` to `Resolved`). It illustrates the system's fail-safes: if the AI classification confidence is low, the activity branches into the administrative triage queue rather than failing silently, preventing black-hole scenarios in civic reporting.
-
-\subsection{DFD Diagram}
-
-\placeholderfigure{Data Flow Diagram}{Data moves from frontend to API services, then to persistence and AI runtime. Notification and analytics streams derive from lifecycle events.}
-
-\textbf{System Dynamics:} The DFD maps the transition of unstructured citizen uploads into structured database records. It illustrates why the AI module is isolated from the core CRUD API---allowing the transaction engine to operate independently of the compute-heavy vision processing.
+\textbf{Workflow States:} The activity diagram maps the internal decision logic used to triage low-confidence classifications. It shows how the system selectively invokes reasoning models (like Llama 3.2) only when the initial vision cascade fails to meet confidence thresholds.
 
 \subsection{Deployment Diagram}
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.85\textwidth]{deployment_diagram.png}
+\includegraphics[width=0.85\textwidth]{../../images/deployment_diagram.png}
 \caption{Deployment Diagram}
 \label{fig:deployment-diagram}
 \end{figure}
@@ -189,7 +137,7 @@ Key indexing strategies are summarized below:
 \centering
 \caption{Indexing Strategy by Collection}
 \label{tab:indexing-strategy}
-\begin{tabular}{|p{0.22\textwidth}|p{0.31\textwidth}|p{0.39\textwidth}|}
+\begin{tabularx}{\textwidth}{|>{\RaggedRight\arraybackslash}X|>{\RaggedRight\arraybackslash}X|>{\RaggedRight\arraybackslash}X|}
 \hline
 \textbf{Collection} & \textbf{Index} & \textbf{Purpose} \\ \hline
 \hline
@@ -203,7 +151,7 @@ notifications & (user\_id, is\_read) & Unread badge counter queries \\ \hline
 password\_resets & unique(token\_hash) & Token lookup and collision prevention \\ \hline
 password\_resets & (user\_id, used) & Active token invalidation management \\ \hline
 password\_resets & TTL(expires\_at) & Automatic expired-token cleanup \\ \hline
-\end{tabular}
+\end{tabularx}
 \end{table}
 
 \section{GUI Design}
@@ -230,7 +178,7 @@ Key interface areas are summarized below:
 \centering
 \caption{GUI Areas and Purpose}
 \label{tab:gui-areas-purpose}
-\begin{tabular}{|p{0.30\textwidth}|p{0.62\textwidth}|}
+\begin{tabularx}{\textwidth}{|>{\RaggedRight\arraybackslash}X|>{\RaggedRight\arraybackslash}X|}
 \hline
 \textbf{Interface Area} & \textbf{Purpose} \\ \hline
 \hline
@@ -243,7 +191,7 @@ Department Head Dashboard & Department-level filtering, status updates, and note
 Admin Dashboard & Global queue, approvals, triage, bulk actions, analytics, exports \\ \hline
 Notification Panel & Event feed and read-state management \\ \hline
 Profile Screen & Personal information update controls \\ \hline
-\end{tabular}
+\end{tabularx}
 \end{table}
 
 \subsection{Wireframe Reference}
@@ -253,7 +201,13 @@ The following figure provides a visual reference that complements the explanator
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.85\textwidth]{gui_wireframe.png}
+\IfFileExists{../../images/gui_wireframe.png}{%
+\includegraphics[width=0.85\textwidth]{../../images/gui_wireframe.png}%
+}{%
+\fbox{\begin{minipage}[c][0.30\textheight][c]{0.85\textwidth}
+\centering Missing wireframe image
+\end{minipage}}%
+}
 \caption{GUI Wireframe Reference from Project Documentation}
 \label{fig:gui-wireframe}
 \end{figure}
@@ -268,8 +222,8 @@ The screenshot gallery below restores representative evidence from the implement
 \screenshotcard[Citizen Tracking Dashboard]{0.48\textwidth}{fig:s03}{../../images/grievance_status_tracker.png}{Citizen Complaint Tracking Dashboard}
 \screenshotcard[Worker Assignment Queue]{0.48\textwidth}{fig:s04}{../../images/admin_worker_task_assignment_pannel.png}{Worker Assignment Queue}
 
-\screenshotcard[Admin Dashboard]{0.96\textwidth}{fig:s05}{../../images/admin_dashboard.png}{Admin Dashboard --- shows real-time complaint volume and department breakdown.}
-\screenshotcard[Admin Triage Queue]{0.96\textwidth}{fig:s06}{../../images/admin_human_complaint_review_pannel.png}{Administrative Triage Queue --- displays low-confidence AI classifications.}
+\screenshotcard[Admin Dashboard]{0.96\textwidth}{fig:s05}{../../images/admin_dashboard.png}{Admin Dashboard: shows real-time complaint volume and department breakdown.}
+\screenshotcard[Admin Triage Queue]{0.96\textwidth}{fig:s06}{../../images/admin_human_complaint_review_pannel.png}{Administrative Triage Queue: displays low-confidence AI classifications.}
 
 \screenshotcard[Grievance Heatmap]{0.48\textwidth}{fig:s07}{../../images/grievance_heatmap.png}{Geospatial aggregation of complaints across the municipal area.}
 \screenshotcard[Satellite Analysis]{0.48\textwidth}{fig:s08}{../../images/satellite_complaint_image.png}{Satellite-view analysis of infrastructure failure sites.}

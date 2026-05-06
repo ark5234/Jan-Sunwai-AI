@@ -1,4 +1,4 @@
-% !TeX root = ../main.tex
+﻿% !TeX root = ../main.tex
 \chapter{Proposed System Requirements}
 
 This chapter describes the proposed Jan-Sunwai AI solution architecture from a requirement realization perspective. While Chapter 3 documented what is required, this chapter explains how the proposed system addresses those requirements through modular capabilities and integrated workflows built on the React, FastAPI, MongoDB, and Ollama stack [12, 11, 13, 17].
@@ -143,7 +143,7 @@ Resilience and Security & Cross-cutting Platform Controls & Health probes, secur
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.85\textwidth]{sequence_diagram.png}
+\includegraphics[width=0.85\textwidth]{../../images/sequence_diagram.png}
 \caption{Proposed End-to-End Workflow}
 \label{fig:proposed-workflow}
 \end{figure}
@@ -177,7 +177,7 @@ Health module & Database/model runtime & Publishes liveness/readiness/dependency
 
 \section{Requirement Realization Detail by Persona}
 
-Each persona receives a targeted feature set. \textbf{Citizens} get image-based intake, dashboard tracking, notifications, feedback, and password reset --- reducing filing friction and improving visibility. \textbf{Workers} receive an assignment list, status update controls, and completion actions --- delivering structured field execution. \textbf{Department Heads} have department-level filtering, status updates, transfer/escalation, and notes --- enabling controlled supervisory governance. \textbf{Administrators} hold full operational governance: worker approvals, triage decisions, bulk operations, analytics, and exports. \textbf{Public Viewers} can access the anonymised complaint board without exposing any personally identifiable records.
+Each persona receives a targeted feature set. \textbf{Citizens} get image-based intake, dashboard tracking, notifications, feedback, and password reset: reducing filing friction and improving visibility. \textbf{Workers} receive an assignment list, status update controls, and completion actions: delivering structured field execution. \textbf{Department Heads} have department-level filtering, status updates, transfer/escalation, and notes: enabling controlled supervisory governance. \textbf{Administrators} hold full operational governance: worker approvals, triage decisions, bulk operations, analytics, and exports. \textbf{Public Viewers} can access the anonymised complaint board without exposing any personally identifiable records.
 
 \section{Proposed Data and Control Flow Narrative}
 

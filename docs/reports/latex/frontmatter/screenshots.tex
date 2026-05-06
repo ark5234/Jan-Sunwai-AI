@@ -2,19 +2,18 @@
 \addcontentsline{toc}{chapter}{List of Screenshots}
 \label{chap:list-screenshots}
 
-The report currently uses a 15-shot primary gallery and 5 supplementary slots. The table below maps identifiers, descriptions, and expected file names under \path{docs/images/screenshots/}.
-
-\newcommand{\screenshottablerow}[4]{\hyperref[#1]{#2} & \hyperref[#1]{#3} & \hyperref[#1]{\path{#4}} \\\n+}
+The report uses a 15-shot primary gallery and 5 supplementary slots. The table below maps identifiers, descriptions, and expected file names under \path{docs/images/screenshots/}.
 
 \small
-\begin{longtable}{p{0.08\textwidth}p{0.38\textwidth}p{0.44\textwidth}}
-	oprule
-	extbf{ID} & \textbf{Description} & \textbf{Expected File Name} \\
-\midrule
+\setlength{\LTpre}{0pt}
+\setlength{\LTpost}{0pt}
+\newcommand{\screenshottablerow}[4]{\hyperref[#1]{#2} & \hyperref[#1]{#3} & \path{#4} \\ \hline}
+\begin{longtable}{|p{0.10\textwidth}|p{0.44\textwidth}|p{0.38\textwidth}|}
+\hline
+\textbf{ID} & \textbf{Description} & \textbf{Expected File Name} \\ \hline
 \endfirsthead
-	oprule
-	extbf{ID} & \textbf{Description} & \textbf{Expected File Name} \\
-\midrule
+\hline
+\textbf{ID} & \textbf{Description} & \textbf{Expected File Name} \\ \hline
 \endhead
 \screenshottablerow{fig:s01}{S01}{Home page hero and call-to-action}{S01_home_desktop.png}
 \screenshottablerow{fig:s02}{S02}{Login page}{S02_login_desktop.png}
@@ -36,9 +35,7 @@ The report currently uses a 15-shot primary gallery and 5 supplementary slots. T
 \screenshottablerow{fig:sx3}{SX3}{Supplementary: resolved complaint with feedback}{SX3_resolved_feedback_snapshot_desktop.png}
 \screenshottablerow{fig:sx4}{SX4}{Supplementary: result page location and AI analysis panel}{SX4_result_location_analysis_desktop.png}
 \screenshottablerow{fig:sx5}{SX5}{Supplementary: result page grievance description editor}{SX5_result_grievance_description_desktop.png}
-\bottomrule
 \end{longtable}
-\n
 \normalsize
 
 Expected screenshot directory: \path{docs/images/screenshots/}
