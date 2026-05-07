@@ -133,12 +133,25 @@ This approach preserves operational read performance while retaining clear owner
 Key indexing strategies are summarized below:
 
 
-\begin{description}
-\item[\texttt{users}:] Uses \texttt{unique(username)} and \texttt{unique(email)} for fast auth lookups and enforcing uniqueness.
-\item[\texttt{complaints}:] Uses compound indices like \texttt{(user\_id, created\_at)} for citizen dashboards, \texttt{(status, created\_at)} for admin queues, and \texttt{(department, created\_at)} for department views. \texttt{authority\_id} is indexed for escalation queries.
-\item[\texttt{notifications}:] Uses \texttt{(user\_id, created\_at)} for feed retrieval and \texttt{(user\_id, is\_read)} for unread badge counters.
-\item[\texttt{password\_resets}:] Uses \texttt{unique(token\_hash)} for token lookups, \texttt{(user\_id, used)} for invalidation, and a \texttt{TTL(expires\_at)} index for automatic cleanup.
-\end{description}
+\begin{table}[H]
+\centering
+\caption{Indexing Strategy by Collection}
+\label{tab:indexing-strategy}
+\begin{tabularx}{\textwidth}{|>{\RaggedRight\arraybackslash}X|>{\RaggedRight\arraybackslash}X|>{\RaggedRight\arraybackslash}X|}
+\hline
+\textbf{Collection} & \textbf{Index} & \textbf{Purpose} \\ \hline
+users & unique(username), unique(email) & Fast auth lookups and uniqueness enforcement \\ \hline
+complaints & (user\_id, created\_at) & Efficient citizen dashboard history retrieval \\ \hline
+complaints & (status, created\_at) & Queue and status-oriented admin filtering \\ \hline
+complaints & (department, created\_at) & Department-level operational listing \\ \hline
+complaints & authority\_id & Escalation and authority review queries \\ \hline
+notifications & (user\_id, created\_at) & Ordered notification feed retrieval \\ \hline
+notifications & (user\_id, is\_read) & Unread badge counter queries \\ \hline
+password\_resets & unique(token\_hash) & Token lookup and collision prevention \\ \hline
+password\_resets & (user\_id, used) & Active token invalidation management \\ \hline
+password\_resets & TTL(expires\_at) & Automatic expired-token cleanup \\ \hline
+\end{tabularx}
+\end{table}
 
 \section{GUI Design}
 
@@ -160,16 +173,16 @@ The UI follows practical governance portal principles:
 Key interface areas are summarized below:
 
 
-\begin{description}
-\item[Public Home:] Provides awareness, transparency access, and role entry points.
-\item[Authentication:] Manages login, registration, and password recovery flows.
-\item[Analyze \& Result:] Handles image uploads, AI analysis display, interactive maps, and draft review.
-\item[Citizen Dashboard:] Displays the personal complaint list, lifecycle timeline, feedback, and progress visibility.
-\item[Worker Dashboard:] Shows the assigned task queue and allows completion updates.
-\item[Department Head Dashboard:] Provides department-level filtering, status updates, and note-taking.
-\item[Admin Dashboard:] Provides global queue access, worker approvals, triage, bulk actions, analytics, and exports.
-\item[Notifications \& Profile:] Manages event feeds, read-states, and personal information updates.
-\end{description}
+\begin{itemize}
+\item \textbf{Public Home:} Provides awareness, transparency access, and role entry points.
+\item \textbf{Authentication:} Manages login, registration, and password recovery flows.
+\item \textbf{Analyze \& Result Views:} Handles image uploads, AI analysis display, interactive maps, and draft review.
+\item \textbf{Citizen Dashboard:} Displays the personal complaint list, lifecycle timeline, feedback, and progress visibility.
+\item \textbf{Worker Dashboard:} Shows the assigned task queue and allows completion updates.
+\item \textbf{Department Head Dashboard:} Provides department-level filtering, status updates, and note-taking.
+\item \textbf{Admin Dashboard:} Provides global queue access, worker approvals, triage, bulk actions, analytics, and exports.
+\item \textbf{Notifications \& Profile:} Manages event feeds, read-states, and personal information updates.
+\end{itemize}
 
 \subsection{Wireframe Reference}
 

@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.141592653-2.6-0.999997 (MiKTeX 25.12) (preloaded format=xelatex 2026.5.5)  6 MAY 2026 22:01
+This is XeTeX, Version 3.141592653-2.6-0.999997 (MiKTeX 25.12) (preloaded format=xelatex 2026.5.5)  7 MAY 2026 11:22
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -709,150 +709,123 @@ Package newfloat Info: `float' package detected.
  (main.toc [1
 
 
-] [2] [3])
+] [2])
 \tf@toc=\write4
 \openout4 = `main.toc'.
 
- [4] (main.lot)
+ [3] (main.lot)
 \tf@lot=\write5
 \openout5 = `main.lot'.
 
- [5
+ [4
 
 ] (main.lof)
 \tf@lof=\write6
 \openout6 = `main.lof'.
 
 
-[6
+[5
 
 ] (main.los)
 \tf@los=\write7
 \openout7 = `main.los'.
 
- [7
+ [6
 
-] (frontmatter/abbreviations.tex) [8
+] (frontmatter/abbreviations.tex) [7
 
 ]
-(chapters/ch01_introduction.tex
+(frontmatter/definitions.tex) [8
+
+] (chapters/ch01_introduction.tex
 Chapter 1.
 [1
 
-]
-Overfull \hbox (38.42197pt too wide) in paragraph at lines 51--52
-[]\TU/TimesNewRoman(0)/b/n/10.95 Strengthen security posture\TU/TimesNewRoman(0
-)/m/n/10.95 : Cookie-session auth, input sanitization, upload validation, and C
-ORS/security
+] [2]
+Overfull \hbox (11.80812pt too wide) in paragraph at lines 72--73
+\TU/TimesNewRoman(0)/m/n/12 service responsiveness. At the national level, fram
+eworks like India’s Centralised Public Grievance
  []
 
-[2] [3] [4]) (chapters/ch02_project_management.tex [5]
+[3] [4]) (chapters/ch02_project_management.tex [5]
 Chapter 2.
-
-Overfull \hbox (9.37701pt too wide) in paragraph at lines 21--22
-[]\TU/TimesNewRoman(0)/m/n/10.95 Docker Compose enabled reproducible environmen
-t orchestration across development and production-
- []
-
 [6
 
-] [7]
-ignored error: Infinite glue shrinkage found in box being split [8] [9]
+]
 File: ../../images/gantt chart.png Graphic file (type bmp)
 <../../images/gantt chart.png>
-
-[10] [11]) (chapters/ch03_system_requirement_study.tex [12]
+ [7]
+ignored error: Infinite glue shrinkage found in box being split [8])
+(chapters/ch03_system_requirement_study.tex [9]
 Chapter 3.
 
-Underfull \hbox (badness 1418) in paragraph at lines 59--59
-[]|\TU/TimesNewRoman(0)/m/n/10.95 Analyze endpoint shall accept valid 
+Overfull \hbox (16.88327pt too wide) in paragraph at lines 4--5
+\TU/TimesNewRoman(0)/m/n/12 existing grievance systems, observed limitations, a
+ctor expectations, and formalized functional/non-
  []
 
-[13
+
+Underfull \hbox (badness 1210) in paragraph at lines 59--59
+[]|\TU/TimesNewRoman(0)/m/n/12 Analyze endpoint shall accept valid 
+ []
+
+[10
 
 ]
-ignored error: Infinite glue shrinkage found in box being split [14]
-ignored error: Infinite glue shrinkage found in box being split [15] [16]
-ignored error: Infinite glue shrinkage found in box being split [17])
-(chapters/ch04_proposed_system_requirements.tex [18]
+ignored error: Infinite glue shrinkage found in box being split [11]
+ignored error: Infinite glue shrinkage found in box being split [12] [13]
+[14]) (chapters/ch04_proposed_system_requirements.tex [15]
 Chapter 4.
-[19
+[16
 
 ]
-ignored error: Infinite glue shrinkage found in box being split [20] [21]
+ignored error: Infinite glue shrinkage found in box being split [17] [18]
+Underfull \hbox (badness 1221) in paragraph at lines 128--128
+[]|\TU/TimesNewRoman(0)/m/n/12 Overview metrics, heatmap endpoint, 
+ []
+
 File: ../../images/sequence_diagram.png Graphic file (type bmp)
 <../../images/sequence_diagram.png>
-
-[22]
-Overfull \hbox (1.6814pt too wide) in paragraph at lines 149--150
-[]\TU/TimesNewRoman(0)/b/n/10.95 Complaint Lifecycle Module: \TU/TimesNewRoman(
-0)/m/n/10.95 Emits events to the Notification module and triggers auto-assignme
-nt
- []
-
-
-Overfull \hbox (9.56061pt too wide) in paragraph at lines 152--153
-[]\TU/TimesNewRoman(0)/b/n/10.95 Analytics & Public Modules: \TU/TimesNewRoman(
-0)/m/n/10.95 Execute aggregate queries on the complaint store to expose anonymi
-zed
- []
-
-[23]) (chapters/ch05_system_design.tex [24]
+[19] [20]) (chapters/ch05_system_design.tex [21]
 Chapter 5.
 File: ../../images/system_context_diagram.png Graphic file (type bmp)
 <../../images/system_context_diagram.png>
 File: ../../images/architecture.png Graphic file (type bmp)
 <../../images/architecture.png>
-[25
+[22
 
 ]
 File: ../../images/new_er.png Graphic file (type bmp)
 <../../images/new_er.png>
- [26]
+ [23]
 File: ../../images/flowchart.png Graphic file (type bmp)
 <../../images/flowchart.png>
- [27] [28]
+ [24] [25]
 File: ../../images/class_diagram.png Graphic file (type bmp)
 <../../images/class_diagram.png>
 File: ../../images/sequence_diagram.png Graphic file (type bmp)
 <../../images/sequence_diagram.png>
- [29]
+ [26]
 File: ../../images/activity_diagram.png Graphic file (type bmp)
 <../../images/activity_diagram.png>
- [30]
-Overfull \vbox (789.61739pt too high) has occurred while \output is active []
+ [27]
+Overfull \vbox (785.61739pt too high) has occurred while \output is active []
 
 
-[31]
+[28]
 File: ../../images/deployment_diagram.png Graphic file (type bmp)
 <../../images/deployment_diagram.png>
- [32]
-LaTeX Font Info:    Font shape `TU/lmtt/bx/n' in size <10.95> not available
-(Font)              Font shape `TU/lmtt/b/n' tried instead on input line 137.
-
-Overfull \hbox (2.29156pt too wide) in paragraph at lines 138--139
-[]\TU/TimesNewRoman(0)/m/n/10.95 Uses compound indices like \TU/lmtt/m/n/10.95 
-(user_id, created_at) \TU/TimesNewRoman(0)/m/n/10.95 for citizen dashboards, \T
-U/lmtt/m/n/10.95 (status,
- []
-
-
-Overfull \hbox (42.49937pt too wide) in paragraph at lines 138--139
-\TU/lmtt/m/n/10.95 created_at) \TU/TimesNewRoman(0)/m/n/10.95 for admin queues,
- and \TU/lmtt/m/n/10.95 (department, created_at) \TU/TimesNewRoman(0)/m/n/10.95
- for department views. \TU/lmtt/m/n/10.95 authority_id
- []
-
-[33]
+ [29] [30]
 File: ../../images/GUI_Wireframe.png Graphic file (type bmp)
 <../../images/GUI_Wireframe.png>
+ [31]
 File: ../../images/citizen_homepage.png Graphic file (type bmp)
 <../../images/citizen_homepage.png>
 Package hyperref Info: bookmark level for unknown screenshot defaults to 0 on i
-nput line 196.
+nput line 209.
 File: ../../images/complaint_review_with_geo_tag.png Graphic file (type bmp)
 <../../images/complaint_review_with_geo_tag.png>
- [34]
+ [32]
 File: ../../images/grievance_status_tracker.png Graphic file (type bmp)
 <../../images/grievance_status_tracker.png>
 File: ../../images/admin_worker_task_assignment_pannel.png Graphic file (type b
@@ -863,122 +836,119 @@ File: ../../images/admin_dashboard.png Graphic file (type bmp)
 File: ../../images/admin_human_complaint_review_pannel.png Graphic file (type b
 mp)
 <../../images/admin_human_complaint_review_pannel.png>
- [35]
+ [33]
 File: ../../images/grievance_heatmap.png Graphic file (type bmp)
 <../../images/grievance_heatmap.png>
 File: ../../images/satellite_complaint_image.png Graphic file (type bmp)
 <../../images/satellite_complaint_image.png>
- [36]
+ [34]
 File: ../../images/admin_english_complaint_view.png Graphic file (type bmp)
 <../../images/admin_english_complaint_view.png>
 File: ../../images/login_page.png Graphic file (type bmp)
 <../../images/login_page.png>
 File: ../../images/notification_pannel.png Graphic file (type bmp)
 <../../images/notification_pannel.png>
- [37]) (chapters/ch06_implementation_planning.tex [38]
+ [35])
+(chapters/ch06_implementation_planning.tex [36]
 Chapter 6.
+[37
 
-Overfull \hbox (9.19699pt too wide) in paragraph at lines 39--40
-[]\TU/TimesNewRoman(0)/m/n/10.95 FastAPI provides the core API router and depen
-dency injection framework, backed
+] [38]
+Overfull \hbox (5.0676pt too wide) in paragraph at lines 72--73
+[]\TU/TimesNewRoman(0)/b/n/12 Frontend Flows: \TU/TimesNewRoman(0)/m/n/12 Build
+ing authentication screens, role-based dashboards, and route guards. 
  []
 
-[39
 
-] [40] [41]
-Overfull \hbox (7.0767pt too wide) in paragraph at lines 134--135
-[]\TU/TimesNewRoman(0)/m/n/10.95 Controls lists and read states. Badge consiste
-ncy required deterministic unread counter
+Overfull \hbox (13.30392pt too wide) in paragraph at lines 74--75
+[]\TU/TimesNewRoman(0)/b/n/12 Security Hardening: \TU/TimesNewRoman(0)/m/n/12 I
+mplementing input sanitization, upload integrity checks, rate-limiting,
  []
 
-[42] [43] [44]) (chapters/ch07_testing.tex [45]
+
+Overfull \hbox (0.2076pt too wide) in paragraph at lines 82--83
+[]\TU/TimesNewRoman(0)/b/n/12 Auth/session primitives: \TU/TimesNewRoman(0)/m/n
+/12 Required before protected API and role-specific frontend routes. 
+ []
+
+
+Overfull \hbox (1.46835pt too wide) in paragraph at lines 89--90
+[]\TU/TimesNewRoman(0)/b/n/12 Production profile and handover docs: \TU/TimesNe
+wRoman(0)/m/n/12 Depends on validated security/performance base-
+ []
+
+[39]
+LaTeX Font Info:    Font shape `TU/lmtt/bx/n' in size <12> not available
+(Font)              Font shape `TU/lmtt/b/n' tried instead on input line 131.
+
+Overfull \hbox (1.16438pt too wide) in paragraph at lines 131--132
+[]\TU/lmtt/b/n/12 users\TU/TimesNewRoman(0)/b/n/12 : \TU/TimesNewRoman(0)/m/n/1
+2 Handles registration, login, and password resets. Required generic forgot-pas
+sword
+ []
+
+[40]
+ignored error: Infinite glue shrinkage found in box being split [41])
+(chapters/ch07_testing.tex [42]
 Chapter 7.
 
-Overfull \hbox (1.1007pt too wide) in paragraph at lines 43--44
-[]\TU/TimesNewRoman(0)/m/n/10.95 Integration Smoke testing the root route, heal
-th checks, versioned aliases,
+Overfull \hbox (2.96878pt too wide) in paragraph at lines 24--25
+\TU/TimesNewRoman(0)/m/n/12 The testing environment baseline outlined below ens
+ures consistency across all validation phases. 
  []
 
-[46
+[43
+
+] [44] [45]
+Overfull \hbox (1.93666pt too wide) in paragraph at lines 133--134
+\TU/TimesNewRoman(0)/m/n/12 Testing combined behavioral, negative, resilience, 
+and load techniques to ensure stability. \TU/TimesNewRoman(0)/b/n/12 Black-
+ []
+
+[46] [47]
+ignored error: Infinite glue shrinkage found in box being split [48] [49]
+Underfull \hbox (badness 1852) in paragraph at lines 242--242
+[]|\TU/TimesNewRoman(0)/m/n/12 XSS payload in 
+ []
+
+ignored error: Infinite glue shrinkage found in box being split [50])
+(chapters/ch08_limitations_future_scope.tex [51]
+Chapter 8.
+
+Overfull \hbox (7.1675pt too wide) in paragraph at lines 12--13
+\TU/TimesNewRoman(0)/m/n/12 scalable, institutional-grade ecosystem. Priority e
+nhancements include migrating the synchronous
+ []
+
+) (chapters/ch09_conclusion_references.tex [52
 
 ]
-Overfull \hbox (3.27748pt too wide) in paragraph at lines 45--46
-[]\TU/TimesNewRoman(0)/m/n/10.95 Integration Behavior for status update notific
-ations, email hook paths,
- []
-
-[47] [48] [49] [50]
-ignored error: Infinite glue shrinkage found in box being split [51] [52]
-Underfull \hbox (badness 1735) in paragraph at lines 235--235
-[]|\TU/TimesNewRoman(0)/m/n/10.95 XSS payload in 
- []
-
-ignored error: Infinite glue shrinkage found in box being split [53])
-(chapters/ch08_limitations_future_scope.tex [54]
-Chapter 8.
-[55
-
-] [56] [57]
-ignored error: Infinite glue shrinkage found in box being split [58] [59])
-(chapters/ch09_conclusion_references.tex [60]
 Chapter 9.
 
-Underfull \hbox (badness 10000) in paragraph at lines 52--54
-[]\TU/TimesNewRoman(0)/m/n/10.95 Meta AI,  “Llama 3.2: Revolutionizing edge AI 
-and vision with open, cus-
+Underfull \hbox (badness 5302) in paragraph at lines 52--54
+[]\TU/TimesNewRoman(0)/m/n/12 Meta AI,  “Llama 3.2: Revolutionizing edge AI and
+ vision with open, cus-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 52--54
-\TU/TimesNewRoman(0)/m/n/10.95 tomizable models,” Sept. 2024. [Online]. Availab
-le: [][]$[][][][][] [] [] [] [][] [] [][][][] [] [][][] [] [][][][] []
+Underfull \hbox (badness 2781) in paragraph at lines 52--54
+\TU/TimesNewRoman(0)/m/n/12 tomizable models,” Sept. 2024. [Online]. Available:
+ [][]$[][][][][] [] [] [] [][] [] [][][][] [] [][][] [] [][][][] []
  []
 
+[53
 
-Underfull \hbox (badness 4403) in paragraph at lines 61--63
-[]\TU/TimesNewRoman(0)/m/n/10.95 E. Mosqueira-Rey, E. HernÃ¡ndez-Pereira, D. Al
-onso-RÃos, F. Bobes-BascarÃ¡n, and A.
- []
-
-[61
-
-]
-Underfull \hbox (badness 2922) in paragraph at lines 70--72
-[]\TU/TimesNewRoman(0)/m/n/10.95 OWASP Foundation,  “File upload security cheat
- sheet,” [Online]. Available: [][]$[][][][][] [] [] []
- []
-
-
-Underfull \hbox (badness 1565) in paragraph at lines 70--72
-[][][][][][][][][][][][][][][][] [] [][][][][] [] [][][] [] [][][][][][][][][][
-][] [] [][][][] [] [][][][][][] [] [][][][][] [] [][][][][] [] [][][][]$[][]\TU
-/TimesNewRoman(0)/m/n/10.95 . [Accessed:
- []
-
-
-Underfull \hbox (badness 1953) in paragraph at lines 78--80
-[]\TU/TimesNewRoman(0)/m/n/10.95 OWASP Foundation,  “Session Management Cheat S
-heet,” [Online]. Available: [][]$[][][][][] [] [] []
- []
-
-
-Underfull \hbox (badness 1072) in paragraph at lines 95--97
-[]\TU/TimesNewRoman(0)/m/n/10.95 MongoDB,  “Data Model Design,” [Online]. Avail
-able: [][]$[][][][][] [] [] [] [][][] [] [][][][][][][] [] [][][] [] [][][][] [
-]
- []
-
-[62]) (chapters/ch10_appendices.tex [63]
+] [54]) (chapters/ch10_appendices.tex [55]
 Chapter 10.
 
 Overfull \hbox (9.807pt too wide) in paragraph at lines 57--57
 []|\TU/TimesNewRoman(0)/m/n/12 MUNI_HORTICULTURE|  
  []
 
-ignored error: Infinite glue shrinkage found in box being split [64
+ignored error: Infinite glue shrinkage found in box being split [56
 
 ]
-ignored error: Infinite glue shrinkage found in box being split [65]) [66]
+ignored error: Infinite glue shrinkage found in box being split [57]) [58]
 (main.aux)
  ***********
 LaTeX2e <2025-11-01>
@@ -989,15 +959,15 @@ L3 programming layer <2025-12-24>
 LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
 
 Package rerunfilecheck Info: File `main.out' has not changed.
-(rerunfilecheck)             Checksum: 5D209654FE00DB41FAE7D97426FF5A18;35045.
+(rerunfilecheck)             Checksum: 07B35584465BD1AE515AE3A445FD2C4C;28696.
  ) 
 Here is how much of TeX's memory you used:
- 15564 strings out of 402987
- 301404 string characters out of 5448525
- 836552 words of memory out of 5000000
- 44034 multiletter control sequences out of 15000+600000
+ 15566 strings out of 402987
+ 301551 string characters out of 5448525
+ 829953 words of memory out of 5000000
+ 44033 multiletter control sequences out of 15000+600000
  632823 words of font info for 81 fonts, out of 8000000 for 9000
  1348 hyphenation exceptions out of 8191
  73i,12n,93p,1470b,605s stack positions out of 10000i,1000n,20000p,200000b,200000s
 
-Output written on main.pdf (74 pages).
+Output written on main.pdf (66 pages).

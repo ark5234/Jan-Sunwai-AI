@@ -35,13 +35,13 @@ This ensures that local verification and deployment handover use the same operat
 
 \section{Tools \& Technologies Used}
 
-\begin{description}
-\item[Backend \& Database:] FastAPI provides the core API router and dependency injection framework, backed by Motor/PyMongo for asynchronous MongoDB access. Pydantic [15] is used for strict schema validation.
-\item[Auth \& Security:] python-jose and passlib[bcrypt] handle cookie-session/JWT auth compatibility and password hashing.
-\item[AI \& Image Pipeline:] Ollama manages local vision and reasoning model execution, while Pillow handles upload payload validation and EXIF processing.
-\item[Frontend Stack:] React acts as the role-aware SPA foundation, built and optimized by Vite. Client communication uses Axios, and react-router-dom enforces protected role-based navigation.
-\item[DevOps \& QA:] Docker and Docker Compose orchestrate reproducible environments. Testing is handled by pytest and locust (load testing), while httpx runs async API smoke tests.
-\end{description}
+\begin{itemize}
+\item \textbf{Backend \& Database:} FastAPI provides the core API router and dependency injection framework, backed by Motor/PyMongo for asynchronous MongoDB access. Pydantic [15] is used for strict schema validation.
+\item \textbf{Auth \& Security:} python-jose and passlib[bcrypt] handle cookie-session/JWT auth compatibility and password hashing.
+\item \textbf{AI \& Image Pipeline:} Ollama manages local vision and reasoning model execution, while Pillow handles upload payload validation and EXIF processing.
+\item \textbf{Frontend Stack:} React acts as the role-aware SPA foundation, built and optimized by Vite. Client communication uses Axios, and react-router-dom enforces protected role-based navigation.
+\item \textbf{DevOps \& QA:} Docker and Docker Compose orchestrate reproducible environments. Testing is handled by pytest and locust (load testing), while httpx runs async API smoke tests.
+\end{itemize}
 
 \section{Key Implementation Patterns}
 
@@ -127,15 +127,15 @@ This section captures implementation-level observations that are useful for main
 Each router group below shows how its implementation responsibilities were planned and what specific engineering decisions arose during delivery:
 
 
-\begin{description}
-\item[\texttt{/users}:] Handles registration, login, and password resets. Required generic forgot-password responses to prevent account enumeration, persisting reset tokens as hashes with expiry.
-\item[\texttt{/complaints}:] Manages the analyze, create, and update flows. Required consistent status-history append behavior, strict role-aware update guards, and a graceful 503 degrade path for the AI analyze route.
-\item[\texttt{/workers}:] Manages assignments and approvals. Separates worker self-actions from admin governance actions, and includes diagnostic assignment endpoints for operational clarity.
-\item[\texttt{/notifications}:] Controls lists and read states. Badge consistency required deterministic unread counter behavior and strict ownership checks.
-\item[\texttt{/triage}:] Admin-only corrective path for low-confidence AI cases, requiring detailed decision audit notes.
-\item[\texttt{/analytics}:] Dashboards and public feeds. Query aggregation required explicit pagination and safe data-exposure models for the public view.
-\item[\texttt{/health}:] Provides liveness, readiness, model, and GPU probes with operationally meaningful semantics.
-\end{description}
+\begin{itemize}
+\item \textbf{\texttt{users}:} Handles registration, login, and password resets. Required generic forgot-password responses to prevent account enumeration, persisting reset tokens as hashes with expiry.
+\item \textbf{\texttt{complaints}:} Manages the analyze, create, and update flows. Required consistent status-history append behavior, strict role-aware update guards, and a graceful 503 degrade path for the AI analyze route.
+\item \textbf{\texttt{workers}:} Manages assignments and approvals. Separates worker self-actions from admin governance actions, and includes diagnostic assignment endpoints for operational clarity.
+\item \textbf{\texttt{notifications}:} Controls lists and read states. Badge consistency required deterministic unread counter behavior and strict ownership checks.
+\item \textbf{\texttt{triage}:} Admin-only corrective path for low-confidence AI cases, requiring detailed decision audit notes.
+\item \textbf{\texttt{analytics}:} Dashboards and public feeds. Query aggregation required explicit pagination and safe data-exposure models for the public view.
+\item \textbf{\texttt{health}:} Provides liveness, readiness, model, and GPU probes with operationally meaningful semantics.
+\end{itemize}
 
 \subsection{Service-Layer Planning Notes}
 
@@ -148,35 +148,7 @@ The implementation of core services followed specific planning notes to ensure m
     \item \textbf{Health service:} Consolidates multi-dependency status probes into unified liveness and readiness responses.
 \end{itemize}
 
-\section{Deployment Runbook and Rollout Plan}
 
-The deployment runbook formalizes a stepwise rollout process so that releases remain reproducible, diagnosable, and reversible. It defines readiness checks, smoke validations, and rollback expectations to minimize service disruption during environment transitions.
-
-\subsection{Rollout Stages}
-
-The matrix below details the specific planning components necessary to operationalize this segment of the architecture.
-
-
-\begin{enumerate}
-    \item \textbf{[R1] Environment readiness:} Verify host runtime versions, model availability, and environment variables.
-    \item \textbf{[R2] Service bootstrap:} Start MongoDB and backend; validate health/live and health/ready probes.
-    \item \textbf{[R3] Frontend linkage:} Start frontend/proxy path and verify API base routing behavior.
-    \item \textbf{[R4] Functional smoke:} Execute login, analyze, complaint creation, and notification badge checks.
-    \item \textbf{[R5] Governance smoke:} Validate admin triage, worker assignment controls, and export flow.
-    \item \textbf{[R6] Hardening validation:} Execute security/resilience test scripts and capture baseline metrics.
-    \item \textbf{[R7] Handover sign-off:} Archive logs, backups, and runbook evidence for the deployment package.
-\end{enumerate}
-
-\subsection{Rollback Planning}
-
-Rollback planning was included to avoid high-impact downtime during deployment changes:
-
-\begin{itemize}
-\item Preserve previous container images and compose configuration snapshots.
-\item Ensure database backup is taken before schema/index-affecting changes.
-\item Revert frontend image and backend service independently when only one tier regresses.
-\item Maintain known-good environment variable snapshot for rapid restoration.
-\end{itemize}
 
 \section{Operational Monitoring Plan}
 

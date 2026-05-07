@@ -3,30 +3,21 @@
 \label{chap:list-definitions}
 
 \small
-\begin{xltabular}{\textwidth}{|>{\RaggedRight\arraybackslash}p{0.30\textwidth}|>{\RaggedRight\arraybackslash}X|}
+\begin{xltabular}{\textwidth}{|>{\RaggedRight\arraybackslash}p{0.24\textwidth}|>{\RaggedRight\arraybackslash}X|}
 \hline
 \textbf{Term} & \textbf{Definition} \\ \hline
 \endfirsthead
 \hline
 \textbf{Term} & \textbf{Definition} \\ \hline
 \endhead
-Civic Complaint & A citizen-reported issue related to municipal infrastructure, utilities, sanitation, public safety, or governance services. \\ \hline
-Complaint Lifecycle & Ordered state progression of a complaint such as Open, In Progress, Resolved, and Rejected. \\ \hline
-Status History & Auditable log of state changes with timestamp, actor identity, and note. \\ \hline
-Authority Routing & Mapping from classified category to responsible authority identifier and escalation parent. \\ \hline
-Triage Queue & Review queue for low-confidence AI outputs requiring administrator decision. \\ \hline
-Service Area & Worker-specific geospatial zone defined by latitude, longitude, and radius in kilometers. \\ \hline
-Auto-Assignment & Rule-based process selecting an eligible worker based on department, availability, and workload. \\ \hline
-Escalation Loop & Background process that pushes unresolved complaints to higher authorities when SLA conditions fail. \\ \hline
-Rule Engine & Deterministic keyword and scoring logic used to improve category stability before optional LLM reasoning. \\ \hline
-Hybrid Pipeline & Multi-stage architecture combining vision extraction, deterministic rules, and selective reasoning model invocation. \\ \hline
-Draft Generation & AI-assisted creation of formal grievance text from image evidence and extracted metadata. \\ \hline
-Graceful Degradation & Controlled failure behavior where the API returns meaningful retryable errors without service crash. \\ \hline
-Magic Number Validation & File integrity check that verifies image binary headers against extension and MIME type. \\ \hline
-Public Transparency Feed & Anonymized read-only endpoint exposing selected complaint records for public visibility. \\ \hline
-Readiness Probe & Endpoint validating dependency availability, especially MongoDB and model runtime health. \\ \hline
-Rate Limiting & Request throttling control to mitigate abuse and resource exhaustion. \\ \hline
-Token Hashing & Storage of reset-token digest instead of raw token to reduce credential leakage risk. \\ \hline
-Canonical Taxonomy & Standardized department labels used across classifier output, dashboards, and routing. \\ \hline
-Operational Governance & Administrative controls for approvals, transfers, notes, audit review, and reporting. \\ \hline
+Citizen & An external public user who interacts with the system to submit civic grievances and track their status. \\ \hline
+Worker & A field operative or assigned staff member responsible for physically addressing and resolving a grievance. \\ \hline
+Department Head & A managerial role responsible for overseeing grievances within a specific municipal department. \\ \hline
+Admin & A high-level system user responsible for global platform governance, worker approvals, and triage operations. \\ \hline
+Civic Grievance & A formal complaint submitted by a citizen regarding municipal infrastructure or service failures. \\ \hline
+Triage Queue & A dedicated administrative queue for reviewing and manually routing complaints where the AI classification confidence is low. \\ \hline
+Confidence Score & A numeric value (0 to 1) indicating the vision model's certainty regarding its predicted department classification. \\ \hline
+Sanitization & The process of cleaning and filtering user input payloads to prevent security vulnerabilities. \\ \hline
+Graceful Degradation & The system's ability to remain partially functional and maintain the core workflow even when the AI models are unavailable. \\ \hline
 \end{xltabular}
+\normalsize

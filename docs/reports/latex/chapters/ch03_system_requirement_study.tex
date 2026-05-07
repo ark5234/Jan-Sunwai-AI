@@ -111,33 +111,13 @@ Constraints in this project are not only technical limits but also governance an
 
 \subsection{System Constraints and Security}
 
-System constraints govern UI responsiveness, security boundaries, and operational limits to ensure robust public access. 
-\textbf{UI and Interface:} Role-specific pages strictly enforce access boundaries. Interfaces must support mobile widths (375px baseline) and preserve data state during refresh cycles. Communication happens exclusively over authenticated REST endpoints via cookie sessions or JWT tokens, with strict \texttt{/api/v1} proxy routing.
-\textbf{Hardware Limits:} Because local inference is VRAM-bound, AI response times fluctuate under load. Large file uploads are strictly limited by size and decode verifications to prevent resource exhaustion.
-\textbf{Security and Governance:} To maintain citizen trust, status history and role checks are immutable [6, 23, 7]. The platform mandates strict input sanitization, MIME-type validations, robust token lifecycles (preventing account enumeration), and active CORS/security headers across all responses [7, 8, 9].
+System constraints govern UI responsiveness, security boundaries, and operational limits to ensure robust public access within a strictly controlled environment.
+\textbf{UI and Interface:} Role-specific pages enforce access boundaries. Interfaces support mobile widths (375px baseline) and preserve data state during refresh cycles. Communication occurs exclusively over authenticated REST endpoints via secure cookie sessions or JWT tokens, with strict \texttt{/api/v1} proxy routing.
+\textbf{Hardware Limits:} As a closed-system deployment, local inference is bound by available VRAM, causing AI response times to fluctuate under load. Large file uploads are strictly limited by size and decode verifications to prevent resource exhaustion.
+\textbf{Security and Confidentiality:} To guarantee citizen trust and data privacy, the system is designed to run exclusively on secure local servers [6, 23]. Status history and role checks are immutable. Despite being an air-gapped or localized deployment, the platform adheres to institutional security baselines by enforcing strict input sanitization, MIME-type validations, robust token lifecycles, and security headers, ensuring defense-in-depth even within closed networks.
 
 The system operates under several core assumptions and external dependencies. First, it assumes a reachable and healthy \textbf{MongoDB instance} for all read/write persistence. Second, the \textbf{Ollama runtime} must be correctly configured with the required vision and reasoning models to support analysis and draft generation. Third, accurate \textbf{environment variable configuration} is essential for stable authentication, CORS, and database mapping. Fourth, the system relies on \textbf{worker profile completeness} (department and service-area metadata) for the auto-assignment engine to function correctly. Finally, for production-style deployments, the host must support \textbf{Docker and Compose} to ensure environment reproducibility.
 
-\section{Detailed Use-Case Narratives}
-
-\begin{xltabular}{\textwidth}{|>{\RaggedRight\arraybackslash}p{0.12\textwidth}|>{\RaggedRight\arraybackslash}p{0.18\textwidth}|>{\RaggedRight\arraybackslash}X|>{\RaggedRight\arraybackslash}X|}
-\caption{Narrative Use-Case Requirements}\\
-\hline
-\textbf{UC ID} & \textbf{Actor} & \textbf{Main Flow} & \textbf{Alternate/Exception Flow} \\ \hline
-\endhead
-UC-01 & Citizen & Register account, login, access dashboard & Duplicate username/email is rejected with validation message \\ \hline
-UC-02 & Citizen & Upload image and run analyze pipeline & Unsupported/corrupt image rejected with explicit reason \\ \hline
-UC-03 & Citizen & Edit draft and submit complaint & If analyze unavailable, user submits manual complaint text after retry guidance \\ \hline
-UC-04 & Citizen & Track status and receive notifications & If no notifications available, panel remains stable with unread count zero \\ \hline
-UC-05 & Citizen & Submit feedback after complaint resolution & Duplicate feedback attempt blocked with conflict response \\ \hline
-UC-06 & Worker & View assigned complaints and update availability & Worker pending approval cannot access worker-only operations \\ \hline
-UC-07 & Worker & Mark complaint done & If assignment mismatch occurs, operation is denied by role/ownership checks \\ \hline
-UC-08 & Dept Head & Filter department complaints and update status & Dept-head cannot update complaints outside own department \\ \hline
-UC-09 & Dept Head & Add notes and transfer/escalate complaint & Invalid complaint ID or missing target yields controlled validation error \\ \hline
-UC-10 & Admin & Approve/reject worker registrations & Already-approved/rejected states handled idempotently \\ \hline
-UC-11 & Admin & Operate triage queue and analytics & Empty triage queue still returns successful response \\ \hline
-UC-12 & Public User & View anonymized complaint board & No authenticated personal fields are exposed in response payload \\ \hline
-\end{xltabular}
 
 Requirements are classified using the MoSCoW methodology [20]. \textbf{Must-Have} features include user registration, authentication, complaint intake, status updates, auto-assignment, and health monitoring: these are essential for operational viability. \textbf{Should-Have} features cover authority escalation, worker status controls, the administrative triage queue, and analytics: these provide institutional-grade governance. \textbf{Could-Have} features such as CSV exports and the public transparency feed provide high-value reporting without blocking the core workflow. Finally, \textbf{Non-Functional criticals} including session security, sanitization, and observability are treated as mandatory baseline controls.
 

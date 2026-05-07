@@ -3,46 +3,7 @@
 
 Project management for Jan-Sunwai AI followed an iterative delivery approach with explicit weekly milestones, acceptance checkpoints, and operational hardening gates. The planning strategy balanced feature development with risk reduction, especially in AI reliability, security posture, and deployment reproducibility.
 
-\section{Feasibility Study}
 
-The feasibility study was carried out before deep implementation to ensure that the project could be delivered within academic timelines while still meeting production-oriented quality goals. Evaluation covered technical viability, institutional adoption realities, timeline sustainability, and deployment reproducibility. The findings confirmed that a local-first architecture was feasible, provided that model orchestration, security controls, and environment standardization were handled as first-class concerns.
-
-\subsection{Technical Feasibility}
-
-The selected stack (React, FastAPI, MongoDB, Ollama) was technically feasible for local-first civic deployment due to mature ecosystem support, strong documentation, and compatibility with available development infrastructure [11, 12, 13, 17, 16]. Key feasibility observations were:
-
-\begin{itemize}
-\item FastAPI provided rapid API development, typed schemas, strict \texttt{/api/v1} namespace versioning, and OpenAPI generation.
-\item MongoDB supported flexible document structures suited to complaint histories, comments, and embedded metadata.
-\item React (v18 with React Router v7) enabled role-specific UI composition with route guards and dashboard specialization.
-\item Vite provided high-efficiency bundling, while Tailwind CSS v4 enabled a comprehensive, utility-first UI design system.
-\item Ollama provided local model execution with an in-memory background processing queue.
-\item slowapi was integrated natively into the FastAPI lifecycle to handle Rate Limiting effectively.
-\item Docker Compose enabled reproducible environment orchestration across development and production-like setups.
-\end{itemize}
-
-A major early technical risk was model reliability under constrained VRAM. This was mitigated by introducing a staged inference pipeline and avoiding simultaneous heavy model loading.
-
-\subsection{Time Schedule Feasibility}
-
-The schedule was structured over 18 weeks, progressing from foundation to hardening and final submission. Work cadence used Monday--Saturday windows with planned Sunday off-days. Alternate Saturday breaks were also reserved. This realistic scheduling improved sustainability while preserving delivery continuity.
-
-\subsection{Operational Feasibility}
-
-Operational feasibility was validated by mapping municipal personas into role-based workflows:
-
-\begin{itemize}
-\item Citizen: complaint intake and tracking.
-\item Worker: assignment execution and completion updates.
-\item Department Head: queue supervision and status transitions.
-\item Admin: approvals, triage governance, analytics, and exports.
-\end{itemize}
-
-The resulting workflow matched expected governance practices where supervisory roles require both visibility and controlled override capabilities.
-
-\subsection{Implementation Feasibility}
-
-Implementation was feasible under both manual and scripted setup modes. Automation scripts were created for Windows and Linux, and production deployment was validated through containerized orchestration [16]. Environment configuration was standardized via a single backend environment file to reduce drift and support repeatable handover.
 
 \section{Project Planning}
 
@@ -61,31 +22,6 @@ The project used an incremental and verification-driven approach with the follow
 \end{enumerate}
 
 This approach was chosen over a strict waterfall model because AI behavior and UX patterns required iterative calibration [17, 11, 12].
-
-\subsection{Milestones and Deliverables}
-
-The milestone table below maps each delivery phase to its planned completion gate and primary acceptance criterion.
-
-
-\begin{xltabular}{\textwidth}{|>{\RaggedRight\arraybackslash}p{0.15\textwidth}|>{\RaggedRight\arraybackslash}X|>{\RaggedRight\arraybackslash}X|>{\RaggedRight\arraybackslash}p{0.13\textwidth}|}
-\caption{Milestone Summary and Deliverables}\\
-\hline
-\textbf{Window} & \textbf{Theme} & \textbf{Key Deliverables} & \textbf{Status} \\
-\hline
-\endhead
-Weeks 1--2 & Foundation & Repo setup, environment bootstrap, backend skeleton, DB connectivity, auth schema, complaint schema, initial CRUD and upload service & Completed \\ \hline
-Weeks 3--5 & AI Pipeline & Model research, classifier iterations, geotagging, reverse geocoding, generation service, analyze endpoint integration & Completed \\ \hline
-Week 6 & Frontend Base & Routing, upload flow, analyze hook, result view, integration with backend auth and analyze pipeline & Completed \\ \hline
-Week 7 & Flow Closure & Map marker improvements, local draft persistence, error boundary, 404 route, full persona walkthrough & Completed \\ \hline
-Week 8 & Security Layer & Upload hardening, rate limiting, sanitization, CORS lockdown, security headers, index hardening & Completed \\ \hline
-Week 9 & NDMC Feature Pack & Worker panel, assignment engine, audit trail, analytics/heatmap, SLA badges, bulk actions/exports & Completed \\ \hline
-Week 10 & Notification and Communication & Navbar badge, status-triggered notifications, email stub, forgot/reset password, profile editing, E2E notification chain test & Completed \\ \hline
-Week 11 & Performance and Reliability & Image compression, lazy loading, graceful 503 degrade, profiling, resilience tests & Completed \\ \hline
-Week 12 & Production Hardening & Docker production files, compose profile, env plan, API versioning, backup strategy, UI audit & Completed \\ \hline
-Weeks 13--14 & Testing and Pre-Handover & Unit/integration/security/load tests, mobile fixes, handover guide, API reference, repository cleanup, CI workflows & Completed \\ \hline
-Weeks 15--16 & UAT and Staging Validation & Clean deploy simulation, production verification, UAT persona runs, feedback loop and polish pass & Completed \\ \hline
-Weeks 17--18 & Reporting and Submission & Technical report artifacts, screenshots, presentation, final submission hygiene and release tagging & Completed \\ \hline
-\end{xltabular}
 
 
 \subsection{Group Roles and Responsibilities}
@@ -168,15 +104,7 @@ The management strategy achieved three notable outcomes:
 \item Handover readiness improved through consolidated deployment/configuration artifacts and documentation alignment.
 \end{itemize}
 
-\section{Management Retrospective}
 
-Three management lessons were central to delivery quality:
-
-\begin{enumerate}
-\item \textbf{Early role modeling reduced rework:} Defining citizen/worker/dept-head/admin pathways early prevented significant UI and authorization redesign later.
-\item \textbf{Security and reliability should not be deferred:} Integrating these streams before final release avoided unstable late-stage merges.
-\item \textbf{Artifact consolidation is a management task:} Unifying environment and compose artifacts reduced support burden and improved handover confidence.
-\end{enumerate}
 
 \section{Chapter Summary}
 

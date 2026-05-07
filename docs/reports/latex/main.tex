@@ -56,7 +56,7 @@
 \setcounter{tocdepth}{3}
 \setlength{\headheight}{14.5pt}
 \setlength{\emergencystretch}{2em}
-\setlength{\tabcolsep}{8pt}
+\setlength{\tabcolsep}{6pt}
 \setlength{\extrarowheight}{1pt}
 \renewcommand{\arraystretch}{1.15}
 \renewcommand{\tabularxcolumn}[1]{>{\RaggedRight\arraybackslash}p{#1}}
@@ -80,25 +80,25 @@
 \titleformat{\chapter}[block]
   {\bfseries\fontsize{16}{19.2}\selectfont\filcenter}
   {\chaptername\ \thechapter:\ }{0pt}{}
-\titlespacing*{\chapter}{0pt}{-20pt}{30pt}
+\titlespacing*{\chapter}{0pt}{-20pt}{20pt}
 
 % Heading Size: 14 Bold (Left-aligned)
 \titleformat{\section}
 {\bfseries\fontsize{14}{16.8}\selectfont\raggedright}
 {\thesection}{0.5em}{}
-\titlespacing*{\section}{0pt}{18pt}{10pt}
+\titlespacing*{\section}{0pt}{12pt}{6pt}
 
 % Sub-heading size: 12 Bold (Left aligned)
 \titleformat{\subsection}
 {\bfseries\fontsize{12}{14.4}\selectfont\raggedright}
 {\thesubsection}{0.5em}{}
-\titlespacing*{\subsection}{0pt}{14pt}{8pt}
+\titlespacing*{\subsection}{0pt}{10pt}{4pt}
 
 % Sub-sub heading size: 12 Bold (Left aligned)
 \titleformat{\subsubsection}
 {\bfseries\fontsize{12}{14.4}\selectfont\raggedright}
 {\thesubsubsection}{0.5em}{}
-\titlespacing*{\subsubsection}{0pt}{12pt}{6pt}
+\titlespacing*{\subsubsection}{0pt}{8pt}{4pt}
 
 % ===== PAGE NUMBER =====
 \pagestyle{fancy}
@@ -244,6 +244,9 @@
 \newpage
 
 \input{frontmatter/abbreviations}
+\newpage
+
+\input{frontmatter/definitions}
 \newpage
 
 % ===== MAIN MATTER =====

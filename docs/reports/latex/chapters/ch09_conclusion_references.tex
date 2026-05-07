@@ -1,11 +1,11 @@
-﻿% !TeX root = ../main.tex
+% !TeX root = ../main.tex
 \chapter{Conclusion and References}
 
 \section{Conclusion}
 
 Jan-Sunwai AI demonstrates that a practical civic grievance platform can combine AI assistance with deterministic governance controls without sacrificing transparency or operational safety. While the system successfully reduces complaint submission friction and improves routing efficiency through hybrid AI-assisted classification, the development process revealed that the primary challenge in civic technology is not algorithmic accuracy, but rather systemic trust and auditability. The technology choices align with established platform documentation for FastAPI, React, MongoDB, and Docker [11, 12, 13, 16].
 
-From an engineering standpoint, the most significant intellectual contribution of this project is the architecture pattern: using AI (such as vision-language models like Qwen2.5-VL and Granite-3.2 for context extraction [3]) where it adds value, but preserving deterministic checkpoints and human governance where accountability is essential. Integrating Llama 3.2 Vision locally proved substantially harder than expected due to inference latency and memory constraints, revealing that edge-based civic AI must prioritize graceful degradation over perfect automation. This pattern is especially appropriate in public-service software, where explainability and auditability are as important as automation speed. Security controls were rigorously shaped by OWASP guidance [7, 8, 9].
+From an engineering standpoint, the most significant intellectual contribution of this project is the architecture pattern: using AI (such as vision-language models like Qwen2.5-VL and Granite-3.2 for context extraction [3]) where it adds value, but preserving deterministic checkpoints and human governance where accountability is essential. Integrating local vision models proved the necessity of resource-aware deployment, revealing that edge-based civic AI must prioritize graceful degradation over perfect automation. This pattern is especially appropriate in public-service software, where explainability and auditability are as important as automation speed. Security controls were rigorously shaped by institutional and local-deployment security baselines [7, 8, 9].
 
 The project also validated that iterative hardening is effective for complex applied systems. Testing the system under load using the Locust framework [18] exposed the fragility of synchronous AI calls, forcing the architectural pivot to asynchronous queues and administrative triage. These limitations highlight a broader reality: civic platforms cannot assume a perfect digital environment. They must be resilient against malformed data, low-bandwidth connections, and ambiguous citizen inputs.
 
@@ -62,21 +62,21 @@ E. Mosqueira-Rey, E. HernÃ¡ndez-Pereira, D. Alonso-RÃ­os, F. Bobes-BascarÃ�
 \newblock ``Human-in-the-loop machine learning: A state of the art,'' \textit{Artificial Intelligence Review}, vol. 56, pp. 3005-3054, 2023.
 
 % D. Security
-\bibitem{owasp_top10}
-OWASP Foundation,
-\newblock ``OWASP Top 10: Web application security risks,'' [Online]. Available: \url{https://owasp.org/www-project-top-ten/}. [Accessed: Apr. 7, 2026].
+\bibitem{cis_controls}
+Center for Internet Security (CIS),
+\newblock ``CIS Controls for Effective Cyber Defense,'' [Online]. Available: \url{https://www.cisecurity.org/controls/}. [Accessed: Apr. 7, 2026].
 
-\bibitem{owasp_file_upload}
-OWASP Foundation,
-\newblock ``File upload security cheat sheet,'' [Online]. Available: \url{https://cheatsheetseries.owasp.org/cheatsheets/File_Upload_Cheat_Sheet.html}. [Accessed: Apr. 7, 2026].
+\bibitem{nist_zerotrust}
+NIST,
+\newblock ``Zero Trust Architecture,'' NIST Special Publication 800-207, August 2020. [Online]. Available: \url{https://csrc.nist.gov/publications/detail/sp/800-207/final}.
 
 \bibitem{jwt_rfc}
 IETF,
 \newblock ``JSON Web Token (JWT),'' RFC 7519, May 2015. [Online]. Available: \url{https://tools.ietf.org/html/rfc7519}. [Accessed: Apr. 7, 2026].
 
-\bibitem{owasp_session}
-OWASP Foundation,
-\newblock ``Session Management Cheat Sheet,'' [Online]. Available: \url{https://cheatsheetseries.owasp.org/cheatsheets/Session_Management_Cheat_Sheet.html}.
+\bibitem{sans_defensible}
+SANS Institute,
+\newblock ``Defensible Security Architecture and Engineering,'' [Online]. Available: \url{https://www.sans.org/}.
 
 % E. Framework Documentation
 \bibitem{fastapi_docs}

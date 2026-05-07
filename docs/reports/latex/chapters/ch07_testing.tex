@@ -37,16 +37,20 @@ The testing environment baseline outlined below ensures consistency across all v
 The coverage matrix below maps each test suite to its type and the specific system behaviours it validates:
 
 
-\begin{description}
-\item[\path{test_schemas.py}:] Unit Validation covering GeoLocation bounds, complaint schema validity, and confidence-score guardrails.
-\item[\path{test_auth_permissions.py}:] Unit Authorization testing token claims, and admin/worker/dept-head access guards.
-\item[\path{test_api_integration.py}:] Integration Smoke testing the root route, health checks, versioned aliases, and lightweight CI paths.
-\item[\path{test_api_matrix.py}:] Integration Matrix covering the \texttt{/api/v1} profile route, CORS preflight behavior, and security headers.
-\item[\path{test_notification_chain.py}:] Integration Behavior for status update notifications, email hook paths, and mark-all-read logic.
-\item[\path{test_resilience_security.py}:] Resilience \& Security for upload hardening, analyze degrade 503, readiness degradation, and sanitization.
-\item[Manual UAT scripts:] User Acceptance testing for citizen and admin journeys, friction logging, and UX verification.
-\item[Load scripts (locust):] Performance testing for endpoint mix throughput and graceful degradation behavior.
-\end{description}
+\begin{xltabular}{\textwidth}{|>{\RaggedRight\arraybackslash}p{0.30\textwidth}|>{\RaggedRight\arraybackslash}p{0.24\textwidth}|>{\RaggedRight\arraybackslash}X|}
+\caption{Testing Coverage Matrix by Suite}\\
+\hline
+\textbf{Test Artifact} & \textbf{Type} & \textbf{Coverage Highlights} \\ \hline
+\endhead
+\path{test_schemas.py} & Unit Validation & GeoLocation bounds, complaint schema validity, confidence-score guardrails \\ \hline
+\path{test_auth_permissions.py} & Unit Authorization & Token claims, admin and worker/dept-head access guards \\ \hline
+\path{test_api_integration.py} & Integration Smoke & Root route, health checks, versioned aliases, lightweight CI path \\ \hline
+\path{test_api_matrix.py} & Integration Matrix & /api/v1 profile route, CORS preflight behavior, security header presence \\ \hline
+\path{test_notification_chain.py} & Integration Behavior & Status update notification creation, email hook path, mark-all-read logic \\ \hline
+\path{test_resilience_security.py} & Resilience + Security & Upload hardening, analyze degrade 503, readiness degradation, sanitization \\ \hline
+Manual UAT scripts & User Acceptance & Citizen and admin journeys, friction logging, UX verification \\ \hline
+Load scripts (locust) & Performance & Endpoint mix throughput and graceful degradation behavior \\ \hline
+\end{xltabular}
 
 \section{Types of Testing}
 
@@ -56,13 +60,19 @@ Multiple testing types were applied because the platform combines API logic, rol
 
 Unit tests focused on isolated validation and control logic.
 
-\begin{description}
-\item[UT-01 (GeoLocation bounds):] Rejects latitude outside $[-90, 90]$ and longitude outside $[-180, 180]$.
-\item[UT-02 (AI confidence schema):] Rejects confidence values outside $[0, 1]$.
-\item[UT-03 (Admin role check):] Ensures non-admin callers receive HTTP 403 on admin-only dependencies.
-\item[UT-04 (Worker approval gate):] Blocks unapproved workers from passing worker-only dependency paths.
-\item[UT-05 (Sanitization function):] Confirms script payloads are transformed into escaped, safe representations.
-\end{description}
+\begin{table}[H]
+\centering
+\caption{Representative Unit Test Cases}
+\begin{tabularx}{\textwidth}{|>{\RaggedRight\arraybackslash}X|>{\RaggedRight\arraybackslash}X|>{\RaggedRight\arraybackslash}X|}
+\hline
+\textbf{Case ID} & \textbf{Area} & \textbf{Expected Behavior} \\ \hline
+UT-01 & GeoLocation bounds & Reject latitude outside $[-90, 90]$ and longitude outside $[-180, 180]$ \\ \hline
+UT-02 & AI confidence schema & Reject confidence values outside $[0, 1]$ \\ \hline
+UT-03 & Admin role check & Non-admin caller receives HTTP 403 on admin-only dependency \\ \hline
+UT-04 & Worker approval gate & Unapproved worker cannot pass worker-only dependency path \\ \hline
+UT-05 & Sanitization function & Script payload transformed to escaped safe representation \\ \hline
+\end{tabularx}
+\end{table}
 
 \subsection{Integration Testing}
 
@@ -79,13 +89,13 @@ Integration tests verified route composition, middleware behavior, and cross-rou
 
 System testing executed end-to-end flows across authentication, analyze, complaint lifecycle, assignment, and notification propagation. This stage focused on behavior continuity rather than isolated endpoint correctness.
 
-\begin{description}
-\item[ST-01 (Citizen flow):] Upload $\rightarrow$ analyze $\rightarrow$ submit. Ensures the complaint record is created with its status history initialized.
-\item[ST-02 (Dept-head update):] Dept-head updates status. Ensures the citizen receives a notification and the timeline reflects the transition.
-\item[ST-03 (Worker completion):] Worker marks a complaint as done. Ensures the complaint transitions and worker slot logic updates as expected.
-\item[ST-04 (Admin triage):] Admin triage decision. Ensures an ambiguous complaint successfully completes its governed label decision path.
-\item[ST-05 (Data export):] CSV export generation. Ensures the export file is generated with expected schema columns.
-\end{description}
+\begin{itemize}
+\item \textbf{ST-01 (Citizen flow):} Upload $\rightarrow$ analyze $\rightarrow$ submit. Ensures the complaint record is created with its status history initialized.
+\item \textbf{ST-02 (Dept-head update):} Dept-head updates status. Ensures the citizen receives a notification and the timeline reflects the transition.
+\item \textbf{ST-03 (Worker completion):} Worker marks a complaint as done. Ensures the complaint transitions and worker slot logic updates as expected.
+\item \textbf{ST-04 (Admin triage):} Admin triage decision. Ensures an ambiguous complaint successfully completes its governed label decision path.
+\item \textbf{ST-05 (Data export):} CSV export generation. Ensures the export file is generated with expected schema columns.
+\end{itemize}
 
 \subsection{User Acceptance Testing (UAT)}
 
@@ -100,7 +110,7 @@ The UAT plan was executed through persona scripts:
 
 \subsection{Performance and Load SLA Metrics}
 
-To validate the non-functional requirements under realistic municipal constraints, load testing was executed on a baseline server configuration (8-core CPU, 16GB RAM, RTX 3060 12GB GPU). The measurements in Table \ref{table:perf-metrics} capture the system's baseline behavior over a sustained 30-minute stress test simulating 50 concurrent civic workers.
+To validate the non-functional requirements under realistic municipal constraints, load testing was executed on a baseline server configuration (48GB RAM, H100 GPU). The measurements in Table \ref{table:perf-metrics} capture the system's baseline behavior over a sustained 30-minute stress test simulating 50 concurrent civic workers.
 
 \begin{table}[H]
 \centering
@@ -140,9 +150,6 @@ System Throughput (Peak) & 18 requests/sec \\ \hline
 \end{tabularx}
 \end{table}
 
-\placeholderfigure{Response Time vs Load}{A graph demonstrating that API response time remains stable around 320ms until reaching 20 concurrent requests/second, after which graceful degradation occurs.}
-
-\placeholderfigure{Classification Accuracy vs Test Samples}{A graph showing classification confidence scores for 100 test images, with an average confidence of 0.78 validating the accuracy of the vision pipeline.}
 
 \section{Testing Outcomes}
 
