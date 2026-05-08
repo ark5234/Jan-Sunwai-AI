@@ -1,518 +1,511 @@
-# Chapter 5: System Architecture and Design Diagrams
+# Jan-Sunwai AI — System Diagrams
 
-This document contains the detailed system architecture, UML, and Database diagrams reflecting the exact specifications of the Jan-Sunwai AI project.
+---
 
-## 5.1 System Architecture Design
-
-### 5.1.1 Architectural Style
-Jan-Sunwai AI follows a **Client-Server architecture** with a clear separation of concerns:
-- **Client Tier**: A React/Vite Single Page Application (SPA) serving different roles (Citizen, Worker, Dept Head, Admin).
-- **Service Tier**: A FastAPI backend adhering to RESTful principles (`/api/v1` routes) handling business logic, authentication (JWT), and AI orchestration.
-- **Data Tier**: MongoDB stores users, complaints, assignments, and audit logs (NDMC MongoDB).
-- **AI Processing Tier**: Local Ollama runtime used for vision classification, reasoning, and drafting.
-
-### 5.1.2 Key Architectural Decisions
-- **Local-First AI Execution**: Chosen to ensure data privacy and reduce dependency on external APIs.
-- **Asynchronous AI Queue**: In-memory worker queue in FastAPI ensures that long-running LLM generation tasks do not block incoming HTTP requests.
-- **Role-Based Access Control (RBAC)**: Strict segregation between Admin, Department Head, Worker, and Citizen spaces.
-- **Containerization**: Use of Docker Compose to bundle the React frontend, FastAPI backend, and MongoDB instances for predictable deployments.
-
-### 5.1.3 AI Classification Pipeline
+## 4.1 Proposed End-to-End Workflow
 
 ```mermaid
 flowchart TD
-    A[Image Upload] --> B[Storage + Geotag Extraction]
-    B --> C[Vision Cascade: Qwen2.5-VL / Granite / Moondream]
-    C --> D{Non-Civic Guard?}
-    D -->|Yes| E[Invalid/Uncategorized]
-    D -->|No| F[Rule Engine Scoring]
-    F --> G{Ambiguous or Uncategorized?}
-    G -->|Yes| H[Vision Retry w/ Alt Model]
-    H --> I{Still Ambiguous?}
-    I -->|Yes| J[Llama 3.2 Reasoning Model]
-    I -->|No| K[Finalize Category]
-    J --> K
-    G -->|No| K
-    K --> L[NDMC AI API Comparison]
-    L --> M[Queue Draft Generation]
-    M --> N[Citizen Review + Submit]
-    N --> O[Complaint Saved + Auto-Routed]
+    A([🧑 Citizen Uploads Image]) --> B
+
+    subgraph INTAKE ["① Intake & Perception"]
+        B[Image Received by System]
+    end
+
+    B --> C
+
+    subgraph AI_ENRICH ["② AI Enrichment (Parallel)"]
+        C{Trigger AI Pipeline}
+        C --> D[🔍 Vision Model\nExtract Features & Category]
+        C --> E[📋 Rule Engine\nAssign Department]
+        C --> F[✍️ Reasoning Model\nDraft Complaint Text]
+    end
+
+    D & E & F --> G
+
+    subgraph HUMAN ["③ Human Verification"]
+        G[Present AI Suggestions to Citizen]
+        G --> H{Citizen Reviews}
+        H -->|Approves| I[Confirmed Submission]
+        H -->|Edits & Approves| I
+    end
+
+    I --> J
+
+    subgraph OPS ["④ Operational Routing"]
+        J[Complaint Enters Departmental Queue]
+        J --> K{AI Confidence Level}
+        K -->|High Confidence| L[Auto-Assign to Worker]
+        K -->|Low Confidence| M[🛑 Admin Triage]
+        M --> L
+    end
+
+    L --> N
+
+    subgraph CLOSURE ["⑤ Closure"]
+        N[Worker Executes Field Task]
+        N --> O[Mark Complaint as Resolved]
+        O --> P([📲 Notify Citizen])
+    end
+
+    style INTAKE fill:#dbeafe,stroke:#3b82f6
+    style AI_ENRICH fill:#ede9fe,stroke:#8b5cf6
+    style HUMAN fill:#fef9c3,stroke:#ca8a04
+    style OPS fill:#fee2e2,stroke:#ef4444
+    style CLOSURE fill:#dcfce7,stroke:#16a34a
 ```
-![AI Classification Pipeline](./images/system_context_diagram.png)
 
-## 5.2 UML Diagrams
+---
 
-### 5.2.1 E-R Diagram (Entity-Relationship)
+## 5.1 Overall System Context Diagram
+
+```mermaid
+flowchart TB
+    Citizen(["🧑 Citizen\n(Intake & Tracking)"])
+    Worker(["🔧 Worker\n(Task Fulfillment)"])
+    Admin(["🛡️ Dept Head / Admin\n(Supervisory Control)"])
+
+    subgraph JAN_SUNWAI ["Jan-Sunwai AI Platform"]
+        direction TB
+        Frontend["⚛️ React Frontend\n(Nginx)"]
+        Backend["⚙️ FastAPI Backend\n(Central Orchestrator)"]
+    end
+
+    subgraph EXTERNAL ["External / Local Services"]
+        Ollama["🤖 Ollama Model Runtime\n(Local Inference)"]
+        MongoDB[("🗄️ MongoDB\n(State Persistence)")]
+        FS[("📁 Filesystem\n(Image Storage)")]
+    end
+
+    Citizen -->|"Upload Image / Track Complaint"| Frontend
+    Worker -->|"View Tasks / Update Status"| Frontend
+    Admin -->|"Triage / Approve Workers"| Frontend
+
+    Frontend -->|"REST API Calls"| Backend
+
+    Backend -->|"Inference Requests"| Ollama
+    Ollama -->|"Model Responses"| Backend
+
+    Backend -->|"Read / Write Records"| MongoDB
+    Backend -->|"Store / Retrieve Images"| FS
+
+    style JAN_SUNWAI fill:#eff6ff,stroke:#2563eb,stroke-width:2px
+    style EXTERNAL fill:#f0fdf4,stroke:#16a34a,stroke-width:2px
+```
+
+---
+
+## 5.2 AI Pipeline and Classification Flow
+
+```mermaid
+flowchart TD
+    A([📷 Image Received]) --> B["🔎 Vision-Language Model\nVLM Analysis"]
+    B --> C{Confidence Gate}
+
+    C -->|">= 0.7\nHigh Confidence"| D["✅ Auto-Route\nto Department"]
+    C -->|"< 0.7\nBelow AMBIGUITY_THRESHOLD"| E
+
+    subgraph REASONING ["Reasoning Fallback"]
+        E["🧠 Secondary Reasoning Check\n(e.g. Llama 3.2)"]
+        E --> F{Reasoning Confidence}
+        F -->|"Sufficient"| D
+        F -->|"Still Ambiguous"| G["🛑 Administrative\nTriage Queue"]
+    end
+
+    G --> H["👤 Admin Manual\nDepartment Assignment"]
+    H --> I
+
+    D --> I(["📝 Complaint Created\n& Auto-Assigned"])
+
+    style REASONING fill:#fdf4ff,stroke:#a855f7,stroke-width:1.5px
+    style C fill:#fef3c7,stroke:#d97706
+    style F fill:#fef3c7,stroke:#d97706
+    style G fill:#fee2e2,stroke:#ef4444
+    style D fill:#dcfce7,stroke:#16a34a
+```
+
+---
+
+## 5.3 E-R Diagram
 
 ```mermaid
 erDiagram
-    USER ||--o{ COMPLAINT : "creates / handles"
-    COMPLAINT ||--o{ NOTIFICATION : triggers
-    USER ||--o{ NOTIFICATION : receives
-    
     USER {
-        ObjectId _id PK
-        string username
+        string id PK
+        string name
         string email
-        string password_hash
-        string full_name
-        string phone_number
         string role
-        string department
-        string worker_status
-        object service_area
-        boolean is_approved
+        string phone
+        string department_id FK
+        boolean is_active
     }
-    
-    COMPLAINT {
-        ObjectId _id PK
-        ObjectId user_id FK
-        ObjectId assigned_to FK
-        string authority_id
-        string department
-        string description
-        string user_grievance_text
-        string image_url
-        object location
-        object ai_metadata
-        float routing_confidence
-        string priority
-        string status
-        boolean escalated
-        datetime created_at
-        list status_history
-        list dept_notes
-    }
-    
-    NOTIFICATION {
-        ObjectId _id PK
-        ObjectId user_id FK
-        ObjectId complaint_id FK
-        string type
-        string title
-        string message
-        boolean is_read
-        datetime created_at
-    }
-```
-![E-R Diagram](./images/new_er.png)
 
-### 5.2.2 Use Case Diagram
+    COMPLAINT {
+        string id PK
+        string title
+        string description
+        string category
+        string status
+        float geo_latitude
+        float geo_longitude
+        string geo_address
+        float ai_confidence
+        string ai_model_id
+        string ai_suggested_category
+        string ai_suggested_department
+        string filed_by FK
+        string assigned_to FK
+        string department_id FK
+        datetime created_at
+        datetime updated_at
+    }
+
+    DEPARTMENT {
+        string id PK
+        string name
+        string escalation_parent FK
+        string[] service_areas
+    }
+
+    STATUS_HISTORY {
+        string id PK
+        string complaint_id FK
+        string status
+        string note
+        string changed_by FK
+        datetime timestamp
+    }
+
+    NOTIFICATION {
+        string id PK
+        string user_id FK
+        string complaint_id FK
+        string message
+        boolean read
+        datetime created_at
+    }
+
+    USER ||--o{ COMPLAINT : "files"
+    USER ||--o{ COMPLAINT : "assigned to"
+    DEPARTMENT ||--o{ COMPLAINT : "handles"
+    DEPARTMENT ||--o| DEPARTMENT : "escalates to"
+    COMPLAINT ||--|{ STATUS_HISTORY : "has (embedded)"
+    USER ||--o{ NOTIFICATION : "receives"
+    COMPLAINT ||--o{ NOTIFICATION : "triggers"
+```
+
+---
+
+## 5.5 Use Case Diagram (System Flow)
 
 ```mermaid
 flowchart LR
-    Citizen((Citizen))
-    Worker((Worker))
-    DeptHead((Department Head))
-    Admin((Admin))
-    
-    Citizen --> UC1([Upload Issue Photo])
-    Citizen --> UC2([Review Generated Draft])
-    Citizen --> UC3([Track Complaint Status])
-    Citizen --> UC14([Provide Feedback])
-    
-    Worker --> UC4([View Assigned Tasks])
-    Worker --> UC5([Add Dept Notes & Update Status])
-    Worker --> UC6([Mark Complaint Resolved])
-    
-    DeptHead --> UC7([Monitor Department Queue])
-    DeptHead --> UC8([Handle Escalations])
-    DeptHead --> UC9([View Analytics & Heatmap])
-    DeptHead --> UC15([Reassign Workers])
-    
-    Admin --> UC10([Manage & Approve Workers])
-    Admin --> UC11([Triage Low-Confidence Issues])
-    Admin --> UC12([System & AI Configurations])
-    Admin --> UC16([View Global Analytics])
-    
-    UC1 -.->|includes| UC13([AI Classification & Generation])
-    UC11 -.->|updates| UC8
-```
-![Use Case Diagram](./images/flowchart.png)
-*(Note: Mermaid flowchart can also depict use case functionality if actual Use Case UML is not fully supported in your renderer, standard UML boundaries apply)*
+    Citizen(["🧑 Citizen"])
+    Worker(["🔧 Worker"])
+    Admin(["🛡️ Admin / Dept Head"])
 
-### 5.2.3 Class Diagram
+    subgraph RBAC ["Jan-Sunwai AI — Role-Based Access Control"]
+        subgraph CITIZEN_UC ["Citizen Use Cases"]
+            UC1["📤 Submit Complaint\n(Upload Image + Details)"]
+            UC2["🔍 Track Complaint Status"]
+            UC3["✅ Review & Confirm AI Suggestions"]
+        end
+
+        subgraph WORKER_UC ["Worker Use Cases"]
+            UC4["📋 View Assigned Tasks"]
+            UC5["✔️ Accept / Reject Assignment"]
+            UC6["🔧 Execute Field Task"]
+            UC7["📌 Mark Complaint Resolved"]
+        end
+
+        subgraph ADMIN_UC ["Admin Use Cases"]
+            UC8["🛑 Triage Ambiguous Complaints"]
+            UC9["👤 Approve / Manage Workers"]
+            UC10["📊 View Department Dashboard"]
+            UC11["↗️ Escalate to Higher Authority"]
+        end
+    end
+
+    Citizen --> UC1
+    Citizen --> UC2
+    Citizen --> UC3
+
+    Worker --> UC4
+    Worker --> UC5
+    Worker --> UC6
+    Worker --> UC7
+
+    Admin --> UC8
+    Admin --> UC9
+    Admin --> UC10
+    Admin --> UC11
+
+    style CITIZEN_UC fill:#dbeafe,stroke:#3b82f6
+    style WORKER_UC fill:#dcfce7,stroke:#16a34a
+    style ADMIN_UC fill:#fee2e2,stroke:#ef4444
+    style RBAC fill:#f8fafc,stroke:#64748b,stroke-width:2px
+```
+
+---
+
+## 5.6 Class Diagram
 
 ```mermaid
 classDiagram
-    class UsersRouter {
-        +register()
-        +login()
-        +updateProfile()
-        +getMe()
+    class User {
+        +String id
+        +String name
+        +String email
+        +String role
+        +String phone
+        +String department_id
+        +Boolean is_active
+        +login() void
+        +logout() void
+        +updateProfile() void
     }
-    class ComplaintsRouter {
-        +analyze()
-        +create()
-        +getList()
-        +updateStatus()
-        +escalate()
-        +addDeptNote()
-        +transferDepartment()
-    }
-    class WorkersRouter {
-        +getQueue()
-        +approveWorker()
-        +updateWorkerStatus()
-        +assignTaskManual()
-    }
-    class AnalyticsRouter {
-        +getOverview()
-        +getHeatmap()
-    }
-    class TriageRouter {
-        +getReviewQueue()
-        +resolveTriage()
-    }
-    class NotificationsRouter {
-        +getMyNotifications()
-        +markAsRead()
-    }
-    class ClassifierEngine {
-        +runVisionCascade()
-        +runRuleEngine()
-    }
-    class GeneratorEngine {
-        +generateDraft()
-    }
-    class NDMCApiClient {
-        +logAudit()
-    }
-    class AssignmentService {
-        +autoAssignGeo()
-    }
-    
-    ComplaintsRouter --> ClassifierEngine : uses
-    ComplaintsRouter --> GeneratorEngine : uses
-    ComplaintsRouter --> AssignmentService : triggers
-    ComplaintsRouter --> NotificationsRouter : emits
-    ComplaintsRouter --> NDMCApiClient : triggers_audit
-```
-![Class Diagram](./images/class_diagram.png)
 
-### 5.2.4 Sequence Diagram
-(Complaint Lifecycle Sequence)
+    class Complaint {
+        +String id
+        +String title
+        +String description
+        +String category
+        +String status
+        +GeoLocation location
+        +AIMetadata ai_metadata
+        +List~StatusHistory~ history
+        +String filed_by
+        +String assigned_to
+        +String department_id
+        +DateTime created_at
+        +submit() void
+        +updateStatus(status, note) void
+        +assignWorker(worker_id) void
+    }
+
+    class GeoLocation {
+        +Float latitude
+        +Float longitude
+        +String address
+    }
+
+    class AIMetadata {
+        +Float confidence
+        +String model_id
+        +String suggested_category
+        +String suggested_department
+        +String drafted_description
+    }
+
+    class StatusHistory {
+        +String status
+        +String note
+        +String changed_by
+        +DateTime timestamp
+    }
+
+    class Department {
+        +String id
+        +String name
+        +String escalation_parent
+        +List~String~ service_areas
+        +escalate(complaint_id) void
+    }
+
+    class Notification {
+        +String id
+        +String user_id
+        +String complaint_id
+        +String message
+        +Boolean read
+        +DateTime created_at
+        +markRead() void
+        +send() void
+    }
+
+    Complaint "1" *-- "1" GeoLocation : contains
+    Complaint "1" *-- "1" AIMetadata : contains
+    Complaint "1" *-- "*" StatusHistory : embeds
+    User "1" --> "*" Complaint : files
+    User "1" --> "*" Complaint : assigned to
+    Department "1" --> "*" Complaint : handles
+    Department "1" --> "0..1" Department : escalates to
+    Notification "*" ..> "1" User : observes
+    Notification "*" ..> "1" Complaint : observes
+```
+
+---
+
+## 5.7 Sequence Diagram
 
 ```mermaid
 sequenceDiagram
     actor Citizen
-    participant FE as Frontend (React)
-    participant API as FastAPI Backend
-    participant CLSF as Classifier/Generator Engine
+    participant FE as React Frontend
+    participant BE as FastAPI Backend
+    participant AI as Ollama AI Engine
     participant DB as MongoDB
-    participant NDMC as NDMC Audit DB
-    participant ASSIGN as Assignment Service
-    participant NOTIFY as Notification System
 
-    Citizen->>FE: Upload Image & Grievance Text
-    FE->>API: POST /api/v1/analyze
-    API->>CLSF: Run Vision Model & Rule Engine
-    CLSF-->>API: Category & Confidence
-    API->>CLSF: Generate Draft (Reasoning Model)
-    CLSF-->>API: Drafted Text
-    API-->>FE: Return Analysis Payload (Category, Draft)
+    Citizen->>FE: Upload image + details
 
-    Citizen->>FE: Review, Edit & Submit
-    FE->>API: POST /api/v1/complaints
-    API->>DB: Store Complaint (status=Open)
-    par Audit Logging
-        API->>NDMC: Log Classification Audit
-    and Auto-Assignment
-        API->>ASSIGN: Attempt autoAssignGeo()
-        ASSIGN->>DB: Update Complaint (Assigned/In Progress)
-    and Notifications
-        API->>NOTIFY: Emit Assignment Notification to Worker
+    FE->>BE: POST /complaints/analyze (multipart image)
+    BE->>DB: Create complaint record (status: PROCESSING)
+    DB-->>BE: complaint_id
+    BE-->>FE: 202 Accepted { complaint_id }
+
+    BE-)AI: Async inference request (image)
+    Note over BE,AI: Non-blocking — GPU inference begins
+
+    loop Async Polling (every 3s)
+        FE->>BE: GET /complaints/{id}/status
+        BE->>DB: Fetch complaint status
+        DB-->>BE: { status: "PROCESSING" }
+        BE-->>FE: { status: "PROCESSING" }
     end
-    API-->>FE: Success, Complaint ID
-```
-![Sequence Diagram](./images/sequence_diagram.png)
 
-### 5.2.5 Activity Diagram
-(Image Analysis & Triage Activity)
+    AI--)BE: { category, confidence, description, department }
+    BE->>DB: Update complaint with AI metadata (status: READY)
 
-```mermaid
-stateDiagram-v2
-    [*] --> UploadImage
-    UploadImage --> ValidateFormat
-    ValidateFormat --> RunVisionCascade
-    RunVisionCascade --> RuleEngineScoring
-    
-    state RuleEngineScoring {
-        [*] --> ConfidenceCheck
-        ConfidenceCheck --> HighConfidence: Confidence > AMBIGUITY_THRESHOLD
-        ConfidenceCheck --> LowConfidence: Confidence <= AMBIGUITY_THRESHOLD
-    }
-    
-    HighConfidence --> FinalizeCategory
-    LowConfidence --> RunReasoningModel
-    RunReasoningModel --> FinalizeCategory
-    
-    FinalizeCategory --> GenerateDraft
-    GenerateDraft --> NDMC_Comparison_Audit
-    NDMC_Comparison_Audit --> CitizenReview
-    CitizenReview --> SubmitComplaint
-    SubmitComplaint --> [*]
-```
-![Activity Diagram](./images/activity_diagram.png)
+    FE->>BE: GET /complaints/{id}/status
+    BE-->>FE: { status: "READY", ai_suggestions: { ... } }
+    FE-->>Citizen: Display AI suggestions for review
 
-### 5.2.6 State Machine Diagram (Complaint Lifecycle)
-
-```mermaid
-stateDiagram-v2
-    [*] --> Open : Complaint Submitted
-    
-    Open --> In_Progress : Auto or Manual Assignment
-    In_Progress --> In_Progress : Worker Reassignment
-    
-    In_Progress --> Resolved : Worker Provides Proof & Resolves
-    In_Progress --> Rejected : Worker Flags as Invalid/Spam
-    
-    Resolved --> [*]
-    Rejected --> [*]
-    
-    note right of In_Progress
-        *Can be flagged as "Escalated"
-        by the system or Citizen if 
-        SLA breached.
-    end note
+    Citizen->>FE: Review → Confirm / Edit & Submit
+    FE->>BE: POST /complaints/{id}/submit { confirmed_data }
+    BE->>DB: Finalize complaint (status: SUBMITTED)
+    BE->>BE: Trigger Worker Assignment Engine
+    DB-->>BE: OK
+    BE-->>FE: 200 OK
+    FE-->>Citizen: ✅ Complaint submitted successfully
 ```
 
-### 5.2.7 DFD Diagram (Data Flow Diagram - Context & Level 1)
+---
 
-#### Level 0 DFD (Context Diagram)
+## 5.8 Activity Diagram — Worker Assignment Engine
 
 ```mermaid
 flowchart TD
-    Citizen((Citizen))
-    Worker((Worker))
-    Admin((Admin))
-    DeptHead((Department Head))
-    
-    System[0\nJan-Sunwai AI System]
-    
-    Citizen -->|Uploads Image & Submits Form| System
-    System -->|Generated Draft & Status Updates| Citizen
-    
-    Worker -->|Resolves Complaints| System
-    System -->|Assigned Tasks| Worker
-    
-    DeptHead -->|Escalations & Approvals| System
-    System -->|Department Analytics| DeptHead
-    
-    Admin -->|Triage Operations & Configs| System
-    System -->|Low-Confidence Queue| Admin
+    START([▶ New Complaint Submitted]) --> POOL[Fetch Available Worker Pool]
+
+    POOL --> ONLINE{Is Worker Online?}
+    ONLINE -->|No| POOL
+    ONLINE -->|Yes| DEPT{Department Match?}
+
+    DEPT -->|No| POOL
+    DEPT -->|Yes| GEO{Location within\nService Area?}
+
+    GEO -->|No| POOL
+    GEO -->|Yes| ASSIGN[Assign Complaint to Worker]
+
+    POOL -->|"No Suitable Worker Found\n(Pool Exhausted)"| UNASSIGNED
+
+    ASSIGN --> NOTIFY[Notify Worker via Push Alert]
+    NOTIFY --> ACCEPT{Worker Accepts?}
+
+    ACCEPT -->|"No / Timeout"| POOL
+    ACCEPT -->|Yes| INPROG[Status → IN PROGRESS]
+
+    INPROG --> FIELD[Worker Executes Field Task]
+    FIELD --> RESOLVE[Mark Complaint as RESOLVED]
+    RESOLVE --> END([🔔 Notify Citizen — End])
+
+    UNASSIGNED[🚩 Flag as Unassigned] --> ADMIN[Send to Admin Review Queue]
+    ADMIN --> MANUAL[Admin Manually Assigns Worker]
+    MANUAL --> NOTIFY
+
+    style UNASSIGNED fill:#fee2e2,stroke:#ef4444
+    style ADMIN fill:#fef3c7,stroke:#d97706
+    style RESOLVE fill:#dcfce7,stroke:#16a34a
+    style INPROG fill:#dbeafe,stroke:#3b82f6
 ```
 
-#### Level 1 DFD
+---
+
+## 5.9 Data Flow Diagram (DFD)
 
 ```mermaid
+flowchart LR
+    Citizen(["🧑 Citizen"])
+    Admin(["🛡️ Admin"])
+    Worker(["🔧 Worker"])
+
+    subgraph PROCESSES ["Core Processes"]
+        P1["① Validate Input\n(Format / Auth check)"]
+        P2["② AI Transformation\n(Classify & Enrich)"]
+        P3["③ Routing Process\n(Assign & Triage)"]
+        P4["④ Notification Process\n(Generate Alerts)"]
+        P5["⑤ Auth Process\n(Token Hashing)"]
+    end
+
+    subgraph STORES ["Data Stores"]
+        DB[("🗄️ MongoDB")]
+        FS[("📁 Filesystem\n(Images)")]
+    end
+
+    Citizen -->|"Raw Image + Details"| P1
+    P1 -->|"Invalid — Rejected"| Citizen
+    P1 -->|"Validated Input"| P2
+    P2 -->|"Structured Complaint Record"| DB
+    P2 -->|"Image File"| FS
+
+    Admin -->|"Manual Triage Decision"| P3
+    P3 -->|"Assignment Update"| DB
+
+    DB -->|"Complaint State Change"| P4
+    P4 -->|"Citizen Alert"| Citizen
+    P4 -->|"Task Alert"| Worker
+
+    Worker -->|"Status Update"| P3
+
+    Citizen -->|"Reset Request"| P5
+    P5 -->|"Hashed Reset Token"| DB
+
+    style PROCESSES fill:#eff6ff,stroke:#3b82f6,stroke-width:1.5px
+    style STORES fill:#f0fdf4,stroke:#16a34a,stroke-width:1.5px
+```
+
 ---
-config:
-  layout: elk
----
+
+## 5.10 Deployment Diagram
+
+```mermaid
 flowchart TB
-    Citizen(("Citizen")) -->|1. Image + metadata| P1["Process 1: Issue Analysis"]
-    P1 -->|2. Image Hash + Text| Ollama(("Ollama AI Models"))
-    Ollama -->|3. Category, Confidence, Draft| P1
-    
-    P1 -->|4. Review Payload| Citizen
-    Citizen -->|5. Confirmed & Edited Details| P2["Process 2: Complaint Submission"]
-    
-    P2 -->|6. Save Complaint| DB[("Primary MongoDB: Complaints/Users")]
-    P2 -->|7. Log Audit Data| NDMC[("NDMC Audit MongoDB")]
-    
-    DB -->|8. Fetch Open Issues & Geo| P3["Process 3: Worker Auto-Assignment"]
-    P3 -->|9. Update Assigned Worker ID| DB
-    P3 -->|10. Emit Notification| Notifications[("Notifications Collection")]
-    
-    Worker(("Worker")) -->|11. Fetch Tasks| P4["Process 4: Task Resolution"]
-    DB -->|12. Task List| P4
-    P4 -->|13. Add Dept Notes / Status Updates| DB
-    
-    DeptHead(("Dept Head")) -->|14. Approve Escalations / Reassign| P5["Process 5: Queue Management"]
-    P5 -->|15. Update Status/Worker| DB
-```
-![DFD Level 1](./images/architecture.png)
+    Browser(["🌐 Browser / Mobile Client"])
 
-### 5.2.8 Deployment Diagram
+    subgraph HOST ["🖥️ Host Machine"]
+        subgraph DOCKER ["🐳 Docker Compose Network"]
+            subgraph FE_CONTAINER ["Frontend Container"]
+                Nginx["Nginx Web Server"]
+                ReactBuild["React App (Static Build)"]
+                Nginx --> ReactBuild
+            end
 
-The system's infrastructure scales between local development and production via Docker Compose environment configurations (`APP_ENV=production` vs `local`), utilizing distinct `.env` loading and build profiles.
+            subgraph BE_CONTAINER ["Backend Container"]
+                Uvicorn["Uvicorn ASGI Server"]
+                FastAPI["FastAPI Application"]
+                Uvicorn --> FastAPI
+            end
 
-- **Production Environment (`Dockerfile.prod`)**: The React frontend is built statically and served via an Nginx container. The FastAPI backend runs via Uvicorn workers. MongoDB enforces strict authentication using Docker secrets.
-- **Local Environment**: The frontend relies on the Vite development server with Hot Module Replacement (HMR). The backend runs Uvicorn with `--reload` enabled.
-
-```mermaid
-flowchart TD
-    subgraph "Docker Host (Production / Local Environments)"
-        subgraph Frontend_Container
-            Nginx[Nginx HTTP Server]
-            React[React/Vite Static Files]
-            Nginx --> React
+            subgraph DB_CONTAINER ["MongoDB Container"]
+                MongoDB[("MongoDB\nDatabase")]
+            end
         end
-        
-        subgraph Backend_Container
-            Uvicorn[Uvicorn / FastAPI]
-            PyLogic[Routing & Queues]
-            Uvicorn --> PyLogic
-        end
-        
-        subgraph Database_Containers
-            MongoDB[(Primary MongoDB)]
-            NDMCDB[(Audit MongoDB)]
-        end
-        
-        subgraph AI_Container
-            Ollama[Ollama Server]
+
+        subgraph HOST_RUNTIME ["Host Runtime (Outside Docker)"]
+            Ollama["🤖 Ollama Model Runtime"]
+            GPU["⚡ GPU Resources"]
+            Ollama --> GPU
         end
     end
 
-    subgraph "External Services"
-        NDMC_API[NDMC AI API]
-    end
-    
-    ClientBrowser[Client Browser] -->|HTTPS| Frontend_Container
-    ClientBrowser -->|API/REST| Backend_Container
-    
-    Backend_Container -->|Python Motor| Database_Containers
-    Backend_Container -->|HTTP/REST| AI_Container
-    Backend_Container -->|HTTP/REST| NDMC_API
+    Browser -->|"HTTPS Request"| Nginx
+    ReactBuild -->|"REST API (HTTP)"| FastAPI
+    FastAPI -->|"Mongoose ODM\n(Internal Network)"| MongoDB
+    FastAPI -->|"HTTP Bridge\n(host.docker.internal)"| Ollama
+
+    style DOCKER fill:#eff6ff,stroke:#2563eb,stroke-width:2px
+    style HOST_RUNTIME fill:#fef9c3,stroke:#ca8a04,stroke-width:2px
+    style FE_CONTAINER fill:#dbeafe,stroke:#3b82f6
+    style BE_CONTAINER fill:#ede9fe,stroke:#8b5cf6
+    style DB_CONTAINER fill:#dcfce7,stroke:#16a34a
 ```
-![Deployment Diagram](./images/deployment_diagram.png)
-
-## 5.3 Database Design
-
-### Database Schema & Indexing Architecture
-
-Because Jan-Sunwai AI uses **MongoDB** (a NoSQL document database), strict relational mapping is replaced by references and embedding. The diagram below illustrates how collections interlock, where data is embedded for read-performance, and which fields are heavily indexed:
-
-```mermaid
-classDiagram
-    class Users_Collection {
-        +ObjectId _id [PK]
-        +String username [Unique Index]
-        +String email [Unique Index]
-        +String role
-        +String department
-        +String worker_status
-        +Object service_area
-        +Boolean is_approved
-    }
-    class Complaints_Collection {
-        +ObjectId _id [PK]
-        +ObjectId user_id [Reference]
-        +ObjectId assigned_to [Reference]
-        +String department [Text Index]
-        +String description [Text Index]
-        +String status [Compound Index]
-        +DateTime created_at [Compound Index]
-        +Object location [2dsphere Geospatial Index]
-        +List status_history [Embedded]
-        +List dept_notes [Embedded]
-        +List comments [Embedded]
-    }
-    class Notifications_Collection {
-        +ObjectId _id [PK]
-        +ObjectId user_id [Reference]
-        +String type
-        +String title
-        +String message
-        +Boolean is_read
-    }
-    
-    Users_Collection <-- Complaints_Collection : References
-    Users_Collection <-- Notifications_Collection : References
-```
-
-### 5.3.1 Collection Design and Relationships
-Because Jan-Sunwai AI uses **MongoDB** (a NoSQL document database), "Tables" map to **Collections** and "Rows" map to **Documents**. 
-- **Users Collection**: Core identity and role metadata. Citizens, Workers, Dept Heads, and Admins are all stored here.
-- **Complaints Collection**: The central entity linking `user_id`, `department`, and `assigned_to` (worker). Contains nested structures for `location` (GeoJSON), `status_history`, `dept_notes`, and `comments`.
-- **Notifications Collection**: Tracks alerts for status changes, assignments, and escalations.
-- **Audit Logs (NDMC MongoDB)**: A secondary database used for recording AI classification agreement between local models and NDMC's API.
-
-### 5.3.2 Normalization
-Instead of strict 3NF (Third Normal Form) typical of Relational DBs, MongoDB relies on a hybrid approach:
-- **References (Normalization)**: `user_id` and `worker_id` are kept as `ObjectId` references within `Complaint` documents to ensure updates to user names/roles propagate easily.
-- **Embedding (Denormalization)**: Timestamps, small arrays like `status_history`, and coordinates are embedded directly in the `Complaint` document for extremely fast read-query performance during dashboard rendering.
-
-### 5.3.3 Indexing Strategy
-To meet the high-performance demands of location-based sorting and massive audit queues:
-1. **Geospatial Index**: `2dsphere` index on `location.coordinates` in the Complaints collection for fast auto-assignment querying (e.g., "$near" queries).
-2. **Compound Index**: `{ status: 1, created_at: -1 }` on Complaints to optimize the heavy load of dashboard rendering where Dept Heads and Workers view recent active issues.
-3. **Unique Index**: `{ email: 1 }` and `{ username: 1 }` on Users collection to enforce constraint uniqueness natively.
-4. **Text Index**: Free-text index on the `draft` and `category` fields to support Admin full-text searches.
-
-### 5.3.4 Data Dictionary
-
-#### **Users Collection (`users`)**
-| Field Name | Type | Constraints | Description |
-| :--- | :--- | :--- | :--- |
-| `_id` | ObjectId | Primary Key | Unique identifier for the user. |
-| `username` | String | Unique, Min 3, Max 50 | The user's login name. |
-| `email` | String | Unique, Valid Email | The user's contact email. |
-| `password_hash` | String | Required | Bcrypt hashed password. |
-| `full_name` | String | Max 100 | The user's full display name. |
-| `phone_number` | String | Max 20 | Contact number. |
-| `role` | Enum | citizen, dept_head, admin, worker | Defines RBAC permissions. |
-| `department` | String | Optional | The department assignment for Dept Heads and Workers. |
-| `worker_status` | Enum | available, busy, offline | Status indicating if a worker can take new assignments. |
-| `service_area` | Object | Optional | Geospatial data (`lat`, `lon`, `radius_km`) defining a worker's operational range. |
-| `is_approved` | Boolean | Default: True | False for pending worker registrations until Admin approval. |
-
-#### **Complaints Collection (`complaints`)**
-| Field Name | Type | Constraints | Description |
-| :--- | :--- | :--- | :--- |
-| `_id` | ObjectId | Primary Key | Unique identifier for the complaint. |
-| `user_id` | ObjectId | Foreign Key (users) | The citizen who filed the grievance. |
-| `assigned_to` | ObjectId | Foreign Key (users) | The worker currently assigned to the issue. |
-| `department` | String | Required | The assigned civic department (e.g., Civil, Health). |
-| `description` | String | Min 10 chars | The AI-generated or user-edited description of the issue. |
-| `user_grievance_text` | String | Max 1200 | Optional original text provided by the citizen. |
-| `image_url` | String | Required | Path/URL to the uploaded evidentiary photo. |
-| `location` | Object | Required | `GeoLocation` containing `lat`, `lon`, `address`, and `source` (exif/device/manual). |
-| `ai_metadata` | Object | Required | AI analysis results including `confidence_score` and `detected_department`. |
-| `priority` | Enum | Low, Medium, High, Critical | System-assigned urgency level. |
-| `status` | Enum | Open, In Progress, Resolved, Rejected | Current state of the grievance lifecycle. |
-| `created_at` | DateTime | Auto-generated | UTC timestamp of submission. |
-| `status_history` | Array | Embedded Docs | Audit trail of all status changes with timestamps and user IDs. |
-
-#### **Notifications Collection (`notifications`)**
-| Field Name | Type | Constraints | Description |
-| :--- | :--- | :--- | :--- |
-| `_id` | ObjectId | Primary Key | Unique notification identifier. |
-| `user_id` | ObjectId | Foreign Key (users) | Recipient of the notification. |
-| `complaint_id` | ObjectId | Foreign Key (complaints) | Associated complaint. |
-| `type` | Enum | status_change, escalation, assignment, system | Category of the alert. |
-| `title` | String | Required | Short summary. |
-| `message` | String | Required | Full notification body. |
-| `is_read` | Boolean | Default: False | Read status for the UI badge. |
-| `created_at` | DateTime | Auto-generated | UTC timestamp. |
-
-## 5.4 GUI Design
-
-The Jan-Sunwai AI user interface is a responsive Single Page Application (SPA) built with React. It is divided into distinct role-based experiences.
-
-### 5.4.1 Interface Areas and Purpose
-
-- **Citizen Portal**: Focuses on frictionless complaint filing. Includes the Image Upload wizard, AI Draft Review, and a personal Status Tracker.
-- **Worker Dashboard**: Optimized for mobile usage. Shows a map/list of assigned tasks, allows status updates, and uploading proof of resolution.
-- **Department Head View**: A queue management interface allowing re-assignment, priority adjustment, and viewing department-specific analytics.
-- **Admin Dashboard**: The overarching control center. Features a high-level analytics overview, the Triage Queue for low-confidence AI routing, and User Management.
-
-### 5.4.2 Visual References
-
-*The following are references to the actual implementation screenshots located in the `docs/images/` directory:*
-
-1. **Citizen Experience**:
-   - *Home Page / Filing*: `![Citizen Homepage](./images/citizen_homepage.png)`
-   - *Reviewing AI Analysis*: `![AI Analysis Result](./images/complaint_review_with_geo_tag.png)`
-   - *Tracking Dashboard*: `![Tracking Dashboard](./images/grievance_status_tracker.png)`
-
-2. **Admin & Department Management**:
-   - *Admin Dashboard Overview*: `![Admin Dashboard](./images/admin_dashboard.png)`
-   - *Triage Queue (Low Confidence)*: `![Admin Triage Queue](./images/admin_human_complaint_review_pannel.png)`
-   - *Analytics & Heatmap*: `![Grievance Heatmap](./images/grievance_heatmap.png)`
-
-3. **System Wide**:
-   - *Login & Registration*: `![Login Page](./images/login_page.png)`
-   - *Map Visualization*: `![Complaints Map](./images/complaints_map.png)`
