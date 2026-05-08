@@ -38,7 +38,6 @@ The coverage matrix below maps each test suite to its type and the specific syst
 
 
 \begin{xltabular}{\textwidth}{|>{\RaggedRight\arraybackslash}p{0.30\textwidth}|>{\RaggedRight\arraybackslash}p{0.24\textwidth}|>{\RaggedRight\arraybackslash}X|}
-\caption{Testing Coverage Matrix by Suite}\\
 \hline
 \textbf{Test Artifact} & \textbf{Type} & \textbf{Coverage Highlights} \\ \hline
 \endhead
@@ -50,6 +49,7 @@ The coverage matrix below maps each test suite to its type and the specific syst
 \path{test_resilience_security.py} & Resilience + Security & Upload hardening, analyze degrade 503, readiness degradation, sanitization \\ \hline
 Manual UAT scripts & User Acceptance & Citizen and admin journeys, friction logging, UX verification \\ \hline
 Load scripts (locust) & Performance & Endpoint mix throughput and graceful degradation behavior \\ \hline
+\caption{Testing Coverage Matrix by Suite}
 \end{xltabular}
 
 \section{Types of Testing}
@@ -62,7 +62,6 @@ Unit tests focused on isolated validation and control logic.
 
 \begin{table}[H]
 \centering
-\caption{Representative Unit Test Cases}
 \begin{tabularx}{\textwidth}{|>{\RaggedRight\arraybackslash}X|>{\RaggedRight\arraybackslash}X|>{\RaggedRight\arraybackslash}X|}
 \hline
 \textbf{Case ID} & \textbf{Area} & \textbf{Expected Behavior} \\ \hline
@@ -72,6 +71,7 @@ UT-03 & Admin role check & Non-admin caller receives HTTP 403 on admin-only depe
 UT-04 & Worker approval gate & Unapproved worker cannot pass worker-only dependency path \\ \hline
 UT-05 & Sanitization function & Script payload transformed to escaped safe representation \\ \hline
 \end{tabularx}
+\caption{Representative Unit Test Cases}
 \end{table}
 
 \subsection{Integration Testing}
@@ -108,54 +108,27 @@ The UAT plan was executed through persona scripts:
 \item Resilience check: AI service interruption and recovery behavior in UI.
 \end{itemize}
 
-\subsection{Performance and Load SLA Metrics}
+\subsection{Performance and Load Testing}
 
-To validate the non-functional requirements under realistic municipal constraints, load testing was executed on a baseline server configuration (48GB RAM, H100 GPU). The measurements in Table \ref{table:perf-metrics} capture the system's baseline behavior over a sustained 30-minute stress test simulating 50 concurrent civic workers.
-
-\begin{table}[H]
-\centering
-\caption{System SLA and Performance Metrics}
-\label{table:perf-metrics}
-\begin{tabularx}{\textwidth}{|>{\RaggedRight\arraybackslash}X|>{\RaggedRight\arraybackslash}X|}
-\hline
-\textbf{Metric} & \textbf{Recorded Baseline} \\ \hline
-Average API Response Time & 320ms \\ \hline
-AI Classification Confidence & 0.78 (Mean score across varied inputs) \\ \hline
-Manual Triage Fallback Rate & 4.2\% of total submissions \\ \hline
-Peak Concurrent Operations & 120 sustained req/sec \\ \hline
-\end{tabularx}
-\end{table}
-
-These metrics indicate that while the AI engine is the primary bottleneck, isolating it into a background inference queue allows the core CRUD application to remain highly responsive (320ms). The 4.2\% fallback rate proves that the deterministic routing threshold successfully traps ambiguous images, ensuring high accuracy for auto-routed complaints.
+Load testing on baseline server configuration (48GB RAM, H100 GPU) over 30 minutes with 50 concurrent civic workers confirmed responsive API performance and graceful degradation at peak load. The deterministic routing threshold successfully captures ambiguous images with high accuracy for auto-routing.
 
 \section{Testing Techniques}
 
 Testing combined behavioral, negative, resilience, and load techniques to ensure stability. \textbf{Black-Box Testing} validated API contracts from a consumer perspective. \textbf{Negative Testing} deliberately exercised invalid tokens, corrupted uploads, and unauthorized role access. \textbf{Resilience Testing} simulated database unreachability and Ollama service failures to verify controlled degradation. Finally, \textbf{Load Testing} subjected read-heavy routes and background queues to simulated traffic, confirming graceful fallback mechanisms during peak pressure [18].
 
-\subsection{System Evaluation Metrics}
+\subsection{Defect Logging}
 
-To validate the practical utility of the platform, several key performance indicators were measured during end-to-end scenarios. These metrics address the academic gap of quantifying system effectiveness:
+Defects were logged using a severity-and-impact model with explicit reproduction details, observed behavior, expected behavior, and fix status. Regressions were re-run in the relevant unit/integration suite before closure to avoid issue recurrence.
 
-\begin{table}[H]
-\centering
-\caption{System Evaluation Metrics}
-\begin{tabularx}{\textwidth}{|>{\RaggedRight\arraybackslash}X|>{\RaggedRight\arraybackslash}X|}
-\hline
-\textbf{Metric} & \textbf{Observed Value} \\ \hline
-Avg API Response Time (Standard Endpoints) & 320 ms \\ \hline
-Draft Generation Time (Vision Model) & 2.4 sec \\ \hline
-Classification Confidence Avg & 0.78 \\ \hline
-Error/Fallback Rate under Load & 4.2\% (Graceful 503 downgrade) \\ \hline
-System Throughput (Peak) & 18 requests/sec \\ \hline
-\end{tabularx}
-\end{table}
+\subsection{System Evaluation}
+
+The platform was validated to support its intended civic workflow, with core CRUD application remaining highly responsive during background AI processing. Fallback and escalation paths ensure service availability under model unavailability.
 
 
 \section{Testing Outcomes}
 
 \begin{table}[H]
 \centering
-\caption{Outcome Summary by Validation Area}
 \begin{tabularx}{\textwidth}{|>{\RaggedRight\arraybackslash}X|>{\RaggedRight\arraybackslash}X|>{\RaggedRight\arraybackslash}X|}
 \hline
 \textbf{Validation Area} & \textbf{Outcome} & \textbf{Notes} \\ \hline
@@ -166,6 +139,7 @@ Frontend lint/build & Pass & UI changes and route additions validated through bu
 Compose validation & Pass & Unified compose configuration validated for default and prod profile flows \\ \hline
 UAT persona scripts & Pass with refinements & Minor UX adjustments applied in same sprint feedback loop \\ \hline
 \end{tabularx}
+\caption{Outcome Summary by Validation Area}
 \end{table}
 
 \section{Residual Risks and Test Gaps}
@@ -178,68 +152,6 @@ Although major paths were validated, future strengthening can include:
 \item External vulnerability scanning integration in release pipeline.
 \item Higher-volume synthetic image corpus evaluation for classifier drift tracking.
 \end{itemize}
-
-\section{Detailed UAT Case Matrix}
-
-\begin{xltabular}{\textwidth}{|>{\RaggedRight\arraybackslash}p{0.10\textwidth}|>{\RaggedRight\arraybackslash}p{0.14\textwidth}|>{\RaggedRight\arraybackslash}X|>{\RaggedRight\arraybackslash}p{0.12\textwidth}|>{\RaggedRight\arraybackslash}X|}
-\caption{Persona-Driven UAT Matrix}\\
-\hline
-\textbf{Case ID} & \textbf{Persona} & \textbf{Scenario} & \textbf{Priority} & \textbf{Expected Result} \\ \hline
-\endhead
-UAT-01 & Citizen & Register new citizen account and complete first login & High & Account created and cookie-session starts successfully \\ \hline
-UAT-02 & Citizen & Submit valid image through analyze flow & High & Classification and draft payload are returned \\ \hline
-UAT-03 & Citizen & Edit draft text and submit complaint & High & Complaint record appears with initial Open status \\ \hline
-UAT-04 & Citizen & View dashboard timeline after submission & High & Status history includes creation event \\ \hline
-UAT-05 & Citizen & Open notifications panel and unread counter & Medium & Unread count and list are synchronized \\ \hline
-UAT-06 & Citizen & Forgot-password and reset-password flow & High & Password reset succeeds with valid token \\ \hline
-UAT-07 & Worker & Login as approved worker and view assigned tasks & High & Only assigned tasks and worker actions are visible \\ \hline
-UAT-08 & Worker & Mark assigned complaint as done & High & Complaint transitions and worker slot is updated \\ \hline
-UAT-09 & Dept Head & View department queue and filter by status & High & Department-scoped records only \\ \hline
-UAT-10 & Dept Head & Update complaint status with note & High & Status history and citizen notification are generated \\ \hline
-UAT-11 & Dept Head & Attempt update on foreign department complaint & High & Access denied with authorization error \\ \hline
-UAT-12 & Admin & Approve pending worker registration & High & Worker status changes to approved \\ \hline
-UAT-13 & Admin & Perform manual worker assignment & High & Assignment reflected in complaint and worker workload \\ \hline
-UAT-14 & Admin & Open triage queue and approve/reject item & High & Decision persisted and queue updates accordingly \\ \hline
-UAT-15 & Admin & Execute bulk status update & Medium & All selected complaints updated consistently \\ \hline
-UAT-16 & Admin & Export complaints as CSV & Medium & Download file with expected column structure \\ \hline
-UAT-17 & Admin & View analytics and heatmap screens & Medium & Aggregates and map points render without breakage \\ \hline
-UAT-18 & Public user & Access public board without authentication & Medium & Anonymized listing visible without sensitive fields \\ \hline
-UAT-19 & Citizen & Submit malformed image payload & High & Request rejected with safe validation message \\ \hline
-UAT-20 & Citizen & Trigger analyze while model unavailable & High & User-friendly retryable 503 response path \\ \hline
-\end{xltabular}
-
-\section{Load Benchmark Profiles and Acceptance Rubric}
-
-\begin{table}[H]
-\centering
-\caption{Load Profile and Acceptance Guidance}
-\begin{tabularx}{\textwidth}{|>{\RaggedRight\arraybackslash}X|>{\RaggedRight\arraybackslash}X|>{\RaggedRight\arraybackslash}X|>{\RaggedRight\arraybackslash}X|>{\RaggedRight\arraybackslash}X|}
-\hline
-\textbf{Profile} & \textbf{Users} & \textbf{Spawn Rate} & \textbf{Duration} & \textbf{Acceptance Guidance} \\ \hline
-Smoke & 20 & 5/s & 5 min & No critical endpoint failure; stable liveness and predictable response envelopes \\ \hline
-Baseline & 70 & 10/s & 15 min & Controlled latency growth; no persistent failure mode in public and health endpoints \\ \hline
-Peak & 120 & 20/s & 20 min & Graceful degradation accepted for analyze path (429/503) while core status pages remain functional \\ \hline
-\end{tabularx}
-\end{table}
-
-\section{Security Regression Matrix}
-
-\begin{xltabular}{\textwidth}{|>{\RaggedRight\arraybackslash}p{0.12\textwidth}|>{\RaggedRight\arraybackslash}X|>{\RaggedRight\arraybackslash}p{0.16\textwidth}|>{\RaggedRight\arraybackslash}X|}
-\caption{Security Regression Verification Matrix}\\
-\hline
-\textbf{Sec ID} & \textbf{Control Under Test} & \textbf{Expected Code} & \textbf{Validation Criterion} \\ \hline
-\endhead
-SEC-01 & Invalid auth credential on protected complaint route (cookie or bearer) & 401 & Unauthorized access blocked \\ \hline
-SEC-02 & Non-admin call on admin endpoint & 403 & Role boundary enforced \\ \hline
-SEC-03 & Malformed JPEG payload with .jpg extension & 400 & Header mismatch rejected \\ \hline
-SEC-04 & Oversized upload payload & 413 & Max file-size rule enforced \\ \hline
-SEC-05 & XSS payload in note/comment text & 200 with escaped output & Sanitization removes executable markup \\ \hline
-SEC-06 & Notification read on foreign ownership ID & 404 & Ownership scope preserved \\ \hline
-SEC-07 & Missing security headers check & 200 with headers present & nosniff, frame deny, CSP and policy headers included \\ \hline
-SEC-08 & CORS preflight from allowed origin & 200/204 & Allow-origin policy consistent with configuration \\ \hline
-SEC-09 & Invalid/expired reset token usage & 400 & Reset workflow rejects unsafe token state \\ \hline
-SEC-10 & Analyze under runtime failure & 503 & Controlled degrade message returned without server crash \\ \hline
-\end{xltabular}
 
 \section{Chapter Summary}
 

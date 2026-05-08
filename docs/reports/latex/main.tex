@@ -198,13 +198,14 @@
 % ===== DOCUMENT START =====
 \begin{document}
 
-\pagenumbering{roman}
+\pagenumbering{Roman}
 \pagestyle{plain}
 
 % ===== TABLE OF CONTENTS =====
 \clearpage
 \phantomsection
 \renewcommand{\contentsname}{Table of Contents}
+\pagenumbering{gobble}
 \begingroup
 \setstretch{0.9}
 \tableofcontents%
@@ -214,6 +215,8 @@
 % ===== LIST OF TABLES =====
 \clearpage
 \phantomsection
+\pagenumbering{Roman}
+\setcounter{page}{1}
 \addcontentsline{toc}{chapter}{List of Tables}%
 \renewcommand{\listtablename}{List of Tables}
 \begingroup
@@ -263,5 +266,6 @@
 \input{chapters/ch08_limitations_future_scope}
 \input{chapters/ch09_conclusion_references}
 \input{chapters/ch10_appendices}
+\input{chapters/ch11_report_verification_procedure}
 
 \end{document}

@@ -30,7 +30,6 @@ The system serves four distinct operational personas. \textbf{Citizens} report i
 \section{Functional Requirements}
 
 \begin{xltabular}{\textwidth}{|>{\RaggedRight\arraybackslash}p{0.12\textwidth}|>{\RaggedRight\arraybackslash}p{0.30\textwidth}|>{\RaggedRight\arraybackslash}X|}
-\caption{Functional Requirement Specification}\\
 \hline
 \textbf{FR ID} & \textbf{Requirement Name} & \textbf{Requirement Description} \\ \hline
 \endhead
@@ -56,12 +55,12 @@ FR-19 & CSV Export & Admin shall export complaint data to CSV for external repor
 FR-20 & Public Transparency Feed & System shall expose anonymized complaint records without authentication. \\ \hline
 FR-21 & Health Monitoring & System shall provide live, ready, model, and GPU health endpoints. \\ \hline
 FR-22 & API Version Alias & System shall expose major endpoints under /api/v1 for integration stability. \\ \hline
+\caption{Functional Requirement Specification}
 \end{xltabular}
 
 \section{Non-Functional Requirements}
 
 \begin{xltabular}{\textwidth}{|>{\RaggedRight\arraybackslash}p{0.12\textwidth}|>{\RaggedRight\arraybackslash}p{0.30\textwidth}|>{\RaggedRight\arraybackslash}X|}
-\caption{Non-Functional Requirement Specification}\\
 \hline
 \textbf{NFR ID} & \textbf{Quality Attribute} & \textbf{Requirement Description} \\ \hline
 \endhead
@@ -75,49 +74,40 @@ NFR-07 & Scalability Readiness & Queue-based generation and container deployment
 NFR-08 & Portability & Project setup shall support Windows and Linux via scripts and Docker-based workflow. \\ \hline
 NFR-09 & Compliance Readiness & Local-first inference and sanitized logs shall support stricter governance deployments. \\ \hline
 NFR-10 & Data Integrity & Validation schemas and controlled update flows shall minimize malformed or inconsistent records. \\ \hline
+\caption{Non-Functional Requirement Specification}
 \end{xltabular}
 
-\section{Hardware and Software Requirements}
+\section{Hardware \& Software Requirements}
 
-\subsection{Hardware Requirements}
-
-The baseline parameters established below define the minimum viable constraints required to support the proposed features.
-
-\begin{itemize}
-    \item \textbf{CPU:} Minimum 4-core modern processor; Recommended 6 to 8-core.
-    \item \textbf{System RAM:} 12 GB minimum; 16 GB or higher recommended.
-    \item \textbf{GPU VRAM:} 4 GB baseline (e.g., RTX 3050); 6 GB or higher recommended for faster inference.
-    \item \textbf{Storage:} 10 GB free for models and environment; 20 GB for long-term audit logs and uploads.
-    \item \textbf{Network:} Stable LAN/Internet for map tiling and package management.
-\end{itemize}
-
-\subsection{Software Requirements}
-
-The baseline parameters established below define the minimum viable constraints required to support the proposed features [16, 11].
-
-\begin{itemize}
-    \item \textbf{Operating System:} Windows 10+ or modern Linux (Ubuntu 22.04+ recommended).
-    \item \textbf{Python Runtime:} Version 3.10 or higher for backend logic and automation.
-    \item \textbf{Node.js \& npm:} Current LTS range (v20+) for frontend build and utility tooling.
-    \item \textbf{MongoDB:} Version 7.x class for document-oriented state persistence.
-    \item \textbf{Ollama Runtime:} Local execution engine for vision and reasoning pipelines.
-    \item \textbf{Docker Engine/Compose:} Version 24+ for containerized environment orchestration.
-    \item \textbf{Web Browser:} Modern Chromium or Firefox class for role-specific dashboard access.
-\end{itemize}
+The system baseline requires: \textbf{Hardware:} 4-core processor (8-core recommended), 12–16 GB RAM, 4–6 GB GPU VRAM, 10–20 GB storage, and stable network. \textbf{Software:} Windows 10+ or Linux (Ubuntu 22.04+), Python 3.10+, Node.js v20+ LTS, MongoDB 7.x, Ollama runtime, Docker/Compose 24+, and a modern browser.
 
 \section{Constraints}
 
 Constraints in this project are not only technical limits but also governance and usability boundaries that directly influence system behavior. The platform must operate under security, role-separation, and infrastructure limitations common in civic environments, while still maintaining user clarity for citizens and workflow efficiency for officials. The following constraint groups define these implementation boundaries and informed several architecture and UI decisions.
 
-\subsection{System Constraints and Security}
+\subsection{UI Constraints}
 
-System constraints govern UI responsiveness, security boundaries, and operational limits to ensure robust public access within a strictly controlled environment.
-\textbf{UI and Interface:} Role-specific pages enforce access boundaries. Interfaces support mobile widths (375px baseline) and preserve data state during refresh cycles. Communication occurs exclusively over authenticated REST endpoints via secure cookie sessions or JWT tokens, with strict \texttt{/api/v1} proxy routing.
-\textbf{Hardware Limits:} As a closed-system deployment, local inference is bound by available VRAM, causing AI response times to fluctuate under load. Large file uploads are strictly limited by size and decode verifications to prevent resource exhaustion.
-\textbf{Security and Confidentiality:} To guarantee citizen trust and data privacy, the system is designed to run exclusively on secure local servers [6, 23]. Status history and role checks are immutable. Despite being an air-gapped or localized deployment, the platform adheres to institutional security baselines by enforcing strict input sanitization, MIME-type validations, robust token lifecycles, and security headers, ensuring defense-in-depth even within closed networks.
+Role-specific pages enforce access boundaries. Interfaces support mobile widths (375px baseline) and preserve data state during refresh cycles so users can recover context after refresh or reconnect.
+
+\subsection{Communication Interface}
+
+Communication occurs exclusively over authenticated REST endpoints via secure cookie sessions or JWT tokens, with strict \texttt{/api/v1} proxy routing and controlled CORS policy.
+
+\subsection{Hardware Interface}
+
+As a closed-system deployment, local inference is bound by available VRAM, causing AI response times to fluctuate under load. Large file uploads are strictly limited by size and decode verification to prevent resource exhaustion.
+
+\subsection{Criticality of Application}
+
+The application is operationally critical because it manages public grievance routing and status accountability. Any prolonged outage can delay municipal field response and reduce citizen trust in service delivery.
+
+\subsection{Safety \& Security Considerations}
+
+To guarantee citizen trust and data privacy, the system is designed to run on secure local infrastructure [6, 23]. Status history and role checks are immutable. Input sanitization, MIME-type validation, robust token lifecycle controls, and security headers enforce defense-in-depth.
+
+\section{Assumptions \& Dependencies}
 
 The system operates under several core assumptions and external dependencies. First, it assumes a reachable and healthy \textbf{MongoDB instance} for all read/write persistence. Second, the \textbf{Ollama runtime} must be correctly configured with the required vision and reasoning models to support analysis and draft generation. Third, accurate \textbf{environment variable configuration} is essential for stable authentication, CORS, and database mapping. Fourth, the system relies on \textbf{worker profile completeness} (department and service-area metadata) for the auto-assignment engine to function correctly. Finally, for production-style deployments, the host must support \textbf{Docker and Compose} to ensure environment reproducibility.
-
 
 Requirements are classified using the MoSCoW methodology [20]. \textbf{Must-Have} features include user registration, authentication, complaint intake, status updates, auto-assignment, and health monitoring: these are essential for operational viability. \textbf{Should-Have} features cover authority escalation, worker status controls, the administrative triage queue, and analytics: these provide institutional-grade governance. \textbf{Could-Have} features such as CSV exports and the public transparency feed provide high-value reporting without blocking the core workflow. Finally, \textbf{Non-Functional criticals} including session security, sanitization, and observability are treated as mandatory baseline controls.
 

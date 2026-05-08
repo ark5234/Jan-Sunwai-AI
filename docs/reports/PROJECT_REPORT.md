@@ -47,18 +47,18 @@ Last updated: 2026-04-06
 | 2.1.3 | Operational Feasibility | 12 |
 | 2.1.4 | Implementation Feasibility | 13 |
 | 2.2 | Project Planning | 14 |
-| 2.2.1 | Development Approach and Justification | 15 |
-| 2.2.2 | Milestones and Deliverables | 16 |
+| 2.2.1 | Development Approach & Justification | 15 |
+| 2.2.2 | Milestones & Deliverables | 16 |
 | 2.2.3 | Roles and Responsibilities | 17 |
 | 2.2.4 | Group Dependencies | 18 |
-| 2.3 | Project Scheduling (Gantt chart) | 19 |
+| 2.3 | Project Scheduling (Gantt/PERT chart) | 19 |
 | 3 | System Requirement Study | 21 |
 | 3.1 | Existing System Overview | 22 |
 | 3.2 | Limitations of the Existing System | 23 |
 | 3.3 | User Characteristics | 24 |
 | 3.4 | Functional Requirements | 25 |
 | 3.5 | Non-Functional Requirements | 26 |
-| 3.6 | Hardware and Software Requirements | 27 |
+| 3.6 | Hardware & Software Requirements | 27 |
 | 3.7 | Constraints | 28 |
 | 3.7.1 | UI Constraints | 29 |
 | 3.7.2 | Communication Interface | 30 |
@@ -82,14 +82,14 @@ Last updated: 2026-04-06
 | 5.2.6 | DFD Diagram | 52 |
 | 5.2.7 | Deployment Diagram | 55 |
 | 5.3 | Database Design | 58 |
-| 5.3.1 | Table Design and Relationships | 59 |
+| 5.3.1 | Table Design & Relationships | 59 |
 | 5.3.2 | Normalization | 60 |
 | 5.3.3 | Data Dictionary | 62 |
 | 5.4 | GUI Design | 63 |
 | 5.5 | Screenshots | 64 |
 | 6 | Implementation Planning | 66 |
 | 6.1 | Implementation Environment | 68 |
-| 6.2 | Tools and Technologies Used | 69 |
+| 6.2 | Tools & Technologies Used | 69 |
 | 6.3 | Coding Standards Followed | 70 |
 | 7 | Testing | 71 |
 | 7.1 | Testing Plan | 72 |
@@ -166,6 +166,15 @@ Last updated: 2026-04-06
 | S3 | Admin Dashboard | 64 |
 | S4 | Worker Dashboard | 64 |
 | S5 | Notifications Panel | 64 |
+| S6 | Admin Analytics Dashboard | 64 |
+| S7 | Complaints Map Overview | 64 |
+| S8 | Resolved Complaint View | 64 |
+| S9 | Complaint Filing Upload Page | 64 |
+| S10 | Complaint Review Without Geo Tag | 64 |
+| S11 | Hindi Complaint Draft | 64 |
+| S12 | English Complaint Draft | 64 |
+| S13 | Citizen Registration Page | 64 |
+| S14 | Worker Registration Page | 64 |
 
 ## 1 Introduction
 

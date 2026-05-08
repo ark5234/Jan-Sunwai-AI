@@ -41,7 +41,6 @@ This appendix summarizes the primary endpoint inventory implemented in the curre
 \section{Appendix C: Department Taxonomy and Authority Routing}
 
 \begin{xltabular}{\textwidth}{|>{\RaggedRight\arraybackslash}p{0.32\textwidth}|>{\RaggedRight\arraybackslash}p{0.26\textwidth}|>{\RaggedRight\arraybackslash}X|}
-\caption{Department to Authority Mapping Snapshot}\\
 \hline
 \textbf{Department Label} & \textbf{Authority ID} & \textbf{Escalation Parent} \\ \hline
 \endhead
@@ -54,13 +53,13 @@ Commercial & STATE\_CMO & CENTRAL\_DARPG \\ \hline
 Enforcement & POLICE\_TRAFFIC & STATE\_CMO \\ \hline
 Fire Department & POLICE\_LOCAL & STATE\_CMO \\ \hline
 Uncategorized & Rule/keyword fallback & Nullable \\ \hline
+\caption{Department to Authority Mapping Snapshot}
 \end{xltabular}
 
 \section{Appendix D: Requirement-to-Test Traceability Matrix}
 
 \small
 \begin{xltabular}{\textwidth}{|>{\RaggedRight\arraybackslash}p{0.11\textwidth}|>{\RaggedRight\arraybackslash}p{0.20\textwidth}|>{\RaggedRight\arraybackslash}X|>{\RaggedRight\arraybackslash}p{0.12\textwidth}|}
-\caption{Requirement-to-Test Traceability Matrix}\\
 \hline
 \textbf{Req ID} & \textbf{Requirement Theme} & \textbf{Validation Evidence} & \textbf{Status} \\ \hline
 \endhead
@@ -86,5 +85,6 @@ FR-19 & CSV export & Export endpoint execution and output schema checks & Verifi
 FR-20 & Public board & Public feed route and UI accessibility checks & Verified \\ \hline
 FR-21 & Health probes & Live, ready, model, and GPU endpoint smoke checks & Verified \\ \hline
 FR-22 & API version alias & /api/v1 integration checks in matrix tests & Verified \\ \hline
+\caption{Requirement-to-Test Traceability Matrix}
 \end{xltabular}
 \normalsize

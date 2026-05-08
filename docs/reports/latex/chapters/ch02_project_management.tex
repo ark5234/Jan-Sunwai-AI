@@ -4,12 +4,33 @@
 Project management for Jan-Sunwai AI followed an iterative delivery approach with explicit weekly milestones, acceptance checkpoints, and operational hardening gates. The planning strategy balanced feature development with risk reduction, especially in AI reliability, security posture, and deployment reproducibility.
 
 
+\section{Feasibility Study}
+
+The proposed system was evaluated for practical execution viability before and during implementation. Feasibility was treated as a living checkpoint rather than a one-time document, because model behavior, deployment constraints, and user workflow complexity evolved across iterations.
+
+\subsection{Technical Feasibility}
+
+Technical feasibility was established through successful integration of the selected stack (React, FastAPI, MongoDB, Ollama, Docker Compose) on local infrastructure with repeatable scripts and validated health endpoints.
+
+\subsection{Time Schedule Feasibility}
+
+Time feasibility was validated through an 18-week phased plan where foundation, core features, hardening, and documentation were delivered as milestone-driven increments with weekly checkpoints.
+
+\subsection{Operational Feasibility}
+
+Operational feasibility was verified by role-based workflows for citizen, worker, department head, and admin personas, ensuring that day-to-day grievance handling can be performed with low friction and clear accountability.
+
+\subsection{Implementation Feasibility}
+
+Implementation feasibility was confirmed through successful end-to-end execution of setup scripts, environment templates, container profiles, and validation routines for deployment, testing, and recovery.
+
+
 
 \section{Project Planning}
 
 Project planning translated broad objectives into actionable delivery slices with explicit milestones, quality gates, and integration checkpoints. Planning was intentionally cross-functional, so backend APIs, frontend role flows, AI services, and deployment scripts evolved in synchronized increments rather than in isolated tracks. This structure reduced integration shocks and enabled predictable weekly review cycles.
 
-\subsection{Development Approach and Justification}
+\subsection{Development Approach \& Justification}
 
 The project used an incremental and verification-driven approach with the following cycle:
 
@@ -24,7 +45,18 @@ The project used an incremental and verification-driven approach with the follow
 This approach was chosen over a strict waterfall model because AI behavior and UX patterns required iterative calibration [17, 11, 12].
 
 
-\subsection{Group Roles and Responsibilities}
+\subsection{Milestones \& Deliverables}
+
+Milestones and deliverables were tracked in weekly slices aligned to project governance checkpoints.
+
+\begin{itemize}
+\item Foundation phase: authentication, baseline complaint lifecycle, and core schema validation.
+\item Feature phase: AI-assisted analysis, worker assignment, role dashboards, and notifications.
+\item Hardening phase: upload security, resilience handling, and load/security verification suites.
+\item Delivery phase: deployment validation, final documentation, and report artifacts.
+\end{itemize}
+
+\subsection{Roles \& Responsibilities}
 
 The responsibility matrix below defines the cross-functional ownership areas covered during delivery.
 
@@ -60,7 +92,7 @@ The project includes cross-cutting dependencies that were managed explicitly:
 
 Dependency risks were controlled through health endpoints, fallback behaviors, and scripted verification routines.
 
-\section{Project Scheduling (Gantt Chart)}
+\section{Project Scheduling (Gantt/PERT chart)}
 
 The Gantt chart below provides a visual representation of the project timeline, showing the distribution of foundation, core development, security hardening, and delivery activities across the 18-week execution window.
 
@@ -80,7 +112,6 @@ The Gantt chart below provides a visual representation of the project timeline, 
 \section{Risk Management}
 
 \begin{xltabular}{\textwidth}{|>{\RaggedRight\arraybackslash}X|>{\RaggedRight\arraybackslash}p{0.15\textwidth}|>{\RaggedRight\arraybackslash}p{0.15\textwidth}|>{\RaggedRight\arraybackslash}X|}
-\caption{Risk Register and Mitigation Plan}\\
 \hline
 \textbf{Risk} & \textbf{Likelihood} & \textbf{Impact} & \textbf{Mitigation} \\ \hline
 \endhead
@@ -92,6 +123,7 @@ Configuration drift across environments & Medium & Medium & Unified backend envi
 Notification inconsistency & Low & Medium & Automated notification-chain tests and mark-all-read verification \\ \hline
 Performance degradation under load & Medium & Medium & Profiling, timing logs, load-testing matrix, controlled fallback behavior \\ \hline
 Documentation mismatch at handover & Medium & Medium & NDMC deployment guide, API reference sync, verification procedure chapter \\ \hline
+\caption{Risk Register and Mitigation Plan}
 \end{xltabular}
 
 \section{Management Outcomes}

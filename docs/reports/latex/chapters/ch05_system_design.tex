@@ -1,9 +1,9 @@
 % !TeX root = ../main.tex
-\chapter{System Architecture and Design}
+\chapter{System Design}
 
 This chapter details the structural design choices, module interactions, and data modeling strategies that enable Jan-Sunwai AI to operate as a secure, local-first civic grievance platform. The architecture is designed for modularity, ensuring that AI-assisted components remain isolated from deterministic governance workflows.
 
-\section{System Architecture}
+\section{System Architecture Design}
 
 The platform follows a multi-tier Client-Server architecture, optimized for local execution with containerized boundaries.
 
@@ -29,7 +29,7 @@ The AI pipeline uses a hybrid vision-cascade and rule-engine scoring model to en
 \label{fig:ai-pipeline}
 \end{figure}
 
-\section{UML Design}
+\section{UML Diagrams}
 
 The following diagrams are aligned with the implemented module boundaries, routing flow, and lifecycle stages documented in the project report and API references.
 
@@ -43,6 +43,15 @@ The following diagrams are aligned with the implemented module boundaries, routi
 \end{figure}
 
 \textbf{Data Flow \& Rationale:} This diagram shows how complaint records act as the central nexus linking users, workers, and notifications. By embedding status history directly within the Complaint entity, the database minimizes costly relational joins during dashboard rendering.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.85\textwidth]{../../images/er_diagram.png}
+\caption{Alternative E-R Diagram Reference}
+\label{fig:er-diagram-reference}
+\end{figure}
+
+\textbf{Reference Note:} This alternate image is retained because it documents the same relational model in a slightly different visual style, which can help during review and presentation.
 
 \subsection{Use Case Diagram}
 
@@ -88,6 +97,21 @@ The following diagrams are aligned with the implemented module boundaries, routi
 
 \textbf{Workflow States:} The activity diagram maps the internal decision logic used to triage low-confidence classifications. It shows how the system selectively invokes reasoning models (like Llama 3.2) only when the initial vision cascade fails to meet confidence thresholds.
 
+\subsection{DFD Diagram}
+
+\begin{figure}[H]
+\centering
+\IfFileExists{../../images/dfd_diagram.png}{%
+\includegraphics[width=0.85\textwidth]{../../images/dfd_diagram.png}%
+}{%
+\fbox{\begin{minipage}[c][0.30\textheight][c]{0.85\textwidth}
+\centering Missing DFD diagram image
+\end{minipage}}%
+}
+\caption{DFD Diagram}
+\label{fig:dfd-diagram}
+\end{figure}
+
 \subsection{Deployment Diagram}
 
 \begin{figure}[H]
@@ -103,7 +127,7 @@ The following diagrams are aligned with the implemented module boundaries, routi
 
 Database design focused on lifecycle integrity, query efficiency, and auditability rather than strict relational normalization. Since complaint records evolve through multiple state transitions and actor interactions, the chosen document model keeps operationally related history close to primary complaint entities while retaining key references for role and ownership controls. This approach improves retrieval speed for dashboards, timelines, and governance reviews [13, 11, 14].
 
-\subsection{Table Design and Relationships}
+\subsection{Table Design \& Relationships}
 
 The database is organized around four principal collections:
 
@@ -127,6 +151,26 @@ The platform uses controlled denormalization:
 \end{itemize}
 
 This approach preserves operational read performance while retaining clear ownership semantics.
+
+\subsection{Data Dictionary}
+
+The data dictionary below summarizes key entities and their purpose in operational workflows.
+
+\begin{table}[H]
+\centering
+\caption{Core Data Dictionary Snapshot}
+\label{tab:data-dictionary}
+\begin{tabularx}{\textwidth}{|>{\RaggedRight\arraybackslash}p{0.22\textwidth}|>{\RaggedRight\arraybackslash}p{0.24\textwidth}|>{\RaggedRight\arraybackslash}X|}
+\hline
+\textbf{Collection} & \textbf{Field} & \textbf{Description} \\ \hline
+users & role & Persona type used for role-based access control (citizen, worker, department head, admin). \\ \hline
+users & service\_areas & Worker/dept operational zones used for assignment filtering. \\ \hline
+complaints & status\_history & Ordered lifecycle events with actor, timestamp, and note metadata. \\ \hline
+complaints & ai\_analysis & Captured model outputs including category, confidence, and fallback metadata. \\ \hline
+notifications & is\_read & Read-state marker used for unread counters and panel filtering. \\ \hline
+password\_resets & expires\_at & Expiry timestamp used by TTL cleanup and reset safety checks. \\ \hline
+\end{tabularx}
+\end{table}
 
 \subsection{Indexing Strategy}
 
@@ -222,6 +266,22 @@ The screenshot gallery below restores representative evidence from the implement
 
 \screenshotcard[Login \& Registration]{0.48\textwidth}{fig:s10}{../../images/login_page.png}{Secure persona-based login entry.}
 \screenshotcard[Notification Panel]{0.48\textwidth}{fig:s11}{../../images/notification_pannel.png}{Real-time event feed for status updates.}
+
+The remaining screenshots are included below so the chapter covers the full implementation gallery rather than only a short representative set.
+
+\screenshotcard[Admin Analytics Dashboard]{0.96\textwidth}{fig:s12}{../../images/admin_analytics_page.png}{Admin Analytics Dashboard with operational metrics and routing summaries.}
+
+\screenshotcard[Complaints Map Overview]{0.48\textwidth}{fig:s13}{../../images/complaints_map.png}{Complaints map overview used for spatial complaint inspection.}
+\screenshotcard[Resolved Complaint View]{0.48\textwidth}{fig:s14}{../../images/fully_completed_complaint.png}{Resolved complaint detail view after closure.}
+
+\screenshotcard[Complaint Filing Upload Page]{0.48\textwidth}{fig:s15}{../../images/complaint_file_page.png}{Complaint filing page for uploading issue evidence.}
+\screenshotcard[Complaint Review Without Geo Tag]{0.48\textwidth}{fig:s16}{../../images/complaint_review_without_geo_tag.png}{Complaint review flow for submissions without geo metadata.}
+
+\screenshotcard[Hindi Complaint Draft]{0.48\textwidth}{fig:s17}{../../images/hindi_complaint.png}{Hindi-language complaint draft generated by the system.}
+\screenshotcard[English Complaint Draft]{0.48\textwidth}{fig:s18}{../../images/english_complaint.png}{English-language complaint draft generated by the system.}
+
+\screenshotcard[Citizen Registration Page]{0.48\textwidth}{fig:s19}{../../images/registration_page.png}{Citizen registration page.}
+\screenshotcard[Worker Registration Page]{0.48\textwidth}{fig:s20}{../../images/employee_registration_page.png}{Worker registration page.}
 
 
 
