@@ -19,13 +19,19 @@ Key characteristics of existing systems observed in this problem context:
 
 \section{Limitations of the Existing System}
 
-Seven recurring limitations were observed in legacy civic grievance systems: manual authority selection by citizens causing frequent misrouting; inconsistent complaint descriptions that require staff to rewrite or clarify cases before action; weak integration of visual evidence leaving photographs unused during triage; limited role-specific workflows that impose the same interface burden on very different personas; minimal lifecycle traceability making accountability reviews difficult; low transparency in queue behavior eroding citizen trust; and sparse administrative analytics that force planning decisions to rely on intuition rather than data [1, 2, 6].
+The operational deficiencies identified across legacy civic complaint channels can be grouped into several distinct categories. Citizen-initiated department selection is the most consequential structural weakness, because it transfers classification responsibility to the population least equipped to exercise it correctly. Complaints submitted to incorrect departments must be transferred before any action is possible, and each transfer consumes a full review cycle. Complaint narrative quality is uneven because unstructured free-text fields produce descriptions that range from highly detailed to factually thin, requiring staff to seek clarification before field action can be authorised. Photographic evidence, where accepted, is stored as an attachment rather than processed as a routing input, which means the most objective available record of the problem is never used for classification. Role-specific interface design is largely absent, which means field workers, department supervisors, and system administrators interact with functionally identical interfaces despite having fundamentally different information needs. Lifecycle traceability is insufficient for governance purposes, because state transitions without actor attribution and timestamps cannot support escalation justification or post-resolution review. Public visibility into queue behaviour is negligible, which erodes citizen trust over time by creating the impression that submitted complaints disappear without acknowledgement [1, 2, 6].
 
 \section{User Characteristics}
 
-The system is designed for four operational personas with distinct interaction patterns and authorization boundaries.
+Four distinct operational personas were identified during requirements analysis, each with characteristic interaction patterns and well-defined authorisation boundaries.
 
-The system serves four distinct operational personas. \textbf{Citizens} report issues and track outcomes: they upload images, review the AI-generated draft, submit their complaint, and monitor notifications and status updates. \textbf{Workers} resolve assigned field tasks by viewing their queue, managing availability, and marking completions with resolution notes. \textbf{Department Heads} manage departmental flow by filtering the department queue, updating complaint status, adding notes, and transferring or escalating cases when required. \textbf{Administrators} exercise end-to-end governance: approving workers, triaging ambiguous AI classifications, performing bulk operations, exporting reports, and monitoring analytics.
+Citizens constitute the largest user population. Their interaction with the platform is concentrated at two points: submission and tracking. At submission, a citizen uploads photographic evidence, reviews the AI-generated draft complaint, optionally modifies the description or category, and confirms submission. At tracking, the citizen monitors status updates delivered through the notification panel and the complaint detail view.
+
+Field workers interact with the platform primarily through their assigned-task queue. A worker manages their own availability status, reviews the complaint details and location information associated with each assignment, and marks tasks as completed with a resolution note upon successful field intervention.
+
+Department heads exercise supervisory authority over the complaint queue for their assigned department. They apply status updates with explanatory notes, transfer complaints to neighbouring departments when jurisdictional analysis suggests mis-assignment, and escalate cases to parent authorities when the matter exceeds departmental capacity or authority.
+
+Administrators hold end-to-end governance authority over the platform. Their responsibilities include approving or rejecting worker registration applications, adjudicating the triage queue of low-confidence AI classifications, executing bulk status operations on complaint backlogs, exporting complaint datasets as CSV files, and monitoring system-wide analytics.
 
 \section{Functional Requirements}
 
@@ -77,9 +83,9 @@ NFR-10 & Data Integrity & Validation schemas and controlled update flows shall m
 \caption{Non-Functional Requirement Specification}
 \end{xltabular}
 
-\section{Hardware \& Software Requirements}
+\section{Hardware and Software Requirements}
 
-The system baseline requires: \textbf{Hardware:} 4-core processor (8-core recommended), 12–16 GB RAM, 4–6 GB GPU VRAM, 10–20 GB storage, and stable network. \textbf{Software:} Windows 10+ or Linux (Ubuntu 22.04+), Python 3.10+, Node.js v20+ LTS, MongoDB 7.x, Ollama runtime, Docker/Compose 24+, and a modern browser.
+A minimum hardware configuration of a four-core processor (eight-core recommended), 12 to 16 GB of system RAM, 4 to 6 GB of GPU VRAM, 10 to 20 GB of storage, and a stable network connection is required for functional operation. The software baseline requires Windows 10 or later, or Ubuntu 22.04 LTS or later, alongside Python 3.10 or later, Node.js v20 LTS or later, MongoDB 7.x, the Ollama runtime, Docker and Compose version 24 or later, and a modern web browser.
 
 \section{Constraints}
 

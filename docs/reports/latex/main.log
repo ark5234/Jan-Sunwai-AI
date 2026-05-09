@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.141592653-2.6-0.999997 (MiKTeX 25.12) (preloaded format=xelatex 2026.5.5)  8 MAY 2026 17:22
+This is XeTeX, Version 3.141592653-2.6-0.999997 (MiKTeX 25.12) (preloaded format=xelatex 2026.5.5)  8 MAY 2026 23:47
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -741,8 +741,21 @@ Package newfloat Info: `float' package detected.
 Chapter 1.
 [1
 
-] [2]
-Overfull \hbox (11.80812pt too wide) in paragraph at lines 72--73
+]
+Overfull \hbox (3.736pt too wide) in paragraph at lines 45--46
+\TU/TimesNewRoman(0)/m/n/12 session authentication, input sanitisation on all i
+nbound payloads, MIME-type and magic-number
+ []
+
+[2]
+
+LaTeX Warning: Citation `Ministry_2023' on page 3 undefined on input line 57.
+
+
+LaTeX Warning: Citation `WorldBank2023' on page 3 undefined on input line 57.
+
+
+Overfull \hbox (11.80812pt too wide) in paragraph at lines 67--68
 \TU/TimesNewRoman(0)/m/n/12 service responsiveness. At the national level, fram
 eworks like India’s Centralised Public Grievance
  []
@@ -751,10 +764,22 @@ eworks like India’s Centralised Public Grievance
 Chapter 2.
 [6
 
-] [7]
+]
+
+LaTeX Warning: Citation `Docker2026' on page 7 undefined on input line 35.
+
+
+LaTeX Warning: Citation `FastAPI2026' on page 7 undefined on input line 35.
+
+
+LaTeX Warning: Citation `MongoDB2026' on page 7 undefined on input line 35.
+
+[7]
 File: ../../images/gantt chart.png Graphic file (type bmp)
 <../../images/gantt chart.png>
- [8] [9]) (chapters/ch03_system_requirement_study.tex [10]
+ [8]
+ignored error: Infinite glue shrinkage found in box being split [9])
+(chapters/ch03_system_requirement_study.tex [10]
 Chapter 3.
 
 Overfull \hbox (16.88327pt too wide) in paragraph at lines 4--5
@@ -762,73 +787,74 @@ Overfull \hbox (16.88327pt too wide) in paragraph at lines 4--5
 ctor expectations, and formalized functional/non-
  []
 
-
-Underfull \hbox (badness 1210) in paragraph at lines 59--59
-[]|\TU/TimesNewRoman(0)/m/n/12 Analyze endpoint shall accept valid 
- []
-
 [11
 
 ]
-ignored error: Infinite glue shrinkage found in box being split [12]
-ignored error: Infinite glue shrinkage found in box being split [13] [14])
-(chapters/ch04_proposed_system_requirements.tex [15]
+Underfull \hbox (badness 1210) in paragraph at lines 65--65
+[]|\TU/TimesNewRoman(0)/m/n/12 Analyze endpoint shall accept valid 
+ []
+
+ignored error: Infinite glue shrinkage found in box being split [12] [13]
+[14] [15]) (chapters/ch04_proposed_system_requirements.tex [16]
 Chapter 4.
-[16
+[17
 
 ]
-ignored error: Infinite glue shrinkage found in box being split [17] [18]
+ignored error: Infinite glue shrinkage found in box being split [18] [19]
 Underfull \hbox (badness 1221) in paragraph at lines 128--128
 []|\TU/TimesNewRoman(0)/m/n/12 Overview metrics, heatmap endpoint, 
  []
 
 File: ../../images/sequence_diagram.png Graphic file (type bmp)
 <../../images/sequence_diagram.png>
-[19] [20]) (chapters/ch05_system_design.tex [21]
+[20]
+
+LaTeX Warning: Citation `WorldBank2023' on page 21 undefined on input line 141.
+
+
+[21]) (chapters/ch05_system_design.tex [22]
 Chapter 5.
 File: ../../images/system_context_diagram.png Graphic file (type bmp)
 <../../images/system_context_diagram.png>
 File: ../../images/architecture.png Graphic file (type bmp)
 <../../images/architecture.png>
-[22
+[23
 
 ]
 File: ../../images/new_er.png Graphic file (type bmp)
 <../../images/new_er.png>
- [23]
+ [24]
 File: ../../images/er_diagram.png Graphic file (type bmp)
 <../../images/er_diagram.png>
- [24]
+ [25]
 File: ../../images/flowchart.png Graphic file (type bmp)
 <../../images/flowchart.png>
- [25] [26]
+ [26] [27]
 File: ../../images/class_diagram.png Graphic file (type bmp)
 <../../images/class_diagram.png>
 File: ../../images/sequence_diagram.png Graphic file (type bmp)
 <../../images/sequence_diagram.png>
- [27]
+ [28]
 File: ../../images/activity_diagram.png Graphic file (type bmp)
 <../../images/activity_diagram.png>
- [28]
+ [29]
 Overfull \vbox (785.61739pt too high) has occurred while \output is active []
 
 
-[29]
+[30]
 File: ../../images/deployment_diagram.png Graphic file (type bmp)
 <../../images/deployment_diagram.png>
- [30] [31] [32] [33]
+ [31] [32] [33] [34]
 File: ../../images/GUI_Wireframe.png Graphic file (type bmp)
 <../../images/GUI_Wireframe.png>
- [34]
-File: ../../images/citizen_homepage.png Graphic file (type bmp)
-<../../images/citizen_homepage.png>
-Package hyperref Info: bookmark level for unknown screenshot defaults to 0 on i
-nput line 253.
+ [35]
 File: ../../images/complaint_review_with_geo_tag.png Graphic file (type bmp)
 <../../images/complaint_review_with_geo_tag.png>
- [35]
+Package hyperref Info: bookmark level for unknown screenshot defaults to 0 on i
+nput line 253.
 File: ../../images/grievance_status_tracker.png Graphic file (type bmp)
 <../../images/grievance_status_tracker.png>
+ [36]
 File: ../../images/admin_worker_task_assignment_pannel.png Graphic file (type b
 mp)
 <../../images/admin_worker_task_assignment_pannel.png>
@@ -837,44 +863,17 @@ File: ../../images/admin_dashboard.png Graphic file (type bmp)
 File: ../../images/admin_human_complaint_review_pannel.png Graphic file (type b
 mp)
 <../../images/admin_human_complaint_review_pannel.png>
- [36]
 File: ../../images/grievance_heatmap.png Graphic file (type bmp)
 <../../images/grievance_heatmap.png>
-File: ../../images/satellite_complaint_image.png Graphic file (type bmp)
-<../../images/satellite_complaint_image.png>
  [37]
 File: ../../images/admin_english_complaint_view.png Graphic file (type bmp)
 <../../images/admin_english_complaint_view.png>
-File: ../../images/login_page.png Graphic file (type bmp)
-<../../images/login_page.png>
-File: ../../images/notification_pannel.png Graphic file (type bmp)
-<../../images/notification_pannel.png>
- [38]
 File: ../../images/admin_analytics_page.png Graphic file (type bmp)
 <../../images/admin_analytics_page.png>
- [39]
-File: ../../images/complaints_map.png Graphic file (type bmp)
-<../../images/complaints_map.png>
-File: ../../images/fully_completed_complaint.png Graphic file (type bmp)
-<../../images/fully_completed_complaint.png>
-File: ../../images/complaint_file_page.png Graphic file (type bmp)
-<../../images/complaint_file_page.png>
-File: ../../images/complaint_review_without_geo_tag.png Graphic file (type bmp)
-
-<../../images/complaint_review_without_geo_tag.png>
- [40]
-File: ../../images/hindi_complaint.png Graphic file (type bmp)
-<../../images/hindi_complaint.png>
-File: ../../images/english_complaint.png Graphic file (type bmp)
-<../../images/english_complaint.png>
-File: ../../images/registration_page.png Graphic file (type bmp)
-<../../images/registration_page.png>
-File: ../../images/employee_registration_page.png Graphic file (type bmp)
-<../../images/employee_registration_page.png>
- [41])
-(chapters/ch06_implementation_planning.tex [42]
+ [38])
+(chapters/ch06_implementation_planning.tex [39]
 Chapter 6.
-[43
+[40
 
 ]
 Overfull \hbox (0.2076pt too wide) in paragraph at lines 54--55
@@ -888,7 +887,7 @@ Overfull \hbox (1.46835pt too wide) in paragraph at lines 61--62
 wRoman(0)/m/n/12 Depends on validated security/performance base-
  []
 
-[44]
+[41]
 LaTeX Font Info:    Font shape `TU/lmtt/bx/n' in size <12> not available
 (Font)              Font shape `TU/lmtt/b/n' tried instead on input line 92.
 
@@ -898,7 +897,9 @@ Overfull \hbox (1.16438pt too wide) in paragraph at lines 92--93
 sword
  []
 
-[45] [46]) (chapters/ch07_testing.tex [47]
+[42]
+ignored error: Infinite glue shrinkage found in box being split [43])
+(chapters/ch07_testing.tex [44]
 Chapter 7.
 
 Overfull \hbox (2.96878pt too wide) in paragraph at lines 24--25
@@ -906,27 +907,39 @@ Overfull \hbox (2.96878pt too wide) in paragraph at lines 24--25
 ures consistency across all validation phases. 
  []
 
-[48
+[45
 
-] [49] [50]
+] [46] [47]
 Overfull \hbox (1.93666pt too wide) in paragraph at lines 117--118
 \TU/TimesNewRoman(0)/m/n/12 Testing combined behavioral, negative, resilience, 
 and load techniques to ensure stability. \TU/TimesNewRoman(0)/b/n/12 Black-
  []
 
-[51]) (chapters/ch08_limitations_future_scope.tex [52]
+[48]) (chapters/ch08_limitations_future_scope.tex [49]
 Chapter 8.
 
-Overfull \hbox (7.1675pt too wide) in paragraph at lines 12--13
-\TU/TimesNewRoman(0)/m/n/12 scalable, institutional-grade ecosystem. Priority e
-nhancements include migrating the synchronous
+LaTeX Warning: Citation `Docker2026' on page 50 undefined on input line 4.
+
+
+LaTeX Warning: Citation `CenterForInternetSecurity2026' on page 50 undefined on
+ input line 4.
+
+
+LaTeX Warning: Citation `Ollama2026' on page 50 undefined on input line 4.
+
+[50
+
+]) (chapters/ch09_conclusion_references.tex
+Overfull \hbox (3.30081pt too wide) in paragraph at lines 24--2
+\TU/TimesNewRoman(0)/m/n/12 The limitations documented in this chapter are genu
+ine constraints that must be addressed through
  []
 
-) (chapters/ch09_conclusion_references.tex [53
+[51]
+Chapter 9.
+[52
 
 ]
-Chapter 9.
-
 Underfull \hbox (badness 5302) in paragraph at lines 52--54
 []\TU/TimesNewRoman(0)/m/n/12 Meta AI,  “Llama 3.2: Revolutionizing edge AI and
  vision with open, cus-
@@ -938,38 +951,40 @@ Underfull \hbox (badness 2781) in paragraph at lines 52--54
  [][]$[][][][][] [] [] [] [][] [] [][][][] [] [][][] [] [][][][] []
  []
 
-[54
-
-] [55]) (chapters/ch10_appendices.tex [56]
+[53]) (chapters/ch10_appendices.tex [54]
 Chapter 10.
 
 Overfull \hbox (9.807pt too wide) in paragraph at lines 57--57
 []|\TU/TimesNewRoman(0)/m/n/12 MUNI_HORTICULTURE|  
  []
 
-ignored error: Infinite glue shrinkage found in box being split [57
+ignored error: Infinite glue shrinkage found in box being split [55
 
 ]
-ignored error: Infinite glue shrinkage found in box being split [58])
-(chapters/ch11_report_verification_procedure.tex [59]
+ignored error: Infinite glue shrinkage found in box being split [56])
+(chapters/ch11_report_verification_procedure.tex [57]
 Chapter 11.
-[60
+[58
 
 ]) (main.aux)
  ***********
 LaTeX2e <2025-11-01>
 L3 programming layer <2025-12-24>
  ***********
+
+
+LaTeX Warning: There were undefined references.
+
 Package rerunfilecheck Info: File `main.out' has not changed.
-(rerunfilecheck)             Checksum: C3F4FA6F1CD195FA60BB32DB1751BDFE;28961.
+(rerunfilecheck)             Checksum: 61324C763973D991B59F15500C2C82DE;28968.
  ) 
 Here is how much of TeX's memory you used:
- 15677 strings out of 402987
- 305827 string characters out of 5448525
- 826795 words of memory out of 5000000
- 44131 multiletter control sequences out of 15000+600000
+ 15557 strings out of 402987
+ 301348 string characters out of 5448525
+ 826066 words of memory out of 5000000
+ 44023 multiletter control sequences out of 15000+600000
  632823 words of font info for 81 fonts, out of 8000000 for 9000
  1348 hyphenation exceptions out of 8191
- 73i,12n,93p,1470b,605s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 73i,12n,93p,1597b,605s stack positions out of 10000i,1000n,20000p,200000b,200000s
 
-Output written on main.pdf (68 pages).
+Output written on main.pdf (66 pages).

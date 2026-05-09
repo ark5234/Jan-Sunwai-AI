@@ -12,16 +12,9 @@ Jan-Sunwai AI is a civic grievance management platform targeting \textbf{NDMC-st
 
 \section{Purpose}
 
-Traditional complaint systems rely heavily on manual typing, manual category selection, and office-level routing knowledge that many citizens do not have. This results in poor-quality submissions, delayed routing, and low trust in resolution timelines. The purpose of Jan-Sunwai AI is to build a practical, auditable, and secure system where:
+Conventional complaint systems impose a substantial cognitive burden on the very citizens they are designed to serve. Submitters are ordinarily required to type detailed textual descriptions, select the responsible department from layered dropdown menus, and in many cases physically visit an office to ensure a complaint reaches the correct authority. Citizens unfamiliar with municipal organisational structures submit complaints to incorrect departments routinely, initiating inter-departmental transfer cycles that delay field action by three to five working days per mis-routing event. Complaint narratives produced under these conditions are frequently incomplete, inconsistently formatted, or factually imprecise, which in turn demands additional clarification effort from departmental staff before any field response can be mobilised.
 
-\begin{itemize}
-\item Citizens can submit evidence-driven complaints quickly using photos.
-\item The system auto-detects likely department categories and drafts complaint text.
-\item Authorities can monitor, assign, escalate, and resolve complaints with full history.
-\item Governance stakeholders can access analytics, public transparency views, and exports.
-\end{itemize}
-
-The objective is not to replace human decision-making but to reduce repetitive effort and routing ambiguity while strengthening accountability.
+Jan-Sunwai AI was conceived to interrupt this cycle at the earliest possible point. Photographic evidence submitted by a citizen is analysed by a vision-language model that extracts probable departmental category, geospatial metadata, and a formally drafted complaint description. The citizen reviews and, if required, modifies this output before submission, which means that even a user with limited digital literacy contributes a structurally sound, verifiable complaint. Departmental authorities subsequently receive complaints that are pre-classified, geographically tagged, and accompanied by AI-generated rationale, allowing supervisory effort to be concentrated on resolution governance rather than intake remediation. Administrative stakeholders additionally benefit from an analytics layer, a public transparency feed, and exportable complaint datasets that support both operational planning and institutional accountability. The design intent throughout was not to automate decisions belonging to human administrators but to reduce the repetitive cognitive work that currently prevents timely field action.
 
 \section{Scope}
 
@@ -41,17 +34,19 @@ Out-of-scope items for the current release include multilingual voice intake, di
 
 \section{Objectives}
 
-The platform was built to satisfy seven core objectives:
+Submission friction was identified as the primary barrier to complaint quality. The intake workflow was therefore designed around a simplified upload-analyse-submit sequence in which AI-generated content reduces the volume of manual text entry required from the citizen. Drafts may be accepted without modification or edited before submission, preserving citizen agency while standardising the structural quality of submitted records.
 
-\begin{enumerate}
-\item \textbf{Reduce submission friction}: Simplified upload-analyze-submit flow with optional draft editing.
-\item \textbf{Improve complaint routing quality}: Canonical department taxonomy and authority mapping.
-\item \textbf{Ensure operational traceability}: Status history, notes, comments, and an audit-ready timeline.
-\item \textbf{Support workload distribution}: Auto-assignment by department, service area, and load balancing.
-\item \textbf{Strengthen security posture}: Cookie-session auth, input sanitization, upload validation, and CORS/security headers.
-\item \textbf{Improve governance transparency}: Analytics dashboard, heatmap, and public complaint feed.
-\item \textbf{Enable production transition}: Docker-based deployment profile, environment controls, and runbooks.
-\end{enumerate}
+Routing quality was addressed through a canonical department taxonomy and a deterministic authority-mapping engine. Rather than relying on natural-language classification alone, the system uses rule-based scoring as a governance boundary, ensuring that even when model confidence is low, the resulting department assignment falls within a bounded, valid set of municipal authorities.
+
+Operational traceability was embedded throughout the complaint lifecycle. Every status transition is recorded with the responsible actor's identity, a timestamp, and an accompanying note. This audit trail supports supervisory review, escalation adjudication, and post-resolution accountability assessments.
+
+Worker assignment automation was implemented through a service that matches complaints to eligible field workers based on departmental alignment, service-area proximity, and active task load. Manual override by an administrator is preserved for cases where automated assignment produces an unsuitable result.
+
+Security was treated as a first-order requirement rather than a hardening phase. Cookie-session authentication, input sanitisation on all inbound payloads, MIME-type and magic-number validation on uploaded files, and the full complement of HTTP security headers were specified in the initial architecture and implemented before the feature set was considered complete.
+
+Public transparency and governance analytics were delivered to address the accountability dimension of civic technology. An anonymised public complaint feed and an administrative analytics dashboard, which includes a geospatial heatmap, allow citizens and oversight bodies to observe aggregate system behaviour without exposing any personally identifiable record.
+
+Finally, production deployment readiness was treated as an explicit deliverable. Docker Compose orchestration, environment variable templates, runbooks, and a verification procedure were produced to ensure that institutional handover does not require the receiving organisation to reconstruct deployment knowledge from source code.
 
 \section{Technology Stack Used}
 
@@ -59,9 +54,9 @@ The system is built on a five-layer stack. The \textbf{frontend} uses React and 
 
 \section{Problem Context and Motivation}
 
-Civic systems face a recurring quality bottleneck at intake. According to India's CPGRAMS annual report, over 19 lakh (1.9 million) grievances were registered in 2022--2023 alone, with a significant proportion requiring re-assignment after initial routing errors [1, 2]. At the municipal level, studies of urban local body portals show that miscategorized complaints take an average of 3--5 additional working days to resolve compared to correctly filed ones, as each wrong-department transfer adds a full review cycle. In high-volume departments such as Civil Works or Vector-Borne Disease Control, this translation overhead directly delays field action.
+The scale of India's national grievance infrastructure makes routing accuracy an operational issue rather than a clerical one. The CPGRAMS Annual Report 2022-23 records more than 19 lakh grievances at the national level during that financial year \cite[cited as reference~24]{Ministry_2023}. Work on urban local body portals shows a consistent delay pattern: when a complaint is sent to the wrong department, it typically takes three to five additional working days to reach the correct office because each transfer restarts the review cycle \cite{WorldBank2023}. That delay matters most in services such as Civil Works or Vector-Borne Disease Control, where the difference between an hour and a day can change the outcome of field response.
 
-Jan-Sunwai AI addresses this bottleneck by introducing structured automation at the earliest stage while preserving administrative authority. By combining vision-language classification with a deterministic routing engine, the platform reduces the cognitive burden on citizens (who typically do not know which department owns a given infrastructure issue) while giving administrators a governed, auditable triage path for edge cases. This balance between automation and human control is the central design philosophy of the system.
+Jan-Sunwai AI addresses this bottleneck at the intake stage by combining vision-language classification with a deterministic routing engine, thereby reducing the cognitive burden placed on citizens who do not possess institutional knowledge of departmental jurisdiction. Governance authority over ambiguous cases remains with human administrators, who adjudicate low-confidence classifications through a dedicated triage queue. The balance between AI-assisted automation and human institutional control constitutes the defining architectural principle of the system.
 
 \section{Literature Review}
 

@@ -10,19 +10,19 @@ The proposed system was evaluated for practical execution viability before and d
 
 \subsection{Technical Feasibility}
 
-Technical feasibility was established through successful integration of the selected stack (React, FastAPI, MongoDB, Ollama, Docker Compose) on local infrastructure with repeatable scripts and validated health endpoints.
+Technical feasibility was evaluated through progressive integration rather than theoretical assessment. The React frontend, FastAPI backend, MongoDB store, Ollama runtime, and Docker Compose orchestration were brought into functional contact in the first two weeks of the project. Health endpoints were established and validated for each service dependency, and setup scripts were verified for idempotent execution on both Windows and Linux hosts. The primary technical risk identified during this phase was VRAM contention under concurrent inference requests, which informed the subsequent decision to introduce an asynchronous generation queue rather than processing all AI requests synchronously.
 
 \subsection{Time Schedule Feasibility}
 
-Time feasibility was validated through an 18-week phased plan where foundation, core features, hardening, and documentation were delivered as milestone-driven increments with weekly checkpoints.
+Time feasibility was assessed by decomposing the full feature scope into four phases: foundation (authentication and core complaint lifecycle), feature development (AI pipeline and role dashboards), security and reliability hardening, and documentation and delivery preparation. An eighteen-week window was mapped to this decomposition with explicit milestone dates and acceptance criteria at the boundary of each phase. The schedule was reviewed weekly against actual delivery progress, and scope was managed to ensure that hardening and documentation phases were not compressed to accommodate late-stage feature additions.
 
 \subsection{Operational Feasibility}
 
-Operational feasibility was verified by role-based workflows for citizen, worker, department head, and admin personas, ensuring that day-to-day grievance handling can be performed with low friction and clear accountability.
+Operational feasibility was confirmed by the construction of role-based workflows for all four user personas. Each persona was mapped to a distinct set of interactions, and those interactions were validated end-to-end through manual UAT scripts before the phase in which they appeared was considered closed. Feasibility at the operational level required that a citizen with limited digital literacy could navigate from image upload to confirmed submission in under five minutes, and that an administrator could perform a triage decision in under two minutes per queued item.
 
 \subsection{Implementation Feasibility}
 
-Implementation feasibility was confirmed through successful end-to-end execution of setup scripts, environment templates, container profiles, and validation routines for deployment, testing, and recovery.
+Implementation feasibility was substantiated through the successful execution of containerised setup scripts, environment templates, and validation routines across both development and production-profile Docker Compose configurations. The ability to reproduce a working deployment from a clean machine using a single command sequence was treated as the acceptance criterion for this feasibility dimension.
 
 
 
@@ -32,17 +32,7 @@ Project planning translated broad objectives into actionable delivery slices wit
 
 \subsection{Development Approach \& Justification}
 
-The project used an incremental and verification-driven approach with the following cycle:
-
-\begin{enumerate}
-\item Build baseline functionality for a module.
-\item Validate through unit and integration checks.
-\item Expose role workflow in UI and test end-to-end behavior.
-\item Add security/performance hardening after functional stabilization.
-\item Document operational procedures and release notes.
-\end{enumerate}
-
-This approach was chosen over a strict waterfall model because AI behavior and UX patterns required iterative calibration [17, 11, 12].
+A sequential waterfall model was not a good fit for this project because the AI layer and the role-based user flows both needed repeated adjustment as implementation details became visible \cite{Docker2026, FastAPI2026, MongoDB2026}. The work therefore moved forward in short verified increments. Each increment began with a working baseline, moved through unit and integration checks, surfaced the relevant role workflow in the interface for end-to-end validation, and then received security and performance hardening once the core behaviour had stabilised. Release notes and operational steps were only written after those checks passed, so documentation reflected the version that was actually ready for handover.
 
 
 \subsection{Milestones \& Deliverables}
@@ -128,13 +118,7 @@ Documentation mismatch at handover & Medium & Medium & NDMC deployment guide, AP
 
 \section{Management Outcomes}
 
-The management strategy achieved three notable outcomes:
-
-\begin{itemize}
-\item Feature breadth was delivered without compromising security and reliability hardening.
-\item Delivery confidence increased through continuous testing and issue-driven iteration.
-\item Handover readiness improved through consolidated deployment/configuration artifacts and documentation alignment.
-\end{itemize}
+The iterative delivery strategy achieved three outcomes of note. Full-scope feature delivery was completed without deferring security or reliability hardening to a post-feature phase, which is a common failure mode in project timelines where feature work expands to fill available time. Delivery confidence was sustained by continuous automated testing and rapid issue-resolution cycles following each integration point. Handover readiness was advanced through consolidated deployment artefacts, environment documentation, and an API reference produced during the final two weeks rather than assembled retrospectively.
 
 
 

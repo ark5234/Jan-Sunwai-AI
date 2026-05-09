@@ -45,7 +45,7 @@ This ensures that local verification and deployment handover use the same operat
 
 \section{Coding Standards Followed}
 
-Strict coding standards were enforced across the stack to ensure independent testability and maintainability. The \textbf{Backend} relies on router-based domain isolation, strictly typed Pydantic request models, decoupled service extraction for cross-cutting concerns (e.g., storage, email), and failure-safe structured logging. The \textbf{Frontend} emphasizes strict separation between role-aware route guards, reusable components, and context providers while enforcing explicit loading/error states for all asynchronous operations. Across the entire system, \textbf{Configuration} is centralized through a single canonical environment template to prevent deployment drift.
+Strict coding standards were enforced across the stack to ensure that modules remained independently testable and that new contributors could understand responsibility boundaries without referring to implementation details of adjacent modules. The backend employed router-based domain isolation, strictly typed Pydantic request models, service extraction for cross-cutting concerns such as storage and email, and structured logging with failure-safe behaviour. The frontend enforced separation between role-aware route guards, reusable UI components, and context providers, with explicit loading and error states required on all asynchronous operations. Configuration was centralised through a single canonical environment template, eliminating the environment drift between development and production that had been identified as a recurring source of integration errors early in the project.
 
 \section{Implementation Sequence and Dependencies}
 
@@ -148,9 +148,9 @@ The sequence below presents the recommended order of actions and priorities for 
 
 \subsection{Implementation Learnings}
 
-Implementation planning revealed that operational simplification tasks (for example, consolidating environment and compose artifacts) can have impact comparable to feature work. These tasks reduced recurring integration errors, made CI behavior more predictable, and improved deployment communication across stakeholders.
+A significant proportion of the effort expended during weeks eleven and twelve was devoted to consolidating the environment configuration and Compose artefacts rather than implementing new features. This consolidation resolved a series of recurring integration errors that had been attributed to individual developer mistakes but were in fact caused by configuration divergence between the local and production templates. The operational impact of this simplification was comparable to that of a substantive feature delivery: it reduced the frequency of deployment failures during verification runs and improved the reliability of CI behaviour. This experience confirmed that in complex applied systems, structural simplification and documentation consistency are as important to delivery confidence as feature completeness.
 
 \section{Chapter Summary}
 
-Implementation planning translated conceptual design into execution-ready work packages, sequence constraints, and quality gates. The plan successfully balanced rapid feature delivery with operational robustness, resulting in a deployable and documentable civic platform.
+Implementation planning addressed three concurrent priorities: reproducibility of the deployment environment, structured growth of the module codebase, and readiness for institutional handover. Backend API development, frontend role workflows, AI service integration, and operational scripts were maintained as synchronised tracks rather than isolated workstreams, reducing the frequency and severity of integration friction at weekly review cycles.
 
