@@ -1,15 +1,15 @@
-% !TeX root = ../main.tex
+% !TEX root = ../main.tex
 \chapter{System Design}
 
-This chapter details the structural design choices, module interactions, and data modeling strategies that enable Jan-Sunwai AI to operate as a secure, local-first civic grievance platform. The architecture is designed for modularity, ensuring that AI-assisted components remain isolated from deterministic governance workflows.
+This chapter details the structural design choices, module interactions, and data modelling strategies that enable Jan-Sunwai AI to operate as a secure, local-first civic grievance platform. The architecture is designed for modularity, ensuring that AI-assisted components remain isolated from deterministic governance workflows.
 
 \section{System Architecture Design}
 
-The platform follows a multi-tier Client-Server architecture, optimized for local execution with containerized boundaries.
+The platform follows a multi-tier Client-Server architecture, optimised for local execution with containerised boundaries.
 
 \subsection{Overall System Context}
 
-The system connects four primary personas (Citizen, Worker, Dept Head, Admin) to a centralized governance core. The context diagram below illustrates the high-level data exchange between these actors and the platform services.
+The system connects four primary personas (Citizen, Worker, Department Head, Admin) to a centralised governance core. The context diagram below illustrates the high-level data exchange between these actors and the platform services.
 
 \begin{figure}[H]
 \centering
@@ -31,23 +31,23 @@ The AI pipeline uses a hybrid vision-cascade and rule-engine scoring model to en
 
 \section{UML Diagrams}
 
-The following diagrams are aligned with the implemented module boundaries, routing flow, and lifecycle stages documented in the project report and API references.
+The following diagrams align with the implemented module boundaries, routing flow, and lifecycle stages documented in the project report and API references.
 
-\subsection{E-R Diagram}
+\subsection{Entity-Relationship Diagram}
 
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.85\textwidth]{../../images/new_er.png}
-\caption{E-R Diagram}
+\caption{Entity-Relationship Diagram}
 \label{fig:er-diagram}
 \end{figure}
 
-\textbf{Data Flow \& Rationale:} This diagram shows how complaint records act as the central nexus linking users, workers, and notifications. By embedding status history directly within the Complaint entity, the database minimizes costly relational joins during dashboard rendering.
+\textbf{Data Flow and Rationale:} This diagram shows how complaint records act as the central nexus linking users, workers, and notifications. By embedding status history directly within the Complaint entity, the database minimises costly relational joins during dashboard rendering.
 
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.85\textwidth]{../../images/er_diagram.png}
-\caption{Alternative E-R Diagram Reference}
+\caption{Alternative Entity-Relationship Diagram Reference}
 \label{fig:er-diagram-reference}
 \end{figure}
 
@@ -62,7 +62,7 @@ The following diagrams are aligned with the implemented module boundaries, routi
 \label{fig:use-case}
 \end{figure}
 
-\textbf{Role Segregation \& Governance:} This diagram captures the strict access boundaries enforced by the system. While citizens have broad permission to create and track records, state mutations (such as resolving or rejecting a complaint) are heavily restricted to authenticated workers and department heads. It visually demonstrates the governance principle that AI assists but humans hold final approval authority.
+\textbf{Role Segregation and Governance:} This diagram captures the strict access boundaries enforced by the system. Whilst citizens have broad permission to create and track records, state mutations (such as resolving or rejecting a complaint) are heavily restricted to authenticated workers and department heads. It visually demonstrates the governance principle that AI assists but humans hold final approval authority.
 
 \subsection{Class Diagram}
 
@@ -73,7 +73,7 @@ The following diagrams are aligned with the implemented module boundaries, routi
 \label{fig:class-diagram}
 \end{figure}
 
-\textbf{Data Encapsulation:} The class structure reflects the document-oriented database design where complex types like Geolocation and Timestamps are embedded rather than relationally linked. This tradeoff sacrifices some normalization but ensures that fetching a single Complaint object provides the frontend with the complete operational context needed to render a dashboard.
+\textbf{Data Encapsulation:} The class structure reflects the document-oriented database design where complex types like Geolocation and Timestamps are embedded rather than relationally linked. This trade-off sacrifices some normalisation but ensures that fetching a single Complaint object provides the frontend with the complete operational context needed to render a dashboard.
 
 \subsection{Sequence Diagram}
 
@@ -125,36 +125,36 @@ The following diagrams are aligned with the implemented module boundaries, routi
 
 \section{Database Design}
 
-Database design focused on lifecycle integrity, query efficiency, and auditability rather than strict relational normalization. Since complaint records evolve through multiple state transitions and actor interactions, the chosen document model keeps operationally related history close to primary complaint entities while retaining key references for role and ownership controls. This approach improves retrieval speed for dashboards, timelines, and governance reviews [13, 11, 14].
+Database design focused on lifecycle integrity, query efficiency, and auditability rather than strict relational normalisation. Since complaint records evolve through multiple state transitions and actor interactions, the chosen document model keeps operationally related history close to primary complaint entities while retaining key references for role and ownership controls. This approach improves retrieval speed for dashboards, timelines, and governance reviews.
 
-\subsection{Table Design \& Relationships}
+\subsection{Table Design and Relationships}
 
-The database is organized around four principal collections:
+The database is organised around four principal collections:
 
 \begin{itemize}
-\item \textbf{users}: identity, role, and worker service-area metadata.
-\item \textbf{complaints}: complaint payload, routing metadata, status history, and collaboration artifacts.
-\item \textbf{notifications}: user-scoped notification events and read-state tracking.
-\item \textbf{password\_resets}: token hash lifecycle with expiry and usage state.
+\item \textbf{users:} Identity, role, and worker service-area metadata
+\item \textbf{complaints:} Complaint payload, routing metadata, status history, collaboration artefacts
+\item \textbf{notifications:} User-scoped notification events and read-state tracking
+\item \textbf{password\_resets:} Token hash lifecycle with expiry and usage state
 \end{itemize}
 
 The design intentionally keeps lifecycle and audit structures close to complaint documents for locality and retrieval simplicity.
 
-\subsection{Normalization}
+\subsection{Normalisation}
 
-The platform uses controlled denormalization:
+The platform uses controlled denormalisation:
 
 \begin{itemize}
-\item Embedded \texttt{status\_history}, \texttt{dept\_notes}, and \texttt{comments} reduce query complexity.
-\item Core identity references (e.g., \texttt{user\_id}, \texttt{assigned\_to}) remain external for role and profile updates.
-\item Routing metadata is persisted with complaint records to preserve deterministic decision context over time.
+\item Embedded \texttt{status\_history}, \texttt{dept\_notes}, and \texttt{comments} reduce query complexity
+\item Core identity references (e.g., \texttt{user\_id}, \texttt{assigned\_to}) remain external for role and profile updates
+\item Routing metadata is persisted with complaint records to preserve deterministic decision context over time
 \end{itemize}
 
-This approach preserves operational read performance while retaining clear ownership semantics.
+This approach preserves operational read performance whilst retaining clear ownership semantics.
 
 \subsection{Data Dictionary}
 
-The data dictionary below summarizes key entities and their purpose in operational workflows.
+The data dictionary below summarises key entities and their purpose in operational workflows.
 
 \begin{table}[H]
 \centering
@@ -163,19 +163,18 @@ The data dictionary below summarizes key entities and their purpose in operation
 \begin{tabularx}{\textwidth}{|>{\RaggedRight\arraybackslash}p{0.22\textwidth}|>{\RaggedRight\arraybackslash}p{0.24\textwidth}|>{\RaggedRight\arraybackslash}X|}
 \hline
 \textbf{Collection} & \textbf{Field} & \textbf{Description} \\ \hline
-users & role & Persona type used for role-based access control (citizen, worker, department head, admin). \\ \hline
-users & service\_areas & Worker/dept operational zones used for assignment filtering. \\ \hline
-complaints & status\_history & Ordered lifecycle events with actor, timestamp, and note metadata. \\ \hline
-complaints & ai\_analysis & Captured model outputs including category, confidence, and fallback metadata. \\ \hline
-notifications & is\_read & Read-state marker used for unread counters and panel filtering. \\ \hline
-password\_resets & expires\_at & Expiry timestamp used by TTL cleanup and reset safety checks. \\ \hline
+users & role & Persona type used for role-based access control (citizen, worker, department head, admin) \\ \hline
+users & service\_areas & Worker/department operational zones used for assignment filtering \\ \hline
+complaints & status\_history & Ordered lifecycle events with actor, timestamp, and note metadata \\ \hline
+complaints & ai\_analysis & Captured model outputs including category, confidence, fallback metadata \\ \hline
+notifications & is\_read & Read-state marker used for unread counters and panel filtering \\ \hline
+password\_resets & expires\_at & Expiry timestamp used by TTL cleanup and reset safety checks \\ \hline
 \end{tabularx}
 \end{table}
 
 \subsection{Indexing Strategy}
 
-Key indexing strategies are summarized below:
-
+Key indexing strategies are summarised below:
 
 \begin{table}[H]
 \centering
@@ -184,7 +183,7 @@ Key indexing strategies are summarized below:
 \begin{tabularx}{\textwidth}{|>{\RaggedRight\arraybackslash}X|>{\RaggedRight\arraybackslash}X|>{\RaggedRight\arraybackslash}X|}
 \hline
 \textbf{Collection} & \textbf{Index} & \textbf{Purpose} \\ \hline
-users & unique(username), unique(email) & Fast auth lookups and uniqueness enforcement \\ \hline
+users & unique(username), unique(email) & Fast authentication lookups and uniqueness enforcement \\ \hline
 complaints & (user\_id, created\_at) & Efficient citizen dashboard history retrieval \\ \hline
 complaints & (status, created\_at) & Queue and status-oriented admin filtering \\ \hline
 complaints & (department, created\_at) & Department-level operational listing \\ \hline
@@ -199,39 +198,37 @@ password\_resets & TTL(expires\_at) & Automatic expired-token cleanup \\ \hline
 
 \section{GUI Design}
 
-GUI design was planned as a task-oriented interface model where each role sees only the controls and data required for its responsibilities. Visual hierarchy, workflow clarity, and responsive behavior were treated as core functional requirements because field and supervisory users interact with the platform under different device and time constraints. The resulting interface strategy emphasizes speed of action, low ambiguity, and consistent feedback.
+GUI design was planned as a task-oriented interface model where each role sees only the controls and data required for its responsibilities. Visual hierarchy, workflow clarity, and responsive behaviour were treated as core functional requirements because field and supervisory users interact with the platform under different device and time constraints. The resulting interface strategy emphasises speed of action, low ambiguity, and consistent feedback.
 
 \subsection{Design Principles}
 
 The UI follows practical governance portal principles:
 
 \begin{itemize}
-\item Clarity of action over decorative complexity.
-\item Explicit role boundaries in navigation and controls.
-\item Immediate visual feedback for status and notification changes.
-\item Responsive behavior for desktop operator screens and mobile field usage [21].
+\item Clarity of action over decorative complexity
+\item Explicit role boundaries in navigation and controls
+\item Immediate visual feedback for status and notification changes
+\item Responsive behaviour for desktop operator screens and mobile field usage
 \end{itemize}
 
 \subsection{Interface Areas}
 
-Key interface areas are summarized below:
-
+Key interface areas are summarised below:
 
 \begin{itemize}
-\item \textbf{Public Home:} Provides awareness, transparency access, and role entry points.
-\item \textbf{Authentication:} Manages login, registration, and password recovery flows.
-\item \textbf{Analyze \& Result Views:} Handles image uploads, AI analysis display, interactive maps, and draft review.
-\item \textbf{Citizen Dashboard:} Displays the personal complaint list, lifecycle timeline, feedback, and progress visibility.
-\item \textbf{Worker Dashboard:} Shows the assigned task queue and allows completion updates.
-\item \textbf{Department Head Dashboard:} Provides department-level filtering, status updates, and note-taking.
-\item \textbf{Admin Dashboard:} Provides global queue access, worker approvals, triage, bulk actions, analytics, and exports.
-\item \textbf{Notifications \& Profile:} Manages event feeds, read-states, and personal information updates.
+\item \textbf{Public Home:} Provides awareness, transparency access, and role entry points
+\item \textbf{Authentication:} Manages login, registration, and password recovery flows
+\item \textbf{Analyse and Result Views:} Handles image uploads, AI analysis display, interactive maps, draft review
+\item \textbf{Citizen Dashboard:} Displays personal complaint list, lifecycle timeline, feedback, progress visibility
+\item \textbf{Worker Dashboard:} Shows assigned task queue and allows completion updates
+\item \textbf{Department Head Dashboard:} Provides department-level filtering, status updates, note-taking
+\item \textbf{Admin Dashboard:} Provides global queue access, worker approvals, triage, bulk actions, analytics, exports
+\item \textbf{Notifications and Profile:} Manages event feeds, read-states, personal information updates
 \end{itemize}
 
 \subsection{Wireframe Reference}
 
 The following figure provides a visual reference that complements the explanatory text in this subsection.
-
 
 \begin{figure}[H]
 \centering
@@ -254,16 +251,14 @@ The screenshot gallery below restores representative evidence from the implement
 \screenshotcard[Citizen Tracking Dashboard]{0.48\textwidth}{fig:s03}{../../images/grievance_status_tracker.png}{Citizen Complaint Tracking Dashboard}
 
 \screenshotcard[Worker Assignment Queue]{0.48\textwidth}{fig:s04}{../../images/admin_worker_task_assignment_pannel.png}{Worker Assignment Queue}
-\screenshotcard[Admin Dashboard]{0.96\textwidth}{fig:s05}{../../images/admin_dashboard.png}{Admin Dashboard: shows real-time complaint volume and department breakdown.}
+\screenshotcard[Admin Dashboard]{0.96\textwidth}{fig:s05}{../../images/admin_dashboard.png}{Admin Dashboard: shows real-time complaint volume and department breakdown}
 
-\screenshotcard[Admin Triage Queue]{0.96\textwidth}{fig:s06}{../../images/admin_human_complaint_review_pannel.png}{Administrative Triage Queue: displays low-confidence AI classifications.}
-\screenshotcard[Grievance Heatmap]{0.48\textwidth}{fig:s07}{../../images/grievance_heatmap.png}{Geospatial aggregation of complaints across the municipal area.}
+\screenshotcard[Admin Triage Queue]{0.96\textwidth}{fig:s06}{../../images/admin_human_complaint_review_pannel.png}{Administrative Triage Queue: displays low-confidence AI classifications}
+\screenshotcard[Grievance Heatmap]{0.48\textwidth}{fig:s07}{../../images/grievance_heatmap.png}{Geospatial aggregation of complaints across the municipal area}
 
-\screenshotcard[Detailed Complaint View]{0.96\textwidth}{fig:s09}{../../images/admin_english_complaint_view.png}{Detailed view of a resolved complaint with AI metadata and status history.}
-\screenshotcard[Admin Analytics Dashboard]{0.96\textwidth}{fig:s12}{../../images/admin_analytics_page.png}{Admin Analytics Dashboard with operational metrics and routing summaries.}
-
-
+\screenshotcard[Detailed Complaint View]{0.96\textwidth}{fig:s09}{../../images/admin_english_complaint_view.png}{Detailed view of a resolved complaint with AI metadata and status history}
+\screenshotcard[Admin Analytics Dashboard]{0.96\textwidth}{fig:s12}{../../images/admin_analytics_page.png}{Admin Analytics Dashboard with operational metrics and routing summaries}
 
 \section{Chapter Summary}
 
-This chapter defined structural design choices, module interactions, data modeling strategy, and UI architecture. The design emphasizes traceability, secure operations, and practical maintainability while accommodating AI-assisted workflows in a municipal governance context.
+This chapter defined structural design choices, module interactions, data modelling strategy, and UI architecture. The design emphasises traceability, secure operations, and practical maintainability whilst accommodating AI-assisted workflows in a municipal governance context.

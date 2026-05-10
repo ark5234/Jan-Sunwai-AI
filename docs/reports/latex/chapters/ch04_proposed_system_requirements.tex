@@ -1,33 +1,33 @@
-% !TeX root = ../main.tex
+% !TEX root = ../main.tex
 \chapter{Proposed System Requirements}
 
-This chapter describes the proposed Jan-Sunwai AI solution architecture from a requirement realization perspective. While Chapter 3 documented what is required, this chapter explains how the proposed system addresses those requirements through modular capabilities and integrated workflows built on the React, FastAPI, MongoDB, and Ollama stack [12, 11, 13, 17].
+This chapter describes the proposed Jan-Sunwai AI solution architecture from a requirements realization perspective. While Chapter 3 documented what is required, this chapter explains how the proposed system addresses those requirements through modular capabilities and integrated workflows built on the React, FastAPI, MongoDB, and Ollama stack.
 
 \section{Overview of Proposed System}
 
-The proposed system is a role-driven civic complaint platform that combines AI-assisted intake with deterministic governance controls. Rather than adopting a monolithic architecture or a purely generative AI approach, the system was designed with strict module boundaries, a hybrid inference pipeline, and a flexible document-store database. These architectural choices were made to ensure the platform could run efficiently in resource-constrained municipal environments while maintaining strict auditability and data residency [11, 13, 7].
+The proposed system is a role-driven civic complaint platform that combines AI-assisted intake with deterministic governance controls. Rather than adopting a monolithic architecture or a purely generative AI approach, the system was designed with strict module boundaries, a hybrid inference pipeline, and a flexible document-store database. These architectural choices were made to ensure the platform could run efficiently in resource-constrained municipal environments while maintaining strict auditability and data residency.
 
-The system can be summarized as a five-stage path:
+The system can be summarised as a five-stage path:
 
 \begin{enumerate}
-\item Complaint Intake: Citizen uploads image and requests analysis.
-\item AI Enrichment: System extracts likely category, location hints, and draft text.
-\item Structured Submission: Citizen reviews/edits and confirms complaint payload.
-\item Operational Routing: Complaint is assigned, tracked, and escalated if needed.
-\item Governance and Transparency: Notifications, analytics, exports, and public feed support accountability.
+\item Complaint Intake: Citizen uploads image and requests analysis
+\item AI Enrichment: System extracts likely category, location hints, and draft text
+\item Structured Submission: Citizen reviews and edits, then confirms complaint payload
+\item Operational Routing: Complaint is assigned, tracked, and escalated if needed
+\item Governance and Transparency: Notifications, analytics, exports, and public feed support accountability
 \end{enumerate}
 
 \section{Module Descriptions}
 
-The proposed system is organized as cooperating modules so that each operational responsibility remains isolated, testable, and maintainable. This modular decomposition also supports phased enhancement, where future upgrades can be applied to specific capability areas without destabilizing the entire platform. The subsections below summarize each major module and the role it plays in requirement realization.
+The proposed system is organised as cooperating modules so that each operational responsibility remains isolated, testable, and maintainable. This modular decomposition also supports phased enhancement, where future upgrades can be applied to specific capability areas without destabilising the entire platform. The subsections below summarise each major module and the role it plays in requirement realisation.
 
 \subsection{Authentication and User Management Module}
 
-This module handles registration, login, session identity, profile updates, and password recovery. It enforces role-oriented authorization for citizen, worker, department head, and admin personas. Key controls include secure cookie-session issuance [10], role checks, JWT compatibility for API clients, and reset-token hashing.
+This module handles registration, login, session identity, profile updates, and password recovery. It enforces role-oriented authorisation for citizen, worker, department head, and admin personas. Key controls include secure cookie-session issuance, role checks, JWT compatibility for API clients, and reset-token hashing.
 
-\subsection{Analyze and Complaint Intake Module}
+\subsection{Analyse and Complaint Intake Module}
 
-This module processes uploaded images, invokes the hybrid classifier pipeline, extracts location metadata, and orchestrates draft generation. It supports both immediate and queued generation paths and returns timing metadata for observability [3, 4, 5, 17].
+This module processes uploaded images, invokes the hybrid classifier pipeline, extracts location metadata, and orchestrates draft generation. It supports both immediate and queued generation paths and returns timing metadata for observability.
 
 \subsection{Complaint Lifecycle Module}
 
@@ -35,7 +35,7 @@ This module persists complaints and manages state transitions, including status 
 
 \subsection{Assignment and Worker Operations Module}
 
-This module auto-assigns complaints to eligible workers using department matching, optional geospatial service-area checks, and load balancing by active tasks. It also provides worker status controls and completion signaling [11, 13].
+This module auto-assigns complaints to eligible workers using department matching, optional geospatial service-area checks, and load balancing by active tasks. It also provides worker status controls and completion signalling.
 
 \subsection{Notification and Communication Module}
 
@@ -43,11 +43,11 @@ This module creates in-app notifications for complaint lifecycle events and main
 
 \subsection{Triage and Governance Module}
 
-This module supports admin review of low-confidence classifications. It enables decision actions such as approve, reject, or relabel. The triage path acts as a governance safety net against AI uncertainty [6, 5].
+This module supports admin review of low-confidence classifications. It enables decision actions such as approve, reject, or relabel. The triage path acts as a governance safety net against AI uncertainty.
 
 \subsection{Analytics and Public Transparency Module}
 
-This module aggregates operational statistics, trend lines, and geospatial heatmap data. It also exposes an anonymized public feed to support transparency without leaking sensitive user data.
+This module aggregates operational statistics, trend lines, and geospatial heatmap data. It also exposes an anonymised public feed to support transparency without leaking sensitive user data.
 
 \section{System Features}
 
@@ -57,7 +57,7 @@ This module aggregates operational statistics, trend lines, and geospatial heatm
 \endhead
 PF-01 & Image-first intake & Reduces textual burden on citizen and improves evidence quality \\ \hline
 PF-02 & Hybrid category detection & Improves classification consistency through rules plus selective reasoning \\ \hline
-PF-03 & Draft complaint generation & Standardizes language quality and reduces submission ambiguity \\ \hline
+PF-03 & Draft complaint generation & Standardises language quality and reduces submission ambiguity \\ \hline
 PF-04 & Role-based dashboard routing & Ensures each persona sees relevant actions and data \\ \hline
 PF-05 & Auto-assignment service & Reduces manual workload and accelerates field execution \\ \hline
 PF-06 & Status history timeline & Improves accountability and supports audit and grievance review \\ \hline
@@ -72,58 +72,55 @@ PF-12 & Health endpoints and timing logs & Supports operational diagnosis and pr
 
 \section{Advantages of Proposed System}
 
-The proposed solution offers measurable value across three levels: citizen experience, administrative throughput, and institutional governance. Crucially, the chosen architecture (FastAPI + React + MongoDB + Local LLM) outperforms simpler monolithic alternatives in several ways. The document model (MongoDB) is better suited to civic records, which evolve through complex, schema-less state transitions (such as appending notes and timestamps) without requiring expensive relational joins. Furthermore, the hybrid AI approach ensures that the non-deterministic nature of vision models is bounded by hard-coded, deterministic routing SLAs, making the system vastly more reliable for public service than a pure "black box" generative classifier.
+The proposed solution offers measurable value across three levels: citizen experience, administrative throughput, and institutional governance. Crucially, the chosen architecture (FastAPI + React + MongoDB + Local LLM) outperforms simpler monolithic alternatives in several ways. The document model (MongoDB) is better suited to civic records, which evolve through complex, schema-less state transitions (such as appending notes and timestamps) without requiring expensive relational joins. Furthermore, the hybrid AI approach ensures that the non-deterministic nature of vision models is bounded by hard-coded, deterministic routing SLAs, making the system vastly more reliable for public service than a purely generative classifier.
 
 \subsection{Citizen-Centric Advantages}
 
 The citizen-facing advantages below stem directly from the image-first intake and AI-assisted drafting architecture:
 
-
 \begin{itemize}
-\item Simplified complaint filing with image-based assistance.
-\item Better complaint quality due to generated formal drafts.
-\item Real-time feedback through status and notification channels.
-\item Reduced confusion in choosing the correct municipal department.
+\item Simplified complaint filing with image-based assistance
+\item Better complaint quality due to generated formal drafts
+\item Real-time feedback through status and notification channels
+\item Reduced confusion in choosing the correct municipal department
 \end{itemize}
 
 \subsection{Administrative and Departmental Advantages}
 
 On the administrative side, the module boundaries and assignment automation translate into measurable operational gains:
 
-
 \begin{itemize}
-\item Better routing quality and lower manual triage burden for standard cases.
-\item Strong lifecycle auditability for supervisory and escalation actions.
-\item Faster assignment and backlog control through automation and bulk operations.
-\item Structured data support for reporting and policy-level analysis.
+\item Better routing quality and lower manual triage burden for standard cases
+\item Strong lifecycle auditability for supervisory and escalation actions
+\item Faster assignment and backlog control through automation and bulk operations
+\item Structured data support for reporting and policy-level analysis
 \end{itemize}
 
 \subsection{Institutional Advantages}
 
 At the institutional level, the deployment architecture delivers compliance and handover advantages not possible with ad-hoc cloud-dependent designs:
 
-
 \begin{itemize}
-\item Local-first inference supports stricter data residency requirements.
-\item Containerized deployment supports repeatable setup and handover.
-\item Explicit API version aliasing improves integration stability.
-\item Security hardening and validation controls reduce common exploit surfaces.
+\item Local-first inference supports stricter data residency requirements
+\item Containerised deployment supports repeatable setup and handover
+\item Explicit API version aliasing improves integration stability
+\item Security hardening and validation controls reduce common exploit surfaces
 \end{itemize}
 
 \section{Requirement Realization Matrix}
 
 \begin{xltabular}{\textwidth}{|>{\RaggedRight\arraybackslash}p{0.17\textwidth}|>{\RaggedRight\arraybackslash}p{0.23\textwidth}|>{\RaggedRight\arraybackslash}X|}
 \hline
-\textbf{Requirement Group} & \textbf{Primary Module} & \textbf{Realization Mechanism} \\ \hline
+\textbf{Requirement Group} & \textbf{Primary Module} & \textbf{Realisation Mechanism} \\ \hline
 \endhead
 Registration and Login & Auth and User Management & Register/login routes, cookie-session issuance, JWT compatibility mode, profile update API, password reset token lifecycle \\ \hline
-AI Classification and Drafting & Analyze Module + LLM Queue & Vision model cascade, rule engine scoring, optional reasoning, queued generation polling \\ \hline
+AI Classification and Drafting & Analyse Module + LLM Queue & Vision model cascade, rule engine scoring, optional reasoning, queued generation polling \\ \hline
 Lifecycle and Tracking & Complaint Lifecycle Module & CRUD plus status, transfer, escalate, feedback, notes, comments, status history \\ \hline
 Worker Operations & Assignment and Worker Module & Eligibility filter, geospatial check, load balancing, worker completion flow \\ \hline
 Governance and Review & Triage and Admin Controls & Low-confidence review queue and corrective decision actions \\ \hline
 Communication & Notifications Module & In-app notification events, unread counter, mark-read APIs, email stub integration \\ \hline
-Reporting and Transparency & Analytics/Public Module & Overview metrics, heatmap endpoint, anonymized public complaint feed \\ \hline
-Resilience and Security & Cross-cutting Platform Controls & Health probes, security headers, upload hardening, sanitization, rate limits, logs \\ \hline
+Reporting and Transparency & Analytics/Public Module & Overview metrics, heatmap endpoint, anonymised public complaint feed \\ \hline
+Resilience and Security & Cross-cutting Platform Controls & Health probes, security headers, upload hardening, sanitisation, rate limits, logs \\ \hline
 \caption{Traceability from Requirements to Proposed Modules}
 \end{xltabular}
 
@@ -138,28 +135,29 @@ Resilience and Security & Cross-cutting Platform Controls & Health probes, secur
 
 \section{Expected Impact}
 
-The proposed system should improve complaint quality because guided image intake and AI-assisted drafting remove much of the inconsistency that normally appears in free-form citizen text. Routing should also become more reliable, since department prediction and authority mapping reduce the first-hop re-assignment delays described earlier in the report. Governance is strengthened through status timelines, mandatory notes at each transition, and a formal escalation path, while citizens receive clearer evidence of progress through notifications and visible workflow updates. Administrators gain better planning signals from the departmental trend data and geospatial heatmap, and deployment becomes easier to reproduce because the Compose and environment management strategy keeps the runtime configuration consistent. These gains are still contingent on institutional adoption quality, administrator training, and the completeness of worker profile data at launch \cite{un_e_gov, WorldBank2023, hitl_ai}.
+The proposed system should improve complaint quality because guided image intake and AI-assisted drafting remove much of the inconsistency that normally appears in free-form citizen text. Routing should also become more reliable, since department prediction and authority mapping reduce the first-hop re-assignment delays described earlier in the report. Governance is strengthened through status timelines, mandatory notes at each transition, and a formal escalation path, while citizens receive clearer evidence of progress through notifications and visible workflow updates. Administrators gain better planning signals from the departmental trend data and geospatial heatmap, and deployment becomes easier to reproduce because the Compose and environment management strategy keeps the runtime configuration consistent. These gains are contingent on institutional adoption quality, administrator training, and the completeness of worker profile data at launch.
 
 \section{Module Interaction Contracts}
 
 The system modules interact through explicit contracts to ensure role-based isolation and functional consistency:
+
 \begin{itemize}
-    \item \textbf{Authentication Module:} Provides current user identity and role claims to all protected routers via dependency injection.
-    \item \textbf{Analyze Module:} Produces classification, location, and draft payloads used by the Lifecycle module for complaint creation.
-    \item \textbf{Complaint Lifecycle Module:} Emits events to the Notification module and triggers auto-assignment at creation or during reassignments.
-    \item \textbf{Worker Module:} Reports completion updates that influence the status history and lifecycle state.
-    \item \textbf{Triage Module:} Applies corrected decisions for low-confidence records, updating the primary complaint data store.
-    \item \textbf{Analytics \& Public Modules:} Execute aggregate queries on the complaint store to expose anonymized trends and heatmaps.
-    \item \textbf{Health Module:} Publishes liveness and readiness status by probing the database and local model runtime.
+\item \textbf{Authentication Module:} Provides current user identity and role claims to all protected routers via dependency injection
+\item \textbf{Analyse Module:} Produces classification, location, and draft payloads used by the Lifecycle module for complaint creation
+\item \textbf{Complaint Lifecycle Module:} Emits events to the Notification module and triggers auto-assignment at creation or during reassignments
+\item \textbf{Worker Module:} Reports completion updates that influence the status history and lifecycle state
+\item \textbf{Triage Module:} Applies corrected decisions for low-confidence records, updating the primary complaint data store
+\item \textbf{Analytics and Public Modules:} Execute aggregate queries on the complaint store to expose anonymised trends and heatmaps
+\item \textbf{Health Module:} Publishes liveness and readiness status by probing the database and local model runtime
 \end{itemize}
 
-\section{Requirement Realization Detail by Persona}
+\section{Requirement Realisation Detail by Persona}
 
-Each persona receives a targeted feature set. \textbf{Citizens} get image-based intake, dashboard tracking, notifications, feedback, and password reset: reducing filing friction and improving visibility. \textbf{Workers} receive an assignment list, status update controls, and completion actions: delivering structured field execution. \textbf{Department Heads} have department-level filtering, status updates, transfer/escalation, and notes: enabling controlled supervisory governance. \textbf{Administrators} hold full operational governance: worker approvals, triage decisions, bulk operations, analytics, and exports. \textbf{Public Viewers} can access the anonymised complaint board without exposing any personally identifiable records.
+Each persona receives a targeted feature set. Citizens get image-based intake, dashboard tracking, notifications, feedback, and password reset, reducing filing friction and improving visibility. Workers receive an assignment list, status update controls, and completion actions, delivering structured field execution. Department heads have department-level filtering, status updates, transfer/escalation, and notes, enabling controlled supervisory governance. Administrators hold full operational governance: worker approvals, triage decisions, bulk operations, analytics, and exports. Public viewers can access the anonymised complaint board without exposing any personally identifiable records.
 
 \section{Proposed Data and Control Flow Narrative}
 
-The proposed flow intentionally separates decision support from governance authority. AI modules suggest categories and draft text, but acceptance and lifecycle transitions remain controlled through authenticated role actions. This hybrid control plane avoids over-automation risk while still reducing manual burden in high-volume intake scenarios [5, 6, 11].
+The proposed flow intentionally separates decision support from governance authority. AI modules suggest categories and draft text, but acceptance and lifecycle transitions remain controlled through authenticated role actions. This hybrid control plane avoids over-automation risk while still reducing manual burden in high-volume intake scenarios.
 
 \section{Chapter Summary}
 

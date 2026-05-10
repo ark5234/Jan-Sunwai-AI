@@ -1,13 +1,13 @@
-% !TeX root = ../main.tex
+% !TEX root = ../main.tex
 \chapter{Conclusion and References}
 
 \section{Conclusion}
 
-Jan-Sunwai AI was built to demonstrate that AI-assisted classification and deterministic governance controls can coexist within a single civic platform without either undermining the auditability that public accountability requires or imposing VRAM and cloud-API costs that municipal institutions cannot sustain. The central engineering contribution of the project is the architectural pattern: vision-language models are applied where perceptual extraction adds genuine value, while deterministic rule layers and human triage authority govern every decision point at which an error would produce a material civic harm.
+Jan-Sunwai AI was built to demonstrate that AI-assisted classification and deterministic governance controls can coexist within a single civic platform without either undermining the auditability that public accountability requires or imposing VRAM and cloud-API costs that municipal institutions cannot sustain. The central engineering contribution of the project is the architectural pattern: vision-language models are applied where perceptual extraction adds genuine value, whilst deterministic rule layers and human triage authority govern every decision point at which an error would produce a material civic harm.
 
-From an engineering standpoint, the most instructive finding of the development period was not about model accuracy. It was about the consequences of synchronous AI calls under load. Testing the system with Locust \cite{locust_docs} exposed queue depth growth under concurrent analyse requests that, left unaddressed, would have produced unacceptable response latency at realistic usage volumes. The architectural pivot to asynchronous generation, documented in Chapter 5 and Chapter 6, converted a scalability problem into a managed engineering trade-off. This finding reinforces the argument made in the literature review: civic platforms must be designed for resilience against imperfect conditions, not only for performance under ideal ones.
+From an engineering standpoint, the most instructive finding of the development period was not about model accuracy. It was about the consequences of synchronous AI calls under load. Testing the system with Locust exposed queue depth growth under concurrent analyse requests that, left unaddressed, would have produced unacceptable response latency at realistic usage volumes. The architectural pivot to asynchronous generation, documented in Chapter 5 and Chapter 6, converted a scalability problem into a managed engineering trade-off. This finding reinforces the argument made in the literature review: civic platforms must be designed for resilience against imperfect conditions, not only for performance under ideal ones.
 
-The technology choices made throughout the project align with the reference documentation for FastAPI, React, MongoDB, and Docker \cite{fastapi_docs, react_docs, mongodb_docs, docker_docs}. Local inference was adopted not as a cost-saving measure but as a principled response to data-residency obligations common in Indian municipal governance environments. The consequence, as documented in Chapter 8, is a dependency on local GPU capacity that must be addressed through infrastructure investment or distributed scaling before the platform is deployed at full municipal volume.
+The technology choices made throughout the project align with the reference documentation for FastAPI, React, MongoDB, and Docker. Local inference was adopted not as a cost-saving measure but as a principled response to data-residency obligations common in Indian municipal governance environments. The consequence, as documented in Chapter 8, is a dependency on local GPU capacity that must be addressed through infrastructure investment or distributed scaling before the platform is deployed at full municipal volume.
 
 The project is offered not simply as a functional application but as a reference architecture for local-first, privacy-respecting municipal civic technology. The demonstrated combination of image-based intake, hybrid AI routing, human-governed triage, full audit trails, and containerised deployment provides a reproducible blueprint that constrained institutions can adapt without surrendering operational control to black-box cloud services. The limitations documented in Chapter 8 provide an honest account of where that blueprint requires further engineering investment before it can be considered production-grade at scale.
 
@@ -37,11 +37,11 @@ The project is offered not simply as a functional application but as a reference
 % A. Civic Governance & Grievance Systems
 \bibitem{un_e_gov}
 United Nations,
-\newblock ``UN E-Government Survey: Harnessing Digitalization for Sustainable Development,'' Department of Global Communications, 2022. [Online]. Available: \url{https://api/v1/publicadministration.un.org/egovernance}.
+\newblock ``UN E-Government Survey: Harnessing Digitalization for Sustainable Development,'' Department of Global Communications, 2022. [Online]. Available: \url{https://api/v1/publicadministration.un.org/egovernance}. [Accessed: Apr. 7, 2026].
 
 \bibitem{world_bank_digital_governance}
 World Bank,
-\newblock ``Digital Government Toolkit,'' World Bank Group, 2023. [Online]. Available: \url{https://www.worldbank.org/en/topic/governance/brief/digital-government}.
+\newblock ``Digital Government Toolkit,'' World Bank Group, 2023. [Online]. Available: \url{https://www.worldbank.org/en/topic/governance/brief/digital-government}. [Accessed: Apr. 7, 2026].
 
 % B. AI / Computer Vision / Multimodal
 \bibitem{clip_paper}
@@ -50,7 +50,7 @@ A. Radford, J. W. Kim, C. Hallacy, A. Ramesh, G. Goh, S. Agarwal, G. Sastry, A. 
 
 \bibitem{llama_vision}
 Meta AI,
-\newblock ``Llama 3.2: Revolutionizing edge AI and vision with open, customizable models,'' Sept. 2024. [Online]. Available: \url{https://ai.meta.com/blog/llama-3-2-connect-2024-vision-edge-mobile-devices/}.
+\newblock ``Llama 3.2: Revolutionising edge AI and vision with open, customisable models,'' Sept. 2024. [Online]. Available: \url{https://ai.meta.com/blog/llama-3-2-connect-2024-vision-edge-mobile-devices/}. [Accessed: Apr. 7, 2026].
 
 % C. Hybrid AI Systems
 \bibitem{neuro_symbolic}
@@ -58,17 +58,17 @@ A. d'Avila Garcez, M. Gori, L. C. Lamb, L. Serafini, M. Spranger, and S. N. Tran
 \newblock ``Neural-Symbolic Computing: An Effective Methodology for Principled Integration of Machine Learning and Reasoning,'' \textit{FLAP}, vol. 6, no. 4, 2019.
 
 \bibitem{hitl_ai}
-E. Mosqueira-Rey, E. HernÃ¡ndez-Pereira, D. Alonso-RÃ­os, F. Bobes-BascarÃ¡n, and A. FernÃ¡ndez-Leal,
+E. Mosqueira-Rey, E. Hernández-Pereira, D. Alonso-Ríos, F. Bobes-Bascarán, and A. Fernández-Leal,
 \newblock ``Human-in-the-loop machine learning: A state of the art,'' \textit{Artificial Intelligence Review}, vol. 56, pp. 3005-3054, 2023.
 
 % D. Security
 \bibitem{cis_controls}
 Center for Internet Security (CIS),
-\newblock ``CIS Controls for Effective Cyber Defense,'' [Online]. Available: \url{https://www.cisecurity.org/controls/}. [Accessed: Apr. 7, 2026].
+\newblock ``CIS Controls for Effective Cyber Defence,'' [Online]. Available: \url{https://www.cisecurity.org/controls/}. [Accessed: Apr. 7, 2026].
 
 \bibitem{nist_zerotrust}
 NIST,
-\newblock ``Zero Trust Architecture,'' NIST Special Publication 800-207, August 2020. [Online]. Available: \url{https://csrc.nist.gov/publications/detail/sp/800-207/final}.
+\newblock ``Zero Trust Architecture,'' NIST Special Publication 800-207, August 2020. [Online]. Available: \url{https://csrc.nist.gov/publications/detail/sp/800-207/final}. [Accessed: Apr. 7, 2026].
 
 \bibitem{jwt_rfc}
 IETF,
@@ -76,7 +76,7 @@ IETF,
 
 \bibitem{sans_defensible}
 SANS Institute,
-\newblock ``Defensible Security Architecture and Engineering,'' [Online]. Available: \url{https://www.sans.org/}.
+\newblock ``Defensible Security Architecture and Engineering,'' [Online]. Available: \url{https://www.sans.org/}. [Accessed: Apr. 7, 2026].
 
 % E. Framework Documentation
 \bibitem{fastapi_docs}
@@ -93,7 +93,7 @@ MongoDB,
 
 \bibitem{mongodb_patterns}
 MongoDB,
-\newblock ``Data Model Design,'' [Online]. Available: \url{https://www.mongodb.com/docs/manual/core/data-model-design/}.
+\newblock ``Data Model Design,'' [Online]. Available: \url{https://www.mongodb.com/docs/manual/core/data-model-design/}. [Accessed: Apr. 7, 2026].
 
 \bibitem{pydantic_docs}
 Pydantic,
@@ -122,11 +122,11 @@ DSDM Consortium,
 
 \bibitem{mobile_design}
 W3C,
-\newblock ``Mobile Web Best Practices,'' [Online]. Available: \url{https://www.w3.org/TR/mobile-bp/}.
+\newblock ``Mobile Web Best Practices,'' [Online]. Available: \url{https://www.w3.org/TR/mobile-bp/}. [Accessed: Apr. 7, 2026].
 
 \bibitem{rad_case}
 D. Clegg and R. Barker,
-\newblock \textit{CASE Method Fast-track: A RAD Approach}, Addison-Wesley, 1994. (MoSCoW prioritization methodology).
+\newblock \textit{CASE Method Fast-track: A RAD Approach}, Addison-Wesley, 1994.
 
 \bibitem{nist_rbac}
 D. Ferraiolo, R. Sandhu, S. Gavrila, D. R. Kuhn, and R. Chandramouli,
@@ -136,5 +136,39 @@ D. Ferraiolo, R. Sandhu, S. Gavrila, D. R. Kuhn, and R. Chandramouli,
 Ministry of Personnel, Public Grievances and Pensions, Government of India,
 \newblock ``Annual Report 2022--23: CPGRAMS Performance Summary,'' New Delhi, 2023. [Online]. Available: \url{https://pgportal.gov.in}. [Accessed: Apr. 7, 2026].
 
-\end{thebibliography}
+% Additional Vision & Language Models Used
+\bibitem{qwen_2p5vl}
+Alibaba Cloud Team,
+\newblock ``Qwen2.5-VL: Multimodal Vision Language Model,'' Alibaba QwenTeam, Sept. 2024. [Online]. Available: \url{https://github.com/QwenLM/Qwen2.5-VL}. [Accessed: Apr. 7, 2026].
 
+\bibitem{granite_vision}
+IBM Research,
+\newblock ``Granite-3.2-Vision: A Multimodal LLM for Vision and Language,'' IBM GitHub, 2024. [Online]. Available: \url{https://github.com/ibm-granite/granite-vision-models}. [Accessed: Apr. 7, 2026].
+
+\bibitem{llava_model}
+H. Liu, C. Li, Q. Wu, and Y. J. Lee,
+\newblock ``Visual instruction tuning,'' in \textit{Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)}, 2023.
+
+\bibitem{moondream}
+Vikhyat,
+\newblock ``Moondream: Tiny vision language model suitable for edge devices,'' GitHub, 2024. [Online]. Available: \url{https://github.com/vikhyat/moondream}. [Accessed: Apr. 7, 2026].
+
+% Testing & Development Methodology
+\bibitem{pytest_docs}
+pytest,
+\newblock ``pytest documentation,'' [Online]. Available: \url{https://docs.pytest.org}. [Accessed: Apr. 7, 2026].
+
+\bibitem{agile_manifesto}
+K. Beck et al.,
+\newblock ``Manifesto for Agile Software Development,'' 2001. [Online]. Available: \url{https://agilemanifesto.org}. [Accessed: Apr. 7, 2026].
+
+% Indian Government E-Governance Programs
+\bibitem{smart_cities_mission}
+Ministry of Housing and Urban Affairs, Government of India,
+\newblock ``Smart Cities Mission Programme Overview,'' New Delhi, 2015. [Online]. Available: \url{https://smartcities.gov.in}. [Accessed: Apr. 7, 2026].
+
+\bibitem{nic_portal}
+National Informatics Centre, Government of India,
+\newblock ``Digital Governance Portals and E-Services Framework,'' New Delhi, 2023. [Online]. Available: \url{https://www.nic.in}. [Accessed: Apr. 7, 2026].
+
+\end{thebibliography}

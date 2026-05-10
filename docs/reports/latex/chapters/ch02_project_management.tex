@@ -1,54 +1,54 @@
-% !TeX root = ../main.tex
+% !TEX root = ../main.tex
 \chapter{Project Management}
 
-Project management for Jan-Sunwai AI followed an iterative delivery approach with explicit weekly milestones, acceptance checkpoints, and operational hardening gates. The planning strategy balanced feature development with risk reduction, especially in AI reliability, security posture, and deployment reproducibility.
+Project management for Jan-Sunwai AI followed an iterative delivery methodology with explicit weekly milestones, acceptance checkpoints, and operational hardening gates. The planning strategy balanced feature development against risk minimisation, particularly in AI reliability, security posture, and deployment reproducibility.
 
 
 \section{Feasibility Study}
 
-The proposed system was evaluated for practical execution viability before and during implementation. Feasibility was treated as a living checkpoint rather than a one-time document, because model behavior, deployment constraints, and user workflow complexity evolved across iterations.
+The proposed system was evaluated for practical execution viability at the project's outset and at multiple points during implementation. Feasibility was treated as a dynamic checkpoint rather than a static document, as model behaviour, deployment constraints, and user workflow complexity evolved throughout the project lifecycle.
 
 \subsection{Technical Feasibility}
 
-Technical feasibility was evaluated through progressive integration rather than theoretical assessment. The React frontend, FastAPI backend, MongoDB store, Ollama runtime, and Docker Compose orchestration were brought into functional contact in the first two weeks of the project. Health endpoints were established and validated for each service dependency, and setup scripts were verified for idempotent execution on both Windows and Linux hosts. The primary technical risk identified during this phase was VRAM contention under concurrent inference requests, which informed the subsequent decision to introduce an asynchronous generation queue rather than processing all AI requests synchronously.
+Technical feasibility was evaluated through progressive integration rather than purely theoretical assessment. The React frontend, FastAPI backend, MongoDB database, Ollama runtime, and Docker Compose orchestration were brought into functional contact during the first two weeks. Health endpoints were established and validated for each service dependency, and setup scripts were verified for idempotent execution on both Windows and Linux hosts. VRAM contention during concurrent inference requests emerged as the primary technical risk, leading to the introduction of an asynchronous generation queue in place of synchronous AI processing.
 
 \subsection{Time Schedule Feasibility}
 
-Time feasibility was assessed by decomposing the full feature scope into four phases: foundation (authentication and core complaint lifecycle), feature development (AI pipeline and role dashboards), security and reliability hardening, and documentation and delivery preparation. An eighteen-week window was mapped to this decomposition with explicit milestone dates and acceptance criteria at the boundary of each phase. The schedule was reviewed weekly against actual delivery progress, and scope was managed to ensure that hardening and documentation phases were not compressed to accommodate late-stage feature additions.
+Time feasibility was assessed by decomposing the full feature scope into four sequential phases: foundation (authentication and core complaint lifecycle), feature development (AI pipeline and role dashboards), security and reliability hardening, and documentation and delivery preparation. An 18-week project window was allocated to this decomposition with explicit milestone dates and acceptance criteria at each phase boundary. Weekly progress reviews measured actual delivery against schedule, and scope was actively managed to prevent the hardening and documentation phases from being compressed by late-stage feature additions.
 
 \subsection{Operational Feasibility}
 
-Operational feasibility was confirmed by the construction of role-based workflows for all four user personas. Each persona was mapped to a distinct set of interactions, and those interactions were validated end-to-end through manual UAT scripts before the phase in which they appeared was considered closed. Feasibility at the operational level required that a citizen with limited digital literacy could navigate from image upload to confirmed submission in under five minutes, and that an administrator could perform a triage decision in under two minutes per queued item.
+Operational feasibility was validated through the construction of role-based workflows for all four user personas. Each persona was mapped to a specific set of interactions, and those interactions were validated end-to-end via manual UAT scripts before the phase containing them was considered closed. At the operational level, feasibility required that a citizen with limited digital literacy could complete the upload-to-submission flow in under five minutes, and that an administrator could complete a triage decision in under two minutes per queued item.
 
 \subsection{Implementation Feasibility}
 
-Implementation feasibility was substantiated through the successful execution of containerised setup scripts, environment templates, and validation routines across both development and production-profile Docker Compose configurations. The ability to reproduce a working deployment from a clean machine using a single command sequence was treated as the acceptance criterion for this feasibility dimension.
+Implementation feasibility was demonstrated through successful execution of containerised setup scripts, environment templates, and validation routines across both development and production-profile Docker Compose configurations. The ability to reproduce a working deployment from a clean machine using a single command sequence was established as the acceptance criterion for this feasibility dimension.
 
 
 
 \section{Project Planning}
 
-Project planning translated broad objectives into actionable delivery slices with explicit milestones, quality gates, and integration checkpoints. Planning was intentionally cross-functional, so backend APIs, frontend role flows, AI services, and deployment scripts evolved in synchronized increments rather than in isolated tracks. This structure reduced integration shocks and enabled predictable weekly review cycles.
+Project planning converted broad objectives into actionable delivery slices with explicit milestones, quality gates, and integration checkpoints. Planning was intentionally cross-functional, ensuring that backend APIs, frontend role flows, AI services, and deployment scripts evolved in synchronized increments rather than in isolated work streams. This structure reduced integration surprises and enabled predictable weekly review cycles.
 
-\subsection{Development Approach \& Justification}
+\subsection{Development Approach and Justification}
 
-A sequential waterfall model was not a good fit for this project because the AI layer and the role-based user flows both needed repeated adjustment as implementation details became visible \cite{Docker2026, FastAPI2026, MongoDB2026}. The work therefore moved forward in short verified increments. Each increment began with a working baseline, moved through unit and integration checks, surfaced the relevant role workflow in the interface for end-to-end validation, and then received security and performance hardening once the core behaviour had stabilised. Release notes and operational steps were only written after those checks passed, so documentation reflected the version that was actually ready for handover.
+A sequential waterfall model was not appropriate for this project because the AI layer and role-based user workflows both required repeated refinement as implementation details emerged. The work therefore proceeded in short verified increments following agile iterative principles~\cite{agile_manifesto}. Each increment began with a working baseline, moved through unit and integration checks, surfaced the relevant role workflow in the interface for end-to-end validation, and received security and performance hardening once the core behaviour had stabilised. Release notes and operational procedures were written only after verification was complete, ensuring documentation reflected the version actually ready for deployment.
 
 
-\subsection{Milestones \& Deliverables}
+\subsection{Milestones and Deliverables}
 
-Milestones and deliverables were tracked in weekly slices aligned to project governance checkpoints.
+Milestones and deliverables were tracked in weekly slices aligned to project governance checkpoints:
 
 \begin{itemize}
-\item Foundation phase: authentication, baseline complaint lifecycle, and core schema validation.
-\item Feature phase: AI-assisted analysis, worker assignment, role dashboards, and notifications.
-\item Hardening phase: upload security, resilience handling, and load/security verification suites.
-\item Delivery phase: deployment validation, final documentation, and report artifacts.
+\item Foundation phase: authentication, baseline complaint lifecycle, core schema validation
+\item Feature phase: AI-assisted analysis, worker assignment, role dashboards, notifications
+\item Hardening phase: upload security, resilience handling, load and security verification
+\item Delivery phase: deployment validation, final documentation, report compilation
 \end{itemize}
 
-\subsection{Roles \& Responsibilities}
+\subsection{Roles and Responsibilities}
 
-The responsibility matrix below defines the cross-functional ownership areas covered during delivery.
+The responsibility matrix below defines the cross-functional ownership areas covered during delivery:
 
 \begin{table}[H]
 \centering
@@ -57,14 +57,14 @@ The responsibility matrix below defines the cross-functional ownership areas cov
 \begin{tabularx}{\textwidth}{|>{\RaggedRight\arraybackslash}p{0.30\textwidth}|>{\RaggedRight\arraybackslash}X|}
 \hline
 \textbf{Role Area} & \textbf{Responsibilities} \\ \hline
-Backend Engineering & API design, schema validation, business logic, role authorization, lifecycle transitions, notification hooks \\ \hline
-Frontend Engineering & Route architecture, role dashboards, analyze/result flow, user session handling, responsive behavior \\ \hline
-AI and Classification & Vision model integration, rule engine tuning, reasoning fallback, draft generation quality checks \\ \hline
-Data and Persistence & MongoDB collection design, indexes, query access paths, reset token TTL and audit metadata \\ \hline
-Security and Reliability & Input sanitization, upload hardening, CORS and headers, degrade behavior, readiness/liveness semantics \\ \hline
+Backend Engineering & API design, schema validation, business logic, role authorisation, lifecycle transitions, notification hooks \\ \hline
+Frontend Engineering & Route architecture, role dashboards, analyse/result flow, user session handling, responsive design \\ \hline
+AI and Classification & Vision model integration, rule engine tuning, reasoning fallback, draft generation quality \\ \hline
+Data and Persistence & MongoDB collection design, indexes, query access paths, reset token TTL, audit metadata \\ \hline
+Security and Reliability & Input sanitisation, upload hardening, CORS and headers, fallback behaviour, health semantics \\ \hline
 Testing and QA & Unit and integration tests, resilience and security validation, load profiling, UAT scripts \\ \hline
-DevOps and Deployment & Compose consolidation, environment normalization, production verification scripts, backup runbooks \\ \hline
-Documentation and Handover & API reference, deployment guides, user manual, architecture and report compilation \\ \hline
+DevOps and Deployment & Compose consolidation, environment normalisation, production verification scripts, runbooks \\ \hline
+Documentation and Handover & API reference, deployment guides, user manual, architecture, report compilation \\ \hline
 \end{tabularx}
 \end{table}
 
@@ -73,16 +73,16 @@ Documentation and Handover & API reference, deployment guides, user manual, arch
 The project includes cross-cutting dependencies that were managed explicitly:
 
 \begin{itemize}
-\item Backend depends on MongoDB availability and correctly configured environment variables.
-\item Analyze flow depends on file storage service and Ollama runtime health.
-\item Frontend route behavior depends on cookie-session state and role claims.
-\item Assignment quality depends on worker profile completeness (department, approval, service area, status).
-\item Production readiness depends on compose health checks, proxy alignment, and secure secret configuration.
+\item Backend depends on MongoDB availability and correctly configured environment variables
+\item Analyse flow depends on file storage service and Ollama runtime health
+\item Frontend route behaviour depends on cookie-session state and role claims
+\item Assignment quality depends on worker profile completeness (department, approval, service area, status)
+\item Production readiness depends on compose health checks, proxy alignment, secure secret configuration
 \end{itemize}
 
-Dependency risks were controlled through health endpoints, fallback behaviors, and scripted verification routines.
+Dependency risks were controlled through health endpoints, fallback mechanisms, and scripted verification routines.
 
-\section{Project Scheduling (Gantt/PERT chart)}
+\section{Project Scheduling}
 
 The Gantt chart below provides a visual representation of the project timeline, showing the distribution of foundation, core development, security hardening, and delivery activities across the 18-week execution window.
 

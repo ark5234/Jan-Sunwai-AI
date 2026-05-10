@@ -1,46 +1,46 @@
-% !TeX root = ../main.tex
+% !TEX root = ../main.tex
 \chapter{Implementation Planning}
 
 Implementation planning for Jan-Sunwai AI focused on three parallel goals: reproducibility, maintainable module growth, and deployment readiness. The implementation strategy treated backend, frontend, AI runtime, and operational scripts as coordinated components rather than isolated code tracks. At this stage, the project is in production-handover readiness rather than prototype mode.
 
 \section{Implementation Environment}
 
-The implementation environment was designed to keep developer productivity high while preserving deployment realism. To achieve this, the project supports both fast local iteration and production-style container verification with aligned configurations, health checks, and service contracts. This dual-mode environment reduces environment drift and ensures that behavior validated during development remains reliable during handover and deployment [16, 11, 12, 13, 17].
+The implementation environment was designed to keep developer productivity high whilst preserving deployment realism. To achieve this, the project supports both fast local iteration and production-style container verification with aligned configurations, health checks, and service contracts. This dual-mode environment reduces environment drift and ensures that behaviour validated during development remains reliable during handover and deployment.
 
 \subsection{Local Development Environment}
 
 The local workflow supports rapid iteration with role-based UI validation and backend testing. Typical development topology includes:
 
 \begin{itemize}
-\item Backend running on FastAPI/Uvicorn at port 8000.
-\item Frontend development server on Vite at port 5173.
-\item MongoDB either local service or containerized dependency.
-\item Ollama runtime with configured model set on host machine.
+\item Backend running on FastAPI/Uvicorn at port 8000
+\item Frontend development server on Vite at port 5173
+\item MongoDB either local service or containerised dependency
+\item Ollama runtime with configured model set on host machine
 \end{itemize}
 
-The local setup was selected to reduce iteration latency while preserving fidelity with production behavior through shared APIs, environment variables, and health semantics [16, 11, 17].
+The local setup was selected to reduce iteration latency whilst preserving fidelity with production behaviour through shared APIs, environment variables, and health semantics.
 
 \subsection{Production-Style Container Environment}
 
-For deployment simulation and handover readiness, the project includes a unified compose configuration with a production profile [16]. In production mode:
+For deployment simulation and handover readiness, the project includes a unified compose configuration with a production profile. In production mode:
 
 \begin{itemize}
-\item MongoDB runs as a dedicated service with health checks.
-\item Backend runs from production Dockerfile and mounts uploads volume to \texttt{/app/uploads}.
-\item Frontend runs in Nginx container under compose profile \texttt{prod}.
-\item Health checks and log rotation policies are explicitly configured.
+\item MongoDB runs as a dedicated service with health checks
+\item Backend runs from production Dockerfile and mounts uploads volume to \texttt{/app/uploads}
+\item Frontend runs in Nginx container under compose profile \texttt{prod}
+\item Health checks and log rotation policies are explicitly configured
 \end{itemize}
 
 This ensures that local verification and deployment handover use the same operational assumptions.
 
-\section{Tools \& Technologies Used}
+\section{Tools and Technologies Used}
 
 \begin{itemize}
-\item \textbf{Backend \& Database:} FastAPI provides the core API router and dependency injection framework, backed by Motor/PyMongo for asynchronous MongoDB access. Pydantic [15] is used for strict schema validation.
-\item \textbf{Auth \& Security:} python-jose and passlib[bcrypt] handle cookie-session/JWT auth compatibility and password hashing.
-\item \textbf{AI \& Image Pipeline:} Ollama manages local vision and reasoning model execution, while Pillow handles upload payload validation and EXIF processing.
-\item \textbf{Frontend Stack:} React acts as the role-aware SPA foundation, built and optimized by Vite. Client communication uses Axios, and react-router-dom enforces protected role-based navigation.
-\item \textbf{DevOps \& QA:} Docker and Docker Compose orchestrate reproducible environments. Testing is handled by pytest and locust (load testing), while httpx runs async API smoke tests.
+\item \textbf{Backend and Database:} FastAPI provides the core API router and dependency injection framework, backed by Motor/PyMongo for asynchronous MongoDB access. Pydantic is used for strict schema validation.
+\item \textbf{Authentication and Security:} python-jose and passlib[bcrypt] handle cookie-session/JWT authentication compatibility and password hashing.
+\item \textbf{AI and Image Pipeline:} Ollama manages local vision and reasoning model execution, whilst Pillow handles upload payload validation and EXIF processing.
+\item \textbf{Frontend Stack:} React acts as the role-aware single-page application foundation, built and optimised by Vite. Client communication uses Axios, and react-router-dom enforces protected role-based navigation.
+\item \textbf{DevOps and QA:} Docker and Docker Compose orchestrate reproducible environments. Testing is handled by pytest~\cite{pytest_docs} and locust (load testing), whilst httpx runs asynchronous API smoke tests.
 \end{itemize}
 
 \section{Coding Standards Followed}
@@ -50,49 +50,48 @@ Strict coding standards were enforced across the stack to ensure that modules re
 \section{Implementation Sequence and Dependencies}
 
 \begin{enumerate}
-    \item \textbf{Backend skeleton and DB connectivity:} Required before auth and complaint persistence.
-    \item \textbf{Auth/session primitives:} Required before protected API and role-specific frontend routes.
-    \item \textbf{Analyze pipeline and storage handling:} Required before citizen intake flow can be tested end-to-end.
-    \item \textbf{Frontend analyze/result workflow:} Depends on stable analyze payload and auth behavior.
-    \item \textbf{Assignment and lifecycle controls:} Depends on complaint schema maturity and worker metadata.
-    \item \textbf{Triage, analytics, and governance endpoints:} Depends on reliable complaint state and metadata richness.
-    \item \textbf{Security and reliability hardening:} Should follow core flow stability to avoid hidden regressions.
-    \item \textbf{Tests and UAT cycles:} Depends on complete feature slices and stable environments.
-    \item \textbf{Production profile and handover docs:} Depends on validated security/performance baseline.
+\item Backend skeleton and database connectivity: Required before authentication and complaint persistence
+\item Authentication/session primitives: Required before protected API and role-specific frontend routes
+\item Analyse pipeline and storage handling: Required before citizen intake flow can be tested end-to-end
+\item Frontend analyse/result workflow: Depends on stable analyse payload and authentication behaviour
+\item Assignment and lifecycle controls: Depends on complaint schema maturity and worker metadata
+\item Triage, analytics, and governance endpoints: Depends on reliable complaint state and metadata richness
+\item Security and reliability hardening: Should follow core flow stability to avoid hidden regressions
+\item Tests and UAT cycles: Depends on complete feature slices and stable environments
+\item Production profile and handover documentation: Depends on validated security/performance baseline
 \end{enumerate}
 
 \section{Configuration and Secret Planning}
 
-The implementation plan emphasized explicit secret handling and runtime configurability. Important control groups include:
+The implementation plan emphasised explicit secret handling and runtime configurability. Important control groups include:
 
 \begin{itemize}
-\item Authentication controls: cookie-session settings, JWT secret/algorithm, token expiry, compatibility mode.
-\item Data controls: Mongo URL and database selection.
-\item AI controls: model identifiers, timeout windows, queue worker count.
-\item Security controls: CORS origin allowlist and rate-limiter mode.
-\item Communication controls: SMTP host/port/from for notification relay.
+\item Authentication controls: cookie-session settings, JWT secret/algorithm, token expiry, compatibility mode
+\item Data controls: Mongo URL and database selection
+\item AI controls: model identifiers, timeout windows, queue worker count
+\item Security controls: CORS origin allowlist and rate-limiter mode
+\item Communication controls: SMTP host/port/from for notification relay
 \end{itemize}
 
 A notable planning correction during implementation was moving to one canonical backend environment file to eliminate drift between local and production templates.
 
 \section{Resource and Effort Planning}
 
-Implementation effort was distributed between development, stabilization, testing, and documentation. Rather than pushing all testing to the end, the plan incorporated recurring verification cycles after major feature groups. This reduced late-stage uncertainty and shortened defect turnaround time.
+Implementation effort was distributed between development, stabilisation, testing, and documentation. Rather than pushing all testing to the end, the plan incorporated recurring verification cycles after major feature groups. This reduced late-stage uncertainty and shortened defect turnaround time.
 
 \section{Detailed Module Implementation Notes}
 
-This section captures implementation-level observations that are useful for maintenance, future enhancement, and institutional handover. It complements high-level planning by documenting how module boundaries, service responsibilities, and operational safeguards were realized in practice.
+This section captures implementation-level observations that are useful for maintenance, future enhancement, and institutional handover. It complements high-level planning by documenting how module boundaries, service responsibilities, and operational safeguards were realised in practice.
 
 \subsection{Backend Router Implementation Notes}
 
 Each router group below shows how its implementation responsibilities were planned and what specific engineering decisions arose during delivery:
 
-
 \begin{itemize}
 \item \textbf{\texttt{users}:} Handles registration, login, and password resets. Required generic forgot-password responses to prevent account enumeration, persisting reset tokens as hashes with expiry.
-\item \textbf{\texttt{complaints}:} Manages the analyze, create, and update flows. Required consistent status-history append behavior, strict role-aware update guards, and a graceful 503 degrade path for the AI analyze route.
+\item \textbf{\texttt{complaints}:} Manages the analyse, create, and update flows. Required consistent status-history append behaviour, strict role-aware update guards, and a graceful 503 degrade path for the AI analyse route.
 \item \textbf{\texttt{workers}:} Manages assignments and approvals. Separates worker self-actions from admin governance actions, and includes diagnostic assignment endpoints for operational clarity.
-\item \textbf{\texttt{notifications}:} Controls lists and read states. Badge consistency required deterministic unread counter behavior and strict ownership checks.
+\item \textbf{\texttt{notifications}:} Controls lists and read states. Badge consistency required deterministic unread counter behaviour and strict ownership checks.
 \item \textbf{\texttt{triage}:} Admin-only corrective path for low-confidence AI cases, requiring detailed decision audit notes.
 \item \textbf{\texttt{analytics}:} Dashboards and public feeds. Query aggregation required explicit pagination and safe data-exposure models for the public view.
 \item \textbf{\texttt{health}:} Provides liveness, readiness, model, and GPU probes with operationally meaningful semantics.
@@ -101,15 +100,14 @@ Each router group below shows how its implementation responsibilities were plann
 \subsection{Service-Layer Planning Notes}
 
 The implementation of core services followed specific planning notes to ensure modularity and scalability:
+
 \begin{itemize}
-    \item \textbf{Assignment service:} Designed with location-aware proximity filtering and fallback behavior for missing metadata.
-    \item \textbf{Storage service:} Includes a validation pipeline covering extension, content-type, magic-number, and payload decode checks.
-    \item \textbf{Sanitization service:} Implemented as a reusable utility to keep payload cleaning centralized and testable.
-    \item \textbf{Triage service:} Manages the lifecycle of low-confidence records and persists correction decisions in the audit trail.
-    \item \textbf{Health service:} Consolidates multi-dependency status probes into unified liveness and readiness responses.
+\item \textbf{Assignment service:} Designed with location-aware proximity filtering and fallback behaviour for missing metadata.
+\item \textbf{Storage service:} Includes a validation pipeline covering extension, content-type, magic-number, and payload decode checks.
+\item \textbf{Sanitisation service:} Implemented as a reusable utility to keep payload cleaning centralised and testable.
+\item \textbf{Triage service:} Manages the lifecycle of low-confidence records and persists correction decisions in the audit trail.
+\item \textbf{Health service:} Consolidates multi-dependency status probes into unified liveness and readiness responses.
 \end{itemize}
-
-
 
 \section{Operational Monitoring Plan}
 
@@ -121,8 +119,8 @@ The implementation of core services followed specific planning notes to ensure m
 API process time & Response header \texttt{X-Process-Time} & Detect slow endpoints and regressions after deployments \\ \hline
 Readiness status & /api/v1/health/ready endpoint & Indicates dependency-level degradation, mainly database health \\ \hline
 Model availability & /api/v1/health/models endpoint & Confirms runtime model inventory and inference readiness \\ \hline
-GPU/model state & /api/v1/health/gpu endpoint & Indicates active model and VRAM-related load behavior \\ \hline
-Notification backlog & unread-count behavior and list volume & Detects delayed event propagation or read-state anomalies \\ \hline
+GPU/model state & /api/v1/health/gpu endpoint & Indicates active model and VRAM-related load behaviour \\ \hline
+Notification backlog & unread-count behaviour and list volume & Detects delayed event propagation or read-state anomalies \\ \hline
 Assignment queue growth & open/unassigned complaints and worker status & Helps identify staffing bottlenecks and area mismatch \\ \hline
 Triage queue size & low-confidence complaint count & Indicates classifier uncertainty trend and review load \\ \hline
 Error logs & rotating backend logs & Captures fault signatures for rapid remediation \\ \hline
@@ -130,20 +128,19 @@ Error logs & rotating backend logs & Captures fault signatures for rapid remedia
 
 \section{Change Management and Release Strategy}
 
-Change management was designed to ensure that feature updates do not weaken stability, security, or governance controls. Each release cycle therefore combines technical verification, documentation synchronization, and rollback preparedness before production-oriented sign-off.
+Change management was designed to ensure that feature updates do not weaken stability, security, or governance controls. Each release cycle therefore combines technical verification, documentation synchronisation, and rollback preparedness before production-oriented sign-off.
 
 \subsection{Release Checklist}
 
-The sequence below presents the recommended order of actions and priorities for this subsection.
-
+The sequence below presents the recommended order of actions and priorities for this subsection:
 
 \begin{enumerate}
-\item Confirm automated tests pass for backend and frontend quality gates.
-\item Verify compose validation for default and production profiles.
-\item Validate security controls: headers, CORS allowlist, upload checks, and role restrictions.
-\item Confirm migration/index scripts produce expected database state.
-\item Review documentation deltas (API, deployment, report references) before tagging release.
-\item Capture release notes with risk statements and rollback pointers.
+\item Confirm automated tests pass for backend and frontend quality gates
+\item Verify compose validation for default and production profiles
+\item Validate security controls: headers, CORS allowlist, upload checks, role restrictions
+\item Confirm migration/index scripts produce expected database state
+\item Review documentation deltas (API, deployment, report references) before tagging release
+\item Capture release notes with risk statements and rollback pointers
 \end{enumerate}
 
 \subsection{Implementation Learnings}
