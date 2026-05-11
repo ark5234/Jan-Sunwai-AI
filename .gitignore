@@ -60,17 +60,16 @@ backend/ai_resort_report.csv
 
 # Keep essential docs folder structure and binary assets
 !docs/images/
-!docs/reports/
 !**/*.png
 !**/*.jpg
 !**/*.jpeg
 !**/*.webp
 
+# Ignore reports
+docs/reports/
 
 # Evaluation output (generated files, not source)
 backend/evaluation_report_v2.csv
 backend/evaluation_mismatch_breakdown.csv
 backend/evaluation_per_class_summary.csv
 /reports/
-!docs/reports/
-!docs/reports/**
