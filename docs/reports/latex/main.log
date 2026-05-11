@@ -1,10 +1,9 @@
-This is XeTeX, Version 3.141592653-2.6-0.999997 (MiKTeX 25.12) (preloaded format=xelatex 2026.5.5)  11 MAY 2026 13:51
+This is XeTeX, Version 3.141592653-2.6-0.999997 (MiKTeX 25.12) (preloaded format=xelatex 2026.5.5)  11 MAY 2026 15:15
 entering extended mode
  restricted \write18 enabled.
- file:line:error style messages enabled.
  %&-line parsing enabled.
-**"c:/Users/Vikra/OneDrive/Desktop/Jan-Sunwai AI/docs/reports/latex/main.tex"
-(c:/Users/Vikra/OneDrive/Desktop/Jan-Sunwai AI/docs/reports/latex/main.tex
+**./main.tex
+(main.tex
 LaTeX2e <2025-11-01>
 L3 programming layer <2025-12-24>
 (C:\Users\Vikra\AppData\Local\Programs\MiKTeX\tex/latex/base\report.cls
@@ -707,14 +706,14 @@ Package caption Info: Begin \AtBeginDocument code.
 Package caption Info: End \AtBeginDocument code.
 Package newfloat Info: Trying Plan B...
 Package newfloat Info: `float' package detected.
- (main.toc [1
-
-
-] [2])
+ (main.toc)
 \tf@toc=\write4
 \openout4 = `main.toc'.
 
- [3] (main.lot)
+ [1
+
+
+] (main.lot)
 \tf@lot=\write5
 \openout5 = `main.lot'.
 
@@ -724,21 +723,20 @@ Package newfloat Info: `float' package detected.
 \tf@lof=\write6
 \openout6 = `main.lof'.
 
-
-[2
+ [2
 
 ] (main.los)
 \tf@los=\write7
 \openout7 = `main.los'.
 
- [3
+[3
 
 ] (frontmatter/abbreviations.tex) [4
 
-]
-(frontmatter/definitions.tex) [5
+] (frontmatter/definitions.tex) [5
 
-] (chapters/ch01_introduction.tex
+]
+(chapters/ch01_introduction.tex
 Chapter 1.
 [1
 
@@ -748,13 +746,89 @@ Overfull \hbox (15.26956pt too wide) in paragraph at lines 43--44
 rtment taxonomy and a deterministic authority-
  []
 
-[2] [3]
+[2]
+
+LaTeX Warning: Citation `pytest_docs' on page 3 undefined on input line 67.
+
+
+LaTeX Warning: Citation `cpgrams_report' on page 3 undefined on input line 71.
+
+
+LaTeX Warning: Citation `world_bank_digital_governance' on page 3 undefined on 
+input line 71.
+
+
+LaTeX Warning: Citation `un_e_gov' on page 3 undefined on input line 77.
+
+
+LaTeX Warning: Citation `world_bank_digital_governance' on page 3 undefined on 
+input line 77.
+
+
+LaTeX Warning: Citation `fielding_rest' on page 3 undefined on input line 77.
+
+
+LaTeX Warning: Citation `hitl_ai' on page 3 undefined on input line 77.
+
+[3]
+
+LaTeX Warning: Citation `smart_cities_mission' on page 4 undefined on input lin
+e 81.
+
+
+LaTeX Warning: Citation `nic_portal' on page 4 undefined on input line 81.
+
+
 Overfull \hbox (11.80812pt too wide) in paragraph at lines 81--82
 \TU/TimesNewRoman(0)/m/n/12 service responsiveness. At the national level, fram
 eworks like India’s Centralised Public Grievance
  []
 
-[4] [5]) (chapters/ch02_project_management.tex [6]
+
+LaTeX Warning: Citation `un_e_gov' on page 4 undefined on input line 83.
+
+
+LaTeX Warning: Citation `world_bank_digital_governance' on page 4 undefined on 
+input line 83.
+
+
+LaTeX Warning: Citation `qwen_2p5vl' on page 4 undefined on input line 87.
+
+
+LaTeX Warning: Citation `granite_vision' on page 4 undefined on input line 87.
+
+
+LaTeX Warning: Citation `llava_model' on page 4 undefined on input line 87.
+
+
+LaTeX Warning: Citation `moondream' on page 4 undefined on input line 87.
+
+
+LaTeX Warning: Citation `neuro_symbolic' on page 4 undefined on input line 87.
+
+[4]
+
+LaTeX Warning: Citation `neuro_symbolic' on page 5 undefined on input line 95.
+
+
+LaTeX Warning: Citation `hitl_ai' on page 5 undefined on input line 99.
+
+
+LaTeX Warning: Citation `un_e_gov' on page 5 undefined on input line 99.
+
+
+LaTeX Warning: Citation `neuro_symbolic' on page 5 undefined on input line 99.
+
+
+LaTeX Warning: Citation `fastapi_docs' on page 5 undefined on input line 119.
+
+
+LaTeX Warning: Citation `react_docs' on page 5 undefined on input line 119.
+
+
+LaTeX Warning: Citation `mongodb_docs' on page 5 undefined on input line 119.
+
+[5]) (chapters/ch02_project_management.tex [6]
 Chapter 2.
 
 Overfull \hbox (2.62503pt too wide) in paragraph at lines 24--25
@@ -765,13 +839,18 @@ Overfull \hbox (2.62503pt too wide) in paragraph at lines 24--25
 [7
 
 ]
-Overfull \hbox (7.5762pt too wide) in paragraph at lines 34--35
+
+LaTeX Warning: Citation `agile_manifesto' on page 8 undefined on input line 34.
+
+
+
+Overfull \hbox (1.5762pt too wide) in paragraph at lines 34--35
 \TU/TimesNewRoman(0)/m/n/12 The work therefore proceeded in short verified incr
 ements following agile iterative principles [[]].
  []
 
 [8]
-Overfull \hbox (10.35123pt too wide) in paragraph at lines 82--83
+Overfull \hbox (10.35123pt too wide) in paragraph at lines 83--84
 []\TU/TimesNewRoman(0)/m/n/12 Dependency risks were controlled through health e
 ndpoints, fallback mechanisms, and scripted
  []
@@ -779,9 +858,8 @@ ndpoints, fallback mechanisms, and scripted
 File: ../../images/gantt chart.png Graphic file (type bmp)
 <../../images/gantt chart.png>
 [9]
-chapters/ch02_project_management.tex:116: ignored error: Infinite glue shrinkag
-e found in box being split [10]) (chapters/ch03_system_requirement_study.tex
-[11]
+ignored error: Infinite glue shrinkage found in box being split [10])
+(chapters/ch03_system_requirement_study.tex [11]
 Chapter 3.
 [12
 
@@ -790,15 +868,13 @@ Underfull \hbox (badness 1253) in paragraph at lines 64--64
 []|\TU/TimesNewRoman(0)/m/n/12 Analyse endpoint shall accept valid 
  []
 
-chapters/ch03_system_requirement_study.tex:64: ignored error: Infinite glue shr
-inkage found in box being split [13] [14] [15] [16])
-(chapters/ch04_proposed_system_requirements.tex [17]
+ignored error: Infinite glue shrinkage found in box being split [13] [14]
+[15] [16]) (chapters/ch04_proposed_system_requirements.tex [17]
 Chapter 4.
 [18
 
 ]
-chapters/ch04_proposed_system_requirements.tex:71: ignored error: Infinite glue
- shrinkage found in box being split [19] [20]
+ignored error: Infinite glue shrinkage found in box being split [19] [20]
 Underfull \hbox (badness 1221) in paragraph at lines 125--125
 []|\TU/TimesNewRoman(0)/m/n/12 Overview metrics, heatmap endpoint, 
  []
@@ -807,168 +883,264 @@ File: ../../images/sequence_diagram.png Graphic file (type bmp)
 <../../images/sequence_diagram.png>
 [21] [22]) (chapters/ch05_system_design.tex [23]
 Chapter 5.
-File: ../../images/system_context_diagram.png Graphic file (type bmp)
-<../../images/system_context_diagram.png>
-File: ../../images/architecture.png Graphic file (type bmp)
-<../../images/architecture.png>
+
+LaTeX Warning: File `../../../images/system_context_diagram.png' not found on i
+nput line 16.
+
+! Unable to load picture or PDF file '../../../images/system_context_diagram.pn
+g'.
+<to be read again> 
+                   }
+l.16 ..../../../images/system_context_diagram.png}
+                                                  
+The requested image couldn't be read because
+it was not a recognized image format.
+
+
+! Package graphics Error: Division by 0.
+
+See the graphics package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.16 ..../../../images/system_context_diagram.png}
+                                                  
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+File: ../../../images/system_context_diagram.png Graphic file (type bmp)
+<../../../images/system_context_diagram.png>
+
+LaTeX Warning: File `../../../images/architecture.png' not found on input line 
+27.
+
+! Unable to load picture or PDF file '../../../images/architecture.png'.
+<to be read again> 
+                   }
+l.27 ...xtwidth]{../../../images/architecture.png}
+                                                  
+The requested image couldn't be read because
+it was not a recognized image format.
+
+
+! Package graphics Error: Division by 0.
+
+See the graphics package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.27 ...xtwidth]{../../../images/architecture.png}
+                                                  
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+File: ../../../images/architecture.png Graphic file (type bmp)
+<../../../images/architecture.png>
+
+LaTeX Warning: File `../../../images/new_er.png' not found on input line 40.
+
+! Unable to load picture or PDF file '../../../images/new_er.png'.
+<to be read again> 
+                   }
+l.40 ....85\textwidth]{../../../images/new_er.png}
+                                                  
+The requested image couldn't be read because
+it was not a recognized image format.
+
+
+! Package graphics Error: Division by 0.
+
+See the graphics package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.40 ....85\textwidth]{../../../images/new_er.png}
+                                                  
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+File: ../../../images/new_er.png Graphic file (type bmp)
+<../../../images/new_er.png>
+
+LaTeX Warning: File `../../../images/er_diagram.png' not found on input line 49
+.
+
+! Unable to load picture or PDF file '../../../images/er_diagram.png'.
+<to be read again> 
+                   }
+l.49 ...textwidth]{../../../images/er_diagram.png}
+                                                  
+The requested image couldn't be read because
+it was not a recognized image format.
+
+
+! Package graphics Error: Division by 0.
+
+See the graphics package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.49 ...textwidth]{../../../images/er_diagram.png}
+                                                  
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+File: ../../../images/er_diagram.png Graphic file (type bmp)
+<../../../images/er_diagram.png>
+
+LaTeX Warning: File `../../../images/flowchart.png' not found on input line 60.
+
+
+! Unable to load picture or PDF file '../../../images/flowchart.png'.
+<to be read again> 
+                   }
+l.60 ...\textwidth]{../../../images/flowchart.png}
+                                                  
+The requested image couldn't be read because
+it was not a recognized image format.
+
+
+! Package graphics Error: Division by 0.
+
+See the graphics package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.60 ...\textwidth]{../../../images/flowchart.png}
+                                                  
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+File: ../../../images/flowchart.png Graphic file (type bmp)
+<../../../images/flowchart.png>
 [24
 
 ]
-File: ../../images/new_er.png Graphic file (type bmp)
-<../../images/new_er.png>
- [25]
-File: ../../images/er_diagram.png Graphic file (type bmp)
-<../../images/er_diagram.png>
- [26]
-File: ../../images/flowchart.png Graphic file (type bmp)
-<../../images/flowchart.png>
- [27] [28]
-File: ../../images/class_diagram.png Graphic file (type bmp)
-<../../images/class_diagram.png>
-File: ../../images/sequence_diagram.png Graphic file (type bmp)
-<../../images/sequence_diagram.png>
- [29]
-File: ../../images/activity_diagram.png Graphic file (type bmp)
-<../../images/activity_diagram.png>
- [30]
-Overfull \vbox (785.61739pt too high) has occurred while \output is active []
+
+LaTeX Warning: File `../../../images/class_diagram.png' not found on input line
+ 71.
+
+! Unable to load picture or PDF file '../../../images/class_diagram.png'.
+<to be read again> 
+                   }
+l.71 ...twidth]{../../../images/class_diagram.png}
+                                                  
+The requested image couldn't be read because
+it was not a recognized image format.
 
 
-[31]
-File: ../../images/deployment_diagram.png Graphic file (type bmp)
-<../../images/deployment_diagram.png>
- [32] [33] [34] [35]
-Overfull \hbox (5.08835pt too wide) in paragraph at lines 222--223
-[]\TU/TimesNewRoman(0)/b/n/12 Citizen Dashboard: \TU/TimesNewRoman(0)/m/n/12 Di
-splays personal complaint list, lifecycle timeline, feedback, progress
- []
+! Package graphics Error: Division by 0.
 
-File: ../../images/GUI_Wireframe.png Graphic file (type bmp)
-<../../images/GUI_Wireframe.png>
-File: ../../images/complaint_review_with_geo_tag.png Graphic file (type bmp)
-<../../images/complaint_review_with_geo_tag.png>
-Package hyperref Info: bookmark level for unknown screenshot defaults to 0 on i
-nput line 250.
-[36]
-File: ../../images/grievance_status_tracker.png Graphic file (type bmp)
-<../../images/grievance_status_tracker.png>
-File: ../../images/admin_worker_task_assignment_pannel.png Graphic file (type b
-mp)
-<../../images/admin_worker_task_assignment_pannel.png>
-File: ../../images/admin_dashboard.png Graphic file (type bmp)
-<../../images/admin_dashboard.png>
- [37]
-File: ../../images/admin_human_complaint_review_pannel.png Graphic file (type b
-mp)
-<../../images/admin_human_complaint_review_pannel.png>
-File: ../../images/grievance_heatmap.png Graphic file (type bmp)
-<../../images/grievance_heatmap.png>
-File: ../../images/admin_english_complaint_view.png Graphic file (type bmp)
-<../../images/admin_english_complaint_view.png>
-File: ../../images/admin_analytics_page.png Graphic file (type bmp)
-<../../images/admin_analytics_page.png>
- [38]) (chapters/ch06_implementation_planning.tex [39]
-Chapter 6.
+See the graphics package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.71 ...twidth]{../../../images/class_diagram.png}
+                                                  
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
 
-Overfull \hbox (11.61331pt too wide) in paragraph at lines 40--41
-[]\TU/TimesNewRoman(0)/m/n/12 Auth and Security: python-jose and passlib[bcrypt
-] for compatibility with cookie-session/JWT,
- []
+File: ../../../images/class_diagram.png Graphic file (type bmp)
+<../../../images/class_diagram.png>
 
-[40
+LaTeX Warning: File `../../../images/sequence_diagram.png' not found on input l
+ine 82.
 
-] [41]
-LaTeX Font Info:    Font shape `TU/lmtt/bx/n' in size <12> not available
-(Font)              Font shape `TU/lmtt/b/n' tried instead on input line 95.
-
-Overfull \hbox (1.16438pt too wide) in paragraph at lines 95--96
-[]\TU/lmtt/b/n/12 users\TU/TimesNewRoman(0)/b/n/12 : \TU/TimesNewRoman(0)/m/n/1
-2 Handles registration, login, and password resets. Required generic forgot-pas
-sword
- []
-
-[42] [43]) (chapters/ch07_testing.tex [44]
-Chapter 7.
-
-Overfull \hbox (2.96878pt too wide) in paragraph at lines 24--25
-\TU/TimesNewRoman(0)/m/n/12 The testing environment baseline outlined below ens
-ures consistency across all validation phases. 
- []
-
-[45
-
-] [46] [47] [48]) (chapters/ch08_limitations_future_scope.tex [49]
-Chapter 8.
-[50
-
-]) (chapters/ch09_conclusion_references.tex
-Overfull \hbox (3.30081pt too wide) in paragraph at lines 24--2
-\TU/TimesNewRoman(0)/m/n/12 The limitations documented in this chapter are genu
-ine constraints that must be addressed through
- []
-
-[51]
-Chapter 9.
-
-Underfull \hbox (badness 10000) in paragraph at lines 43--45
-[][]$[][][][][] [] [] [] [][][] [] [][][][][][][][][] [] [][][] [] [][] [] [][]
-[][][] [] [][][][][][][][][][] [] [][][][][] [] [][][][][][][][][][][][][][][][
-][][][]$[][]\TU/TimesNewRoman(0)/m/n/12 .
- []
-
-[52
-
-]
-Underfull \hbox (badness 5417) in paragraph at lines 52--54
-[]\TU/TimesNewRoman(0)/m/n/12 Meta AI,  “Llama 3.2: Revolutionising edge AI and
- vision with open, cus-
- []
+! Unable to load picture or PDF file '../../../images/sequence_diagram.png'.
+<to be read again> 
+                   }
+l.82 ...dth]{../../../images/sequence_diagram.png}
+                                                  
+The requested image couldn't be read because
+it was not a recognized image format.
 
 
-Underfull \hbox (badness 2951) in paragraph at lines 52--54
-\TU/TimesNewRoman(0)/m/n/12 tomisable models,” Sept. 2024. [Online]. Available:
- [][]$[][][][][] [] [] [] [][] [] [][][][] [] [][][] [] [][][][] []
- []
+! Package graphics Error: Division by 0.
 
-[53]
-Underfull \hbox (badness 4168) in paragraph at lines 145--147
-[]\TU/TimesNewRoman(0)/m/n/12 IBM Research,  “Granite-3.2-Vision: A Multimodal 
-LLM for Vision and Lan-
- []
+See the graphics package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.82 ...dth]{../../../images/sequence_diagram.png}
+                                                  
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
 
-) (chapters/ch10_appendices.tex [54]
-Chapter 10.
+File: ../../../images/sequence_diagram.png Graphic file (type bmp)
+<../../../images/sequence_diagram.png>
 
-Overfull \hbox (9.807pt too wide) in paragraph at lines 57--57
-[]|\TU/TimesNewRoman(0)/m/n/12 MUNI_HORTICULTURE|  
- []
+LaTeX Warning: File `../../../images/activity_diagram.png' not found on input l
+ine 93.
 
-chapters/ch10_appendices.tex:57: ignored error: Infinite glue shrinkage found i
-n box being split [55
+! Unable to load picture or PDF file '../../../images/activity_diagram.png'.
+<to be read again> 
+                   }
+l.93 ...tio]{../../../images/activity_diagram.png}
+                                                  
+The requested image couldn't be read because
+it was not a recognized image format.
 
-]
-chapters/ch10_appendices.tex:89: ignored error: Infinite glue shrinkage found i
-n box being split [56]) (chapters/ch11_report_verification_procedure.tex
-[57]
-Chapter 11.
-[58
 
-]) (main.aux)
- ***********
-LaTeX2e <2025-11-01>
-L3 programming layer <2025-12-24>
- ***********
-Package rerunfilecheck Info: File `main.out' has not changed.
-(rerunfilecheck)             Checksum: 8CDFC8C06C6A8F293F21B263DB5ECB5F;29927.
- ) 
-Here is how much of TeX's memory you used:
- 15568 strings out of 402987
- 301865 string characters out of 5448525
- 827391 words of memory out of 5000000
- 44032 multiletter control sequences out of 15000+600000
- 632823 words of font info for 81 fonts, out of 8000000 for 9000
- 1348 hyphenation exceptions out of 8191
- 73i,12n,93p,1535b,605s stack positions out of 10000i,1000n,20000p,200000b,200000s
+! Package graphics Error: Division by 0.
 
-Output written on c:/Users\Vikra\OneDrive\Desktop\Jan-Sunwai AI\docs\reports\la
-tex\main.pdf (66 pages).
+See the graphics package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.93 ...tio]{../../../images/activity_diagram.png}
+                                                  
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+! Package graphics Error: Division by 0.
+
+See the graphics package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.93 ...tio]{../../../images/activity_diagram.png}
+                                                  
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+File: ../../../images/activity_diagram.png Graphic file (type bmp)
+<../../../images/activity_diagram.png>
+[25]
+
+LaTeX Warning: File `../../../images/deployment_diagram.png' not found on input
+ line 119.
+
+! Unable to load picture or PDF file '../../../images/deployment_diagram.png'.
+<to be read again> 
+                   }
+l.119 ...]{../../../images/deployment_diagram.png}
+                                                  
+The requested image couldn't be read because
+it was not a recognized image format.
+
+
+! Package graphics Error: Division by 0.
+
+See the graphics package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.119 ...]{../../../images/deployment_diagram.png}
+                                                  
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+File: ../../../images/deployment_diagram.png Graphic file (type bmp)
+<../../../images/deployment_diagram.png>
+[26

@@ -1,0 +1,28 @@
+flowchart TD
+    A([Start]) --> B[Login and Open Dashboard]
+    B --> C[Submit Complaint with Image]
+    C --> D[AI Analysis and Draft]
+
+    D --> E{Citizen accepts draft?}
+    E -->|Yes| F[Submit Complaint]
+    E -->|No| G[Citizen edits description]
+    G --> F
+
+    F --> H{Confidence high?}
+    H -->|Yes| I[Auto-route to department]
+    H -->|No| J[Send to Admin Triage]
+    J --> K[Admin validates or relabels]
+    K --> I
+
+    I --> L[Assign to worker]
+    L --> M[Worker updates status]
+    M --> N[Citizen notified]
+    N --> O([End])
+
+    classDef terminal fill:#e8f5e9,stroke:#2e7d32,stroke-width:1px;
+    classDef process fill:#e3f2fd,stroke:#1565c0,stroke-width:1px;
+    classDef decision fill:#fff3e0,stroke:#ef6c00,stroke-width:1px;
+
+    class A,O terminal;
+    class B,C,D,F,G,I,J,K,L,M,N process;
+    class E,H decision;

@@ -13,7 +13,7 @@ The system connects four primary personas (Citizen, Worker, Department Head, Adm
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.85\textwidth]{../../images/system_context_diagram.png}
+\includegraphics[width=0.85\textwidth]{../../../images/system_context_diagram.png}
 \caption{Overall System Context Diagram}
 \label{fig:system-context}
 \end{figure}
@@ -24,7 +24,7 @@ The AI pipeline uses a hybrid vision-cascade and rule-engine scoring model to en
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.85\textwidth]{../../images/architecture.png}
+\includegraphics[width=0.85\textwidth]{../../../images/architecture.png}
 \caption{AI Pipeline and Classification Flow}
 \label{fig:ai-pipeline}
 \end{figure}
@@ -37,7 +37,7 @@ The following diagrams align with the implemented module boundaries, routing flo
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.85\textwidth]{../../images/new_er.png}
+\includegraphics[width=0.85\textwidth]{../../../images/new_er.png}
 \caption{Entity-Relationship Diagram}
 \label{fig:er-diagram}
 \end{figure}
@@ -46,7 +46,7 @@ The following diagrams align with the implemented module boundaries, routing flo
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.85\textwidth]{../../images/er_diagram.png}
+\includegraphics[width=0.85\textwidth]{../../../images/er_diagram.png}
 \caption{Alternative Entity-Relationship Diagram Reference}
 \label{fig:er-diagram-reference}
 \end{figure}
@@ -57,7 +57,7 @@ The following diagrams align with the implemented module boundaries, routing flo
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.85\textwidth]{../../images/flowchart.png}
+\includegraphics[width=0.85\textwidth]{../../../images/flowchart.png}
 \caption{Use Case Diagram (System Flow)}
 \label{fig:use-case}
 \end{figure}
@@ -68,7 +68,7 @@ The following diagrams align with the implemented module boundaries, routing flo
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.85\textwidth]{../../images/class_diagram.png}
+\includegraphics[width=0.85\textwidth]{../../../images/class_diagram.png}
 \caption{Class Diagram}
 \label{fig:class-diagram}
 \end{figure}
@@ -79,7 +79,7 @@ The following diagrams align with the implemented module boundaries, routing flo
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.85\textwidth]{../../images/sequence_diagram.png}
+\includegraphics[width=0.85\textwidth]{../../../images/sequence_diagram.png}
 \caption{Sequence Diagram}
 \label{fig:sequence-diagram}
 \end{figure}
@@ -88,9 +88,9 @@ The following diagrams align with the implemented module boundaries, routing flo
 
 \subsection{Activity Diagram}
 
-\begin{figure}[H]
+\begin{figure}[!htb]
 \centering
-\includegraphics[width=0.85\textwidth]{../../images/activity_diagram.png}
+\includegraphics[width=0.75\textwidth,height=0.78\textheight,keepaspectratio]{../../../images/activity_diagram.png}
 \caption{Activity Diagram}
 \label{fig:activity-diagram}
 \end{figure}
@@ -102,7 +102,7 @@ The following diagrams align with the implemented module boundaries, routing flo
 \begin{figure}[H]
 \centering
 \IfFileExists{../../images/dfd_diagram.png}{%
-\includegraphics[width=0.85\textwidth]{../../images/dfd_diagram.png}%
+\includegraphics[width=0.85\textwidth]{../../../images/dfd_diagram.png}%
 }{%
 \fbox{\begin{minipage}[c][0.30\textheight][c]{0.85\textwidth}
 \centering Missing DFD diagram image
@@ -116,7 +116,7 @@ The following diagrams align with the implemented module boundaries, routing flo
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.85\textwidth]{../../images/deployment_diagram.png}
+\includegraphics[width=0.85\textwidth]{../../../images/deployment_diagram.png}
 \caption{Deployment Diagram}
 \label{fig:deployment-diagram}
 \end{figure}
@@ -158,8 +158,6 @@ The data dictionary below summarises key entities and their purpose in operation
 
 \begin{table}[H]
 \centering
-\caption{Core Data Dictionary Snapshot}
-\label{tab:data-dictionary}
 \begin{tabularx}{\textwidth}{|>{\RaggedRight\arraybackslash}p{0.22\textwidth}|>{\RaggedRight\arraybackslash}p{0.24\textwidth}|>{\RaggedRight\arraybackslash}X|}
 \hline
 \textbf{Collection} & \textbf{Field} & \textbf{Description} \\ \hline
@@ -170,6 +168,9 @@ complaints & ai\_analysis & Captured model outputs including category, confidenc
 notifications & is\_read & Read-state marker used for unread counters and panel filtering \\ \hline
 password\_resets & expires\_at & Expiry timestamp used by TTL cleanup and reset safety checks \\ \hline
 \end{tabularx}
+\captionsetup{position=bottom}
+\caption{Core Data Dictionary Snapshot}
+\label{tab:data-dictionary}
 \end{table}
 
 \subsection{Indexing Strategy}
@@ -178,8 +179,6 @@ Key indexing strategies are summarised below:
 
 \begin{table}[H]
 \centering
-\caption{Indexing Strategy by Collection}
-\label{tab:indexing-strategy}
 \begin{tabularx}{\textwidth}{|>{\RaggedRight\arraybackslash}X|>{\RaggedRight\arraybackslash}X|>{\RaggedRight\arraybackslash}X|}
 \hline
 \textbf{Collection} & \textbf{Index} & \textbf{Purpose} \\ \hline
@@ -194,6 +193,9 @@ password\_resets & unique(token\_hash) & Token lookup and collision prevention \
 password\_resets & (user\_id, used) & Active token invalidation management \\ \hline
 password\_resets & TTL(expires\_at) & Automatic expired-token cleanup \\ \hline
 \end{tabularx}
+\captionsetup{position=bottom}
+\caption{Indexing Strategy by Collection}
+\label{tab:indexing-strategy}
 \end{table}
 
 \section{GUI Design}
@@ -232,8 +234,8 @@ The following figure provides a visual reference that complements the explanator
 
 \begin{figure}[H]
 \centering
-\IfFileExists{../../images/GUI_Wireframe.png}{%
-\includegraphics[width=0.85\textwidth]{../../images/GUI_Wireframe.png}%
+\IfFileExists{../../../images/GUI_Wireframe.png}{%
+\includegraphics[width=0.85\textwidth]{../../../images/GUI_Wireframe.png}%
 }{%
 \fbox{\begin{minipage}[c][0.30\textheight][c]{0.85\textwidth}
 \centering Missing wireframe image

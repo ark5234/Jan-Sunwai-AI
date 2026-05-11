@@ -115,11 +115,11 @@ The implementation of core services followed specific planning notes to ensure m
 
 \section{Operational Monitoring Plan}
 
-\begin{xltabular}{\textwidth}{|>{\RaggedRight\arraybackslash}p{0.22\textwidth}|>{\RaggedRight\arraybackslash}p{0.25\textwidth}|>{\RaggedRight\arraybackslash}X|}
-\caption{Operational Monitoring Matrix}\\
+\begin{table}[H]
+\centering
+\begin{tabularx}{\textwidth}{|>{\RaggedRight\arraybackslash}p{0.22\textwidth}|>{\RaggedRight\arraybackslash}p{0.25\textwidth}|>{\RaggedRight\arraybackslash}X|}
 \hline
 \textbf{Signal} & \textbf{Collection Source} & \textbf{Operational Interpretation} \\ \hline
-\endhead
 API process time & Response header \texttt{X-Process-Time} & Detect slow endpoints and regressions after deployments \\ \hline
 Readiness status & /api/v1/health/ready endpoint & Indicates dependency-level degradation, mainly database health \\ \hline
 Model availability & /api/v1/health/models endpoint & Confirms runtime model inventory and inference readiness \\ \hline
@@ -128,7 +128,10 @@ Notification backlog & unread-count behaviour and list volume & Detects delayed 
 Assignment queue growth & open/unassigned complaints and worker status & Helps identify staffing bottlenecks and area mismatch \\ \hline
 Triage queue size & low-confidence complaint count & Indicates classifier uncertainty trend and review load \\ \hline
 Error logs & rotating backend logs & Captures fault signatures for rapid remediation \\ \hline
-\end{xltabular}
+\end{tabularx}
+\captionsetup{position=bottom}
+\caption{Operational Monitoring Matrix}
+\end{table}
 
 \section{Change Management and Release Strategy}
 
