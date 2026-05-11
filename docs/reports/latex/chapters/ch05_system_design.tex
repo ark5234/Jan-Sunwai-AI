@@ -8,12 +8,11 @@ This chapter details Jan-Sunwai's structural decisions, module interactions, and
 The platform follows a multi-tier Client-Server architecture, optimised for local execution with containerised boundaries.
 
 \subsection{Overall System Context}
+\label{sec:overall-system-context}
 
 The system connects four primary personas (Citizen, Worker, Department Head, Admin) to a centralised governance core. The context diagram below illustrates the high-level data exchange between these actors and the platform services.
 
-\FloatBarrier
-\reservehalfpage
-\begin{figure}[!p]
+\begin{figure}[H]
 \centering
 \includegraphics[height=0.5\textheight]{\detokenize{../../images/new_ Overall System Context Diagram.png}}
 \caption{Overall System Context Diagram}
@@ -21,12 +20,11 @@ The system connects four primary personas (Citizen, Worker, Department Head, Adm
 \end{figure}
 
 \subsection{AI Classification Pipeline}
+\label{sec:ai-classification-pipeline}
 
 The AI pipeline uses a hybrid vision-cascade and rule-engine scoring model to ensure high-confidence routing while providing a human-in-the-loop triage path for ambiguous cases.
 
-\FloatBarrier
-\reservehalfpage
-\begin{figure}[!p]
+\begin{figure}[H]
 \centering
 \includegraphics[height=0.5\textheight]{\detokenize{../../images/new_AI Pipeline and Classification Flow.png}}
 \caption{AI Pipeline and Classification Flow}
@@ -38,6 +36,7 @@ The AI pipeline uses a hybrid vision-cascade and rule-engine scoring model to en
 The following diagrams align with the implemented module boundaries, routing flow, and lifecycle stages documented in the project report and API references.
 
 \subsection{Entity-Relationship Diagram}
+\label{sec:entity-relationship-diagram}
 
 \begin{figure}[H]
 \centering
@@ -58,6 +57,7 @@ The following diagrams align with the implemented module boundaries, routing flo
 \textbf{Reference Note:} This alternate image is retained because it documents the same relational model in a slightly different visual style, which can help during review and presentation.
 
 \subsection{Use Case Diagram}
+\label{sec:use-case-diagram}
 
 \begin{figure}[H]
 \centering
@@ -69,6 +69,7 @@ The following diagrams align with the implemented module boundaries, routing flo
 \textbf{Role Segregation and Governance:} This diagram captures the strict access boundaries enforced by the system. Whilst citizens have broad permission to create and track records, state mutations (such as resolving or rejecting a complaint) are heavily restricted to authenticated workers and department heads. It visually demonstrates the governance principle that AI assists but humans hold final approval authority.
 
 \subsection{Class Diagram}
+\label{sec:class-diagram}
 
 \begin{figure}[H]
 \centering
@@ -80,9 +81,9 @@ The following diagrams align with the implemented module boundaries, routing flo
 \textbf{Data Encapsulation:} The class structure reflects the document-oriented database design where complex types like Geolocation and Timestamps are embedded rather than relationally linked. This trade-off sacrifices some normalisation but ensures that fetching a single Complaint object provides the frontend with the complete operational context needed to render a dashboard.
 
 \subsection{Sequence Diagram}
+\label{sec:sequence-diagram}
 
-\FloatBarrier
-\begin{figure}[!p]
+\begin{figure}[H]
 \centering
 \includegraphics[height=0.45\textheight]{\detokenize{../../images/new_Sequence Diagram.png}}
 \caption{Sequence Diagram}
@@ -92,17 +93,15 @@ The following diagrams align with the implemented module boundaries, routing flo
 \textbf{Interaction Logic:} The sequence diagram traces a complaint from initial image upload through AI analysis, citizen confirmation, and worker assignment. It highlights the asynchronous nature of the AI generation queue, which prevents LLM inference latency from blocking the main user experience.
 
 \subsection{Activity Diagram}
+\label{sec:activity-diagram}
 
-% Activity diagram split into two parts; reserve full page for the diagrams
-\FloatBarrier
-\reservefullpage
-\begin{figure}[!p]
+\begin{figure}[H]
 \centering
 \includegraphics[height=0.45\textheight]{\detokenize{../../images/new_Activity diagram part 1.png}}
 \caption{Activity Diagram (part 1)}
 \label{fig:activity-diagram-1}
 \end{figure}
-\begin{figure}[!p]
+\begin{figure}[H]
 \centering
 \includegraphics[height=0.45\textheight]{\detokenize{../../images/new_Activity diagram part 2.png}}
 \caption{Activity Diagram (part 2)}
@@ -112,6 +111,7 @@ The following diagrams align with the implemented module boundaries, routing flo
 \textbf{Workflow States:} The activity diagram maps the internal decision logic used to triage low-confidence classifications. It shows how the system selectively invokes reasoning models (like Llama 3.2) only when the initial vision cascade fails to meet confidence thresholds.
 
 \subsection{DFD Diagram}
+\label{sec:dfd-diagram}
 
 \begin{figure}[H]
 \centering
@@ -127,10 +127,9 @@ The following diagrams align with the implemented module boundaries, routing flo
 \end{figure}
 
 \subsection{Deployment Diagram}
+\label{sec:deployment-diagram}
 
-\FloatBarrier
-\reservehalfpage
-\begin{figure}[!p]
+\begin{figure}[H]
 \centering
 \includegraphics[height=0.5\textheight]{\detokenize{../../images/new_Deployment Diagram.png}}
 \caption{Deployment Diagram}
