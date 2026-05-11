@@ -1,65 +1,69 @@
 % !TEX root = ../main.tex
 \chapter{Implementation Planning}
 
-Implementation planning for Jan-Sunwai AI focused on three parallel goals: reproducibility, maintainable module growth, and deployment readiness. The implementation strategy treated backend, frontend, AI runtime, and operational scripts as coordinated components rather than isolated code tracks. At this stage, the project is in production-handover readiness rather than prototype mode.
+When planning the implementation of Jan-Sunwai AI, three parallel objectives were followed: Reproducibility, sustainable development of modules, and deployment readiness. The development strategy treated the backend, the frontend, the AI runtime and the operational scripts as workstreams that cannot be considered as code tracks. The project is not yet in production-handover mode.
 
 \section{Implementation Environment}
 
-The implementation environment was designed to keep developer productivity high whilst preserving deployment realism. To achieve this, the project supports both fast local iteration and production-style container verification with aligned configurations, health checks, and service contracts. This dual-mode environment reduces environment drift and ensures that behaviour validated during development remains reliable during handover and deployment.
+The development environment was created to maximize developer productivity while keeping deployment realistic. It facilitates fast local iteration, and production quality container verification with all configurations, health checks, and service contracts aligned. The dual-mode approach reduces environmental drift and provides for validated behavior in development to be consistent at handover and deployment.
 
 \subsection{Local Development Environment}
 
-The local workflow supports rapid iteration with role-based UI validation and backend testing. Typical development topology includes:
+Fast iteration with role-based UI and back-end validation. The typical development topology consists of:
 
 \begin{itemize}
-\item Backend running on FastAPI/Uvicorn at port 8000
-\item Frontend development server on Vite at port 5173
-\item MongoDB either local service or containerised dependency
-\item Ollama runtime with configured model set on host machine
+\item Using FastAPI and Uvicorn as backends on port 8000
+\item Vite Frontend Server running on port 5173.
+\item MongoDB dependency (local or containerized)
+\item Ollama runtime with model configuration on the host machine
 \end{itemize}
 
-The local setup was selected to reduce iteration latency whilst preserving fidelity with production behaviour through shared APIs, environment variables, and health semantics.
+Minimizing iteration latency, while keeping the fidelity with the production environment was achieved through shared APIs, environment variables, and health semantics with the local setup.
 
 \subsection{Production-Style Container Environment}
 
-For deployment simulation and handover readiness, the project includes a unified compose configuration with a production profile. In production mode:
+The project is shared with a production profile in Compose. In production mode:
 
 \begin{itemize}
-\item MongoDB runs as a dedicated service with health checks
-\item Backend runs from production Dockerfile and mounts uploads volume to \texttt{/app/uploads}
-\item Frontend runs in Nginx container under compose profile \texttt{prod}
-\item Health checks and log rotation policies are explicitly configured
+\item MongoDB is a monitored, standalone service.
+\item The backend is created with a production Dockerfile, and the uploaded files are mounted to /app/uploads.
+\item The frontend container is actually a service using Nginx and is running under the profile prod.
+\item A policy is established for health checks and log rotation.
 \end{itemize}
 
-This ensures that local verification and deployment handover use the same operational assumptions.
+This simplifies the consistency of the operational assumptions for both local verification and handover for deployment.
 
-\section{Tools and Technologies Used}
+\section{Tools and Technologies}
 
-\begin{itemize}
-\item \textbf{Backend and Database:} FastAPI provides the core API router and dependency injection framework, backed by Motor/PyMongo for asynchronous MongoDB access. Pydantic is used for strict schema validation.
-\item \textbf{Authentication and Security:} python-jose and passlib[bcrypt] handle cookie-session/JWT authentication compatibility and password hashing.
-\item \textbf{AI and Image Pipeline:} Ollama manages local vision and reasoning model execution, whilst Pillow handles upload payload validation and EXIF processing.
-\item \textbf{Frontend Stack:} React acts as the role-aware single-page application foundation, built and optimised by Vite. Client communication uses Axios, and react-router-dom enforces protected role-based navigation.
-\item \textbf{DevOps and QA:} Docker and Docker Compose orchestrate reproducible environments. Testing is handled by pytest~\cite{pytest_docs} and locust (load testing), whilst httpx runs asynchronous API smoke tests.
-\end{itemize}
+Backend and Database: FastAPI router is the core API framework, dependency injection used for backend. Motor/PyMongo for async access to MongoDB. Schema Validation with Pydantic.
 
-\section{Coding Standards Followed}
+Auth and Security: python-jose and passlib[bcrypt] for compatibility with cookie-session/JWT, and password hashing.
 
-Strict coding standards were enforced across the stack to ensure that modules remained independently testable and that new contributors could understand responsibility boundaries without referring to implementation details of adjacent modules. The backend employed router-based domain isolation, strictly typed Pydantic request models, service extraction for cross-cutting concerns such as storage and email, and structured logging with failure-safe behaviour. The frontend enforced separation between role-aware route guards, reusable UI components, and context providers, with explicit loading and error states required on all asynchronous operations. Configuration was centralised through a single canonical environment template, eliminating the environment drift between development and production that had been identified as a recurring source of integration errors early in the project.
+AI and Image Pipeline: Ollama, the model for local vision and reasoning. Pillow as upload payload validation/exif processor.
+
+Frontend Stack: React is the role-aware SPA foundation built and bundled with fast iteration and optimised production by Vite. Axios does the API communication and react-router-dom does the role-based, protected, client-side navigation.
+
+DevOps and QA: Docker and Docker Compose for reproducible environments and pytest and httpx for async API smoke testing. Locust is a load testing tool.
+
+\section{Coding Standards}
+
+Independently testable and clearly bounded areas of responsibility are achieved by applying important coding standards to all modules. The backend included router-based domain isolation, request models for services with strict typing via Pydantic, service extraction for cross cutting concerns (storage, email, etc.) and structured logging with safe failure behaviour. The frontend has to be separated from role aware route guards, re-usable UI components, and context providers and all of the asynchronous operations are placed in explicit loading and error states. An environment template was developed for configuration, which eliminated a common environment drift issue between development and production and saved the team from the blame game.
 
 \section{Implementation Sequence and Dependencies}
 
-\begin{enumerate}
-\item Backend skeleton and database connectivity: Required before authentication and complaint persistence
-\item Authentication/session primitives: Required before protected API and role-specific frontend routes
-\item Analyse pipeline and storage handling: Required before citizen intake flow can be tested end-to-end
-\item Frontend analyse/result workflow: Depends on stable analyse payload and authentication behaviour
-\item Assignment and lifecycle controls: Depends on complaint schema maturity and worker metadata
-\item Triage, analytics, and governance endpoints: Depends on reliable complaint state and metadata richness
-\item Security and reliability hardening: Should follow core flow stability to avoid hidden regressions
-\item Tests and UAT cycles: Depends on complete feature slices and stable environments
-\item Production profile and handover documentation: Depends on validated security/performance baseline
-\end{enumerate}
+The sequence of implementation and dependencies are described.
+
+\begin{itemize}
+\item This is a skeleton webapp that does the back-end part of things, including the DB interaction (which is needed before auth and complaint persistence).
+\item Integrated authentication and session management (required for protected API and frontend routes for specific roles)
+\item This involves analysis pipeline and storage handling that are required prior to the end-to-end testing of citizen intake flow.
+\item Frontend workflows for analysis/results (consistent analysis payload and auth behaviour is required)
+\item Assignments will be made by the assignment engine (which relies on complaint schema maturity and worker metadata).
+\item Reliable complaint state and metadata richness, triage and analytics endpoints (depends on the above)
+\item Security and reliability hardening (should follow core flow stability to prevent regressions in other areas without realizing them)
+\item Test and UAT cycles (depends on stable feature slices and environments)
+\item Production profile and handover documentation (if security and performance baseline have been validated)
+\end{itemize}
 
 \section{Configuration and Secret Planning}
 

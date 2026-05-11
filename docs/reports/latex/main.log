@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.141592653-2.6-0.999997 (MiKTeX 25.12) (preloaded format=xelatex 2026.5.5)  10 MAY 2026 17:30
+This is XeTeX, Version 3.141592653-2.6-0.999997 (MiKTeX 25.12) (preloaded format=xelatex 2026.5.5)  11 MAY 2026 13:51
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -757,7 +757,7 @@ eworks like India’s Centralised Public Grievance
 [4] [5]) (chapters/ch02_project_management.tex [6]
 Chapter 2.
 
-Overfull \hbox (2.62503pt too wide) in paragraph at lines 25--26
+Overfull \hbox (2.62503pt too wide) in paragraph at lines 24--25
 \TU/TimesNewRoman(0)/m/n/12 Implementation feasibility was demonstrated through
  successful execution of containerised setup
  []
@@ -765,13 +765,13 @@ Overfull \hbox (2.62503pt too wide) in paragraph at lines 25--26
 [7
 
 ]
-Overfull \hbox (7.5762pt too wide) in paragraph at lines 35--36
+Overfull \hbox (7.5762pt too wide) in paragraph at lines 34--35
 \TU/TimesNewRoman(0)/m/n/12 The work therefore proceeded in short verified incr
 ements following agile iterative principles [[]].
  []
 
 [8]
-Overfull \hbox (10.35123pt too wide) in paragraph at lines 83--84
+Overfull \hbox (10.35123pt too wide) in paragraph at lines 82--83
 []\TU/TimesNewRoman(0)/m/n/12 Dependency risks were controlled through health e
 ndpoints, fallback mechanisms, and scripted
  []
@@ -779,18 +779,18 @@ ndpoints, fallback mechanisms, and scripted
 File: ../../images/gantt chart.png Graphic file (type bmp)
 <../../images/gantt chart.png>
 [9]
-chapters/ch02_project_management.tex:117: ignored error: Infinite glue shrinkag
+chapters/ch02_project_management.tex:116: ignored error: Infinite glue shrinkag
 e found in box being split [10]) (chapters/ch03_system_requirement_study.tex
 [11]
 Chapter 3.
 [12
 
 ]
-Underfull \hbox (badness 1253) in paragraph at lines 65--65
+Underfull \hbox (badness 1253) in paragraph at lines 64--64
 []|\TU/TimesNewRoman(0)/m/n/12 Analyse endpoint shall accept valid 
  []
 
-chapters/ch03_system_requirement_study.tex:65: ignored error: Infinite glue shr
+chapters/ch03_system_requirement_study.tex:64: ignored error: Infinite glue shr
 inkage found in box being split [13] [14] [15] [16])
 (chapters/ch04_proposed_system_requirements.tex [17]
 Chapter 4.
@@ -870,32 +870,24 @@ File: ../../images/admin_analytics_page.png Graphic file (type bmp)
  [38]) (chapters/ch06_implementation_planning.tex [39]
 Chapter 6.
 
-Overfull \hbox (2.19339pt too wide) in paragraph at lines 40--41
-[]\TU/TimesNewRoman(0)/b/n/12 Authentication and Security: \TU/TimesNewRoman(0)
-/m/n/12 python-jose and passlib[bcrypt] handle cookie-session/JWT
+Overfull \hbox (11.61331pt too wide) in paragraph at lines 40--41
+[]\TU/TimesNewRoman(0)/m/n/12 Auth and Security: python-jose and passlib[bcrypt
+] for compatibility with cookie-session/JWT,
  []
 
 [40
 
-]
-Overfull \hbox (9.8453pt too wide) in paragraph at lines 61--62
-[]\TU/TimesNewRoman(0)/m/n/12 Production profile and handover documentation: De
-pends on validated security/performance
- []
-
-[41]
+] [41]
 LaTeX Font Info:    Font shape `TU/lmtt/bx/n' in size <12> not available
-(Font)              Font shape `TU/lmtt/b/n' tried instead on input line 91.
+(Font)              Font shape `TU/lmtt/b/n' tried instead on input line 95.
 
-Overfull \hbox (1.16438pt too wide) in paragraph at lines 91--92
+Overfull \hbox (1.16438pt too wide) in paragraph at lines 95--96
 []\TU/lmtt/b/n/12 users\TU/TimesNewRoman(0)/b/n/12 : \TU/TimesNewRoman(0)/m/n/1
 2 Handles registration, login, and password resets. Required generic forgot-pas
 sword
  []
 
-[42]
-chapters/ch06_implementation_planning.tex:127: ignored error: Infinite glue shr
-inkage found in box being split [43]) (chapters/ch07_testing.tex [44]
+[42] [43]) (chapters/ch07_testing.tex [44]
 Chapter 7.
 
 Overfull \hbox (2.96878pt too wide) in paragraph at lines 24--25
@@ -967,12 +959,12 @@ LaTeX2e <2025-11-01>
 L3 programming layer <2025-12-24>
  ***********
 Package rerunfilecheck Info: File `main.out' has not changed.
-(rerunfilecheck)             Checksum: D44015909C9D9FF4B205601357274C7F;30309.
+(rerunfilecheck)             Checksum: 8CDFC8C06C6A8F293F21B263DB5ECB5F;29927.
  ) 
 Here is how much of TeX's memory you used:
  15568 strings out of 402987
  301865 string characters out of 5448525
- 827783 words of memory out of 5000000
+ 827391 words of memory out of 5000000
  44032 multiletter control sequences out of 15000+600000
  632823 words of font info for 81 fonts, out of 8000000 for 9000
  1348 hyphenation exceptions out of 8191

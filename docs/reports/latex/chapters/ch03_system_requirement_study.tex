@@ -1,37 +1,36 @@
 % !TEX root = ../main.tex
 \chapter{System Requirement Study}
 
-This chapter documents the requirements analysis for Jan-Sunwai AI, including the baseline state of existing grievance systems, observed limitations, actor expectations, and formalised functional and non-functional requirements. The study was grounded in implementation practicalities, municipal workflow assumptions, and validation through testing and user journeys.
+This chapter explains the system requirements of Jan-Sunwai AI as the fundamentals. It includes active grievance mechanisms, user characteristics, actor expectations, and formalized functional and non-functional requirements. The analysis was based on the realities of implementation, observation of municipal workflow, and assumptions testing on user journeys.
 
 \section{Existing System Overview}
 
-Most conventional civic complaint channels operate through one or more interfaces: physical counters, basic web forms, call centre logging, or generic ticketing portals. While these methods can register complaints, they often suffer from weak input quality, manual routing dependency, and inadequate traceability.
+The traditional ways of submitting civic complaints are through one or more of the following interfaces: physical counters, web forms, call centre logging, and general ticketing portals. These can be used for complaints to be raised but have disadvantages of poor input quality, manual routing, low traceability and high staff dependency.
 
-Key characteristics of existing systems in this problem domain include:
+The following are some of the key observed characteristics of existing systems:
 
 \begin{itemize}
-\item Citizens manually select departments, frequently without adequate guidance
-\item Complaint narratives are text-heavy and unstructured, resulting in inconsistent detail quality
-\item Photographic evidence may be accepted but is rarely used in routing decisions
-\item Status updates are often sparse or delayed
-\item Workflow metadata (actor attribution, change timestamps) is often incomplete for audit purposes
+\item Citizens must choose the departments themselves, without proper guidance.
+\item Complaint narratives are very text-heavy, lack organization and vary in terms of quality of detail.
+\item Photographic evidence is accepted but is not a common source of routing information.
+\item No status updates are done frequently or in real time.
+\item Audit trails do not contain meta-information regarding the change: who changed what and why.
+\item Historical retrieval and reporting is challenging.
 \end{itemize}
 
-\section{Limitations of the Existing System}
-
-The operational deficiencies in legacy civic complaint channels fall into several broad categories. Citizen-initiated department selection is the most significant structural weakness because it places classification responsibility on the population least equipped to exercise it correctly. Complaints submitted to the wrong department must be transferred before action is possible, and each transfer consumes a full administrative review cycle. Complaint narrative quality is uneven because unstructured free-text fields produce descriptions ranging from detailed to sparse, requiring staff to seek clarification before field action can be authorised. Photographic evidence, where accepted, is stored as an attachment rather than processed as routing input, meaning the most objective available record is never used for classification. Role-specific interface design is typically absent, so field workers, department supervisors, and administrators interact with identical interfaces despite having fundamentally different information needs. Lifecycle traceability is insufficient for governance, as state transitions without actor attribution and timestamps cannot support escalation justification or post-resolution review. Public visibility of queue behaviour is negligible, eroding citizen trust by creating the impression that complaints disappear without acknowledgement.
+The vulnerabilities found on civic complaint sites can be broken down into several different sections. The most structurally significant weakness is citizen-driven department selection which passes the responsibility for department classification to the one least able to carry it out properly. Any complaints received in the wrong department will need to be reviewed before any action can be taken and each transfer takes a full review cycle. When addressed to the staff member in an unstructured free-text field, the quality of the complaint varies considerably, and sometimes complaints are so poorly formulated that they are only minimally factual, necessitating further questioning by staff to enable them to take field action. When accepted, photographic evidence is treated as an attachment and not as a routing input which is the most objective record of the issue used in classification. A lack of interface design for roles leads to the same interface for field workers, department supervisors, and system administrators, but with vastly different information needs. Lifecycle traceability is not sufficient for governance as there is no actor attribution for state transitions and timestamps. There is no support for escalation justification and/or post-resolution review, and no public visibility of the behaviour of queues, leading to a loss of citizen trust over time.
 
 \section{User Characteristics}
 
-Four distinct operational personas were identified during requirements analysis, each with characteristic interaction patterns and clearly defined authorisation boundaries.
+The requirements analysis identified 4 distinct operational personas which have characteristic interaction patterns, and well defined authorisation boundaries.
 
-Citizens constitute the largest user population. They interact with the platform at two main points: submission and tracking. During submission, a citizen uploads photographic evidence, reviews the AI-generated draft complaint, optionally modifies the description or category, and confirms submission. During tracking, the citizen monitors status updates through the notification panel and complaint detail view.
+The citizen is the biggest user group. They deal with the platform during two phases, Submission and tracking. On submission, a citizen posts the photographic evidence and then reads the AI-generated version of the complaint and (optionally) updates the description or category and then submits. The citizen can get notified via notification panel and the complaint details view at tracking.
 
-Field workers interact primarily through their assigned-task queue. They manage their own availability status, review complaint details and location information, and mark tasks as completed with a resolution note upon successful intervention.
+The platform is used mostly by Field Workers via their assigned task queue. When a field intervention is successful, a worker will update their availability status, view details and location of a complaint, and will record the resolution in a worker's note marking the complaint as complete.
 
-Department heads exercise supervisory authority over their department's complaint queue. They apply status updates with explanatory notes, transfer complaints to other departments when jurisdictional analysis suggests mis-assignment, and escalate cases to parent authorities when the matter exceeds departmental capacity or authority.
+The complaint queue is under the general supervision of the Department Head. They update their status with explanatory notes, escalate complaints to other departments if the analysis of jurisdiction suggests that they are misassigned and to parent authorities if they are beyond their scope of or competency.
 
-Administrators hold end-to-end governance authority over the platform. Their responsibilities include approving or rejecting worker registration applications, adjudicating the triage queue of low-confidence classifications, executing bulk status operations, exporting complaint datasets as CSV files, and monitoring system-wide analytics.
+Administrators have end-to-end governance rights. They can accept or deny applications for workers to register, accept the triage queue of known low-confidence AI classifications, execute high-volume status operations on complaint backlogs, export complaint datasets as CSV files, and view system-wide analytics.
 
 \section{Functional Requirements}
 
@@ -85,39 +84,39 @@ NFR-10 & Data Integrity & Validation schemas and controlled update flows shall m
 
 \section{Hardware and Software Requirements}
 
-A minimum hardware configuration of a four-core processor (eight-core recommended), 12 to 16 GB of system RAM, 4 to 6 GB of GPU VRAM, 10 to 20 GB of storage, and a stable network connection is required for functional operation. The software baseline requires Windows 10 or later, or Ubuntu 22.04 LTS or later, alongside Python 3.10 or later, Node.js v20 LTS or later, MongoDB 7.x, the Ollama runtime, Docker and Docker Compose version 24 or later, and a modern web browser.
+To function, at least 6 cores (8 cores is preferred), 16 GB of system RAM, 4-6 GB of GPU VRAM, 10-20 GB of storage and a reliable Internet connection are required. Requirements include a computer running the Windows 10 operating system or Ubuntu 22.04 LTS or higher with Python 3.10 or higher, Node.js v20 LTS or higher, MongoDB 7.x, Ollama runtime, Docker and Compose 24 or above and a modern web browser.
 
 \section{Constraints}
 
-Constraints are not merely technical limits but also governance and usability boundaries that directly influence system behaviour. The platform must operate under security, role-separation, and infrastructure limitations common in civic environments while maintaining user clarity for citizens and workflow efficiency for officials. The following constraint groups define implementation boundaries and informed several architecture and UI decisions.
+There are governance and usability constraints in addition to the technical one of the project. The platform should be secure, role-separated and should leverage existing civic security, infrastructure and role separation constraints without compromising clarity for citizens and efficiency for officials.
 
-\subsection{User Interface Constraints}
+\subsection{UI Constraints}
 
-Role-specific pages enforce access boundaries. Interfaces support mobile widths (375px baseline) and preserve data state during refresh cycles so users can recover context after reconnection.
+Access is limited to boundaries on role specific pages. Interfaces are designed to fit mobile widths as low as 375 px, and refresh a page without losing data state, enabling the user to regain context upon reconnect.
 
 \subsection{Communication Interface}
 
-Communication occurs exclusively over authenticated REST endpoints via secure cookie sessions or JWT tokens, with strict /api/v1 proxy routing and controlled CORS policy.
+Communication is limited to authenticated rest endpoints and is only made with secure cookie sessions; routing is done through /api/v1 proxy and CORS policy is limited.
 
 \subsection{Hardware Interface}
 
-As a closed-system deployment, local inference is bound by available VRAM, causing AI response times to fluctuate under load. Large file uploads are strictly limited by size and decode verification to prevent resource exhaustion.
+Compared to an open system deployment, local inference is constrained by the VRAM available on the host machine and so this can result in variable AI response times as load increases. Large file uploads are heavily limited and checked for size and content to prevent any needless resources.
 
-\subsection{Application Criticality}
+\subsection{Criticality of Application}
 
-The application is operationally critical because it manages public grievance routing and status accountability. Any prolonged outage can delay municipal field response and reduce citizen trust in service delivery.
+The application informs about public complaints and plays an important role for civic accountability. The city's response in the field will be delayed and citizens' confidence in services will erode if there is a prolonged outage.
 
 \subsection{Safety and Security Considerations}
 
-To guarantee citizen trust and data privacy, the system runs on secure local infrastructure. Status history and role checks are immutable. Input sanitisation, MIME-type validation, robust token lifecycle controls, and security headers enforce defence-in-depth.
+It operates on local infrastructure to maintain citizens' trust and data privacy. Status history and role checks are permanent. Input sanitisation, MIME-type validation, strong token security headers, and lifecycle controls all help to provide defence-in-depth.
 
 \section{Assumptions and Dependencies}
 
-The system operates under several core assumptions and external dependencies. First, it assumes a reachable and healthy MongoDB instance for all persistence. Second, the Ollama runtime must be correctly configured with the required vision and reasoning models to support analysis and draft generation. Third, accurate environment variable configuration is essential for stable authentication, CORS, and database mapping. Fourth, the system relies on worker profile completeness (department and service-area metadata) for the auto-assignment engine. Finally, for production deployments, the host must support Docker and Docker Compose to ensure environment reproducibility.
+There are several assumptions that underlie the system. First, there's a need for a reachable, healthy MongoDB instance to support all read/write persistence. Second, the Ollama runtime needs to be properly configured to have the right vision and reasoning models for image analysis and the generation of a text draft. Thirdly, environment variables need to be set properly for stable authentication, CORS, database mapping etc. Fourth, the system assumes that information about the workers, such as their department and service area metadata, is complete for the auto-assignment engine to work properly. Lastly, environments must be reproducible in the production deployments, which means that the host must have Docker and Compose installed.
 
-Requirements are classified using the MoSCoW methodology. Must-Have features include user registration, authentication, complaint intake, status updates, auto-assignment, and health monitoring; these are essential for operational viability. Should-Have features include authority escalation, worker status controls, administrative triage queue, and analytics; these provide institutional-grade governance. Could-Have features such as CSV exports and the public transparency feed provide high-value reporting without blocking core workflow. Non-Functional criticals including session security, sanitisation, and observability are treated as mandatory baseline controls.
+The MoSCoW approach is used for categorising requirements. These are some of the Must-Have features that are essential for the viability of operations: User registration and authentication, complaint intake, status updates, auto-assignment and health monitoring. Together, these Should-Have features like, authority escalation, worker status controls, the administrative triage queue and analytics helps deliver governance at institutional grade. Because of Can-Do, CSV exports and the public transparency feed are added to the main workflow without disruption, with high value reporting. Requirements that are not associated with any functionality, like session security, input sanitisation, observability, are not considered value added but as a minimum baseline control.
 
 \section{Chapter Summary}
 
-The requirement study establishes the transition from a manually intensive grievance flow to a structured, secure, and auditable digital workflow. Functional and non-functional requirements were formalised in implementation-aligned terms and mapped against realistic user roles and operational constraints.
+The requirements analysis identified the need for a switch from manual grievance handling to a more secure, structured and auditable digital process. Functional and non-functional requirements were placed in terms of deliverable, implementable requirements, realistic user roles were translated to operational constraints and MoSCoW methodology was used to prioritize the delivery.
 
